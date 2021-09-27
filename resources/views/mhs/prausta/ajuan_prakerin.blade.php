@@ -51,7 +51,7 @@
               </div>
               <div class="form-group">
                 <label>Judul Seminar Prakerin<font color ="red-text">*</font></label>
-                <textarea class="form-control" name="judul_prausta" rows="4" cols="60" required></textarea>
+                <textarea class="form-control" name="judul_prausta" rows="3" cols="60" required></textarea>
 
               </div>
             </div>

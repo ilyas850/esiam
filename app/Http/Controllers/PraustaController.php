@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Alert;
 use App\User;
 use App\Angkatan;
 use App\Prodi;
@@ -76,12 +77,20 @@ class PraustaController extends Controller
     {
       $id = Auth::user()->id_user;
       $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                    ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+                                    ->whereIn('kode_prausta', ['FA-601','TI-601','TK-601'])
                                     ->where('prausta_setting_relasi.id_student', $id)
                                     ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                    ->select('student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta')
                                     ->get();
       $cekdata = count($data);
 
-      return view('mhs/prausta/seminar_prakerin', compact('data','cekdata'));
+      foreach ($data as $usta) {
+        // code...
+      }
+      
+      return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata'));
     }
 
     public function pengajuan_seminar_prakerin()
@@ -101,7 +110,7 @@ class PraustaController extends Controller
 
     public function simpan_ajuan_prakerin(Request $request)
     {
-      dd($request);
+
       $message = [
         'max'       => ':attribute harus diisi maksimal :max KB',
         'required'  => ':attribute wajib diisi',
@@ -124,23 +133,66 @@ class PraustaController extends Controller
       $usta->id_student             = $request->id_student;
       $usta->dosen_pembimbing       = $request->dosen_pembimbing;
       $usta->judul_prausta          = $request->judul_prausta;
+      $usta->added_by               = Auth::user()->name;
+      $usta->status                 = 'ACTIVE';
 
       if($request->hasFile('file_acc_dosen'))
       {
         $file                         = $request->file('file_acc_dosen');
         $nama_file                    = 'Acc Dosen'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Acc Dosen/'.Auth::user()->id_user.'/'.$request->id_kurperiode.'/'.'Kuliah Tatap Muka';
+        $tujuan_upload                = 'File Acc Dosen/'.Auth::user()->id_user;
         $file->move($tujuan_upload,$nama_file);
-        $bap->file_kuliah_tatapmuka   = $nama_file;
+        $usta->file_acc_dosen          = $nama_file;
       }
 
-      if($request->hasFile('file_acc_dosen'))
+      if($request->hasFile('file_kartu_bim'))
       {
-        $file                         = $request->file('file_acc_dosen');
-        $nama_file                    = 'Acc Dosen'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Acc Dosen/'.Auth::user()->id_user.'/'.$request->id_kurperiode.'/'.'Kuliah Tatap Muka';
+        $file                         = $request->file('file_kartu_bim');
+        $nama_file                    = 'Kartu Bimbingan'."-".$file->getClientOriginalName();
+        $tujuan_upload                = 'File Kartu Bimbingan/'.Auth::user()->id_user;
         $file->move($tujuan_upload,$nama_file);
-        $bap->file_kuliah_tatapmuka   = $nama_file;
+        $usta->file_kartu_bim          = $nama_file;
       }
+
+      if($request->hasFile('file_surat_balasan'))
+      {
+        $file                         = $request->file('file_surat_balasan');
+        $nama_file                    = 'Surat Balasan'."-".$file->getClientOriginalName();
+        $tujuan_upload                = 'File Surat Balasan/'.Auth::user()->id_user;
+        $file->move($tujuan_upload,$nama_file);
+        $usta->file_surat_balasan      = $nama_file;
+      }
+
+      if($request->hasFile('file_val_baku'))
+      {
+        $file                         = $request->file('file_val_baku');
+        $nama_file                    = 'Validasi BAKU'."-".$file->getClientOriginalName();
+        $tujuan_upload                = 'File Validasi BAKU/'.Auth::user()->id_user;
+        $file->move($tujuan_upload,$nama_file);
+        $usta->file_val_baku      = $nama_file;
+      }
+
+      if($request->hasFile('file_draft_laporan'))
+      {
+        $file                         = $request->file('file_draft_laporan');
+        $nama_file                    = 'Draft Laporan'."-".$file->getClientOriginalName();
+        $tujuan_upload                = 'File Draft Laporan/'.Auth::user()->id_user;
+        $file->move($tujuan_upload,$nama_file);
+        $usta->file_draft_laporan      = $nama_file;
+      }
+
+      if($request->hasFile('file_nilai_pembim'))
+      {
+        $file                         = $request->file('file_nilai_pembim');
+        $nama_file                    = 'Nilai Pembimbing'."-".$file->getClientOriginalName();
+        $tujuan_upload                = 'File Nilai Pembimbing/'.Auth::user()->id_user;
+        $file->move($tujuan_upload,$nama_file);
+        $usta->file_nilai_pembim       = $nama_file;
+      }
+
+      $usta->save();
+
+      Alert::success('', 'Pengajuan Seminar Prakerin Berhasil')->autoclose(3500);
+      return redirect('seminar_prakerin');
     }
 }
