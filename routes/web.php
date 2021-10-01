@@ -231,6 +231,9 @@ Route::group(['middleware' => 'mhs'], function(){
   Route::get('seminar_prakerin', 'PraustaController@seminar_prakerin');
   Route::get('pengajuan_seminar_prakerin', 'PraustaController@pengajuan_seminar_prakerin');
   Route::post('simpan_ajuan_prakerin', 'PraustaController@simpan_ajuan_prakerin');
+
+  //bimbingan prakerin
+  Route::post('simpan_bimbingan', 'PraustaController@simpan_bimbingan');
 });
 
 Route::group(['middleware' => 'nomhs'], function(){
@@ -393,4 +396,8 @@ Route::group(['middleware' => 'prausta'], function(){
   Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
   Route::post('kode_prausta', 'PraustaController@kode_prausta');
   Route::post('save_nilai_prausta', 'PraustaController@save_nilai_prausta');
+
+  //data prakerin
+  Route::get('data_prakerin', 'PraustaController@data_prakerin');
+  Route::get('atur_prakerin/{id}', 'PraustaController@atur_prakerin');
 });

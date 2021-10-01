@@ -11,6 +11,7 @@ use App\Matakuliah;
 use App\Student_record;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
+use App\Prausta_trans_bimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,6 +71,7 @@ class PraustaController extends Controller
                               ->update(['nilai_AKHIR' => $nsta]);
 
       }
+      Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
       return redirect('nilai_prausta');
     }
 
@@ -79,18 +81,39 @@ class PraustaController extends Controller
       $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                                     ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
                                     ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-                                    ->whereIn('kode_prausta', ['FA-601','TI-601','TK-601'])
+                                    ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
                                     ->where('prausta_setting_relasi.id_student', $id)
                                     ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                    ->select('student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta')
+                                    ->select('prausta_setting_relasi.id_settingrelasi_prausta','student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta',
+                                              'prausta_setting_relasi.file_acc_dosen','prausta_setting_relasi.file_val_baku','prausta_setting_relasi.file_kartu_bim','prausta_setting_relasi.file_nilai_pembim','prausta_setting_relasi.file_draft_laporan','prausta_setting_relasi.file_surat_balasan')
                                     ->get();
+
       $cekdata = count($data);
 
-      foreach ($data as $usta) {
-        // code...
+      $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                                    ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                    ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+                                    ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
+                                    ->where('prausta_setting_relasi.id_student', $id)
+                                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                    ->select('prausta_trans_bimbingan.tanggal_bimbingan','prausta_trans_bimbingan.remark_bimbingan')
+                                    ->get();
+
+
+      if ($cekdata == 0) {
+
+        return view('mhs/prausta/seminar_prakerin', compact('cekdata'));
+
+      }elseif ($cekdata > 0) {
+
+        foreach ($data as $usta) {
+          // code...
+        }
+
+        return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata','bim'));
       }
-      
-      return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata'));
+
     }
 
     public function pengajuan_seminar_prakerin()
@@ -100,7 +123,7 @@ class PraustaController extends Controller
       $data = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
                       ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
                       ->where('student.idstudent', $id)
-                      ->whereIn('kode_prausta', ['FA-601','TI-601','TK-601'])
+                      ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
                       ->select('student.nama','student.nim','prodi.prodi','prodi.id_prodi','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prausta_master_kode.id_masterkode_prausta','student.idstudent')
                       ->first();
 
@@ -120,6 +143,7 @@ class PraustaController extends Controller
         'id_student'            => 'required',
         'dosen_pembimbing'      => 'required',
         'judul_prausta'         => 'required',
+        'tempat_prausta'         => 'required',
         'file_acc_dosen'        => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
         'file_kartu_bim'        => 'mimes:pdf|max:5120',
         'file_surat_balasan'    => 'mimes:pdf|max:5120',
@@ -133,6 +157,7 @@ class PraustaController extends Controller
       $usta->id_student             = $request->id_student;
       $usta->dosen_pembimbing       = $request->dosen_pembimbing;
       $usta->judul_prausta          = $request->judul_prausta;
+      $usta->tempat_prausta         = $request->tempat_prausta;
       $usta->added_by               = Auth::user()->name;
       $usta->status                 = 'ACTIVE';
 
@@ -192,7 +217,42 @@ class PraustaController extends Controller
 
       $usta->save();
 
-      Alert::success('', 'Pengajuan Seminar Prakerin Berhasil')->autoclose(3500);
+      Alert::success('', 'Data Prakerin Berhasil Diinput')->autoclose(3500);
+      return redirect('seminar_prakerin');
+    }
+
+    public function data_prakerin()
+    {
+      $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                    ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                                    ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
+                                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                    ->where('student.active', 1)
+                                    ->select('prausta_setting_relasi.id_settingrelasi_prausta','student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.dosen_penguji_1','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tanggal_mulai','prausta_setting_relasi.tanggal_selesai','prausta_setting_relasi.jam_mulai_sidang','prausta_setting_relasi.jam_selesai_sidang')
+                                    ->orderBy('student.nim', 'DESC')
+                                    ->get();
+
+        return view('mhs/prausta/data_prakerin', compact('data'));
+    }
+
+    public function atur_prakerin($id)
+    {
+
+      return view('mhs/prausta/atur_prakerin', compact('id'));
+    }
+
+    public function simpan_bimbingan(Request $request)
+    {
+      $usta     = new Prausta_trans_bimbingan;
+      $usta->id_settingrelasi_prausta = $request->id_settingrelasi_prausta;
+      $usta->tanggal_bimbingan        = $request->tanggal_bimbingan;
+      $usta->remark_bimbingan         = $request->remark_bimbingan;
+      $usta->added_by                 = Auth::user()->name;
+      $usta->status                   = 'ACTIVE';
+      $usta->save();
+
+      Alert::success('', 'Data Bimbingan Prakerin Berhasil Diinput')->autoclose(3500);
       return redirect('seminar_prakerin');
     }
 }

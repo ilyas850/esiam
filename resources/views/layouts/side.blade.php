@@ -167,7 +167,7 @@
         <i class="fa fa-calendar-check-o"></i> <span>PraUSTA</span>
         <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
-            </span>
+        </span>
       </a>
       <ul class="treeview-menu">
         <li><a href="{{ url('seminar_prakerin') }}"><i class="fa fa-circle-o"></i> <span>Seminar Prakerin</span></a></li>
@@ -244,7 +244,7 @@
       </a>
       <ul class="treeview-menu">
         <li><a href="{{ url('nilai_prausta') }}"><i class="fa fa-circle-o"></i> <span>Nilai PraUSTA</span></a></li>
-
+        <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>Data Prakerin</span></a></li>
       </ul>
     </li>
   </ul>

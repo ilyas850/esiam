@@ -12,15 +12,23 @@
         <!-- Styles -->
         <style>
           body {
+            background-image :url('images/Desain halaman depan esiam 1.jpg');
+            /* image-width: 10px; */
+            /* background-color: #fff; */
+            /*color: #636b6f;*/
+            font-family: 'Nunito', sans-serif;
+            /*font-weight: 200;*/
+            /*height: 100vh;*/
+            margin: 0;
 
-                background-image :url('images/bgrev.jpg');
-                /* image-width: 10px; */
-                /* background-color: #fff; */
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
+            /*max-width:100%;*/
+            /*width:100%;*/
+            height: auto;
+
+            background-size: 100% 100%;
+
+            width: 100%;
+            /*max-width: 1300px;*/
             }
 
             .full-height {
@@ -94,7 +102,7 @@
             @endif
 
             <div class="content">
-              <img src="{{asset('images/Logo Meta.png')}}" alt="" width="300px" height="300px">
+              {{-- <img src="{{asset('images/Logo Meta.png')}}" alt="" width="300px" height="300px">
               <div class="title m-b-md">
                   <b>e-SIAM</b>
               </div>
@@ -106,7 +114,7 @@
                     <a href=""><i class="fa fa-envelope-o"></i>Contact </a>
                     <a href=""><i class="fa fa-phone"></i>ilyas@politeknikmeta.ac.id</a>
 
-                </div>
+                </div> --}}
             </div>
         </div>
     </body>
