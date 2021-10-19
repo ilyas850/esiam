@@ -847,7 +847,36 @@ class KaprodiController extends Controller
 
   public function input_bap($id)
   {
-    return view('kaprodi/bap/form_bap', ['id'=>$id]);
+    $jam = Kurikulum_jam::all();
+    return view('kaprodi/bap/form_bap', ['id'=>$id, 'jam'=>$jam]);
+  }
+
+
+
+  function fetch(Request $request)
+  {
+     if($request->get('query'))
+     {
+        $query = $request->get('query');
+        $data = DB::table('kurikulum_jam')
+                  ->where('jam', 'LIKE', "%{$query}%")
+                  ->get();
+        $output = '<ul class="dropdown-menu" style="display:block; position:relative">';
+        foreach($data as $row){
+           $output .= '
+           <li><a href="#">'.$row->jam.'</a></li>
+           ';
+        }
+          $output .= '</ul>';
+          echo $output;
+
+          $query = $request->get('query');
+          $filterResult = DB::table('kurikulum_jam')
+                            ->where('jam', 'LIKE', "%{$query}%")
+                            ->get();
+          return response()->json($filterResult);
+
+     }
   }
 
   public function save_bap(Request $request)

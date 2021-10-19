@@ -360,29 +360,58 @@ class DosenController extends Controller
 
     public function cek_krs($id)
     {
-      $semester = Semester::all();
-      $dosen = Dosen::all();
-      $makul = Matakuliah::all();
-      $hari = Kurikulum_hari::all();
-      $jam = Kurikulum_jam::all();
-      $ruang = Ruangan::all();
-      $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                          ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                          ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      //data mahasiswa
+      $data_mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                        ->select('student.nama','student.nim','prodi.prodi','kelas.kelas','student.idangkatan','student.kodeprodi','student.idstatus')
+                        ->where('student.idstudent', $id)
+                        ->first();
+
+      //kode prodi
+      $prod = Prodi::where('kodeprodi', $data_mhs->kodeprodi)->first();
+
+      //tambah krs
+      $krs = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+                                  ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
+                                  ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+                                  ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                                  ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+                                  ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                                  ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                                  ->where('kurikulum_master.status', 'ACTIVE')
+                                  ->where('periode_tahun.status', 'ACTIVE')
+                                  ->where('periode_tipe.status', 'ACTIVE')
+                                  ->where('kurikulum_periode.id_kelas', $data_mhs->idstatus)
+                                  ->where('kurikulum_periode.id_prodi', $prod->id_prodi)
+                                  ->where('kurikulum_transaction.id_prodi', $prod->id_prodi)
+                                  ->where('kurikulum_transaction.id_angkatan', $data_mhs->idangkatan)
+                                  ->where('kurikulum_periode.status', 'ACTIVE')
+                                  ->where('kurikulum_transaction.status', 'ACTIVE')
+                                  ->select('kurikulum_periode.id_kurperiode','kurikulum_transaction.idkurtrans','semester.semester','matakuliah.kode','matakuliah.makul', 'dosen.nama')
+                                  ->orderBy('semester.semester', 'ASC')
+                                  ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
+                                  ->get();
+
+      //data krs diambil
+      $val = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                          ->leftjoin('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
                           ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
                           ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                          ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+                          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                          ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+                          ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+                          ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
+                          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
                           ->where('periode_tahun.status', 'ACTIVE')
                           ->where('periode_tipe.status', 'ACTIVE')
                           ->where('student_record.status', 'TAKEN')
-                          ->where('id_student', $id)
-                          ->select('student_record.remark', 'student.idstudent', 'student_record.id_studentrecord', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen', 'kurikulum_periode.id_makul', 'student_record.remark', 'student.idstatus','student.nim','student.idangkatan', 'student.kodeprodi', 'student.nama', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.id_semester')
-
+                          ->where('student_record.id_student', $id)
+                          ->select('semester.semester','matakuliah.kode','matakuliah.makul','kurikulum_hari.hari','kurikulum_jam.jam','ruangan.nama_ruangan','matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama' ,'student_record.remark', 'student_record.id_student', 'student_record.id_studentrecord')
                           ->get();
 
-        foreach ($val as $key) {
-          // code...
-        }
 
+        //cek validasi krs
         $valkrs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -401,47 +430,7 @@ class DosenController extends Controller
 
         $b = $valuekrs->remark;
 
-        $kur = Kurikulum_master::where('status', 'ACTIVE')->get();
-        foreach ($kur as $krlm) {
-          // code...
-        }
-
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-          // code...
-        }
-        $tp = $tipe->id_periodetipe;
-
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-        foreach ($thn as $tahun) {
-          // code...
-        }
-
-        $maha = Student::where('idstudent', $id)->get();
-
-        foreach ($maha as $key) {
-          # code...
-        }
-        $mhs = $key->kodeprodi;
-        $prod = Prodi::where('kodeprodi', $key->kodeprodi)->get();
-        foreach ($prod as $value) {
-          // code...
-        }
-        $mhs = $key->idstudent;
-        $krs = Kurikulum_transaction::join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
-                                  ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-                                  ->where('kurikulum_periode.id_periodetipe', $tp)
-                                  ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-                                  ->where('kurikulum_periode.id_kelas', $key->idstatus)
-                                  ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-
-                                  ->where('kurikulum_transaction.id_angkatan', $key->idangkatan)
-                                  ->where('kurikulum_periode.status', 'ACTIVE')
-                                  ->select('kurikulum_periode.id_makul', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'kurikulum_periode.id_semester', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen')
-                                  ->get();
-
-        return view('dosen/cek_krs', ['b'=>$b, 'hr'=>$hari, 'jm'=>$jam,  'rng'=>$ruang, 'smt'=>$semester,'mhss'=>$mhs,'add'=>$krs, 'val'=>$val, 'key'=>$key, 'mk'=>$makul, 'dsn'=>$dosen]);
+        return view('dosen/cek_krs', ['b'=>$b, 'mhss'=>$id,'add'=>$krs, 'val'=>$val, 'key'=>$data_mhs]);
     }
 
     public function hapuskrsmhs(Request $request)
@@ -473,6 +462,7 @@ class DosenController extends Controller
                                 ->where('id_kurtrans', $trs)
                                 ->where('status', 'TAKEN')
                                 ->get();
+
       }
 
       if (count($cekkrs) > 0) {
@@ -496,22 +486,55 @@ class DosenController extends Controller
     {
       $id = $request->id_student;
 
-      $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                          ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                          ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                          ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-                          ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-                          ->where('periode_tahun.status', 'ACTIVE')
-                          ->where('periode_tipe.status', 'ACTIVE')
-                          ->where('student_record.status', 'TAKEN')
-                          ->where('student_record.id_student', $id)
-                          ->update(['student_record.remark' => $request->remark]);
+      $krs = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+                            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                            ->where('student_record.id_student', $id)
+                            ->where('student_record.status', 'TAKEN')
+                            ->where('periode_tahun.status', 'ACTIVE')
+                            ->where('periode_tipe.status', 'ACTIVE')
+                            ->where('student_record.status', 'TAKEN')
+                            ->select(DB::raw('DISTINCT(kurikulum_transaction.idkurtrans)'),'matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek')
+                            ->groupBy('kurikulum_transaction.idkurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek')
+                            ->get();
+
+      $t = count($krs);
+
+      $jumlah = 0;
+      for ($i=0; $i < $t; $i++) {
+        $satu = $krs[$i];
+        $skst[] = ($satu['akt_sks_teori']);
+        $sksp[] = ($satu['akt_sks_praktek']);
+      }
+
+      $jumlahskst = array_sum($skst);
+      $jumlahsksp = array_sum($sksp);
+
+      $totalsks = $jumlahskst + $jumlahsksp;
+
+      if ($totalsks > 24) {
+        Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
+        return redirect('val_krs');
+      }elseif ($totalsks < 24) {
+        $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+                            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+                            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                            ->where('periode_tahun.status', 'ACTIVE')
+                            ->where('periode_tipe.status', 'ACTIVE')
+                            ->where('student_record.status', 'TAKEN')
+                            ->where('student_record.id_student', $id)
+                            ->update(['student_record.remark' => $request->remark]);
+
+          Alert::success('', 'Berhasil ')->autoclose(3500);
+          return redirect()->back();
+      }
 
 
-        Alert::success('', 'Berhasil ')->autoclose(3500);
-        return redirect()->back();
     }
-
 
     public function change($id)
     {

@@ -12,10 +12,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-  {{-- <script src="{{asset('datatables/js/jquery.dataTables.min.js')}}"></script>
-	<script src="{{asset('datatables/js/dataTables.bootstrap.min.js')}}"></script> --}}
-  <!-- Tell the browser to be responsive to screen width -->
-  {{-- <link rel="stylesheet" href="{{asset('datatables/css/dataTables.bootstrap4.min.css')}}"> --}}
+
   <link rel="icon" type="image/png" href="{{asset('images/Logo Meta.png')}}">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -321,7 +318,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('adminlte/dist/js/demo.js')}}"></script>
 <!-- CK Editor -->
-<script src="{{asset('adminlte/bower_components/ckeditor/ckeditor.js')}}"></script>
+{{-- <script src="{{asset('adminlte/bower_components/ckeditor/ckeditor.js')}}"></script> --}}
 <!-- Bootstrap WYSIHTML5 -->
 <script src="{{asset('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')}}"></script>
 <script>
@@ -401,13 +398,13 @@
       radioClass   : 'iradio_flat-green'
     })
     //Timepicker
-    $('.timepicker').timepicker({
-
-      // showInputs: false
-      var value = (evt.hour || '00') + ':' + (evt.minute || '00');
-      evt.element.value = value;
-
-    })
+    // $('.timepicker').timepicker({
+    //
+    //   // showInputs: false
+    //   var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+    //   evt.element.value = value;
+    //
+    // })
   })
 </script>
 

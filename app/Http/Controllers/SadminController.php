@@ -1209,6 +1209,7 @@ dd($request);
                               ->where('student_record.id_student', $id)
                               ->where('student_record.status', 'TAKEN')
                               ->where('student_record.nilai_AKHIR', '!=', '0')
+                              ->where('student_record.nilai_UAS', '!=', '0')
                               ->select(DB::raw('DISTINCT(student_record.id_student)'),'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
                               ->orderBy('kurikulum_transaction.id_semester', 'ASC')
                               ->orderBy('matakuliah.kode', 'ASC')

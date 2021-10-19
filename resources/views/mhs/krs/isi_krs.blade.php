@@ -25,14 +25,7 @@
           <table width="100%">
             <tr>
                 <td>TA Semester</td><td> : </td>
-                <td><u>
-                  @foreach ($thn as $TA)
-                    {{ $TA->periode_tahun }}
-                  @endforeach
-                  @foreach ($tp as $key)
-                    ({{ $key->periode_tipe }})
-                  @endforeach
-                </u></td>
+                <td><u>{{ $thn }} ({{ $tp }})</u></td>
                 <td align=right>Jumlah SKS Maksimal</td>
                 <td>:</td>
                 <td>24</td>

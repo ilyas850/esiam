@@ -27,28 +27,14 @@
             <td>Nama</td><td>:</td>
             <td>{{$key->nama}}</td>
             <td>Program Studi</td><td>:</td>
-            <td>@if ($key->kodeprodi ==23)
-                T. Industri
-                  @elseif ($key->kodeprodi ==22)
-                      T. Komputer
-                    @elseif ($key->kodeprodi ==24)
-                        Farmasi
-                @endif
-            </td>
+            <td>{{$key->prodi}}</td>
           </tr>
           <tr>
             <td>NIM</td><td>:</td>
             <td> {{$key->nim}}</td>
 
             <td>Kelas</td><td>:</td>
-            <td>@if ($key->idstatus ==1)
-                    Reguler A
-                  @elseif ($key->idstatus ==2)
-                      Reguler C
-                    @elseif ($key->idstatus ==3)
-                        Reguler B
-                @endif
-              </td>
+            <td>{{$key->kelas}}  </td>
           </tr>
         </table>
       </div>
@@ -68,33 +54,12 @@
                     <option value=""><b>-pilih matakuliah-</b></option>
                     @foreach ($add as $key)
                         <option value="{{$key->id_kurperiode}}, {{$key->idkurtrans}}">
-                          {{$key->id_kurperiode}} -
-                          @foreach ($smt as $semester)
-                              @if ($key->id_semester == $semester->idsemester)
-                                {{$semester->semester}}
-                              @endif
-                          @endforeach -
-                          @foreach ($mk as $makul)
-                            @if ($key->id_makul == $makul->idmakul)
-                              {{$makul->kode}}
-                            @endif
-                          @endforeach -
-                          @foreach ($mk as $makul)
-                            @if ($key->id_makul == $makul->idmakul)
-                              {{$makul->makul}}
-                            @endif
-                          @endforeach -
-                          @foreach ($dsn as $dosen)
-                          @if ($key->id_dosen == $dosen->iddosen)
-                            {{$dosen->nama}}
-                          @endif
-                          @endforeach
-                    </option>
+                          {{$key->id_kurperiode}} - {{$key->semester}} - {{$key->kode}} - {{$key->makul}} - {{$key->nama}}
+                        </option>
                     @endforeach
                     </select>
                 </form>
-
-                <hr>
+                <br>
               </div>
             @endif
 
@@ -121,62 +86,15 @@
               @foreach ($val as $item)
                 <tr>
                   <td>{{$no++}}</td>
-
-                  <td>
-                      @foreach ($smt as $semester)
-                          @if ($item->id_semester == $semester->idsemester)
-                            {{$semester->semester}}
-                          @endif
-                    @endforeach
-                  </td>
-                  <td>
-                    @foreach ($mk as $makul)
-                      @if ($item->id_makul == $makul->idmakul)
-                        {{$makul->kode}}
-                      @endif
-                    @endforeach
-                  </td>
-                  <td>
-                    @foreach ($mk as $makul)
-                      @if ($item->id_makul == $makul->idmakul)
-                        {{$makul->makul}}
-                      @endif
-                    @endforeach
-                  </td>
-                  <td>
-                    @foreach ($hr as $hari)
-                      @if ($item->id_hari == $hari->id_hari)
-                        {{$hari->hari}}
-                      @endif
-                    @endforeach
-                  </td>
-                  <td>
-                    @foreach ($jm as $jam)
-                      @if ($item->id_jam == $jam->id_jam)
-                        {{$jam->jam}}
-                      @endif
-                    @endforeach
-                  </td>
-                  <td>
-                    @foreach ($rng as $ruang)
-                      @if ($item->id_ruangan == $ruang->id_ruangan)
-                        {{$ruang->nama_ruangan}}
-                      @endif
-                    @endforeach
-                  </td>
-                  <td><center>
-                    {{$item->akt_sks_teori}}
-                  </center></td>
-                  <td><center>
-                    {{$item->akt_sks_praktek}}
-                  </center></td>
-                  <td>
-                    @foreach ($dsn as $dosen)
-                      @if ($item->id_dosen == $dosen->iddosen)
-                        {{$dosen->nama}}
-                      @endif
-                    @endforeach
-                  </td>
+                  <td>{{$item->semester}}</td>
+                  <td>{{$item->kode}}</td>
+                  <td>{{$item->makul}}</td>
+                  <td>{{$item->hari}}</td>
+                  <td>{{$item->jam}}</td>
+                  <td>{{$item->nama_ruangan}}</td>
+                  <td><center>{{$item->akt_sks_teori}}</center></td>
+                  <td><center>{{$item->akt_sks_praktek}}</center></td>
+                  <td>{{$item->nama}}</td>
                   <td><center>
                     @if ($item->remark == 1)
                       <span class="badge bg-green">sudah</span>

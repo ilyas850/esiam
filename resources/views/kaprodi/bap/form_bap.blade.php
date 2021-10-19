@@ -22,6 +22,7 @@
 
 @section('content')
 <section class="content">
+
     @if (count($errors) > 0)
             <div class="alert alert-danger">
             Validasi Upload Error<br><br>
@@ -39,6 +40,7 @@
             <input type="hidden" name="id_kurperiode" value="{{$id}}">
             <div class="box-body">
                 <div class="col-md-12">
+
                     <div class="form-group">
                         <div class="col-md-3">
                             <label><font color ="red-text">*</font>Pertemuan</label>
@@ -69,30 +71,49 @@
                         </div>
                         <div class="col-md-3">
                             <label><font color = "red-text">*</font>Tanggal</label>
-                            <input type="date" class="form-control pull-right" name="tanggal" id="datepicker2" placeholder="Masukan Tanggal Lahir" required>
+                            <input type="date" class="form-control pull-right" name="tanggal" placeholder="Masukan Tanggal Lahir" required>
                             @if ($errors->has('tanggal'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('tanggal') }}</strong>
                                 </span>
                             @endif
                         </div>
+
                         <div class="col-md-3">
                             <label><font color = "red-text">*</font>Jam Mulai</label>
-                            <input type="text" class="form-control" name="jam_mulai" placeholder="Contoh 12:00" required>
-                            @if ($errors->has('jam_mulai'))
+                            {{-- <input type="text" class="form-control" name="jam_mulai" placeholder="Contoh 12:00" id="country_name" required>
+                            <div id="countryList">
+                            </div> --}}
+                            <select class="form-control" name="jam_mulai" required>
+
+                              <option></option>
+                              @foreach ($jam as $key)
+                                <option value="{{$key->jam}}">{{$key->jam}}</option>
+                              @endforeach
+
+                            </select>
+                            {{-- @if ($errors->has('jam_mulai'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('jam_mulai') }}</strong>
                                 </span>
-                            @endif
+                            @endif --}}
                         </div>
                         <div class="col-md-3">
                             <label><font color = "red-text">*</font>Jam Selesai</label>
-                            <input type="text" class="form-control" name="jam_selsai" placeholder="Contoh 16:00" required>
+                            <select class="form-control" name="jam_selsai" required>
+
+                              <option></option>
+                              @foreach ($jam as $key)
+                                <option value="{{$key->jam}}">{{$key->jam}}</option>
+                              @endforeach
+
+                            </select>
+                            {{-- <input type="text" class="form-control" name="jam_selsai" placeholder="Contoh 16:00" required>
                             @if ($errors->has('jam_selsai'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('jam_selsai') }}</strong>
                                 </span>
-                            @endif
+                            @endif --}}
                         </div>
                     </div>
                     <div class="form-group">
@@ -177,5 +198,39 @@
             </div>
         </form>
     </div>
+
 </section>
+
+
+
+<script>
+$(document).ready(function(){
+
+ $('#country_name').keyup(function(){
+        var query = $(this).val();
+        if(query != '')
+        {
+         var _token = $('input[name="_token"]').val();
+         $.ajax({
+          url:"{{ route('autocomplete.fetch') }}",
+          method:"POST",
+          data:{query:query, _token:_token},
+          success:function(data){
+           $('#countryList').fadeIn();
+                    $('#countryList').html(data);
+          }
+         });
+        }
+    });
+
+    $(document).on('click', 'li', function(){
+        $('#country_name').val($(this).text());
+        $('#countryList').fadeOut();
+    });
+
+});
+</script>
+
+
+
 @endsection

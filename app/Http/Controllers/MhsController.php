@@ -789,7 +789,7 @@ class MhsController extends Controller
                               ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
                               ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
                               ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-                              ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                              ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
                               ->where('student_record.id_student', $key->idstudent)
                               ->where('kurikulum_periode.id_periodetipe', $tp)
                               ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
@@ -1012,7 +1012,7 @@ class MhsController extends Controller
                                   ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
                                   ->join('matakuliah', 'kurikulum_periode.id_makul','=', 'matakuliah.idmakul')
                                   ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-                                  ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                                  ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
                                   ->where('student_record.id_student', $key->idstudent)
                                   ->where('kurikulum_periode.id_periodetipe', $tp)
                                   ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
@@ -2373,5 +2373,5 @@ class MhsController extends Controller
 
     }
 
-    
+
 }

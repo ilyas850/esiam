@@ -336,6 +336,17 @@ Route::group(['middleware' => 'kaprodi'], function(){
   //BAP
   Route::get('entri_bap_kprd/{id}', 'KaprodiController@entri_bap');
   Route::get('input_bap_kprd/{id}', 'KaprodiController@input_bap');
+
+  Route::get('autocomplete-search', 'KaprodiController@autocompleteSearch');
+
+
+  Route::get('autocomplete', ['as' => 'autocomplete', 'uses' => 'KaprodiController@autocomplete']);
+
+
+  Route::get('/cari', 'KaprodiController@loadData');
+
+  Route::post('/autocomplete/fetch', 'KaprodiController@fetch')->name('autocomplete.fetch');
+
   Route::post('save_bap_kprd', 'KaprodiController@save_bap');
   //entri absen
   Route::get('/entri_absen_kprd/{id}', 'KaprodiController@entri_absen');

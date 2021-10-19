@@ -78,41 +78,59 @@ class PraustaController extends Controller
     public function seminar_prakerin()
     {
       $id = Auth::user()->id_user;
-      $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                                    ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-                                    ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
-                                    ->where('prausta_setting_relasi.id_student', $id)
-                                    ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                    ->select('prausta_setting_relasi.id_settingrelasi_prausta','student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta',
-                                              'prausta_setting_relasi.file_acc_dosen','prausta_setting_relasi.file_val_baku','prausta_setting_relasi.file_kartu_bim','prausta_setting_relasi.file_nilai_pembim','prausta_setting_relasi.file_draft_laporan','prausta_setting_relasi.file_surat_balasan')
-                                    ->get();
+      //cek KRS prakerin mahasiswa
+      $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                            ->whereIn('matakuliah.kode', ['FA-601','TI-601','TK-601'])
+                            ->where('student_record.id_student', $id)
+                            ->where('student_record.status', 'TAKEN')
+                            ->select('matakuliah.makul')
+                            ->get();
+      $hasil_krs = count($cek);
 
-      $cekdata = count($data);
+      if ($hasil_krs == 0) {
 
-      $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                                    ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                                    ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-                                    ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
-                                    ->where('prausta_setting_relasi.id_student', $id)
-                                    ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                    ->select('prausta_trans_bimbingan.tanggal_bimbingan','prausta_trans_bimbingan.remark_bimbingan')
-                                    ->get();
+        Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
+        return redirect('home');
+      }elseif ($hasil_krs > 0) {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                      ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+                                      ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
+                                      ->where('prausta_setting_relasi.id_student', $id)
+                                      ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                      ->select('prausta_setting_relasi.id_settingrelasi_prausta','student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta',
+                                                'prausta_setting_relasi.file_acc_dosen','prausta_setting_relasi.file_val_baku','prausta_setting_relasi.file_kartu_bim','prausta_setting_relasi.file_nilai_pembim','prausta_setting_relasi.file_draft_laporan','prausta_setting_relasi.file_surat_balasan')
+                                      ->get();
+
+        $cekdata = count($data);
+
+        $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                                      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                      ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+                                      ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
+                                      ->where('prausta_setting_relasi.id_student', $id)
+                                      ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                      ->select('prausta_trans_bimbingan.tanggal_bimbingan','prausta_trans_bimbingan.remark_bimbingan')
+                                      ->get();
 
 
-      if ($cekdata == 0) {
+        if ($cekdata == 0) {
 
-        return view('mhs/prausta/seminar_prakerin', compact('cekdata'));
+          return view('mhs/prausta/seminar_prakerin', compact('cekdata'));
 
-      }elseif ($cekdata > 0) {
+        }elseif ($cekdata > 0) {
 
-        foreach ($data as $usta) {
-          // code...
+          foreach ($data as $usta) {
+            // code...
+          }
+
+          return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata','bim'));
         }
-
-        return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata','bim'));
       }
+
 
     }
 

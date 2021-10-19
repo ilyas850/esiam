@@ -36,58 +36,41 @@ class KrsController extends Controller
 {
     public function isi_krs()
     {
-      $cek_waktu = Waktu_krs::all();
-      foreach ($cek_waktu as $time) {
-
-      }
+      $time = Waktu_krs::where('status', 1)->first();
 
       if ($time->status == 1) {
 
           $id = Auth::user()->username;
 
-          $prd_thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-          $prd_tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
           $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
                         ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-                        ->where('nim', Auth::user()->username)
+                        ->where('nim', $id)
                         ->select('student.idstudent','student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
-                        ->get();
+                        ->first();
 
-          foreach ($maha as $key) {
-            # code...
-          }
+          $ids = $maha->idstudent;
+          $idangkatan = $maha->idangkatan;
+          $idstatus = $maha->idstatus;
+          $kodeprodi = $maha->kodeprodi;
 
-          $ky = $key->idstudent;
-          $idangkatan = $key->idangkatan;
-          $idstatus = $key->idstatus;
-          $kodeprodi = $key->kodeprodi;
+          $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-          $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+          $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-          foreach ($thn as $tahun) {
-            // code...
-          }
+          $periodetahun = $thn->periode_tahun;
+          $periodetipe = $tp->periode_tipe;
 
-          $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-          foreach ($tp as $tipe) {
-            // code...
-          }
-
-          $sub_thn = substr($tahun->periode_tahun,6,2);
-          $tp = $tipe->id_periodetipe;
-          $smt = $sub_thn.$tp;
-          $angk = $key->idangkatan;
+          $sub_thn = substr($thn->periode_tahun,6,2);
+          $tipe = $tp->id_periodetipe;
+          $smt = $sub_thn.$tipe;
 
           if ($smt %2 != 0){
         	$a = (($smt + 10)-1)/10;
-        	$b = $a - $angk;
+        	$b = $a - $idangkatan;
         	$c = ($b*2)-1;
         	}else{
         		$a = (($smt + 10)-2)/10;
-        		$b = $a - $angk;
+        		$b = $a - $idangkatan;
         		$c = $b * 2;
         	}
 
@@ -95,15 +78,11 @@ class KrsController extends Controller
                         ->where('idstatus', $idstatus)
                         ->where('kodeprodi', $kodeprodi)
                         ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6','spp7','spp8','spp9','spp10', 'seminar', 'sidang', 'wisuda')
-                        ->get();
+                        ->first();
 
-          foreach ($biaya as $value) {
-            // code...
-          }
+          $totalbiaya = $biaya->daftar + $biaya->awal + $biaya->dsp + $biaya->spp1 + $biaya->spp2 + $biaya->spp3 + $biaya->spp4 + $biaya->spp5 + $biaya->spp6 + $biaya->spp7 + $biaya->spp8 + $biaya->spp9 + $biaya->spp10 + $biaya->seminar + $biaya->sidang + $biaya->wisuda;
 
-          $totalbiaya = $value->daftar + $value->awal + $value->dsp + $value->spp1 + $value->spp2 + $value->spp3 + $value->spp4 + $value->spp5 + $value->spp6 + $value->spp7 + $value->spp8 + $value->spp9 + $value->spp10 + $value->seminar + $value->sidang + $value->wisuda;
-
-          $cekbeasiswa = Beasiswa::where('idstudent', $ky)->get();
+          $cekbeasiswa = Beasiswa::where('idstudent', $ids)->get();
 
           if (count($cekbeasiswa) > 0) {
 
@@ -111,131 +90,132 @@ class KrsController extends Controller
               // code...
             }
 
-            $daftar=$value->daftar-(($value->daftar*($cb->daftar))/100);
-            $awal=$value->awal-(($value->awal*($cb->awal))/100);
-            $dsp=$value->dsp-(($value->dsp*($cb->dsp))/100);
-            $spp1=$value->spp1-(($value->spp1*($cb->spp1))/100);
-            $spp2=$value->spp2-(($value->spp2*($cb->spp2))/100);
-            $spp3=$value->spp3-(($value->spp3*($cb->spp3))/100);
-            $spp4=$value->spp4-(($value->spp4*($cb->spp4))/100);
-            $spp5=$value->spp5-(($value->spp5*($cb->spp5))/100);
-            $spp6=$value->spp6-(($value->spp6*($cb->spp6))/100);
-            $spp7=$value->spp7-(($value->spp7*($cb->spp7))/100);
-            $spp8=$value->spp8-(($value->spp8*($cb->spp8))/100);
-            $spp9=$value->spp9-(($value->spp9*($cb->spp9))/100);
-            $spp10=$value->spp10-(($value->spp10*($cb->spp10))/100);
-            $seminar=$value->seminar-(($value->seminar*($cb->seminar))/100);
-            $sidang=$value->sidang-(($value->sidang*($cb->sidang))/100);
-            $wisuda=$value->wisuda-(($value->wisuda*($cb->wisuda))/100);
+            $daftar=$biaya->daftar-(($biaya->daftar*($cb->daftar))/100);
+            $awal=$biaya->awal-(($biaya->awal*($cb->awal))/100);
+            $dsp=$biaya->dsp-(($biaya->dsp*($cb->dsp))/100);
+            $spp1=$biaya->spp1-(($biaya->spp1*($cb->spp1))/100);
+            $spp2=$biaya->spp2-(($biaya->spp2*($cb->spp2))/100);
+            $spp3=$biaya->spp3-(($biaya->spp3*($cb->spp3))/100);
+            $spp4=$biaya->spp4-(($biaya->spp4*($cb->spp4))/100);
+            $spp5=$biaya->spp5-(($biaya->spp5*($cb->spp5))/100);
+            $spp6=$biaya->spp6-(($biaya->spp6*($cb->spp6))/100);
+            $spp7=$biaya->spp7-(($biaya->spp7*($cb->spp7))/100);
+            $spp8=$biaya->spp8-(($biaya->spp8*($cb->spp8))/100);
+            $spp9=$biaya->spp9-(($biaya->spp9*($cb->spp9))/100);
+            $spp10=$biaya->spp10-(($biaya->spp10*($cb->spp10))/100);
+            $seminar=$biaya->seminar-(($biaya->seminar*($cb->seminar))/100);
+            $sidang=$biaya->sidang-(($biaya->sidang*($cb->sidang))/100);
+            $wisuda=$biaya->wisuda-(($biaya->wisuda*($cb->wisuda))/100);
 
             $totalall = $daftar+$awal+$dsp+$spp1+$spp2+$spp3+$spp4+$spp5+$spp6+$spp7+$spp8+$spp9+$spp10+$seminar+$sidang+$wisuda;
+
           }else {
-            $daftar=$value->daftar;
-            $awal=$value->awal;
-            $dsp=$value->dsp;
-            $spp1=$value->spp1;
-            $spp2=$value->spp2;
-            $spp3=$value->spp3;
-            $spp4=$value->spp4;
-            $spp5=$value->spp5;
-            $spp6=$value->spp6;
-            $spp7=$value->spp7;
-            $spp8=$value->spp8;
-            $spp9=$value->spp9;
-            $spp10=$value->spp10;
-            $seminar=$value->seminar;
-            $sidang=$value->sidang;
-            $wisuda=$value->wisuda;
+            $daftar=$biaya->daftar;
+            $awal=$biaya->awal;
+            $dsp=$biaya->dsp;
+            $spp1=$biaya->spp1;
+            $spp2=$biaya->spp2;
+            $spp3=$biaya->spp3;
+            $spp4=$biaya->spp4;
+            $spp5=$biaya->spp5;
+            $spp6=$biaya->spp6;
+            $spp7=$biaya->spp7;
+            $spp8=$biaya->spp8;
+            $spp9=$biaya->spp9;
+            $spp10=$biaya->spp10;
+            $seminar=$biaya->seminar;
+            $sidang=$biaya->sidang;
+            $wisuda=$biaya->wisuda;
 
             $totalall = $daftar+$awal+$dsp+$spp1+$spp2+$spp3+$spp4+$spp5+$spp6+$spp7+$spp8+$spp9+$spp10+$seminar+$sidang+$wisuda;
           }
 
           $totalbayarmhs = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                                   ->join('itembayar', 'bayar.iditem', '=', 'itembayar.iditem')
-                                  ->where('kuitansi.idstudent', $ky)
+                                  ->where('kuitansi.idstudent', $ids)
                                   ->sum('bayar.bayar');
 
           $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 1)
                                 ->sum('bayar.bayar');
 
           $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 2)
                                 ->sum('bayar.bayar');
 
           $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 3)
                                 ->sum('bayar.bayar');
 
           $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 4)
                                 ->sum('bayar.bayar');
 
           $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 5)
                                 ->sum('bayar.bayar');
 
           $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 6)
                                 ->sum('bayar.bayar');
 
           $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 7)
                                 ->sum('bayar.bayar');
 
           $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 8)
                                 ->sum('bayar.bayar');
 
           $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 9)
                                 ->sum('bayar.bayar');
 
           $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 10)
                                 ->sum('bayar.bayar');
 
           $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 11)
                                 ->sum('bayar.bayar');
 
           $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 12)
                                 ->sum('bayar.bayar');
 
           $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 13)
                                 ->sum('bayar.bayar');
 
           $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 14)
                                 ->sum('bayar.bayar');
 
           $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 15)
                                 ->sum('bayar.bayar');
 
           $sisawisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $ky)
+                                ->where('kuitansi.idstudent', $ids)
                                 ->where('bayar.iditem', 16)
                                 ->sum('bayar.bayar');
 
-          $tots1 = $sisadaftar + $sisaawal ;
+          $tots1 = $sisadaftar + $sisaawal;
           $tots2 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1;
           $tots3 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2;
           $tots4 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3;
@@ -269,10 +249,10 @@ class KrsController extends Controller
               $cekbyr=($daftar+$awal+$dsp+$spp1+$spp2+$spp3+$spp4+$spp5+$spp6+$spp7+$spp8+$spp9)-$tots10;
             }
 
-
+          //cek status semester mahasiswa
           if ($cekbyr < 1) {
 
-            $record = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                                     ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                                     ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
                                     ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -280,68 +260,39 @@ class KrsController extends Controller
                                     ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
                                     ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
                                     ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-                                    ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-                                    ->where('student_record.id_student', $key->idstudent)
-                                    ->where('kurikulum_periode.id_periodetipe', $tp)
-                                    ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+                                    ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                                    ->where('student_record.id_student', $ids)
+                                    ->where('kurikulum_periode.id_periodetipe', $tipe)
+                                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
                                     ->where('student_record.status', 'TAKEN')
                                     ->select('student_record.remark', 'student_record.id_studentrecord', 'student_record.tanggal_krs', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama')
                                     ->get();
 
-            $record1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                    ->where('student_record.id_student', $key->idstudent)
-                                    ->where('kurikulum_periode.id_periodetipe', $tp)
-                                    ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-                                    ->where('student_record.status', 'TAKEN')
-                                    ->select('student_record.id_kurtrans', DB::raw('COUNT(student_record.id_kurtrans) as products_count'), 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek','kurikulum_transaction.id_makul')
-                                    ->groupBy('student_record.id_kurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek','kurikulum_transaction.id_makul')
-                                    ->having('products_count', '>' , 1)
-                                    ->get();
+            $skst = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+                                  ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                                  ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                                  ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                                  ->where('student_record.id_student', $ids)
+                                  ->where('kurikulum_periode.id_periodetipe', $tipe)
+                                  ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                  ->where('student_record.status', 'TAKEN')
+                                  ->sum('matakuliah.akt_sks_teori');
 
-            $f = count($record1);
-
-            foreach ($record1 as $key1) {
-                    // code...
-            }
-
-            if(($f > 0)){
-                $kurangi = $key1->akt_sks_teori + $key1->akt_sks_praktek;
-            }else{
-                $kurangi = 0;
-            }
-
-            $jml_mkl = count($record1);
-
-            $skst = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            $sksp = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                                     ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                                     ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
                                     ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                    ->where('student_record.id_student', $key->idstudent)
-                                    ->where('kurikulum_periode.id_periodetipe', $tp)
-                                    ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-                                    ->where('student_record.status', 'TAKEN')
-                                    ->sum('matakuliah.akt_sks_teori');
-
-            $sksp = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                    ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                    ->where('student_record.id_student', $key->idstudent)
-                                    ->where('kurikulum_periode.id_periodetipe', $tp)
-                                    ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+                                    ->where('student_record.id_student', $ids)
+                                    ->where('kurikulum_periode.id_periodetipe', $tipe)
+                                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
                                     ->where('student_record.status', 'TAKEN')
                                     ->sum('matakuliah.akt_sks_praktek');
 
-              if ($jml_mkl == 0) {
-                $sks = $skst + $sksp;
-              }elseif ($jml_mkl == 1) {
-                $sks = $skst + $sksp - $kurangi;
-              }
+            $sks = $skst + $sksp;
 
-        $mhs = $key->idstudent;
-        $prod = Prodi::where('kodeprodi', $key->kodeprodi)->get();
+
+        $mhs = $ids;
+        $prod = Prodi::where('kodeprodi', $maha->kodeprodi)->get();
         foreach ($prod as $value) {
           // code...
         }
@@ -354,15 +305,15 @@ class KrsController extends Controller
                                         ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
                                         ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
                                         ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                        ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                                        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
                                         ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-                                        ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-                                        ->where('kurikulum_periode.id_periodetipe', $tp)
-                                        ->where('kurikulum_periode.id_kelas', $key->idstatus)
+                                        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                        ->where('kurikulum_periode.id_periodetipe', $tipe)
+                                        ->where('kurikulum_periode.id_kelas', $maha->idstatus)
                                         ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
                                         ->where('kurikulum_periode.id_prodi', $value->id_prodi)
                                         ->where('kurikulum_transaction.id_semester', $c)
-                                        ->where('kurikulum_transaction.id_angkatan', $key->idangkatan)
+                                        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
                                         ->where('kurikulum_periode.status', 'ACTIVE')
                                         ->where('matakuliah_bom.status', 'ACTIVE');
 
@@ -370,15 +321,15 @@ class KrsController extends Controller
                                           ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
                                           ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
                                           ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                          ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                                          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
                                           ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-                                          ->where('kurikulum_periode.id_periodetipe', $tp)
-                                          ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-                                          ->where('kurikulum_periode.id_kelas', $key->idstatus)
+                                          ->where('kurikulum_periode.id_periodetipe', $tipe)
+                                          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                          ->where('kurikulum_periode.id_kelas', $maha->idstatus)
                                           ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
                                           ->where('kurikulum_periode.id_prodi', $value->id_prodi)
                                           ->where('kurikulum_transaction.id_semester', $c)
-                                          ->where('kurikulum_transaction.id_angkatan', $key->idangkatan)
+                                          ->where('kurikulum_transaction.id_angkatan', $idangkatan)
                                           ->where('kurikulum_periode.status', 'ACTIVE')
                                           ->where('kurikulum_transaction.status', 'ACTIVE')
                                           ->whereNotIn('kurikulum_periode.id_makul', [209,210])// ->select('kurikulum_periode.id_makul', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'kurikulum_periode.id_semester', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen')
@@ -386,7 +337,7 @@ class KrsController extends Controller
                                           ->get();
 
 
-            return view('mhs/krs/isi_krs',['b'=>$b, 'mhss'=>$mhs, 'add'=>$final_krs, 'mhs'=>$key, 'tp'=>$prd_tp, 'thn'=>$prd_thn, 'krs'=>$record, 'sks' => $sks]);
+            return view('mhs/krs/isi_krs',['b'=>$b, 'mhss'=>$mhs, 'add'=>$final_krs, 'mhs'=>$maha, 'thn'=>$periodetahun, 'tp'=>$periodetipe, 'krs'=>$record, 'sks' => $sks]);
           }else {
             alert()->warning('Anda tidak dapat melakukan KRS karena keuangan Anda belum memenuhi syarat', 'Hubungi BAAK untuk KRS manual')->autoclose(5000);
             return redirect('home');
