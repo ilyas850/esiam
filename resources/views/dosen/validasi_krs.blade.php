@@ -81,12 +81,6 @@
                       <button type="submit" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="right">Validasi</button>
                     </form>
 
-                    {{-- <form class="" action="{{url('krs_validasi')}}" method="post">
-                      <input type="hidden" name="id_student" value="{{$key->id_student}}">
-                      <input type="hidden" name="remark" value="0">
-                      {{ csrf_field() }}
-                      <button type="submit" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="right">Batal</button>
-                    </form> --}}
                   @endif
                 </center></td>
                 <td><center>

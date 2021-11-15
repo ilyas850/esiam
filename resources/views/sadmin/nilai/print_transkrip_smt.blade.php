@@ -133,27 +133,27 @@
    </table>
    <table width="100%">
  		<tr>
- 			<td width="60%" ><span style="font-size:65%">Wakil Direktur I Bidang Akademik</span></td>
-      <td width="33%" ><span style="font-size:65%">Kepala Program Studi</span></td>
+ 			<td width="60%" ><span style="font-size:65%"></span></td>
+      <td width="33%" ><span style="font-size:65%">Wakil Direktur I Bidang Akademik</span></td>
  		</tr>
  	</table>
   <table width="100%">
    <tr>
-     <td width="60%" ><span style="font-size:65%">Politeknik META Industri</span></td>
+     <td width="60%" ><span style="font-size:65%"></span></td>
      <td width="33%" ><span style="font-size:65%">Politeknik META Industri</span></td>
    </tr>
  </table>
  <br><br><br>
  <table width="100%">
    <tr>
-     <td width="60%" ><span style="font-size:65%">Fransisca Debora, S.Si., M.T.</span></td>
-     <td width="33%"><span style="font-size:65%">{{$cekkprd->nama}},{{$cekkprd->akademik}}</span></td>
+     <td width="60%" ><span style="font-size:65%"></span></td>
+     <td width="33%"><span style="font-size:65%">Fransisca Debora, S.Si., M.T.</span></td>
    </tr>
  </table>
  <table width="100%">
    <tr>
-     <td width="60%" ><span style="font-size:65%">NIDN. 0414029402</span></td>
-     <td width="33%"><span style="font-size:65%">NIP. {{$cekkprd->nik}}</span></td>
+     <td width="60%" ><span style="font-size:65%"></span></td>
+     <td width="33%"><span style="font-size:65%">NIDN. 0414029402</span></td>
    </tr>
  </table>
   <script>

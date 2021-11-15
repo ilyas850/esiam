@@ -171,6 +171,21 @@ class HomeController extends Controller
         }elseif ($akses==11) {
 
           return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
+        }elseif ($akses==9) {
+
+          $mhs_ti = Student::where('kodeprodi', 23)
+                          ->where('active', 1)
+                          ->count('idstudent');
+
+          $mhs_tk = Student::where('kodeprodi', 22)
+                          ->where('active', 1)
+                          ->count('idstudent');
+
+          $mhs_fa = Student::where('kodeprodi', 24)
+                          ->where('active', 1)
+                          ->count('idstudent');
+
+          return view('home', ['dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,'fa'=>$mhs_fa,'tk'=>$mhs_tk,'ti'=>$mhs_ti]);
         }
       }
     }

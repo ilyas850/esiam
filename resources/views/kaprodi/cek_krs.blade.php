@@ -13,7 +13,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-        <li><a href="{{ url('val_krs') }}"> Data validasi krs</a></li>
+        <li><a href="{{ url('val_krs_kprd') }}"> Data validasi krs</a></li>
         <li class="active">Data record nilai mahasiswa</li>
       </ol>
     </section>
@@ -27,28 +27,13 @@
             <td>Nama</td><td>:</td>
             <td>{{$key->nama}}</td>
             <td>Program Studi</td><td>:</td>
-            <td>@if ($key->kodeprodi ==23)
-                T. Industri
-                  @elseif ($key->kodeprodi ==22)
-                      T. Komputer
-                    @elseif ($key->kodeprodi ==24)
-                        Farmasi
-                @endif
-            </td>
+            <td>{{$key->prodi}}</td>
           </tr>
           <tr>
             <td>NIM</td><td>:</td>
             <td> {{$key->nim}}</td>
-
             <td>Kelas</td><td>:</td>
-            <td>@if ($key->idstatus ==1)
-                    Reguler A
-                  @elseif ($key->idstatus ==2)
-                      Reguler C
-                    @elseif ($key->idstatus ==3)
-                        Reguler B
-                @endif
-              </td>
+            <td>{{$key->kelas}}</td>
           </tr>
         </table>
       </div>

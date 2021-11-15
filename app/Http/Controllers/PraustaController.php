@@ -7,7 +7,11 @@ use App\User;
 use App\Angkatan;
 use App\Prodi;
 use App\Student;
+use App\Biaya;
 use App\Matakuliah;
+use App\Beasiswa;
+use App\Kuitansi;
+use App\Bayar;
 use App\Student_record;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
@@ -101,10 +105,59 @@ class PraustaController extends Controller
                                       ->where('prausta_setting_relasi.id_student', $id)
                                       ->where('prausta_setting_relasi.status', 'ACTIVE')
                                       ->select('prausta_setting_relasi.id_settingrelasi_prausta','student.nama','student.nim','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta',
-                                                'prausta_setting_relasi.file_acc_dosen','prausta_setting_relasi.file_val_baku','prausta_setting_relasi.file_kartu_bim','prausta_setting_relasi.file_nilai_pembim','prausta_setting_relasi.file_draft_laporan','prausta_setting_relasi.file_surat_balasan')
+                                                'prausta_setting_relasi.acc_judul','prausta_setting_relasi.file_kartu_bim','prausta_setting_relasi.file_nilai_pembim','prausta_setting_relasi.file_draft_laporan','prausta_setting_relasi.file_surat_balasan')
                                       ->get();
 
         $cekdata = count($data);
+
+        // data untuk keuangan
+        $maha = Student::where('idstudent', $id)
+                      ->select('student.idstudent','student.nama','student.idangkatan', 'student.idstatus', 'student.kodeprodi')
+                      ->first();
+
+        $idangkatan = $maha->idangkatan;
+        $idstatus = $maha->idstatus;
+        $kodeprodi = $maha->kodeprodi;
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+                      ->where('idstatus', $idstatus)
+                      ->where('kodeprodi', $kodeprodi)
+                      ->select('spp5')
+                      ->first();
+
+        $biaya_spp5 = $biaya->spp5;
+
+        //cek beasiswa mahasiswa
+        $cekbeasiswa = Beasiswa::where('idstudent', $id)->get();
+
+        if (count($cekbeasiswa) > 0) {
+
+          foreach ($cekbeasiswa as $cb) {
+          }
+
+          $spp5=$biaya->spp5-(($biaya->spp5*($cb->spp5))/100);
+
+          $total_spp5 = $spp5;
+
+        }else {
+
+          $spp5=$biaya->spp5;
+
+          $total_spp5 = $spp5;
+        }
+
+        $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                              ->where('kuitansi.idstudent', $id)
+                              ->where('bayar.iditem', 8)
+                              ->sum('bayar.bayar');
+
+        $hasil_spp5 = $sisaspp5 - $total_spp5;
+
+        if ($hasil_spp5 == 0) {
+          $validasi = 'Sudah Lunas';
+        }else {
+          $validasi = 'Belum Lunas';
+        }
 
         $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
                                       ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -113,7 +166,7 @@ class PraustaController extends Controller
                                       ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
                                       ->where('prausta_setting_relasi.id_student', $id)
                                       ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                      ->select('prausta_trans_bimbingan.tanggal_bimbingan','prausta_trans_bimbingan.remark_bimbingan')
+                                      ->select('prausta_trans_bimbingan.tanggal_bimbingan','prausta_trans_bimbingan.remark_bimbingan', 'prausta_trans_bimbingan.id_transbimb_prausta')
                                       ->get();
 
 
@@ -127,116 +180,136 @@ class PraustaController extends Controller
             // code...
           }
 
-          return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata','bim'));
+          return view('mhs/prausta/seminar_prakerin', compact('usta','cekdata','bim','validasi'));
         }
       }
-
-
     }
 
     public function pengajuan_seminar_prakerin()
     {
       $id = Auth::user()->id_user;
-
-      $data = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                      ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-                      ->where('student.idstudent', $id)
-                      ->whereIn('prausta_master_kode.kode_prausta', ['FA-601','TI-601','TK-601'])
-                      ->select('student.nama','student.nim','prodi.prodi','prodi.id_prodi','prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','prausta_master_kode.id_masterkode_prausta','student.idstudent')
-                      ->first();
-
+      $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                    ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                    ->where('id_student', $id)
+                                    ->select('prausta_master_kode.kode_prausta','prausta_master_kode.nama_prausta','student.nama','student.nim','prodi.prodi','prausta_setting_relasi.dosen_pembimbing','prausta_setting_relasi.id_settingrelasi_prausta')
+                                    ->first();
 
       return view('mhs/prausta/ajuan_prakerin', compact('data'));
     }
 
     public function simpan_ajuan_prakerin(Request $request)
     {
-
-      $message = [
-        'max'       => ':attribute harus diisi maksimal :max KB',
-        'required'  => ':attribute wajib diisi',
-      ];
       $this->validate($request, [
-        'id_masterkode_prausta' => 'required',
-        'id_student'            => 'required',
-        'dosen_pembimbing'      => 'required',
-        'judul_prausta'         => 'required',
-        'tempat_prausta'         => 'required',
-        'file_acc_dosen'        => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-        'file_kartu_bim'        => 'mimes:pdf|max:5120',
-        'file_surat_balasan'    => 'mimes:pdf|max:5120',
-        'file_val_baku'         => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-        'file_draft_laporan'    => 'mimes:pdf|max:5120',
-        'file_nilai_pembim'     => 'mimes:pdf|max:5120',
-      ], $message);
+        'id_settingrelasi_prausta'  => 'required',
+        'judul_prausta'             => 'required',
+        'tempat_prausta'            => 'required',
+      ]);
 
-      $usta                         = new Prausta_setting_relasi;
-      $usta->id_masterkode_prausta  = $request->id_masterkode_prausta;
-      $usta->id_student             = $request->id_student;
-      $usta->dosen_pembimbing       = $request->dosen_pembimbing;
-      $usta->judul_prausta          = $request->judul_prausta;
-      $usta->tempat_prausta         = $request->tempat_prausta;
-      $usta->added_by               = Auth::user()->name;
-      $usta->status                 = 'ACTIVE';
+      $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)
+                                    ->update([
+                                      'judul_prausta' => $request->judul_prausta,
+                                      'tempat_prausta' => $request->tempat_prausta
+                                    ]);
 
-      if($request->hasFile('file_acc_dosen'))
-      {
-        $file                         = $request->file('file_acc_dosen');
-        $nama_file                    = 'Acc Dosen'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Acc Dosen/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_acc_dosen          = $nama_file;
-      }
-
-      if($request->hasFile('file_kartu_bim'))
-      {
-        $file                         = $request->file('file_kartu_bim');
-        $nama_file                    = 'Kartu Bimbingan'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Kartu Bimbingan/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_kartu_bim          = $nama_file;
-      }
-
-      if($request->hasFile('file_surat_balasan'))
-      {
-        $file                         = $request->file('file_surat_balasan');
-        $nama_file                    = 'Surat Balasan'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Surat Balasan/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_surat_balasan      = $nama_file;
-      }
-
-      if($request->hasFile('file_val_baku'))
-      {
-        $file                         = $request->file('file_val_baku');
-        $nama_file                    = 'Validasi BAKU'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Validasi BAKU/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_val_baku      = $nama_file;
-      }
-
-      if($request->hasFile('file_draft_laporan'))
-      {
-        $file                         = $request->file('file_draft_laporan');
-        $nama_file                    = 'Draft Laporan'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Draft Laporan/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_draft_laporan      = $nama_file;
-      }
-
-      if($request->hasFile('file_nilai_pembim'))
-      {
-        $file                         = $request->file('file_nilai_pembim');
-        $nama_file                    = 'Nilai Pembimbing'."-".$file->getClientOriginalName();
-        $tujuan_upload                = 'File Nilai Pembimbing/'.Auth::user()->id_user;
-        $file->move($tujuan_upload,$nama_file);
-        $usta->file_nilai_pembim       = $nama_file;
-      }
-
-      $usta->save();
-
-      Alert::success('', 'Data Prakerin Berhasil Diinput')->autoclose(3500);
+      Alert::success('', 'Judul Prakerin Berhasil Diinput')->autoclose(3500);
       return redirect('seminar_prakerin');
+    }
+
+    public function edit_ajuan_prakerin(Request $request, $id)
+    {
+      $this->validate($request, [
+        'judul_prausta'        => 'required',
+        'tempat_prausta'       => 'required',
+  			'file_draft_laporan'   => 'mimes:pdf|max:5000',
+        'file_nilai_pembim'    => 'mimes:pdf|max:5000',
+        'file_kartu_bim'       => 'mimes:pdf|max:5000',
+        'file_surat_balasan'   => 'mimes:pdf|max:5000',
+  		  ]);
+
+        $bap                        = Prausta_setting_relasi::find($id);
+        $bap->judul_prausta         = $request->judul_prausta;
+        $bap->tempat_prausta        = $request->tempat_prausta;
+
+        if ($bap->file_draft_laporan) {
+          if ($request->hasFile('file_draft_laporan')) {
+            File::delete('File Draft Laporan/'.Auth::user()->id_user.'/'.$bap->file_draft_laporan);
+            $file                         = $request->file('file_draft_laporan');
+            $nama_file                    = 'Draft Laporan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Draft Laporan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_draft_laporan      = $nama_file;
+          }
+        }else {
+          if ($request->hasFile('file_draft_laporan')) {
+            $file                         = $request->file('file_draft_laporan');
+            $nama_file                    = 'Draft Laporan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Draft Laporan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_draft_laporan      = $nama_file;
+          }
+        }
+
+        if ($bap->file_nilai_pembim) {
+          if ($request->hasFile('file_nilai_pembim')) {
+            File::delete('File Nilai Pembimbing/'.Auth::user()->id_user.'/'.$bap->file_nilai_pembim);
+            $file                         = $request->file('file_nilai_pembim');
+            $nama_file                    = 'Nilai Pembimbing'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Nilai Pembimbing/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_nilai_pembim       = $nama_file;
+          }
+        }else {
+          if ($request->hasFile('file_nilai_pembim')) {
+            $file                         = $request->file('file_nilai_pembim');
+            $nama_file                    = 'Nilai Pembimbing'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Nilai Pembimbing/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_nilai_pembim       = $nama_file;
+          }
+        }
+
+        if ($bap->file_kartu_bim) {
+          if ($request->hasFile('file_kartu_bim')) {
+            File::delete('File Kartu Bimbingan/'.Auth::user()->id_user.'/'.$bap->file_kartu_bim);
+            $file                         = $request->file('file_kartu_bim');
+            $nama_file                    = 'Kartu Bimbingan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Kartu Bimbingan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_kartu_bim          = $nama_file;
+          }
+        }else {
+          if ($request->hasFile('file_kartu_bim')) {
+            $file                         = $request->file('file_kartu_bim');
+            $nama_file                    = 'Kartu Bimbingan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Kartu Bimbingan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_kartu_bim          = $nama_file;
+          }
+        }
+
+        if ($bap->file_surat_balasan) {
+          if ($request->hasFile('file_surat_balasan')) {
+            File::delete('File Surat Balasan/'.Auth::user()->id_user.'/'.$bap->file_surat_balasan);
+            $file                         = $request->file('file_surat_balasan');
+            $nama_file                    = 'Surat Balasan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Surat Balasan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_surat_balasan      = $nama_file;
+          }
+        }else {
+          if ($request->hasFile('file_surat_balasan')) {
+            $file                         = $request->file('file_surat_balasan');
+            $nama_file                    = 'Surat Balasan'."-".$file->getClientOriginalName();
+            $tujuan_upload                = 'File Surat Balasan/'.Auth::user()->id_user;
+            $file->move($tujuan_upload,$nama_file);
+            $bap->file_surat_balasan      = $nama_file;
+          }
+        }
+
+        $bap->save();
+
+        return redirect('seminar_prakerin');
     }
 
     public function data_prakerin()
@@ -271,6 +344,18 @@ class PraustaController extends Controller
       $usta->save();
 
       Alert::success('', 'Data Bimbingan Prakerin Berhasil Diinput')->autoclose(3500);
+      return redirect('seminar_prakerin');
+    }
+
+    public function edit_bimbingan(Request $request, $id)
+    {
+      $sch                      = Prausta_trans_bimbingan::find($id);
+      $sch->tanggal_bimbingan   = $request->tanggal_bimbingan;
+      $sch->remark_bimbingan    = $request->remark_bimbingan;
+      $sch->updated_by          = Auth::user()->name;
+      $sch->save();
+
+      Alert::success('', 'Data Bimbingan Prakerin Berhasil Diedit')->autoclose(3500);
       return redirect('seminar_prakerin');
     }
 }

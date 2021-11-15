@@ -67,6 +67,7 @@
       <ul class="treeview-menu">
         <li><a href="{{ url('no_transkrip') }}"><i class="fa fa-circle-o"></i> Nomor Transkrip Nilai</a></li>
         <li><a href="{{ url('transkrip_nilai') }}"><i class="fa fa-circle-o"></i> Transkrip Nilai Sementara</a></li>
+        <li><a href="{{ url('transkrip_nilai_final') }}"><i class="fa fa-circle-o"></i> Transkrip Nilai Final</a></li>
         <li><a href="{{ url('nilai_mhs') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a></li>
       </ul>
     </li>
@@ -128,6 +129,20 @@
     <li><a href="{{ url('val_krs') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a></li>
     <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa  fa-users"></i> <span>Matakuliah diampu</span></a></li>
     <li><a href="{{ url('history_makul_dsn') }}"><i class="fa  fa-list"></i> <span>History Matakuliah diampu</span></a></li>
+    <li class="treeview">
+      <a href="#">
+        <i class="fa fa-list"></i> <span>PraUSTA</span>
+        <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+      </a>
+      <ul class="treeview-menu">
+        <li><a href="{{url('pembimbing_pkl')}}"><i class="fa fa-circle-o"></i> Pembimbing PKL</a></li>
+        <li><a href="{{url('pembimbing_ta')}}"><i class="fa fa-circle-o"></i> Pembimbing TA</a></li>
+        <li><a href="{{url('penguji_pkl')}}"><i class="fa fa-circle-o"></i> Penguji PKL</a></li>
+        <li><a href="{{url('penguji_ta')}}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
+      </ul>
+    </li>
   </ul>
 @elseif (Auth::user()->role == 3)
   <ul class="sidebar-menu" data-widget="tree">
@@ -245,6 +260,23 @@
       <ul class="treeview-menu">
         <li><a href="{{ url('nilai_prausta') }}"><i class="fa fa-circle-o"></i> <span>Nilai PraUSTA</span></a></li>
         <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>Data Prakerin</span></a></li>
+      </ul>
+    </li>
+  </ul>
+@elseif (Auth::user()->role == 9)
+  <ul class="sidebar-menu" data-widget="tree">
+    <li class="header">Menu Admin Prodi</li>
+    <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
+    <li class="treeview">
+      <a href="#">
+        <i class="fa fa-database"></i> <span>Master Data</span>
+        <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+      </a>
+      <ul class="treeview-menu">
+        <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing PKL</span></a></li>
+        <li><a href="{{ url('dospem_ta') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing TA</span></a></li>
       </ul>
     </li>
   </ul>

@@ -68,7 +68,7 @@ class Kernel extends HttpKernel
         'sadmin' => \App\Http\Middleware\SadminMiddleware::class,
         'nomhs' => \App\Http\Middleware\NoMhsMiddleware::class,
         'kaprodi' => \App\Http\Middleware\KaprodiMiddleware::class,
-        'adminprodi' => \App\Http\Middleware\AdminprodiMiddleware::class,
+        'adminprodi' => \App\Http\Middleware\ProdiMiddleware::class,
         'wadir1' => \App\Http\Middleware\Wadir1Middleware::class,
         'prausta' => \App\Http\Middleware\PraustaMiddleware::class,
     ];

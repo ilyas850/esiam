@@ -125,19 +125,19 @@
                             <div class="col-md-3">
                                 <label>Upload File Kuliah Tatap Muka</label>
                                 <input type="file" name="file_kuliah_tatapmuka">{{$bap->file_kuliah_tatapmuka}}
-                              
+
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Kuliah/Ujian</label>
                                 <input type="file" name="file_materi_kuliah">{{$bap->file_materi_kuliah}}
-                                
+
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .pdf</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas/Ujian</label>
                                 <input type="file" name="file_materi_tugas">{{$bap->file_materi_tugas}}
-                              
+
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
                             </div>
                         </div>

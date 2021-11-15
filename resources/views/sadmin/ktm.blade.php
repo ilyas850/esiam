@@ -48,10 +48,10 @@
     table{
       position: absolute;
 			left: 140px;
-			top: 370px;
+			top: 330px;
 			color: #001885;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 26px;
+      font-size: 24px;
 
 		}
 	</style>
@@ -68,17 +68,17 @@
 
 		<center><img height="539px" width="856px" src="images/KTM 2020 1_page-0002.jpg"></center>
     <table>
-      <tr height="35px">
+      <tr>
         <td>Nama</td>
-        <td >:</td>
+        <td>:</td>
         <td> {{$mhs->nama}}</td>
       </tr>
-      <tr height="35px">
+      <tr>
         <td>NIM</td>
         <td>:</td>
         <td>{{$mhs->nim}}</td>
       </tr>
-      <tr height="35px">
+      <tr>
         <td>Program Studi</td>
         <td>:</td>
         <td>
@@ -91,6 +91,11 @@
           @endif
         </td>
       </tr>
+			<tr>
+				<td>Berlaku s/d T.A.</td>
+				<td>:</td>
+				<td>{{$hs}}</td>
+			</tr>
     </table>
 	</div>
 </div>

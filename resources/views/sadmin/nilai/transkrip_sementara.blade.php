@@ -85,7 +85,8 @@
               <td colspan="3"><center>TOTAL SKS</center></td>
               <td><center><b>
                 {{$keysks->total_sks}}
-              </b></center></td>
+                </b></center>
+              </td>
               <td colspan="2"></td>
               <td><center><b>
                 {{$keysks->nilai_sks}}

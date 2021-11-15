@@ -34,6 +34,9 @@ use App\Kuliah_transaction;
 use App\Kurikulum_periode;
 use App\Kurikulum_transaction;
 use App\Ujian_transaction;
+use App\Prausta_master_kode;
+use App\Prausta_setting_relasi;
+use App\Prausta_trans_bimbingan;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use Illuminate\Http\Request;
@@ -410,7 +413,6 @@ class DosenController extends Controller
                           ->select('semester.semester','matakuliah.kode','matakuliah.makul','kurikulum_hari.hari','kurikulum_jam.jam','ruangan.nama_ruangan','matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama' ,'student_record.remark', 'student_record.id_student', 'student_record.id_studentrecord')
                           ->get();
 
-
         //cek validasi krs
         $valkrs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -420,7 +422,7 @@ class DosenController extends Controller
                             ->where('periode_tahun.status', 'ACTIVE')
                             ->where('periode_tipe.status', 'ACTIVE')
                             ->where('student_record.status', 'TAKEN')
-                            ->where('id_student', $id)
+                            ->where('student_record.id_student', $id)
                             ->select(DB::raw('DISTINCT(student_record.remark)'), 'student.idstudent' )
                             ->get();
 
@@ -532,8 +534,6 @@ class DosenController extends Controller
           Alert::success('', 'Berhasil ')->autoclose(3500);
           return redirect()->back();
       }
-
-
     }
 
     public function change($id)
@@ -1679,7 +1679,6 @@ class DosenController extends Controller
   			'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
         'file_materi_kuliah'      => 'mimes:jpg,jpeg,pdf|max:2000',
         'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
-
   		  ]);
 
         $bap                        = Bap::find($id);
@@ -2644,4 +2643,41 @@ class DosenController extends Controller
       return view ('dosen/jurnal_perkuliahan_his', ['bap'=>$key, 'data'=>$data]);
     }
 
+    public function pembimbing_pkl()
+    {
+      $id = Auth::user()->id_user;
+
+      $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                                    ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                    ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                                    ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
+                                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                                    ->select('student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta','prausta_setting_relasi.acc_judul')
+                                    ->get();
+
+      return view('dosen/prausta/pembimbing_pkl', compact('data'));
+    }
+
+    public function record_bim_pkl($id)
+    {
+      $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                                  ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                  ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                                  ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                                  ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                                  ->select('student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta','prausta_setting_relasi.judul_prausta','prausta_setting_relasi.tempat_prausta','prausta_setting_relasi.acc_judul')
+                                  ->first();
+
+      return view ('dosen/prausta/cek_bimbingan_pkl', compact('jdl'));
+    }
+
+    public function status_judul(Request $request)
+    {
+      $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)
+                          ->update(['acc_judul' => $request->acc_judul]);
+
+      Alert::success('', 'Berhasil')->autoclose(3500);
+      return redirect()->back();
+    }
 }

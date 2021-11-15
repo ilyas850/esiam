@@ -376,6 +376,8 @@
         @include('layouts.wadir1_home')
       @elseif ((Auth::user()->role ==11))
         @include('layouts.prausta_home')
+      @elseif ((Auth::user()->role ==9))
+        @include('layouts.adminprodi_home')
       @endif
 </section>
 @endsection

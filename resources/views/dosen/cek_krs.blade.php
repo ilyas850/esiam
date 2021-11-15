@@ -32,7 +32,6 @@
           <tr>
             <td>NIM</td><td>:</td>
             <td> {{$key->nim}}</td>
-
             <td>Kelas</td><td>:</td>
             <td>{{$key->kelas}}  </td>
           </tr>
