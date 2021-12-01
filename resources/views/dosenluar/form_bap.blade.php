@@ -146,7 +146,7 @@
                             @endif
                             <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
                         </div>
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <label>Upload File Materi Kuliah/Ujian</label>
                             <input type="file" name="file_materi_kuliah">
                             @if ($errors->has('file_materi_kuliah'))
@@ -165,7 +165,7 @@
                                 </span>
                             @endif
                             <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="form-group">
                         <div class="box-footer">

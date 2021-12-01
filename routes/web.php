@@ -99,6 +99,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('input_transkrip_final/{id}', 'SadminController@input_transkrip_final');
     Route::post('simpan_transkrip_final', 'SadminController@simpan_transkrip_final');
     Route::get('lihat_transkrip_final/{id}', 'SadminController@lihat_transkrip_final');
+    Route::get('print_transkrip_final/{id}', 'SadminController@print_transkrip_final');
+    route::get('downloadAbleFile/{id}', 'SadminController@downloadAbleFile');
+    Route::get('edit_transkrip_final/{id}', 'SadminController@edit_transkrip_final');
+    Route::put('simpanedit_transkrip_final/{id}', 'SadminController@simpanedit_transkrip_final');
 
     //nilai mahasiswa
     Route::get('nilai_mhs', 'SadminController@nilai_mhs');
@@ -197,6 +201,8 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('pembimbing_pkl', 'DosenController@pembimbing_pkl');
     Route::get('record_bim_pkl/{id}', 'DosenController@record_bim_pkl');
     Route::post('status_judul', 'DosenController@status_judul');
+    Route::get('acc_seminar_pkl/{id}', 'DosenController@acc_seminar_pkl');
+    Route::get('tolak_seminar_pkl/{id}', 'DosenController@tolak_seminar_pkl');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -246,6 +252,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('pengajuan_seminar_prakerin', 'PraustaController@pengajuan_seminar_prakerin');
     Route::post('simpan_ajuan_prakerin', 'PraustaController@simpan_ajuan_prakerin');
     Route::put('edit_ajuan_prakerin/{id}', 'PraustaController@edit_ajuan_prakerin');
+    Route::get('ajukan_seminar_pkl/{id}', 'PraustaController@ajukan_seminar_pkl');
 
     //bimbingan prakerin
     Route::post('simpan_bimbingan', 'PraustaController@simpan_bimbingan');

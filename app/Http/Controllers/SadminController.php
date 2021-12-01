@@ -42,6 +42,7 @@ use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
 use App\Wadir;
 use App\Wrkpersonalia;
+use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
@@ -52,6 +53,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class SadminController extends Controller
 {
@@ -1329,7 +1331,264 @@ class SadminController extends Controller
 
     public function lihat_transkrip_final($id)
     {
-        dd($id);
+        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+            ->where('student.idstudent', $id)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
+            ->get();
+
+        foreach ($mhs as $item) {
+            // code...
+        }
+
+        $nama = strtoupper($item->nama);
+
+        $yudisium = $item->tgl_yudisium;
+
+        $wisuda = $item->tgl_wisuda;
+
+        $pisahyudi = explode('-', $yudisium);
+
+        $pisahwisu = explode('-', $wisuda);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $blnyudi = $bulan[$pisahyudi[1]];
+        $blnwisu = $bulan[$pisahwisu[1]];
+        $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
+        $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
+
+        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.nilai_AKHIR', '!=', '0')
+            ->where('student_record.nilai_ANGKA', '!=', '0')
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
+            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
+            ->get();
+
+        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        foreach ($sks as $keysks) {
+            // code...
+        }
+
+        return view('sadmin/transkrip/hasil_transkrip_final', compact('item', 'nama', 'data', 'keysks', 'tglyudi', 'tglwisu'));
+    }
+
+    public function print_transkrip_final($id)
+    {
+        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+            ->where('student.idstudent', $id)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
+            ->get();
+
+        foreach ($mhs as $item) {
+            // code...
+        }
+
+        $nama = strtoupper($item->nama);
+
+        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.nilai_AKHIR', '!=', '0')
+            ->where('student_record.nilai_ANGKA', '!=', '0')
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
+            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
+            ->get();
+
+        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        foreach ($sks as $keysks) {
+            // code...
+        }
+
+        return view('sadmin/transkrip/print_transkrip_final', compact('item', 'data', 'keysks', 'nama'));
+    }
+
+    public function downloadAbleFile($id)
+    {
+        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+            ->where('student.idstudent', $id)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
+            ->get();
+
+        foreach ($mhs as $item) {
+            // code...
+        }
+        $tgllahir = $item->tgllahir->isoFormat('D MMMM Y');
+
+        $nama = strtoupper($item->nama);
+
+        $yudisium = $item->tgl_yudisium;
+
+        $wisuda = $item->tgl_wisuda;
+
+        $pisahyudi = explode('-', $yudisium);
+
+        $pisahwisu = explode('-', $wisuda);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $blnyudi = $bulan[$pisahyudi[1]];
+        $blnwisu = $bulan[$pisahwisu[1]];
+        $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
+        $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
+
+        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.nilai_AKHIR', '!=', '0')
+            ->where('student_record.nilai_ANGKA', '!=', '0')
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
+            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
+            ->get();
+
+        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        foreach ($sks as $keysks) {
+            // code...
+        }
+        if ($keysks->IPK >= 3.51) {
+            $predikat = 'Cumlaude';
+        } elseif ($keysks->IPK >= 3.0) {
+            $predikat = 'Sangat Memuaskan';
+        } elseif ($keysks->IPK >= 2.0) {
+            $predikat = 'Memuaskan';
+        }
+
+        $template = new TemplateProcessor('word-template/transkrip_final.docx');
+        $template->setValue('idstudent', $item->idstudent);
+        $template->setValue('nama', $nama);
+        $template->setValue('no_ijazah', $item->no_ijazah);
+        $template->setValue('no_transkrip_final', $item->no_transkrip_final);
+        $template->setValue('nim', $item->nim);
+        $template->setValue('tgllahir', $tgllahir);
+        $template->setValue('tmptlahir', $item->tmptlahir);
+        $template->setValue('prodi', $item->prodi);
+        $template->setValue('kelulusan', $tglyudi);
+        $template->setValue('wisuda', $tglwisu);
+        $template->setValue('judul', $item->judul_prausta);
+        $template->setValue('totalsks', $keysks->total_sks);
+        $template->setValue('nilai_sks', $keysks->nilai_sks);
+        $template->setValue('ipk', $keysks->IPK);
+        $template->setValue('predikat', $predikat);
+
+        $new_data = [];
+
+        for ($i = 0; $i < count($data); $i++) {
+            //remove not allow characters %^&({}+-/ ]['''
+            $data[$i]->makul = str_replace('&', 'dan', $data[$i]->makul);
+
+            $dt_array = [
+                'kode' => $data[$i]->kode,
+                'makul' => $data[$i]->makul,
+                'akt_sks' => $data[$i]->akt_sks,
+                'nilai_AKHIR' => $data[$i]->nilai_AKHIR,
+                'nilai_ANGKA' => $data[$i]->nilai_ANGKA,
+                'nilaisks' => $data[$i]->nilai_sks,
+                'no' => $i + 1,
+            ];
+
+            array_push($new_data, (object) $dt_array);
+        }
+
+        $template->cloneRowAndSetValues('kode', $new_data);
+
+        $fileName = $item->nama;
+
+        $template->saveAs($fileName . '.docx');
+        return response()
+            ->download($fileName . '.docx')
+            ->deleteFileAfterSend(true);
+    }
+
+    public function edit_transkrip_final($id)
+    {
+        $item = Transkrip_final::join('student', 'transkrip_final.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('transkrip_final.id_transkrip_final', $id)
+            ->select('transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_ijazah', 'transkrip_final.no_transkrip_final', 'transkrip_final.id_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
+            ->first();
+
+        $lahir = $item->tgllahir;
+
+        $pisahlahir = explode('-', $lahir);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $blnlahir = $bulan[$pisahlahir[1]];
+
+        $tgllhr = $pisahlahir[2] . ' ' . $blnlahir . ' ' . $pisahlahir[0];
+
+
+        return view('sadmin/transkrip/edit_transkrip_final', compact('item', 'tgllhr'));
+    }
+
+    public function simpanedit_transkrip_final(Request $request, $id)
+    {
+        $tns = Transkrip_final::find($id);
+        $tns->no_transkrip_final = $request->no_transkrip_final;
+        $tns->no_ijazah = $request->no_ijazah;
+        $tns->tgl_yudisium = $request->tgl_yudisium;
+        $tns->tgl_wisuda = $request->tgl_wisuda;
+        $tns->updated_by = Auth::user()->name;
+        $tns->save();
+
+        Alert::success('Transkrip final berhasil diedit')->autoclose(3500);
+        return redirect('transkrip_nilai_final');
     }
 
     public function nilai_mhs()

@@ -40,15 +40,18 @@
                                         <a href="/input_transkrip_final/{{ $key->idstudent }}"
                                             class="btn btn-info btn-xs">Input Data</a>
                                     @elseif ($key->id_transkrip_final != null)
-                                        <a href="/input_transkrip_final/{{ $key->id_transkrip_final }}"
+                                        <a href="/edit_transkrip_final/{{ $key->id_transkrip_final }}"
                                             class="btn btn-success btn-xs">Edit Data</a>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="" class="btn btn-danger btn-xs">PDF</a>
-                                    <a href="" class="btn btn-warning btn-xs">Print</a>
-                                    <a href="/lihat_transkrip_final/{{ $key->idstudent }}"
-                                        class="btn btn-primary btn-xs">Lihat Data</a>
+                                    @if ($key->id_transkrip_final == null)
+                                        Belum ada nomor transkrip
+                                    @else
+                                        <a href="/lihat_transkrip_final/{{ $key->idstudent }}"
+                                            class="btn btn-primary btn-xs">Lihat Data</a>
+                                    @endif
+
                                 </td>
                             </tr>
                         @endforeach
