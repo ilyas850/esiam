@@ -921,6 +921,7 @@ class DosenluarController extends Controller
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
+            ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('kurikulum_periode.id_kurperiode')
             ->get();
 
@@ -974,8 +975,9 @@ class DosenluarController extends Controller
                         $file->move($tujuan_upload, $nama_file);
                         $bap->file_kuliah_tatapmuka = $nama_file;
                     }
-                } else {
-                  
+                } elseif ($i > 0) {
+                    # code...
+
                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
 
                     $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Kuliah Tatap Muka';

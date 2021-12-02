@@ -1350,10 +1350,15 @@ class DosenController extends Controller
     ], $message);
     $data = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-    $sama = Kurikulum_periode::where('id_dosen', $data->id_dosen)
-      ->where('id_jam', $data->id_jam)
-      ->where('id_hari', $data->id_hari)
-      ->select('id_kurperiode')
+    $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->where('periode_tahun.status', 'ACTIVE')
+      ->where('periode_tipe.status', 'ACTIVE')
+      ->where('kurikulum_periode.id_dosen', $data->id_dosen)
+      ->where('kurikulum_periode.id_jam', $data->id_jam)
+      ->where('kurikulum_periode.id_hari', $data->id_hari)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->select('kurikulum_periode.id_kurperiode')
       ->get();
 
     $cek_bap = Bap::where('id_kurperiode', $request->id_kurperiode)
