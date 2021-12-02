@@ -951,7 +951,7 @@ class DosenluarController extends Controller
                 // } elseif ($filetatapmuka == false) {
                 //   $nama_filetatapmuka = 'NULL';
                 // }
-
+                //
                 $bap = new Bap();
                 $bap->id_kurperiode = $d;
                 $bap->id_dosen = Auth::user()->id_user;
