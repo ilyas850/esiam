@@ -898,13 +898,13 @@ class DosenluarController extends Controller
             $request,
             [
                 'pertemuan' => 'required',
-                'tanggal' => 'required',
-                'jam_mulai' => 'required',
-                'jam_selsai' => 'required',
-                'jenis_kuliah' => 'required',
-                'id_tipekuliah' => 'required',
-                'metode_kuliah' => 'required',
-                'materi_kuliah' => 'required',
+                // 'tanggal' => 'required',
+                // 'jam_mulai' => 'required',
+                // 'jam_selsai' => 'required',
+                // 'jenis_kuliah' => 'required',
+                // 'id_tipekuliah' => 'required',
+                // 'metode_kuliah' => 'required',
+                // 'materi_kuliah' => 'required',
                 'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
                 'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG|max:2048',
                 'file_materi_tugas' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
@@ -951,7 +951,7 @@ class DosenluarController extends Controller
                 // } elseif ($filetatapmuka == false) {
                 //   $nama_filetatapmuka = 'NULL';
                 // }
-                //
+
                 $bap = new Bap();
                 $bap->id_kurperiode = $d;
                 $bap->id_dosen = Auth::user()->id_user;
@@ -975,31 +975,92 @@ class DosenluarController extends Controller
                         $file->move($tujuan_upload, $nama_file);
                         $bap->file_kuliah_tatapmuka = $nama_file;
                     }
+
+                    if ($request->hasFile('file_materi_kuliah')) {
+                        $file = $request->file('file_materi_kuliah');
+                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Materi Kuliah';
+                        $file->move($tujuan_upload, $nama_file);
+                        $bap->file_materi_kuliah = $nama_file;
+                    }
+
+                    if ($request->hasFile('file_materi_tugas')) {
+                        $file = $request->file('file_materi_tugas');
+                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Tugas Kuliah';
+                        $file->move($tujuan_upload, $nama_file);
+                        $bap->file_materi_tugas = $nama_file;
+                    }
                 } elseif ($i > 0) {
-                    # code...
+                    if ($request->hasFile('file_kuliah_tatapmuka')) {
+                        $tes1 = $sama[0];
+                        $d1 = $tes1['id_kurperiode'];
 
-                    $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Kuliah Tatap Muka';
 
-                    $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Kuliah Tatap Muka';
+                        $tes2 = $sama[$i];
+                        $d2 = $tes2['id_kurperiode'];
 
-                    copy(public_path($tujuan_upload . '/' . $nama_file), public_path($nama_file . '/' . $tujuan_upload));
+                        $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Kuliah Tatap Muka';
+
+                        if (!File::exists($path)) {
+                            File::makeDirectory($path);
+                        }
+
+                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+
+                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
+
+                        $bap->file_kuliah_tatapmuka = $nama_file1;
+                    }
+
+                    if ($request->hasFile('file_materi_kuliah')) {
+                        $tes1 = $sama[0];
+                        $d1 = $tes1['id_kurperiode'];
+
+                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Materi Kuliah';
+
+                        $tes2 = $sama[$i];
+                        $d2 = $tes2['id_kurperiode'];
+
+                        $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Materi Kuliah';
+
+                        if (!File::exists($path)) {
+                            File::makeDirectory($path);
+                        }
+
+                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+
+                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
+
+                        $bap->file_materi_kuliah = $nama_file1;
+                    }
+
+                    if ($request->hasFile('file_materi_tugas')) {
+                        $tes1 = $sama[0];
+                        $d1 = $tes1['id_kurperiode'];
+
+                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+                        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Tugas Kuliah';
+
+                        $tes2 = $sama[$i];
+                        $d2 = $tes2['id_kurperiode'];
+
+                        $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Tugas Kuliah';
+
+                        if (!File::exists($path)) {
+                            File::makeDirectory($path);
+                        }
+
+                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+
+                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
+
+                        $bap->file_materi_tugas = $nama_file1;
+                    }
                 }
-
-                // if ($request->hasFile('file_materi_kuliah')) {
-                //   $file                         = $request->file('file_materi_kuliah');
-                //   $nama_file                    = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-                //   $tujuan_upload                = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Materi Kuliah';
-                //   $file->move($tujuan_upload, $nama_file);
-                //   $bap->file_materi_kuliah      = $nama_file;
-                // }
-
-                // if ($request->hasFile('file_materi_tugas')) {
-                //   $file                         = $request->file('file_materi_tugas');
-                //   $nama_file                    = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-                //   $tujuan_upload                = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Tugas Kuliah';
-                //   $file->move($tujuan_upload, $nama_file);
-                //   $bap->file_materi_tugas       = $nama_file;
-                // }
 
                 $bap->save();
 
@@ -1265,6 +1326,7 @@ class DosenluarController extends Controller
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
             ->where('bap.pertemuan', $data_bap->pertemuan)
+            ->where('kurikulum_periode', 'ACTIVE')
             ->select('kurikulum_periode.id_kurperiode', 'bap.id_bap')
             ->get();
 

@@ -1667,9 +1667,9 @@ class DosenController extends Controller
       'id_tipekuliah'           => 'required',
       'metode_kuliah'           => 'required',
       'materi_kuliah'           => 'required',
-      'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
-      'file_materi_kuliah'      => 'mimes:jpg,jpeg,pdf|max:2000',
-      'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
+      'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg,png|max:2000',
+      'file_materi_kuliah'      => 'mimes:jpg,jpeg,pdf,png|max:2000',
+      'file_materi_tugas'       => 'mimes:jpg,jpeg,png|max:2000',
     ]);
 
     $data_bap = Bap::where('id_bap', $id)->first();
@@ -1683,6 +1683,7 @@ class DosenController extends Controller
       ->where('kurikulum_periode.id_jam', $data->id_jam)
       ->where('kurikulum_periode.id_hari', $data->id_hari)
       ->where('bap.pertemuan', $data_bap->pertemuan)
+      ->where('kurikulum_periode.status', 'ACTIVE')
       ->select('kurikulum_periode.id_kurperiode', 'bap.id_bap')
       ->get();
 
