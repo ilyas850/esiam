@@ -14,7 +14,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-        <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah yang diampu</a></li>
+        <li><a href="{{ url('makul_diampu') }}"> Data Matakuliah yang diampu</a></li>
         <li><a href="/entri_bap_dsn/{{$dtbp->id_kurperiode}}"> BAP</a></li>
         <li class="active">View BAP</li>
       </ol>
