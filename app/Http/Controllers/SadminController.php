@@ -89,7 +89,13 @@ class SadminController extends Controller
 
     public function show_mhs()
     {
-        $mhs = Student::where('active', 1)->get();
+        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.active', 1)
+            ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student.nisn')
+            ->get();
+
         return view('sadmin/data_mhs', ['mhss' => $mhs]);
     }
 
@@ -1572,7 +1578,6 @@ class SadminController extends Controller
         $blnlahir = $bulan[$pisahlahir[1]];
 
         $tgllhr = $pisahlahir[2] . ' ' . $blnlahir . ' ' . $pisahlahir[0];
-
 
         return view('sadmin/transkrip/edit_transkrip_final', compact('item', 'tgllhr'));
     }

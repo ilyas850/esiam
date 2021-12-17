@@ -257,6 +257,9 @@ Route::group(['middleware' => 'mhs'], function () {
     //bimbingan prakerin
     Route::post('simpan_bimbingan', 'PraustaController@simpan_bimbingan');
     Route::put('edit_bimbingan/{id}', 'PraustaController@edit_bimbingan');
+
+    //update nisn
+    Route::put('put_nisn/{id}', 'MhsController@put_nisn');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

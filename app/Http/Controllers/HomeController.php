@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-Use Alert;
+use Alert;
 use App\User;
 use App\Mhs;
 use App\Dosen;
@@ -26,166 +26,165 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
+
+  /**
+   * Show the application dashboard.
+   *
+   * @return \Illuminate\Contracts\Support\Renderable
+   */
+  public function index()
+  {
+    $vm = Visimisi::all();
+
+    foreach ($vm as $vm) {
+      // code...
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        $vm = Visimisi::all();
+    $visi = $vm->visi;
 
-        foreach ($vm as $vm) {
-          // code...
-        }
+    $misi = $vm->misi;
 
-        $visi = $vm->visi;
+    $tujuan = $vm->tujuan;
 
-        $misi = $vm->misi;
+    $id = Auth::user()->username;
+    $akses = Auth::user()->role;
+    $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
+      ->where('student.nim', Auth::user()->username)
+      ->select('student.foto', 'student.hp', 'student.idangkatan', 'student.idstatus', 'student.email', 'student.kodeprodi', 'student.idstudent', 'student.nim', 'student.nisn', 'update_mahasiswas.hp_baru', 'update_mahasiswas.email_baru', 'update_mahasiswas.id_mhs', 'update_mahasiswas.id', 'update_mahasiswas.nim_mhs')
+      ->get();
 
-        $tujuan = $vm->tujuan;
+    $dsn = Dosen::join('agama', 'dosen.idagama', '=', 'agama.idagama')
+      ->join('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
+      ->where('dosen.nik', $id)
+      ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
+      ->first();
 
-        $id = Auth::user()->username;
-        $akses = Auth::user()->role;
-        $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
-                      ->where('student.nim', Auth::user()->username)
-                      ->select('student.foto', 'student.hp', 'student.idangkatan', 'student.idstatus', 'student.email', 'student.kodeprodi', 'student.idstudent', 'student.nim', 'update_mahasiswas.hp_baru', 'update_mahasiswas.email_baru', 'update_mahasiswas.id_mhs', 'update_mahasiswas.id', 'update_mahasiswas.nim_mhs')
-                      ->get();
+    $tahun = Periode_tahun::orderBy('id_periodetahun', 'ASC')->get();
 
-        $dsn = Dosen::join('agama', 'dosen.idagama', '=', 'agama.idagama')
-                    ->join('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
-                    ->where('dosen.nik', $id)
-                    ->select('kelamin.kelamin','dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
-                    ->first();
+    $tipe = Periode_tipe::all();
 
-        $tahun = Periode_tahun::orderBy('id_periodetahun', 'ASC')->get();
+    $time = Waktu_krs::all();
 
-        $tipe = Periode_tipe::all();
+    foreach ($time as $waktu) {
+    }
 
-        $time = Waktu_krs::all();
+    $edom = Waktu_edom::all();
+    foreach ($edom as $keyedom) {
+      // code...
+    }
 
-        foreach ($time as $waktu) {
+    $info = Informasi::orderBy('created_at', 'DESC')->paginate(5);
 
-        }
-
-        $edom = Waktu_edom::all();
-        foreach ($edom as $keyedom) {
-          // code...
-        }
-
-        $info = Informasi::orderBy('created_at', 'DESC')->paginate(5);
-
-        $angk = Angkatan::all();
+    $angk = Angkatan::all();
 
 
-        if ($akses==1) {
+    if ($akses == 1) {
 
-          $ldate = date('m/d/Y');
+      $ldate = date('m/d/Y');
 
-          $mhs_ti = Student::where('kodeprodi', 23)
-                          ->where('active', 1)
-                          ->count('idstudent');
+      $mhs_ti = Student::where('kodeprodi', 23)
+        ->where('active', 1)
+        ->count('idstudent');
 
-          $mhs_tk = Student::where('kodeprodi', 22)
-                          ->where('active', 1)
-                          ->count('idstudent');
+      $mhs_tk = Student::where('kodeprodi', 22)
+        ->where('active', 1)
+        ->count('idstudent');
 
-          $mhs_fa = Student::where('kodeprodi', 24)
-                          ->where('active', 1)
-                          ->count('idstudent');
+      $mhs_fa = Student::where('kodeprodi', 24)
+        ->where('active', 1)
+        ->count('idstudent');
 
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'fa'=>$mhs_fa,'tk'=>$mhs_tk,'ti'=>$mhs_ti,'now'=>$ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
-        }elseif ($akses==2) {
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
+    } elseif ($akses == 2) {
 
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
-        }elseif ($akses==3) {
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+    } elseif ($akses == 3) {
 
-          foreach ($mhs as $valuefoto) {
-            // code...
-          }
-          $foto = $valuefoto->foto;
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'angk'=>$angk, 'foto'=>$foto, 'edom'=>$keyedom, 'info'=>$info, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
-        }elseif ($akses==4) {
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'mhs' => $mhs, 'id' => $id, ]);
-        }elseif ($akses==5) {
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
-        }elseif ($akses==6) {
-          $mhs_ti = Student::where('kodeprodi', 23)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_tk = Student::where('kodeprodi', 22)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_fa = Student::where('kodeprodi', 24)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
-                        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
-                        ->where('kaprodi.id_dosen', Auth::user()->id_user)
-                        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
-                        ->get();
-          foreach ($cek as $key) {
-            // code...
-          }
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'prd'=>$key,'fa'=>$mhs_fa,'tk'=>$mhs_tk,'ti'=>$mhs_ti,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
-        }elseif ($akses==7) {
-          $mhs_ti = Student::where('kodeprodi', 23)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_tk = Student::where('kodeprodi', 22)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_fa = Student::where('kodeprodi', 24)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
-                        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
-                        ->where('kaprodi.id_dosen', Auth::user()->id_user)
-                        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
-                        ->get();
-          foreach ($cek as $key) {
-            // code...
-          }
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'prd'=>$key,'fa'=>$mhs_fa,'tk'=>$mhs_tk,'ti'=>$mhs_ti,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
-        }elseif ($akses==11) {
-
-          return view('home', ['tujuan'=>$tujuan,'visi'=>$visi,'misi'=>$misi,'dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,]);
-        }elseif ($akses==9) {
-
-          $mhs_ti = Student::where('kodeprodi', 23)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_tk = Student::where('kodeprodi', 22)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          $mhs_fa = Student::where('kodeprodi', 24)
-                          ->where('active', 1)
-                          ->count('idstudent');
-
-          return view('home', ['dsn'=>$dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info'=>$info,'fa'=>$mhs_fa,'tk'=>$mhs_tk,'ti'=>$mhs_ti]);
-        }
+      foreach ($mhs as $valuefoto) {
+        // code...
       }
+      $foto = $valuefoto->foto;
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
+    } elseif ($akses == 4) {
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'mhs' => $mhs, 'id' => $id,]);
+    } elseif ($akses == 5) {
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+    } elseif ($akses == 6) {
+      $mhs_ti = Student::where('kodeprodi', 23)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_tk = Student::where('kodeprodi', 22)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_fa = Student::where('kodeprodi', 24)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+        ->where('kaprodi.id_dosen', Auth::user()->id_user)
+        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
+        ->get();
+      foreach ($cek as $key) {
+        // code...
+      }
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+    } elseif ($akses == 7) {
+      $mhs_ti = Student::where('kodeprodi', 23)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_tk = Student::where('kodeprodi', 22)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_fa = Student::where('kodeprodi', 24)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+        ->where('kaprodi.id_dosen', Auth::user()->id_user)
+        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
+        ->get();
+      foreach ($cek as $key) {
+        // code...
+      }
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+    } elseif ($akses == 11) {
+
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+    } elseif ($akses == 9) {
+
+      $mhs_ti = Student::where('kodeprodi', 23)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_tk = Student::where('kodeprodi', 22)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_fa = Student::where('kodeprodi', 24)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti]);
     }
+  }
+}
