@@ -258,6 +258,9 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('simpan_bimbingan', 'PraustaController@simpan_bimbingan');
     Route::put('edit_bimbingan/{id}', 'PraustaController@edit_bimbingan');
 
+    //upload draft prakerin
+    Route::post('simpan_draft_prakerin', 'PraustaController@simpan_draft_prakerin');
+
     //update nisn
     Route::put('put_nisn/{id}', 'MhsController@put_nisn');
 });
@@ -437,4 +440,5 @@ Route::group(['middleware' => 'prausta'], function () {
     //data prakerin
     Route::get('data_prakerin', 'PraustaController@data_prakerin');
     Route::get('atur_prakerin/{id}', 'PraustaController@atur_prakerin');
+    Route::post('simpan_atur_prakerin', 'PraustaController@simpan_atur_prakerin');
 });

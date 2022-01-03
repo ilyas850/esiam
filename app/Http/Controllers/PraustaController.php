@@ -13,10 +13,13 @@ use App\Beasiswa;
 use App\Kuitansi;
 use App\Bayar;
 use App\Dosen;
+use App\Ruangan;
 use App\Student_record;
+use App\Kurikulum_jam;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
 use App\Prausta_trans_bimbingan;
+use App\Prausta_master_kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,32 +27,37 @@ class PraustaController extends Controller
 {
     public function nilai_prausta()
     {
-        $makul = Matakuliah::where('active', 1)
-            ->whereIn('idmakul', [180, 177, 135, 179, 178, 136])
+        $listprausta = Prausta_master_kode::whereIn('id_masterkode_prausta', [1, 2, 3, 7, 8, 9])
+            ->orderBy('kode_prausta', 'ASC')
             ->get();
 
         $prodi = Prodi::all();
 
-        $angkatan = Angkatan::whereIn('idangkatan', [16, 17, 18, 19, 20, 21])->get();
+        $angkatan = Angkatan::whereIn('idangkatan', [16, 17, 18, 19, 20, 21, 22])->get();
 
-        return view('prausta.nilai_prausta', compact('makul', 'prodi', 'angkatan'));
+        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan'));
     }
 
     public function kode_prausta(Request $request)
     {
-        $idmakul = $request->idmakul;
+        $idmakul = $request->id_masterkode_prausta;
         $idprodi = $request->kodeprodi;
         $idangkatan = $request->idangkatan;
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+        $data_kode = Prausta_master_kode::where('id_masterkode_prausta', $idmakul)->first();
+
+        $mk = Matakuliah::where('kode', $data_kode->kode_prausta)->first();
+
+        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prodi', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
-            ->join('student_record', 'student_record.id_student', '=', 'prausta_setting_relasi.id_student')
+            ->join('student_record', 'student.idstudent', '=', 'student_record.id_student')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->where('kurikulum_periode.id_makul', $idmakul)
+            ->where('kurikulum_periode.id_makul', $mk->idmakul)
+            ->where('prausta_setting_relasi.id_masterkode_prausta', $idmakul)
             ->where('student.idangkatan', $idangkatan)
             ->where('student.kodeprodi', $idprodi)
             ->where('student_record.status', 'TAKEN')
@@ -57,7 +65,14 @@ class PraustaController extends Controller
             ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_studentrecord', 'student_record.nilai_AKHIR')
             ->get();
 
-        return view('prausta/form_nilai_prausta', compact('data'));
+        $cekdata = count($data);
+
+        if ($cekdata > 0) {
+            return view('prausta/form_nilai_prausta', compact('data'));
+        } elseif ($cekdata == 0) {
+            Alert::error('maaf mahasiswa tersebut belum ada', 'MAAF !!');
+            return redirect()->back();
+        }
     }
 
     public function save_nilai_prausta(Request $request)
@@ -88,6 +103,7 @@ class PraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
             ->get();
+
         $hasil_krs = count($cek);
 
         if ($hasil_krs == 0) {
@@ -97,10 +113,11 @@ class PraustaController extends Controller
             $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
                 ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+                ->join('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
                 ->whereIn('prausta_master_kode.kode_prausta', ['FA-601', 'TI-601', 'TK-601'])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->select('prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_judul', 'prausta_setting_relasi.file_kartu_bim', 'prausta_setting_relasi.file_nilai_pembim', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_surat_balasan')
+                ->select('prausta_setting_relasi.tanggal_mulai', 'prausta_master_kategori.kategori', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_judul', 'prausta_setting_relasi.file_draft_laporan')
                 ->get();
 
             $cekdata = count($data);
@@ -168,10 +185,9 @@ class PraustaController extends Controller
                 ->count();
 
             if ($cekdata == 0) {
-                return view('mhs/prausta/seminar_prakerin', compact('cekdata'));
+                return view('mhs/prausta/seminar_prakerin', compact('cekdata', 'usta'));
             } elseif ($cekdata > 0) {
                 foreach ($data as $usta) {
-                    // code...
                 }
 
                 return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim'));
@@ -182,20 +198,26 @@ class PraustaController extends Controller
     public function pengajuan_seminar_prakerin()
     {
         $id = Auth::user()->id_user;
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
             ->where('id_student', $id)
-            ->select('prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'student.nama', 'student.nim', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->select('prausta_master_kategori.kategori', 'prodi.id_prodi', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'student.nama', 'student.nim', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->first();
 
-        return view('mhs/prausta/ajuan_prakerin', compact('data'));
+        $kategori = Prausta_master_kategori::where('id_prodi', $data->id_prodi)->get();
+
+        return view('mhs/prausta/ajuan_prakerin', compact('data', 'kategori'));
     }
 
     public function simpan_ajuan_prakerin(Request $request)
     {
         $this->validate($request, [
             'id_settingrelasi_prausta' => 'required',
+            'id_kategori_prausta' => 'required',
+            'tanggal_mulai' => 'required',
             'judul_prausta' => 'required',
             'tempat_prausta' => 'required',
         ]);
@@ -203,26 +225,21 @@ class PraustaController extends Controller
         $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
             'judul_prausta' => $request->judul_prausta,
             'tempat_prausta' => $request->tempat_prausta,
+            'id_kategori_prausta' => $request->id_kategori_prausta,
+            'tanggal_mulai' => $request->tanggal_mulai,
         ]);
 
-        Alert::success('', 'Judul Prakerin Berhasil Diinput')->autoclose(3500);
+        Alert::success('', 'Data Prakerin Berhasil Diinput')->autoclose(3500);
         return redirect('seminar_prakerin');
     }
 
     public function edit_ajuan_prakerin(Request $request, $id)
     {
         $this->validate($request, [
-            'judul_prausta' => 'required',
-            'tempat_prausta' => 'required',
             'file_draft_laporan' => 'mimes:pdf|max:5000',
-            'file_nilai_pembim' => 'mimes:pdf|max:5000',
-            'file_kartu_bim' => 'mimes:pdf|max:5000',
-            'file_surat_balasan' => 'mimes:pdf|max:5000',
         ]);
 
         $bap = Prausta_setting_relasi::find($id);
-        $bap->judul_prausta = $request->judul_prausta;
-        $bap->tempat_prausta = $request->tempat_prausta;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {
@@ -243,63 +260,6 @@ class PraustaController extends Controller
             }
         }
 
-        if ($bap->file_nilai_pembim) {
-            if ($request->hasFile('file_nilai_pembim')) {
-                File::delete('File Nilai Pembimbing/' . Auth::user()->id_user . '/' . $bap->file_nilai_pembim);
-                $file = $request->file('file_nilai_pembim');
-                $nama_file = 'Nilai Pembimbing' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Nilai Pembimbing/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_nilai_pembim = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_nilai_pembim')) {
-                $file = $request->file('file_nilai_pembim');
-                $nama_file = 'Nilai Pembimbing' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Nilai Pembimbing/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_nilai_pembim = $nama_file;
-            }
-        }
-
-        if ($bap->file_kartu_bim) {
-            if ($request->hasFile('file_kartu_bim')) {
-                File::delete('File Kartu Bimbingan/' . Auth::user()->id_user . '/' . $bap->file_kartu_bim);
-                $file = $request->file('file_kartu_bim');
-                $nama_file = 'Kartu Bimbingan' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Kartu Bimbingan/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_kartu_bim = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_kartu_bim')) {
-                $file = $request->file('file_kartu_bim');
-                $nama_file = 'Kartu Bimbingan' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Kartu Bimbingan/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_kartu_bim = $nama_file;
-            }
-        }
-
-        if ($bap->file_surat_balasan) {
-            if ($request->hasFile('file_surat_balasan')) {
-                File::delete('File Surat Balasan/' . Auth::user()->id_user . '/' . $bap->file_surat_balasan);
-                $file = $request->file('file_surat_balasan');
-                $nama_file = 'Surat Balasan' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Surat Balasan/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_surat_balasan = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_surat_balasan')) {
-                $file = $request->file('file_surat_balasan');
-                $nama_file = 'Surat Balasan' . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Surat Balasan/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_surat_balasan = $nama_file;
-            }
-        }
-
         $bap->save();
 
         return redirect('seminar_prakerin');
@@ -313,8 +273,8 @@ class PraustaController extends Controller
             ->whereIn('prausta_master_kode.kode_prausta', ['FA-601', 'TI-601', 'TK-601'])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student.active', 1)
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tanggal_mulai', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang')
-            ->orderBy('student.nim', 'DESC')
+            ->select('prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tanggal_mulai', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang')
+            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
         return view('prausta/prakerin/data_prakerin', compact('data'));
@@ -325,16 +285,35 @@ class PraustaController extends Controller
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->select('dosen.iddosen', 'prausta_setting_relasi.dosen_pembimbing', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.ruangan')
             ->first();
 
         $dosen = Dosen::where('idstatus', 1)
             ->where('active', 1)
             ->get();
-        dd($dosen);
 
-        return view('prausta/prakerin/atur_prakerin', compact('id', 'data'));
+        $jam = Kurikulum_jam::all();
+
+        $ruangan = Ruangan::all();
+
+        return view('prausta/prakerin/atur_prakerin', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
+    }
+
+    public function simpan_atur_prakerin(Request $request)
+    {
+        $data = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
+            'tanggal_selesai' => $request->tanggal_selesai,
+            'jam_mulai_sidang' => $request->jam_mulai_sidang,
+            'jam_selesai_sidang' => $request->jam_selesai_sidang,
+            'dosen_penguji_1' => $request->dosen_penguji_1,
+            'ruangan' => $request->ruangan,
+            'id_dosen_penguji_1' => $request->id_dosen_penguji_1,
+        ]);
+
+        Alert::success('', 'Berhasil setting jadwal prakerin')->autoclose(3500);
+        return redirect('data_prakerin');
     }
 
     public function simpan_bimbingan(Request $request)
@@ -366,6 +345,40 @@ class PraustaController extends Controller
     public function ajukan_seminar_pkl($id)
     {
         $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['acc_seminar_sidang' => 'PENGAJUAN']);
+
+        return redirect('seminar_prakerin');
+    }
+
+    public function simpan_draft_prakerin(Request $request)
+    {
+        $this->validate($request, [
+            'file_draft_laporan' => 'mimes:pdf|max:5000',
+        ]);
+
+        $id = $request->id_settingrelasi_prausta;
+
+        $bap = Prausta_setting_relasi::find($id);
+
+        if ($bap->file_draft_laporan) {
+            if ($request->hasFile('file_draft_laporan')) {
+                File::delete('File Draft Laporan/' . Auth::user()->id_user . '/' . $bap->file_draft_laporan);
+                $file = $request->file('file_draft_laporan');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Draft Laporan/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_draft_laporan = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_draft_laporan')) {
+                $file = $request->file('file_draft_laporan');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Draft Laporan/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_draft_laporan = $nama_file;
+            }
+        }
+
+        $bap->save();
 
         return redirect('seminar_prakerin');
     }

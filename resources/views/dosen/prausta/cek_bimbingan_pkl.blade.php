@@ -61,8 +61,8 @@
                                 @if ($jdl->acc_judul == 'BELUM')
                                     <button type="submit" class="btn btn-info" name="acc_judul"
                                         value="SUDAH">Terima/Acc</button>
-                                    <button type="submit" class="btn btn-warning" name="acc_judul"
-                                        value="REVISI">Revisi</button>
+                                    {{-- <button type="submit" class="btn btn-warning" name="acc_judul"
+                                        value="REVISI">Revisi</button> --}}
                                 @elseif ($jdl->acc_judul == 'REVISI')
                                     <button type="submit" class="btn btn-info" name="acc_judul"
                                         value="SUDAH">Terima/Acc</button>
