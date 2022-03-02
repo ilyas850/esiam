@@ -998,7 +998,7 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_prodi', $prd)
             ->select('student.nim', 'student.nama', 'matakuliah.makul')
             ->get();
-        dd($data);
+
         $data1 = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prausta_master_kode', 'matakuliah.kode', '=', 'prausta_master_kode.kode_prausta')
@@ -1037,7 +1037,56 @@ class SadminController extends Controller
         $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
         $prodi = Prodi::all();
 
-        return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi]);
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $idtipe = $tp->id_periodetipe;
+
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $idtahun = $thn->id_periodetahun;
+
+        $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->where('kurikulum_periode.id_periodetipe', $idtipe)
+            ->where('kurikulum_periode.id_periodetahun', $idtahun)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+            ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+            ->get();
+
+        return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai]);
+    }
+
+    public function cek_krs_mhs($id)
+    {
+        $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student.nim',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.status',
+                'student_record.id_studentrecord'
+            )
+            ->get();
+
+        return view('sadmin/master_krs/cek_krs_mhs', compact('data'));
+    }
+
+    public function batalkrs($id)
+    {
+        $akun = Student_record::where('id_studentrecord', $id)->update(['status' => 'DROPPED']);
+
+        Alert::success('', 'KRS berhasil dihapus')->autoclose(3500);
+        return redirect()->back();
     }
 
     public function export_krs_mhs(Request $request)
@@ -1136,6 +1185,8 @@ class SadminController extends Controller
     public function hapuskaprodi(Request $request)
     {
         $akun = Kaprodi::where('id_kaprodi', $request->id_kaprodi)->update(['status' => 'NOT ACTIVE']);
+
+        $akun1 = User::where('id_user', $request->id_dosen)->update(['role' => 2]);
 
         return redirect('kaprodi');
     }

@@ -33,8 +33,10 @@ use App\Student_record;
 use App\Bayar;
 use App\Beasiswa;
 use App\Biaya;
+use App\Dosen_pembimbing;
 use App\Itembayar;
 use App\Kuitansi;
+use App\Prausta_setting_relasi;
 use App\Ujian_menit;
 use App\Ujian_tipe;
 use App\Ujian_transaction;
@@ -999,10 +1001,10 @@ class MhsController extends Controller
     $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
       ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-      ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-      ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+      ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+      ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
       ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-      ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
+      ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
       ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
       ->where('student_record.id_student', $key->idstudent)
       ->where('kurikulum_periode.id_periodetipe', $tp)
@@ -2383,5 +2385,35 @@ class MhsController extends Controller
 
       return redirect('home');
     }
+  }
+
+  public function dosbing()
+  {
+    $id = Auth::user()->id_user;
+
+    $dosen_pa = Dosen_pembimbing::join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+      ->where('id_student', $id)
+      ->select('dosen.nama')
+      ->first();
+
+    $dosen_pkl = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+      ->where('prausta_setting_relasi.id_student', $id)
+      ->select('dosen.nama')
+      ->first();
+
+    $dosen_sempro = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+      ->where('prausta_setting_relasi.id_student', $id)
+      ->select('dosen.nama')
+      ->first();
+
+    $dosen_ta = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->where('prausta_setting_relasi.id_student', $id)
+      ->select('dosen.nama')
+      ->first();
+
+    return view('mhs/dosbing', compact('dosen_pa', 'dosen_pkl', 'dosen_sempro', 'dosen_ta'));
   }
 }

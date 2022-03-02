@@ -13,7 +13,7 @@
                 <h3 class="box-title">Data Prakerin</h3>
             </div>
             <div class="box-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example4" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th rowspan="2" style="font-size:85%">No</th>

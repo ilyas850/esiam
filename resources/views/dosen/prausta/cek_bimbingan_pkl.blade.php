@@ -57,12 +57,10 @@
                                 <label>Tempat Prakerin</label>
                                 <input type="text" class="form-control" value="{{ $jdl->tempat_prausta }}" readonly>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 @if ($jdl->acc_judul == 'BELUM')
                                     <button type="submit" class="btn btn-info" name="acc_judul"
                                         value="SUDAH">Terima/Acc</button>
-                                    {{-- <button type="submit" class="btn btn-warning" name="acc_judul"
-                                        value="REVISI">Revisi</button> --}}
                                 @elseif ($jdl->acc_judul == 'REVISI')
                                     <button type="submit" class="btn btn-info" name="acc_judul"
                                         value="SUDAH">Terima/Acc</button>
@@ -71,43 +69,64 @@
                                 @elseif ($jdl->acc_judul == 'SUDAH')
                                     <span class="badge bg-blue">Judul telah di Acc.</span>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                     </form>
                 </div>
             </div>
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    Tabel Bimbingan
-                </div>
-                <div class="box-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tanggal Bimbingan</th>
-                                <th>Remark Bimbingan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no = 1; ?>
-                            @foreach ($pkl as $key)
-                                <tr>
-                                    <td>{{ $no++ }}</td>
-                                    <td>{{ $key->tanggal_bimbingan }}</td>
-                                    <td>{{ $key->remark_bimbingan }}</td>
-                                </tr>
-
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+        </div>
+        <div class="box box-info">
+            <div class="box-header with-border">
+                Tabel Bimbingan
             </div>
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    Pengajuan Seminar Prakerin
-                </div>
-                <div class="box-body">
+            <div class="box-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Bimbingan</th>
+                            <th>Uraian Bimbingan</th>
+                            <th>Validasi</th>
+                            <th>File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($pkl as $key)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $key->tanggal_bimbingan }}</td>
+                                <td>{{ $key->remark_bimbingan }}</td>
+                                <td>
+                                    @if ($key->validasi == 'BELUM')
+                                        <a href="/val_bim_pkl/{{ $key->id_transbimb_prausta }}"
+                                            class="btn btn-info btn-xs">Validasi</a>
+                                    @elseif ($key->validasi == 'SUDAH')
+                                        <span class="badge bg-blue">Sudah</span>
+                                    @endif
+
+                                </td>
+                                <td>
+                                    @if ($key->file_bimbingan == null)
+
+                                    @elseif ($key->file_bimbingan != null)
+                                        <a href="/File Bimbingan PKL/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
+                                            target="_blank"> File bimbingan</a>
+                                    @endif
+                                </td>
+                            </tr>
+
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box box-info">
+            <div class="box-header with-border">
+                Pengajuan Seminar Prakerin
+            </div>
+            <div class="box-body">
+                <div class="form">
                     @if ($jdl->acc_seminar_sidang == null)
                         <span class="badge bg-red">Belum ada pengajuan</span>
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
@@ -124,7 +143,9 @@
                             Seminar Prakerin</a>
                     @endif
                 </div>
+
             </div>
         </div>
+
     </section>
 @endsection

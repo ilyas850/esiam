@@ -1,16 +1,4 @@
-<div class="row">
-  <div class="col-md-12">
-    <div class="alert alert-info alert-dismissible">
-      <h4>Visi dan Misi Politeknik META Industri Cikarang</h4>
-      <h4> <b>Visi</b> </h4>
-      <h5>{{$visi}}</h5>
-      <h4> <b>Misi</b> </h4>
-      <h5>{{$misi}}</h5>
-      <h4> <b>Tujuan</b> </h4>
-      <h5>{{$tujuan}}</h5>
-    </div>
-  </div>
-</div>
+
 <div class="row">
   <div class="col-md-12">
     <div class="alert

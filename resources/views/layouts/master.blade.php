@@ -257,6 +257,22 @@
                                             </form>
                                         </div>
                                     </li>
+                                @elseif ((Auth::user()->role ==9))
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="/change_pass_prodi/{{ Auth::user()->id }}"
+                                                class="btn btn-default btn-flat">Ubah Password</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();"
+                                                class="btn btn-default btn-flat">Keluar</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </div>
+                                    </li>
                                 @endif
                             </ul>
                         </li>
@@ -303,7 +319,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 2.4.13
             </div>
-            <strong>Copyright &copy; 2020-2021 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All rights
+            <strong>Copyright &copy; 2020-2022 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All rights
             reserved.
         </footer>
 
@@ -368,7 +384,26 @@
                 'info': true,
                 'autoWidth': false
             })
+            $('#example5').DataTable({
+                'paging': false,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true
+            })
         })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#example4').DataTable({
+                // scrollY: "465px",
+                scrollX: true,
+                scrollCollapse: true
+
+            });
+        });
     </script>
 
     <script>
@@ -452,7 +487,7 @@
     {{-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> --}}
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
+    {{-- <script>
         $(function() {
             // Replace the <textarea id="editor1"> with a CKEditor
             // instance, using default configuration.
@@ -460,7 +495,7 @@
             //bootstrap WYSIHTML5 - text editor
             $('.textarea').wysihtml5()
         })
-    </script>
+    </script> --}}
 
 </body>
 

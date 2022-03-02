@@ -15,11 +15,12 @@
                         <li class="active"><a href="#tab_1" data-toggle="tab">Data Prakerin</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Data Bimbingan Prakerin</a></li>
                         <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar Prakerin</a></li>
-                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Prakerin</a></li>
+                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan Prakerin</a></li>
                     </ul>
                     <div class="tab-content">
                         @if ($usta->judul_prausta == null)
-                            <a class="btn btn-danger" href="{{ url('pengajuan_seminar_prakerin') }}">Masukan Data
+                            <a class="btn btn-danger"
+                                href="pengajuan_seminar_prakerin/{{ $usta->id_settingrelasi_prausta }}">Masukan Data
                                 Prakerin</a>
                         @elseif ($cekdata != null)
                             <div class="tab-pane active" id="tab_1">
@@ -83,13 +84,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    {{-- <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Acc. Judul Prakerin</label>
                                             <input type="text" class="form-control" value="{{ $usta->acc_judul }}"
                                                 readonly>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Validasi Keuangan</label>
@@ -107,7 +108,7 @@
                                         <div class="form-group">
                                             <label>Dosen Penguji</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $usta->dosen_penguji1_1 }}" readonly>
+                                                value="{{ $usta->dosen_penguji_1 }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -141,42 +142,110 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <button class="btn btn-success" data-toggle="modal"
+                                            data-target="#modalUpdatePrakerin{{ $usta->id_settingrelasi_prausta }}"
+                                            title="klik untuk edit"><i class="fa fa-edit"></i> Edit Data</button>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="modalUpdatePrakerin{{ $usta->id_settingrelasi_prausta }}"
+                                    tabindex="-1" aria-labelledby="modalUpdatePrakerin" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Update Prakerin</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/put_prakerin/{{ $usta->id_settingrelasi_prausta }}"
+                                                    method="post">
+                                                    @csrf
+                                                    @method('put')
+                                                    <div class="form-group">
+                                                        <label>Judul Seminar Prakerin</label>
+                                                        <textarea class="form-control" name="judul_prausta" rows="3"
+                                                            cols="60" required> {{ $usta->judul_prausta }}</textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tempat Prakerin</label>
+                                                        <input type="text" class="form-control" name="tempat_prausta"
+                                                            value="{{ $usta->tempat_prausta }}" required>
+                                                    </div>
+                                                    <input type="hidden" name="updated_by"
+                                                        value="{{ Auth::user()->name }}">
+                                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane" id="tab_2">
-                                @if ($usta->acc_judul == 'BELUM')
-                                    <span class="badge bg-red">Judul Belum di ACC</span>
+                                @if ($usta->judul_prausta == null)
+                                    <span class="badge bg-red">Data Prakerin belum ada</span>
                                 @else
+                                    @if (count($errors) > 0)
+                                        <div class="alert alert-danger">
+                                            Validasi Upload File Error<br><br>
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                     <div class="box box-info">
                                         <div class="box-header with-border">
                                             Form Bimbingan Prakerin
                                         </div>
                                         <div class="box-body">
                                             <form class="" action="{{ url('simpan_bimbingan') }}"
-                                                method="post">
+                                                method="post" enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="row">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>Tanggal Bimbingan</label>
                                                             <input type="date" class="form-control"
                                                                 name="tanggal_bimbingan" required>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-8">
+
                                                         <div class="form-group">
-                                                            <label>Isi Bimbingan</label>
-                                                            <input type="text" class="form-control"
-                                                                name="remark_bimbingan" required>
+                                                            <label>Uraian Bimbingan</label>
+                                                            <textarea class="form-control" name="remark_bimbingan"
+                                                                cols="30" rows="2" required></textarea>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label>File Bimbingan</label>
+                                                            <input type="file" name="file_bimbingan" class="form-control"
+                                                                required>
+                                                            <span>max. size file 4mb format pdf</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-2">
-                                                        <input type="hidden" name="id_settingrelasi_prausta"
-                                                            value="{{ $usta->id_settingrelasi_prausta }}">
-                                                        <button type="submit" class="btn btn-info">Simpan</button>
+                                                @if ($databimb == null)
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                                value="{{ $usta->id_settingrelasi_prausta }}">
+                                                            <button type="submit" class="btn btn-info">Simpan</button>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @elseif($databimb != null)
+                                                    @if ($databimb->validasi == 'BELUM')
+                                                        <span class="badge bg-yellow">Bimbingan sebelumnya belum
+                                                            divalidasi</span>
+                                                    @elseif ($databimb->validasi == 'SUDAH')
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                <button type="submit" class="btn btn-info">Simpan</button>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endif
                                             </form>
                                         </div>
                                     </div>
@@ -190,7 +259,9 @@
                                                     <tr>
                                                         <th>No</th>
                                                         <th>Tanggal Bimbingan</th>
-                                                        <th>Remark Bimbingan</th>
+                                                        <th>Uraian Bimbingan</th>
+                                                        <th>Validasi</th>
+                                                        <th>File</th>
                                                         <th>
                                                             <center>Aksi</center>
                                                         </th>
@@ -203,6 +274,21 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $key->tanggal_bimbingan }}</td>
                                                             <td>{{ $key->remark_bimbingan }}</td>
+                                                            <td>
+                                                                @if ($key->validasi == 'BELUM')
+                                                                    <span class="badge bg-yellow">BELUM</span>
+                                                                @elseif($key->validasi == 'SUDAH')
+                                                                    <span class="badge bg-blue">Sudah</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($key->file_bimbingan == null)
+                                                                @elseif ($key->file_bimbingan != null)
+                                                                    <a href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
+                                                                        target="_blank"> File bimbingan</a>
+                                                                @endif
+
+                                                            </td>
                                                             <td>
                                                                 <center>
                                                                     <button class="btn btn-primary btn-xs"
@@ -221,19 +307,15 @@
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title">Update Bimbingan</h5>
-                                                                        <button type="button" class="close"
-                                                                            data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <form
                                                                             action="/edit_bimbingan/{{ $key->id_transbimb_prausta }}"
-                                                                            method="post">
+                                                                            method="post" enctype="multipart/form-data">
                                                                             @csrf
                                                                             @method('put')
                                                                             <div class="form-group">
-                                                                                <label>Tingkat</label>
+                                                                                <label>Tanggal Bimbingan</label>
                                                                                 <input type="date" class="form-control"
                                                                                     name="tanggal_bimbingan"
                                                                                     value="{{ $key->tanggal_bimbingan }}">
@@ -243,6 +325,14 @@
                                                                                 <input type="text" class="form-control"
                                                                                     name="remark_bimbingan"
                                                                                     value="{{ $key->remark_bimbingan }}">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>File Bimbingan</label>
+                                                                                <input type="file" name="file_bimbingan"
+                                                                                    class="form-control"><a
+                                                                                    href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
+                                                                                    target="_blank">
+                                                                                    {{ $key->file_bimbingan }}</a>
                                                                             </div>
                                                                             <button type="button" class="btn btn-secondary"
                                                                                 data-dismiss="modal">Batal</button>
@@ -261,56 +351,130 @@
                                         </div>
                                     </div>
                                 @endif
-
                             </div>
                             <div class="tab-pane" id="tab_3">
                                 @if ($jml_bim < 6)
                                     <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
-
                                 @elseif ($jml_bim >= 6)
-                                    @if ($usta->acc_seminar_sidang == null)
-                                        <a href="/ajukan_seminar_pkl/{{ $usta->id_settingrelasi_prausta }}"
-                                            class="btn btn-info">Ajukan Seminar Prakerin</a>
-                                    @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
-                                        <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
-                                    @elseif ($usta->acc_seminar_sidang == 'TERIMA')
-                                        <span class="badge bg-green">Sudah di Acc. Dosen Pembimbing</span>
-                                    @elseif ($usta->acc_seminar_sidang == 'TOLAK')
-                                        <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
+                                    @if ($hasil_spp5 >= 0)
+                                        @if ($usta->acc_seminar_sidang == null)
+                                            <form class="" action="{{ url('ajukan_seminar_pkl') }}"
+                                                method="post" enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>File Draft Laporan Seminar</label>
+                                                            <input type="file" name="file_draft_laporan"
+                                                                class="form-control" required>
+                                                            <span>max. size file 4mb format pdf</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <input type="hidden" name="id_settingrelasi_prausta"
+                                                            value="{{ $usta->id_settingrelasi_prausta }}">
+                                                        <button type="submit" class="btn btn-info">Ajukan Seminar
+                                                            Prakerin</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
+
+                                            <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                target="_blank"> File bimbingan</a><br>
+                                            <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
+                                        @elseif ($usta->acc_seminar_sidang == 'TERIMA')
+                                            <span class="badge bg-green">Sudah di Acc. Dosen Pembimbing</span>
+                                        @elseif ($usta->acc_seminar_sidang == 'TOLAK')
+                                            <button class="btn btn-warning"> Pengajuan di Tolak Dosen Pembimbing
+                                            </button>
+                                            <a href="/ajukan_seminar_lagi/{{ $usta->id_settingrelasi_prausta }}"
+                                                class="btn btn-info">Ajukan Seminar Prakerin Lagi</a>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-red">Maaf syarat keuangan anda belum memenuhi untuk
+                                            pengajuan seminar</span>
                                     @endif
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_4">
                                 @if ($usta->acc_seminar_sidang == null)
-                                    <a href="/ajukan_seminar_pkl/{{ $usta->id_settingrelasi_prausta }}"
-                                        class="btn btn-info">Belum Mengajukan Seminar Prakerin</a>
+                                    <span class="badge bg-red">Belum Mengajukan Seminar Prakerin</span>
                                 @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
                                     <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
                                 @elseif ($usta->acc_seminar_sidang == 'TERIMA')
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <form action="{{ url('simpan_draft_prakerin') }}" method="post"
-                                                enctype="multipart/form-data">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="id_settingrelasi_prausta"
-                                                    value="{{ $usta->id_settingrelasi_prausta }}">
-                                                <div class="form-group">
-                                                    <label>Draft Laporan Prakerin</label><br>
-                                                    @if ($usta->file_draft_laporan == null)
-                                                        <input type="file" name="file_draft_laporan"
-                                                            class="form-control">
-                                                        <span>Format file pdf max. size 5mb</span>
-                                                        <button type="submit" class="btn btn-info">Simpan</button>
-                                                    @elseif ($usta->file_draft_laporan != NULL)
-                                                        <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
-                                                            target="_blank"> File Draf Laporan</a>
-                                                    @endif
-                                                </div>
+                                    @if ($cekdata_nilai == null)
+                                        <span class="badge bg-red">Maaf nilai anda belum ada</span>
+                                    @else
+                                        {{-- <div class="row">
+                                            <div class="col-md-3">
+                                                <form action="{{ url('simpan_draft_prakerin') }}" method="post"
+                                                    enctype="multipart/form-data">
+                                                    {{ csrf_field() }}
+                                                    <input type="hidden" name="id_settingrelasi_prausta"
+                                                        value="{{ $usta->id_settingrelasi_prausta }}">
+                                                    <div class="form-group">
+                                                        <label>Laporan Prakerin</label><br>
+                                                        @if ($usta->file_laporan_revisi == null)
+                                                            <input type="file" name="file_laporan_revisi"
+                                                                class="form-control">
+                                                            <span>Format file pdf max. size 5mb</span> <br>
+                                                            <button type="submit" class="btn btn-info">Simpan</button>
 
+                                                        @elseif ($usta->file_laporan_revisi != null)
+                                                            <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $usta->file_laporan_revisi }}"
+                                                                target="_blank"> File Laporan</a>
+                                                        @endif
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div> --}}
 
-                                            </form>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                @if ($usta->file_laporan_revisi == null)
+                                                    <div class="info-box">
+                                                        <form action="{{ url('simpan_draft_prakerin') }}" method="post"
+                                                            enctype="multipart/form-data">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                                value="{{ $usta->id_settingrelasi_prausta }}">
+                                                            <div class="form-group">
+
+                                                                <input type="file" name="file_laporan_revisi"
+                                                                    class="form-control">
+                                                                <span>Format file pdf max. size 5mb</span> <br>
+                                                                <button type="submit"
+                                                                    class="btn btn-info">Simpan</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                @elseif ($usta->file_laporan_revisi != null)
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-red"><i
+                                                                class="fa fa-files-o"></i></span>
+
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Laporan Seminar Prakerin</span>
+                                                            <span class="info-box-number">
+                                                                @if ($usta->file_laporan_revisi == null)
+                                                                    Belum ada
+                                                                @elseif ($usta->file_laporan_revisi != null)
+                                                                    <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $usta->file_laporan_revisi }}"
+                                                                        target="_blank"> File Laporan</a>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
+
                                 @elseif ($usta->acc_seminar_sidang == 'TOLAK')
                                     <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
                                 @endif
