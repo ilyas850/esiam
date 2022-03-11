@@ -3339,6 +3339,16 @@ class KaprodiController extends Controller
     return view('kaprodi/prausta/cek_bimbingan_pkl', compact('jdl', 'pkl'));
   }
 
+  public function komentar_bimbingan_kprd(Request $request, $id)
+  {
+    $prd = Prausta_trans_bimbingan::find($id);
+    $prd->komentar_bimbingan = $request->komentar_bimbingan;
+    $prd->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
   public function val_bim_pkl($id)
   {
     $val = Prausta_trans_bimbingan::find($id);
@@ -4161,5 +4171,4 @@ class KaprodiController extends Controller
 
     return redirect('penguji_ta_kprd');
   }
-  
 }

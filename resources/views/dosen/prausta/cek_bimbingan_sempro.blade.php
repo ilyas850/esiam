@@ -86,6 +86,7 @@
                             <th>No</th>
                             <th>Tanggal Bimbingan</th>
                             <th>Uraian Bimbingan</th>
+                            <th>Komentar</th>
                             <th>Validasi</th>
                             <th>File</th>
                         </tr>
@@ -97,6 +98,19 @@
                                 <td>{{ $no++ }}</td>
                                 <td>{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
+                                <td>
+                                    @if ($key->komentar_bimbingan == null)
+                                        <center>
+                                            <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
+                                        </center>
+                                    @else
+                                        <a class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
+                                                class="fa fa-edit "></i> </a>
+                                        {{ $key->komentar_bimbingan }}
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($key->validasi == 'BELUM')
                                         <a href="/val_bim_pkl/{{ $key->id_transbimb_prausta }}"

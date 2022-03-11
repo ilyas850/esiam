@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -86,6 +84,7 @@
                             <th>No</th>
                             <th>Tanggal Bimbingan</th>
                             <th>Uraian Bimbingan</th>
+                            <th>Komentar</th>
                             <th>Validasi</th>
                             <th>File</th>
                         </tr>
@@ -97,6 +96,7 @@
                                 <td>{{ $no++ }}</td>
                                 <td>{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
+                                <td></td>
                                 <td>
                                     @if ($key->validasi == 'BELUM')
                                         <a href="/val_bim_pkl_kprd/{{ $key->id_transbimb_prausta }}"
@@ -108,14 +108,12 @@
                                 </td>
                                 <td>
                                     @if ($key->file_bimbingan == null)
-
                                     @elseif ($key->file_bimbingan != null)
                                         <a href="/File Bimbingan PKL/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
                             </tr>
-
                         @endforeach
                     </tbody>
                 </table>

@@ -116,19 +116,19 @@
                                     <p>
                                         @if (Auth::user()->role == 1)
                                             Super Admin
-                                        @elseif ((Auth::user()->role ==2))
+                                        @elseif (Auth::user()->role == 2)
                                             Dosen
-                                        @elseif ((Auth::user()->role ==3))
+                                        @elseif (Auth::user()->role == 3)
                                             Mahasiswa
-                                        @elseif ((Auth::user()->role ==4))
+                                        @elseif (Auth::user()->role == 4)
                                             Mahasiswa
-                                        @elseif ((Auth::user()->role ==5))
+                                        @elseif (Auth::user()->role == 5)
                                             Dosen
-                                        @elseif ((Auth::user()->role ==6))
+                                        @elseif (Auth::user()->role == 6)
                                             Kaprodi
-                                        @elseif ((Auth::user()->role ==7))
+                                        @elseif (Auth::user()->role == 7)
                                             WADIR 1
-                                        @elseif ((Auth::user()->role ==11))
+                                        @elseif (Auth::user()->role == 11)
                                             PraUSTA
                                         @endif
                                     </p>
@@ -145,7 +145,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role == 3))
+                                @elseif (Auth::user()->role == 3)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pwd/{{ Auth::user()->id }}"
@@ -161,7 +161,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==2))
+                                @elseif (Auth::user()->role == 2)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pwd_dsn/{{ Auth::user()->id }}"
@@ -177,7 +177,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==1))
+                                @elseif (Auth::user()->role == 1)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass/{{ Auth::user()->id }}"
@@ -193,7 +193,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==5))
+                                @elseif (Auth::user()->role == 5)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass_dsn_luar/{{ Auth::user()->id }}"
@@ -209,7 +209,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==6))
+                                @elseif (Auth::user()->role == 6)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass_kaprodi/{{ Auth::user()->id }}"
@@ -225,7 +225,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==7))
+                                @elseif (Auth::user()->role == 7)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass_wadir1/{{ Auth::user()->id }}"
@@ -241,7 +241,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==11))
+                                @elseif (Auth::user()->role == 11)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass_prausta/{{ Auth::user()->id }}"
@@ -257,7 +257,7 @@
                                             </form>
                                         </div>
                                     </li>
-                                @elseif ((Auth::user()->role ==9))
+                                @elseif (Auth::user()->role == 9)
                                     <li class="user-footer">
                                         <div class="pull-left">
                                             <a href="/change_pass_prodi/{{ Auth::user()->id }}"

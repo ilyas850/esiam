@@ -57,6 +57,44 @@ use Illuminate\Support\Facades\View;
 
 class SadminController extends Controller
 {
+    public function master_angkatan()
+    {
+        $data = Angkatan::all();
+
+        return view('sadmin/masterakademik/master_angkatan', compact('data'));
+    }
+
+    public function simpan_angkatan(Request $request)
+    {
+        $ang = new Angkatan();
+        $ang->idangkatan = $request->idangkatan;
+        $ang->angkatan = $request->angkatan;
+        $ang->save();
+
+        Alert::success('', 'Master angkatan berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_angkatan');
+    }
+
+    public function put_angkatan(Request $request, $id)
+    {
+        $ang = Angkatan::find($id);
+        $ang->idangkatan = $request->idangkatan;
+        $ang->angkatan = $request->angkatan;
+        $ang->save();
+
+        Alert::success('', 'Master angkatan berhasil diedit')->autoclose(3500);
+        return redirect('master_angkatan');
+    }
+
+    public function hapusangkatan(Request $request)
+    {
+        $id = $request->idangkatan;
+        Angkatan::where('idangkatan', $id)->delete();
+
+        Alert::success('', 'Master angkatan berhasil dihapus')->autoclose(3500);
+        return redirect('master_angkatan');
+    }
+
     public function change($id)
     {
         return view('sadmin/change_pwd', ['adm' => $id]);

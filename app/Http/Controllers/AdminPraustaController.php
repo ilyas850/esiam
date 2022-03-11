@@ -20,7 +20,9 @@ use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_master_kategori;
+use App\Prausta_trans_hasil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AdminPraustaController extends Controller
@@ -276,5 +278,278 @@ class AdminPraustaController extends Controller
 
         Alert::success('', 'Berhasil setting jadwal sidang tugas akhir')->autoclose(3500);
         return redirect('data_ta');
+    }
+
+    public function bim_prakerin()
+    {
+        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+            )
+            ->groupBy(
+                'student.nama',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/prakerin/bimbingan_prakerin', compact('data'));
+    }
+
+    public function cek_bim_prakerin($id)
+    {
+        $data = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_trans_bimbingan.tanggal_bimbingan',
+                'prausta_trans_bimbingan.file_bimbingan',
+                'prausta_trans_bimbingan.remark_bimbingan',
+                'prausta_trans_bimbingan.validasi',
+                'student.idstudent'
+            )
+            ->get();
+
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+            )
+            ->first();
+
+        return view('prausta/prakerin/cek_bimbingan_prakerin', compact('data', 'mhs'));
+    }
+
+    public function bim_sempro()
+    {
+        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+            )
+            ->groupBy(
+                'student.nama',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/sempro/bimbingan_sempro', compact('data'));
+    }
+
+    public function cek_bim_sempro($id)
+    {
+        $data = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_trans_bimbingan.tanggal_bimbingan',
+                'prausta_trans_bimbingan.file_bimbingan',
+                'prausta_trans_bimbingan.remark_bimbingan',
+                'prausta_trans_bimbingan.validasi',
+                'student.idstudent'
+            )
+            ->get();
+
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan'
+            )
+            ->first();
+
+        return view('prausta/sempro/cek_bimbingan_sempro', compact('data', 'mhs'));
+    }
+
+    public function bim_ta()
+    {
+        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+            )
+            ->groupBy(
+                'student.nama',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/ta/bimbingan_ta', compact('data'));
+    }
+
+    public function cek_bim_ta($id)
+    {
+        $data = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_trans_bimbingan.tanggal_bimbingan',
+                'prausta_trans_bimbingan.file_bimbingan',
+                'prausta_trans_bimbingan.remark_bimbingan',
+                'prausta_trans_bimbingan.validasi',
+                'student.idstudent'
+            )
+            ->get();
+
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan'
+            )
+            ->first();
+
+        return view('prausta/ta/cek_bimbingan_ta', compact('data', 'mhs'));
+    }
+
+    public function nilai_prakerin()
+    {
+        $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/prakerin/nilai_prakerin', compact('data'));
+    }
+
+    public function nilai_sempro()
+    {
+        $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/sempro/nilai_sempro', compact('data'));
+    }
+
+    public function nilai_ta()
+    {
+        $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/ta/nilai_ta', compact('data'));
     }
 }

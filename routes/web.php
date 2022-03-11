@@ -13,6 +13,12 @@ Route::post('/daftar', 'MhsController@daftar');
 Route::get('login_adm', 'AdminController@login');
 
 Route::group(['middleware' => 'sadmin'], function () {
+    //master akademik
+    Route::get('master_angkatan', 'SadminController@master_angkatan');
+    Route::post('simpan_angkatan', 'SadminController@simpan_angkatan');
+    Route::put('put_angkatan/{id}', 'SadminController@put_angkatan');
+    Route::post('hapusangkatan', 'SadminController@hapusangkatan');
+
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');
     Route::get('show_mhs', 'SadminController@show_mhs');
@@ -206,6 +212,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('status_judul', 'DosenController@status_judul');
     Route::get('acc_seminar_pkl/{id}', 'DosenController@acc_seminar_pkl');
     Route::get('tolak_seminar_pkl/{id}', 'DosenController@tolak_seminar_pkl');
+    route::put('komentar_bimbingan/{id}', 'DosenController@komentar_bimbingan');
 
     //penguji PKL
     Route::get('penguji_pkl', 'DosenController@penguji_pkl');
@@ -397,6 +404,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::post('status_judul_dsnlr', 'DosenluarController@status_judul');
     Route::get('acc_seminar_pkl_dsnlr/{id}', 'DosenluarController@acc_seminar_pkl');
     Route::get('tolak_seminar_pkl_dsnlr/{id}', 'DosenluarController@tolak_seminar_pkl');
+    route::put('komentar_bimbingan_dsnlr/{id}', 'DosenluarController@komentar_bimbingan_dsnlr');
 
     //penguji PKL
     Route::get('penguji_pkl_dsnlr', 'DosenluarController@penguji_pkl');
@@ -545,6 +553,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('status_judul_kprd', 'KaprodiController@status_judul');
     Route::get('acc_seminar_pkl_kprd/{id}', 'KaprodiController@acc_seminar_pkl');
     Route::get('tolak_seminar_pkl_kprd/{id}', 'KaprodiController@tolak_seminar_pkl');
+    route::put('komentar_bimbingan_kprd/{id}', 'KaprodiController@komentar_bimbingan_kprd');
 
     //penguji PKL
     Route::get('penguji_pkl_kprd', 'KaprodiController@penguji_pkl');
@@ -627,4 +636,25 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_ta', 'AdminPraustaController@data_ta');
     Route::get('atur_ta/{id}', 'AdminPraustaController@atur_ta');
     Route::post('simpan_atur_ta', 'AdminPraustaController@simpan_atur_ta');
+
+    //record bimbingan prakerin
+    Route::get('bim_prakerin', 'AdminPraustaController@bim_prakerin');
+    Route::get('cek_bim_prakerin/{id}', 'AdminPraustaController@cek_bim_prakerin');
+
+    //record bimbingan sempro
+    Route::get('bim_sempro', 'AdminPraustaController@bim_sempro');
+    Route::get('cek_bim_sempro/{id}', 'AdminPraustaController@cek_bim_sempro');
+
+    //record bimbingan tugas akhir
+    Route::get('bim_ta', 'AdminPraustaController@bim_ta');
+    Route::get('cek_bim_ta/{id}', 'AdminPraustaController@cek_bim_ta');
+
+    //nilai prakerin
+    Route::get('nilai_prakerin', 'AdminPraustaController@nilai_prakerin');
+
+    //nilai sempro
+    Route::get('nilai_sempro', 'AdminPraustaController@nilai_sempro');
+
+    //nilai tugas akhir
+    Route::get('nilai_ta', 'AdminPraustaController@nilai_ta');
 });

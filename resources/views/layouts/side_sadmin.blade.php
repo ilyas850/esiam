@@ -7,6 +7,28 @@
     </li>
     <li class="treeview">
         <a href="#">
+            <i class="fa fa-th"></i> <span>Master Akademik</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Master Angkatan</a></li>
+            <li><a href="/master_bom"><i class="fa fa-circle-o"></i> Master BOM (Bill of Makul)</a></li>
+            <li><a href="/master_jam"><i class="fa fa-circle-o"></i> Master Jam</a></li>
+            <li><a href="/master_makul"><i class="fa fa-circle-o"></i> Master Matakuliah</a></li>
+            <li><a href="/master_menitsks"><i class="fa fa-circle-o"></i> Master Menit SKS</a></li>
+            <li><a href="/master_menitujian"><i class="fa fa-circle-o"></i> Master Menit Ujian</a></li>
+            <li><a href="/master_nilai_angkahuruf"><i class="fa fa-circle-o"></i> Master Nilai Angka-Huruf</a></li>
+            <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Master Program Studi</a></li>
+            <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Master Ruang Kelas</a></li>
+            <li><a href="/master_kodeprausta"><i class="fa fa-circle-o"></i> Master Kode PraUSTA</a></li>
+            <li><a href="/master_edom"><i class="fa fa-circle-o"></i> Master EDOM</a></li>
+            <li><a href="/master_kategoriprausta"><i class="fa fa-circle-o"></i> Master Kategori PraUSTA</a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
             <i class="fa fa-th"></i> <span>Master</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>

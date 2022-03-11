@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -260,6 +258,7 @@
                                                         <th>No</th>
                                                         <th>Tanggal Bimbingan</th>
                                                         <th>Uraian Bimbingan</th>
+                                                        <th>Komentar Bimbingan</th>
                                                         <th>Validasi</th>
                                                         <th>File</th>
                                                         <th>
@@ -274,6 +273,18 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $key->tanggal_bimbingan }}</td>
                                                             <td>{{ $key->remark_bimbingan }}</td>
+                                                            <td>
+                                                                <center>
+                                                                    @if ($key->komentar_bimbingan == null)
+                                                                        <span class="badge bg-yellow">BELUM</span>
+                                                                    @else
+                                                                        <a class="btn btn-success btn-xs"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">
+                                                                            <i class="fa fa-eye "></i> Lihat</a>
+                                                                    @endif
+                                                                </center>
+                                                            </td>
                                                             <td>
                                                                 @if ($key->validasi == 'BELUM')
                                                                     <span class="badge bg-yellow">BELUM</span>
@@ -298,7 +309,32 @@
                                                                 </center>
                                                             </td>
                                                         </tr>
-
+                                                        <div class="modal fade"
+                                                            id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
+                                                            tabindex="-1" aria-labelledby="modalTambahKomentar"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Komentar Bimbingan</h5>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form
+                                                                            action="/komentar_bimbingan/{{ $key->id_transbimb_prausta }}"
+                                                                            method="post" enctype="multipart/form-data">
+                                                                            @csrf
+                                                                            @method('put')
+                                                                            <div class="form-group">
+                                                                                <textarea class="form-control" cols="20"
+                                                                                    rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                                            </div>
+                                                                            <button type="button" class="btn btn-secondary"
+                                                                                data-dismiss="modal">Tutup</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="modal fade"
                                                             id="modalUpdatebimbingan{{ $key->id_transbimb_prausta }}"
                                                             tabindex="-1" aria-labelledby="modalUpdatebimbingan"
@@ -344,7 +380,6 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -382,7 +417,6 @@
                                                 </div>
                                             </form>
                                         @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
-
                                             <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
                                                 target="_blank"> File bimbingan</a><br>
                                             <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
@@ -474,7 +508,6 @@
                                             </div>
                                         </div>
                                     @endif
-
                                 @elseif ($usta->acc_seminar_sidang == 'TOLAK')
                                     <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
                                 @endif

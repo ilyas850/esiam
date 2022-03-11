@@ -1555,8 +1555,9 @@ class DosenController extends Controller
         $kur = Bap::where('id_bap', $id)->first();
 
         $idk = $kur->id_kurperiode;
+        $per = $kur->pertemuan;
 
-        $abs = Absensi_mahasiswa::join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
+        $abs = Absensi_mahasiswa::leftjoin('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -1576,30 +1577,50 @@ class DosenController extends Controller
             )
             ->get();
 
-        $abs1 = Student_record::leftjoin('absensi_mahasiswa', 'student_record.id_studentrecord', '=', 'absensi_mahasiswa.id_studentrecord')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('student_record.id_kurperiode', $idk)
-            // ->where(function ($query)  use ($idk, $id) {
-            //     $query->where('student_record.id_kurperiode', $idk)
-            //         ->orWhere('absensi_mahasiswa.id_bap', null)
-            //         ->orWhere('absensi_mahasiswa.id_bap', $id);
-            // })
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_studentrecord', 'absensi_mahasiswa.absensi')
-            ->get();
-        dd($abs1);
+        foreach ($abs as $ab) {
+        }
 
+        $absen = Student_record::leftjoin('absensi_mahasiswa', 'student_record.id_studentrecord', '=', 'absensi_mahasiswa.id_studentrecord')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
+            ->where('student_record.id_kurperiode', $idk)
+            ->where('bap.pertemuan', $per)
+            ->where('student_record.status', 'TAKEN')
+            ->where(function ($query)  use ($id, $idk) {
+                $query->where('absensi_mahasiswa.id_bap', $id)
+                    ->orWhere('absensi_mahasiswa.id_bap', NULL);
+            })
+            ->select(
+                'student_record.id_kurperiode',
+                'student_record.id_studentrecord',
+                'absensi_mahasiswa.id_bap',
+                'angkatan.angkatan',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.nama',
+                'student.nim',
+                'absensi_mahasiswa.absensi',
+                'absensi_mahasiswa.id_absensi',
+                'bap.pertemuan'
+            )
+            ->get();
+
+        dd($absen);
         $dt = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student_record.id_kurperiode', $idk)
+
             ->where('student_record.status', 'TAKEN')
             ->select('angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim')
             ->get();
 
 
-        return view('dosen/edit_absen', ['idk' => $idk, 'abs' => $abs, 'id' => $id, 'dt' => $dt]);
+        return view('dosen/edit_absen', ['idk' => $idk, 'abs' => $abs, 'id' => $id, 'dt' => $dt, 'absen' => $absen, 'ab' => $ab]);
     }
 
     public function save_edit_absensi(Request $request)
@@ -2991,6 +3012,16 @@ class DosenController extends Controller
             ->get();
 
         return view('dosen/prausta/cek_bimbingan_pkl', compact('jdl', 'pkl'));
+    }
+
+    public function komentar_bimbingan(Request $request, $id)
+    {
+        $prd = Prausta_trans_bimbingan::find($id);
+        $prd->komentar_bimbingan = $request->komentar_bimbingan;
+        $prd->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
     }
 
     public function val_bim_pkl($id)

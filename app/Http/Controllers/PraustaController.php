@@ -198,7 +198,15 @@ class PraustaController extends Controller
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->select('prausta_trans_bimbingan.id_transbimb_prausta', 'prausta_trans_bimbingan.file_bimbingan', 'prausta_trans_bimbingan.validasi', 'prausta_trans_bimbingan.tanggal_bimbingan', 'prausta_trans_bimbingan.remark_bimbingan', 'prausta_trans_bimbingan.id_transbimb_prausta')
+                ->select(
+                    'prausta_trans_bimbingan.id_transbimb_prausta',
+                    'prausta_trans_bimbingan.file_bimbingan',
+                    'prausta_trans_bimbingan.validasi',
+                    'prausta_trans_bimbingan.tanggal_bimbingan',
+                    'prausta_trans_bimbingan.remark_bimbingan',
+                    'prausta_trans_bimbingan.komentar_bimbingan',
+                    'prausta_trans_bimbingan.id_transbimb_prausta'
+                )
                 ->get();
 
             $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
