@@ -42,11 +42,11 @@ class KrsController extends Controller
       alert()->error('KRS Belum dibuka', 'Maaf silahkan menghubungi bagian akademik');
       return redirect('home');
     } elseif ($time->status == 1) {
-      $id = Auth::user()->username;
+      $id = Auth::user()->id_user;
 
       $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
         ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        ->where('student.nim', $id)
+        ->where('student.idstudent', $id)
         ->select(
           'student.idstudent',
           'student.nama',
@@ -103,21 +103,24 @@ class KrsController extends Controller
           'spp8',
           'spp9',
           'spp10',
+          'spp11',
+          'spp12',
+          'spp13',
+          'spp14',
+          'prakerin',
           'seminar',
           'sidang',
           'wisuda'
         )
         ->first();
 
-      $totalbiaya = $biaya->daftar + $biaya->awal + $biaya->dsp + $biaya->spp1 + $biaya->spp2 + $biaya->spp3 + $biaya->spp4 + $biaya->spp5 + $biaya->spp6 + $biaya->spp7 + $biaya->spp8 + $biaya->spp9 + $biaya->spp10 + $biaya->seminar + $biaya->sidang + $biaya->wisuda;
+      $totalbiaya = $biaya->daftar + $biaya->awal + $biaya->dsp + $biaya->spp1 + $biaya->spp2 + $biaya->spp3 + $biaya->spp4 + $biaya->spp5 +
+        $biaya->spp6 + $biaya->spp7 + $biaya->spp8 + $biaya->spp9 + $biaya->spp10 + $biaya->spp11 + $biaya->spp12 + $biaya->spp13 + $biaya->spp14 +
+        $biaya->prakerin + $biaya->seminar + $biaya->sidang + $biaya->wisuda;
 
-      $cekbeasiswa = Beasiswa::where('idstudent', $ids)->get();
+      $cb = Beasiswa::where('idstudent', $ids)->first();
 
-      if (count($cekbeasiswa) > 0) {
-
-        foreach ($cekbeasiswa as $cb) {
-          // code...
-        }
+      if (($cb) != null) {
 
         $daftar = $biaya->daftar - (($biaya->daftar * ($cb->daftar)) / 100);
         $awal = $biaya->awal - (($biaya->awal * ($cb->awal)) / 100);
@@ -132,12 +135,12 @@ class KrsController extends Controller
         $spp8 = $biaya->spp8 - (($biaya->spp8 * ($cb->spp8)) / 100);
         $spp9 = $biaya->spp9 - (($biaya->spp9 * ($cb->spp9)) / 100);
         $spp10 = $biaya->spp10 - (($biaya->spp10 * ($cb->spp10)) / 100);
-        $seminar = $biaya->seminar - (($biaya->seminar * ($cb->seminar)) / 100);
-        $sidang = $biaya->sidang - (($biaya->sidang * ($cb->sidang)) / 100);
-        $wisuda = $biaya->wisuda - (($biaya->wisuda * ($cb->wisuda)) / 100);
+        $spp11 = $biaya->spp11 - (($biaya->spp11 * ($cb->spp11)) / 100);
+        $spp12 = $biaya->spp12 - (($biaya->spp12 * ($cb->spp12)) / 100);
+        $spp13 = $biaya->spp13 - (($biaya->spp13 * ($cb->spp13)) / 100);
+        $spp14 = $biaya->spp14 - (($biaya->spp14 * ($cb->spp14)) / 100);
+      } elseif (($cb) == null) {
 
-        $totalall = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $seminar + $sidang + $wisuda;
-      } else {
         $daftar = $biaya->daftar;
         $awal = $biaya->awal;
         $dsp = $biaya->dsp;
@@ -151,109 +154,198 @@ class KrsController extends Controller
         $spp8 = $biaya->spp8;
         $spp9 = $biaya->spp9;
         $spp10 = $biaya->spp10;
-        $seminar = $biaya->seminar;
-        $sidang = $biaya->sidang;
-        $wisuda = $biaya->wisuda;
-
-        $totalall = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $seminar + $sidang + $wisuda;
+        $spp11 = $biaya->spp11;
+        $spp12 = $biaya->spp12;
+        $spp13 = $biaya->spp13;
+        $spp14 = $biaya->spp14;
       }
 
-      $totalbayarmhs = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->join('itembayar', 'bayar.iditem', '=', 'itembayar.iditem')
-        ->where('kuitansi.idstudent', $ids)
-        ->sum('bayar.bayar');
+      //cek masa studi 
+      $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        ->where('student.idstudent', $ids)
+        ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+        ->first();
 
-      $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 1)
-        ->sum('bayar.bayar');
+      if ($cek_study->study_year == 3) {
+        $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 1)
+          ->sum('bayar.bayar');
 
-      $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 2)
-        ->sum('bayar.bayar');
+        $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 2)
+          ->sum('bayar.bayar');
 
-      $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 3)
-        ->sum('bayar.bayar');
+        $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 3)
+          ->sum('bayar.bayar');
 
-      $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 4)
-        ->sum('bayar.bayar');
+        $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 4)
+          ->sum('bayar.bayar');
 
-      $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 5)
-        ->sum('bayar.bayar');
+        $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 5)
+          ->sum('bayar.bayar');
 
-      $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 6)
-        ->sum('bayar.bayar');
+        $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 6)
+          ->sum('bayar.bayar');
 
-      $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 7)
-        ->sum('bayar.bayar');
+        $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 7)
+          ->sum('bayar.bayar');
 
-      $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 8)
-        ->sum('bayar.bayar');
+        $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 8)
+          ->sum('bayar.bayar');
 
-      $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 9)
-        ->sum('bayar.bayar');
+        $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 9)
+          ->sum('bayar.bayar');
 
-      $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 10)
-        ->sum('bayar.bayar');
+        $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 10)
+          ->sum('bayar.bayar');
 
-      $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 11)
-        ->sum('bayar.bayar');
+        $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 11)
+          ->sum('bayar.bayar');
 
-      $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 12)
-        ->sum('bayar.bayar');
+        $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 12)
+          ->sum('bayar.bayar');
 
-      $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 13)
-        ->sum('bayar.bayar');
+        $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 13)
+          ->sum('bayar.bayar');
+      } elseif ($cek_study->study_year == 4) {
 
-      $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 14)
-        ->sum('bayar.bayar');
+        $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 18)
+          ->sum('bayar.bayar');
 
-      $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 15)
-        ->sum('bayar.bayar');
+        $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 19)
+          ->sum('bayar.bayar');
 
-      $sisawisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-        ->where('kuitansi.idstudent', $ids)
-        ->where('bayar.iditem', 16)
-        ->sum('bayar.bayar');
+        $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 20)
+          ->sum('bayar.bayar');
 
-      $tots1 = $sisadaftar + $sisaawal;
-      $tots2 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1;
-      $tots3 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2;
-      $tots4 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3;
-      $tots5 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4;
-      $tots6 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5;
-      $tots7 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6;
-      $tots8 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7;
-      $tots9 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8;
-      $tots10 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9;
-      $totalsisa = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9 + $sisaspp10 + $sisaseminar + $sisasidang + $sisawisuda;
+        $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 21)
+          ->sum('bayar.bayar');
+
+        $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 22)
+          ->sum('bayar.bayar');
+
+        $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 23)
+          ->sum('bayar.bayar');
+
+        $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 24)
+          ->sum('bayar.bayar');
+
+        $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 25)
+          ->sum('bayar.bayar');
+
+        $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 26)
+          ->sum('bayar.bayar');
+
+        $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 27)
+          ->sum('bayar.bayar');
+
+        $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 28)
+          ->sum('bayar.bayar');
+
+        $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 29)
+          ->sum('bayar.bayar');
+
+        $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 30)
+          ->sum('bayar.bayar');
+
+        $sisaspp11 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 31)
+          ->sum('bayar.bayar');
+
+        $sisaspp12 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 32)
+          ->sum('bayar.bayar');
+
+        $sisaspp13 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 33)
+          ->sum('bayar.bayar');
+
+        $sisaspp14 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+          ->where('kuitansi.idstudent', $ids)
+          ->where('bayar.iditem', 34)
+          ->sum('bayar.bayar');
+      }
+
+      if ($cek_study->study_year == 3) {
+        $tots1 = $sisadaftar + $sisaawal;
+        $tots2 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1;
+        $tots3 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2;
+        $tots4 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3;
+        $tots5 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4;
+        $tots6 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5;
+        $tots7 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6;
+        $tots8 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7;
+        $tots9 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8;
+        $tots10 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9;
+      } elseif ($cek_study->study_year == 4) {
+        $tots1 = $sisadaftar + $sisaawal;
+        $tots2 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1;
+        $tots3 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2;
+        $tots4 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3;
+        $tots5 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4;
+        $tots6 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5;
+        $tots7 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6;
+        $tots8 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7;
+        $tots9 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8;
+        $tots10 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9;
+        $tots11 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9 + $sisaspp10;
+        $tots12 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9 + $sisaspp10 + $sisaspp11;
+        $tots13 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9 + $sisaspp10 + $sisaspp11 + $sisaspp12;
+        $tots14 = $sisadaftar + $sisaawal + $sisadsp + $sisaspp1 + $sisaspp2 + $sisaspp3 + $sisaspp4 + $sisaspp5 + $sisaspp6 + $sisaspp7 + $sisaspp8 + $sisaspp9 + $sisaspp10 + $sisaspp11 + $sisaspp12 + $sisaspp13;
+      }
 
       if ($c == 1) {
         $cekbyr = ($daftar + $awal) - $tots1;
@@ -275,8 +367,15 @@ class KrsController extends Controller
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8) - $tots9;
       } elseif ($c == 10) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9) - $tots10;
+      } elseif ($c == 11) {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10) - $tots11;
+      } elseif ($c == 12) {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11) - $tots12;
+      } elseif ($c == 13) {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12) - $tots13;
+      } elseif ($c == 14) {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13) - $tots14;
       }
-
       //cek status semester mahasiswa
       if ($cekbyr < 1) {
 
@@ -296,38 +395,27 @@ class KrsController extends Controller
           ->select('student_record.remark', 'student_record.id_studentrecord', 'student_record.tanggal_krs', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama')
           ->get();
 
-        $skst = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+        $recordas = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
           ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-          ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
           ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
           ->where('student_record.id_student', $ids)
           ->where('kurikulum_periode.id_periodetipe', $tipe)
           ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
           ->where('student_record.status', 'TAKEN')
-          ->sum('matakuliah.akt_sks_teori');
+          ->select('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+          ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+          ->get();
 
-        $sksp = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-          ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-          ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-          ->where('student_record.id_student', $ids)
-          ->where('kurikulum_periode.id_periodetipe', $tipe)
-          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-          ->where('student_record.status', 'TAKEN')
-          ->sum('matakuliah.akt_sks_praktek');
-
-        $sks = $skst + $sksp;
-
+        //jumlah SKS
+        $sks = 0;
+        foreach ($recordas as $keysks) {
+          $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+        }
 
         $mhs = $ids;
-        $prod = Prodi::where('kodeprodi', $maha->kodeprodi)->get();
-        foreach ($prod as $value) {
-          // code...
-        }
-        $kur = Kurikulum_master::where('status', 'ACTIVE')->get();
-        foreach ($kur as $krlm) {
-          // code...
-        }
+        $value = Prodi::where('kodeprodi', $maha->kodeprodi)->first();
+
+        $krlm = Kurikulum_master::where('status', 'ACTIVE')->first();
 
         $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
           ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
@@ -360,10 +448,9 @@ class KrsController extends Controller
           ->where('kurikulum_transaction.id_angkatan', $idangkatan)
           ->where('kurikulum_periode.status', 'ACTIVE')
           ->where('kurikulum_transaction.status', 'ACTIVE')
-          ->whereNotIn('kurikulum_periode.id_makul', [209, 210]) // ->select('kurikulum_periode.id_makul', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'kurikulum_periode.id_semester', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen')
+          ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
           ->union($add_krs)
           ->get();
-
 
         return view('mhs/krs/isi_krs', ['b' => $b, 'mhss' => $mhs, 'add' => $final_krs, 'mhs' => $maha, 'thn' => $periodetahun, 'tp' => $periodetipe, 'krs' => $record, 'sks' => $sks]);
       } else {
@@ -380,7 +467,6 @@ class KrsController extends Controller
     $cek = Student_record::find($id);
     $cek->status = $request->status;
     $cek->save();
-
 
     Alert::success('', 'Matakuliah berhasil dihapus')->autoclose(3500);
     return redirect('isi_krs');

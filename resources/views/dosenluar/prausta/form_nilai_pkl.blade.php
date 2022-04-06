@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -46,7 +44,7 @@
                 </table>
             </div>
         </div>
-        <form class="" action="{{ url('simpan_nilai_prakerin_dsnlr') }}" method="post"
+        {{-- <form class="" action="{{ url('simpan_nilai_prakerin_dsnlr') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
@@ -202,6 +200,120 @@
                         </tr>
                     </table>
 
+                </div>
+            </div>
+            <button type="submit" class="btn btn-info">Simpan</button>
+        </form> --}}
+
+        <form class="" action="{{ url('simpan_nilai_prakerin_dsnlr') }}" method="post"
+            enctype="multipart/form-data" name="autoSumForm">
+            {{ csrf_field() }}
+            <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
+            <div class="box box-success">
+                <div class="box-header">
+                    <h3 class="box-title"><b>Form Penilaian Pembimbing Lapangan</b> </h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Nilai Pembimbing Lapangan</label>
+                                <font color="red-text">*</font>
+                                <span>(tidak wajib untuk kelas karyawan)</span>
+                                <input type="number" class="form-control" name="nilai_pembimbing_lapangan">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-warning">
+                <div class="box-header">
+                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="3%" align="center">No</th>
+                                <th width="82%">
+                                    <center>Parameter Penilaian</center>
+                                </th>
+                                <th width="10%">
+                                    <center>Bobot (%)</center>
+                                </th>
+                                <th width="5%">
+                                    <center>Nilai</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($form_dosbing as $item)
+                                <tr>
+                                    <td>
+                                        <center>{{ $no++ }}</center>
+                                    </td>
+                                    <td>{{ $item->komponen }}</td>
+                                    <td>
+                                        <center>{{ $item->bobot }}%</center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <input type="hidden" name="id_penilaian_prausta1[]"
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai1[]" required>
+                                            <center>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title"><b>Form Penilaian Seminar</b> </h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="3%" align="center">No</th>
+                                <th width="82%">
+                                    <center>Parameter Penilaian</center>
+                                </th>
+                                <th width="10%">
+                                    <center>Bobot (%)</center>
+                                </th>
+                                <th width="5%">
+                                    <center>Nilai</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($form_seminar as $item)
+                                <tr>
+                                    <td>
+                                        <center>{{ $no++ }}</center>
+                                    </td>
+                                    <td>{{ $item->komponen }}</td>
+                                    <td>
+                                        <center>{{ $item->bobot }}%</center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <input type="hidden" name="id_penilaian_prausta2[]"
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai2[]" required>
+                                            <center>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Simpan</button>

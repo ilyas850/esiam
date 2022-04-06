@@ -49,4 +49,30 @@
                         Tugas Akhir</span></a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>BAP PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('bap_sempro') }}"><i class="fa fa-circle-o"></i> <span>
+                        Seminar Proposal</span></a></li>
+            <li><a href="{{ url('bap_ta') }}"><i class="fa fa-circle-o"></i> <span>
+                        Tugas Akhir</span></a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Export PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('export_data') }}"><i class="fa fa-circle-o"></i> <span>
+                        Export Data</span></a></li>
+        </ul>
+    </li>
 </ul>

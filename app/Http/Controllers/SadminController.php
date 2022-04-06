@@ -24,6 +24,7 @@ use App\Periode_tipe;
 use App\Waktu_krs;
 use App\Student_record;
 use App\Matakuliah;
+use App\Matakuliah_bom;
 use App\Semester;
 use App\Dosen_pembimbing;
 use App\Kurikulum_hari;
@@ -33,6 +34,7 @@ use App\Kurikulum_transaction;
 use App\Transkrip_nilai;
 use App\Transkrip_final;
 use App\Absensi_mahasiswa;
+use App\Prausta_master_penilaian;
 use App\Visimisi;
 use App\Kuliah_nilaihuruf;
 use App\Prausta_master_kategori;
@@ -46,6 +48,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
+use App\Exports\DataPrakerinExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -141,7 +144,21 @@ class SadminController extends Controller
     {
         $usermhs = Student::leftJoin('passwords', 'user', '=', 'student.nim')
             ->leftJoin('users', 'username', '=', 'passwords.user')
-            ->select('users.id', 'users.id_user', 'users.username', 'users.deleted_at', 'passwords.pwd', 'student.nim', 'student.nama', 'student.idstatus', 'student.kodeprodi', 'student.idangkatan', 'users.role')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->select(
+                'users.id',
+                'users.id_user',
+                'users.username',
+                'users.deleted_at',
+                'passwords.pwd',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idstudent',
+                'users.role'
+            )
             ->where('student.active', 1)
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('student.nim', 'ASC')
@@ -153,51 +170,6 @@ class SadminController extends Controller
             ->get();
 
         return view('sadmin/data_user', ['users' => $usermhs, 'dsn' => $dsn]);
-    }
-
-    public function add_user_mhs($id)
-    {
-        $cek = User::where('username', $id)->get();
-
-        if (count($cek) > 0) {
-            return redirect('show_user')->with('fatal', 'anda tidak dapat melakukan proses ini!');
-        }
-
-        $mhs = Student::where('nim', $id)->get();
-
-        foreach ($mhs as $user) {
-        }
-
-        $pwd = $id;
-
-        return view('sadmin/add_user_mhs', ['mhss' => $user, 'pwds' => $pwd]);
-    }
-
-    public function store_user_mhs(Request $request)
-    {
-        $this->validate($request, [
-            'id_user' => 'required',
-            'name' => 'required|max:255',
-            'role' => 'required',
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-
-        $users = new User();
-        $users->id_user = $request->id_user;
-        $users->name = $request->name;
-        $users->password = bcrypt($request->password);
-        $users->role = $request->role;
-        $users->username = $request->username;
-        $users->save();
-
-        $sadmin = new Password();
-        $sadmin->id_user = $request->id_user;
-        $sadmin->user = $request->username;
-        $sadmin->pwd = $request->password;
-        $sadmin->save();
-
-        return redirect('show_user')->with('pesan', 'user mahasiswa baru sudah terdaftar...');
     }
 
     public function resetuser(Request $request)
@@ -219,14 +191,6 @@ class SadminController extends Controller
 
         Alert::success('', 'User berhasil dihapus')->autoclose(3500);
         return redirect('show_user');
-    }
-
-    public function show_ta()
-    {
-        $ta_thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        $ta_tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-        return view('sadmin/ta', ['thn' => $ta_thn, 'tp' => $ta_tp]);
     }
 
     public function save_krs_time(Request $request)
@@ -348,20 +312,12 @@ class SadminController extends Controller
     public function hapusinfo($id)
     {
         // hapus file
-        //$gambar = Informasi::find($id);
-
-        // if (($gambar->file)) {
-        //   Storage::delete('public/posts_image/'. $gambar->file);
-        //   // Storage::delete($gambar->file);
-        // }
-        // $gambar->delete();
-
-        // hapus file
         $gambar = Informasi::where('id_informasi', $id)->first();
         File::delete('data_file/' . $gambar->file);
 
         // hapus data
         Informasi::where('id_informasi', $id)->delete();
+
         Alert::success('', 'Informasi berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
@@ -387,13 +343,6 @@ class SadminController extends Controller
 
         if ($info->file) {
             if ($request->hasFile('file')) {
-                // Storage::delete('public/posts_image/'. $info->file);
-                // $filenameWithExt = $request->file('file')->getClientOriginalName();
-                // $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                // $extension = $request->file('file')->getClientOriginalExtension();
-                // $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $path = $request->file('file')->storeAs('public/posts_image', $filenameSimpan);
-                // $info->file        = $filenameSimpan;
                 File::delete('data_file/' . $info->file);
                 // menyimpan data file yang diupload ke variabel $file
                 $file = $request->file('file');
@@ -407,13 +356,6 @@ class SadminController extends Controller
             }
         } else {
             if ($request->hasFile('file')) {
-                // $filenameWithExt = $request->file('file')->getClientOriginalName();
-                // $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                // $extension = $request->file('file')->getClientOriginalExtension();
-                // $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $path = $request->file('file')->storeAs('public/posts_image', $filenameSimpan);
-                // $info->file        = $filenameSimpan;
-                // menyimpan data file yang diupload ke variabel $file
                 $file = $request->file('file');
 
                 $nama_file = time() . '_' . $file->getClientOriginalName();
@@ -582,11 +524,8 @@ class SadminController extends Controller
             $akun = Student_record::where('id_student', $nl->id_student)
                 ->where('id_kurtrans', $nl->id_kurtrans)
                 ->update(['nilai_ANGKA' => $niak, 'nilai_AKHIR' => $n]);
-            // $id = $ids;
-            // $ceknilai = Student_record::find($id);
-            // $ceknilai->nilai_ANGKA = $niak;
-            // $ceknilai->save();
         }
+
         return redirect('data_nilai');
     }
 
@@ -594,13 +533,14 @@ class SadminController extends Controller
     {
         $pem = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.active', 1)
-            ->select('student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'dosen_pembimbing.id_dosen')
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'dosen.nama as nama_dsn')
+            ->orderBy('student.nim', 'DESC')
             ->get();
 
-        $dsn = Dosen::all();
-
-        return view('sadmin/pembimbing', ['dosbing' => $pem, 'dsn' => $dsn]);
+        return view('sadmin/pembimbing', ['dosbing' => $pem]);
     }
 
     public function data_admin()
@@ -655,58 +595,43 @@ class SadminController extends Controller
 
     public function approve_krs()
     {
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        foreach ($thn as $tahun) {
-            // code...
-        }
-
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-        foreach ($tp as $tipe) {
-            // code...
-        }
-
-        $angk = Angkatan::all();
-        $dsn = Dosen::all();
         $appr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->leftjoin('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
-            ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
-
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idangkatan', 'dosen_pembimbing.id_dosen', 'student.idstatus', 'student_record.remark')
+            ->select(
+                DB::raw('DISTINCT(student_record.id_student)'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'angkatan.angkatan',
+                'dosen.nama as nama_dsn',
+                'kelas.kelas',
+                'student_record.remark'
+            )
             ->get();
 
-        return view('sadmin/approv', ['appr' => $appr, 'angk' => $angk, 'dsn' => $dsn]);
+        return view('sadmin/approv', ['appr' => $appr]);
     }
 
     public function cek_krs($id)
     {
-        $semester = Semester::all();
-        $dosen = Dosen::all();
-        $makul = Matakuliah::all();
-        $hari = Kurikulum_hari::all();
-        $jam = Kurikulum_jam::all();
-        $ruang = Ruangan::all();
-        $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
-            ->where('student_record.status', 'TAKEN')
-            ->where('id_student', $id)
-            ->select('student_record.remark', 'student.idstudent', 'student_record.id_studentrecord', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen', 'kurikulum_periode.id_makul', 'student_record.remark', 'student.idstatus', 'student.nim', 'student.idangkatan', 'student.kodeprodi', 'student.nama', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.id_semester')
-            ->get();
-
-        foreach ($val as $key) {
-            // code...
-        }
+        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+            ->first();
 
         $valkrs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -726,46 +651,72 @@ class SadminController extends Controller
 
         $b = $valuekrs->remark;
 
-        $kur = Kurikulum_master::where('status', 'ACTIVE')->get();
-        foreach ($kur as $krlm) {
-            // code...
-        }
+        $kur = Kurikulum_master::where('status', 'ACTIVE')->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
-        $tp = $tipe->id_periodetipe;
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $maha = Student::where('idstudent', $id)->first();
 
-        $maha = Student::where('idstudent', $id)->get();
+        $prod = Prodi::where('kodeprodi', $maha->kodeprodi)->first();
 
-        foreach ($maha as $key) {
-            # code...
-        }
-        $mhs = $key->kodeprodi;
-        $prod = Prodi::where('kodeprodi', $key->kodeprodi)->get();
-        foreach ($prod as $value) {
-            // code...
-        }
-        $mhs = $key->idstudent;
+        $mhs = $maha->idstudent;
+
         $krs = Kurikulum_transaction::join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
-            ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-            ->where('kurikulum_periode.id_periodetipe', $tp)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-            ->where('kurikulum_periode.id_kelas', $key->idstatus)
-            ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-            ->where('kurikulum_transaction.id_angkatan', $key->idangkatan)
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_transaction.id_kurikulum', $kur->id_kurikulum)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_kelas', $maha->idstatus)
+            ->where('kurikulum_transaction.id_prodi', $prod->id_prodi)
+            ->where('kurikulum_transaction.id_angkatan', $maha->idangkatan)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('kurikulum_periode.id_makul', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'kurikulum_periode.id_semester', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.id_dosen')
+            ->select(
+                'matakuliah.makul',
+                'matakuliah.kode',
+                'kurikulum_transaction.idkurtrans',
+                'kurikulum_periode.id_kurperiode',
+                'semester.semester',
+                'dosen.nama'
+            )
             ->get();
 
-        return view('sadmin/cek_krs_admin', ['b' => $b, 'hr' => $hari, 'jm' => $jam, 'rng' => $ruang, 'smt' => $semester, 'mhss' => $mhs, 'add' => $krs, 'val' => $val, 'key' => $key, 'mk' => $makul, 'dsn' => $dosen]);
+        $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+            ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->where('id_student', $id)
+            ->select(
+                'student_record.remark',
+                'student.idstudent',
+                'student_record.id_studentrecord',
+                'matakuliah.akt_sks_teori',
+                'matakuliah.akt_sks_praktek',
+                'dosen.nama',
+                'matakuliah.makul',
+                'matakuliah.kode',
+                'student_record.remark',
+                'kurikulum_hari.hari',
+                'kurikulum_jam.jam',
+                'ruangan.nama_ruangan',
+                'semester.semester'
+            )
+            ->get();
+
+        return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $krs, 'val' => $val]);
     }
 
     public function batalkrsmhs(Request $request)
@@ -781,33 +732,36 @@ class SadminController extends Controller
 
     public function view_krs(Request $request)
     {
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-        foreach ($tp as $tipe) {
-            // code...
-        }
-
-        $angk = Angkatan::all();
-        $dsn = Dosen::all();
         $appr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->leftjoin('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
             ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
             ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
             ->where('student_record.remark', $request->remark)
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idangkatan', 'dosen_pembimbing.id_dosen', 'student.idstatus', 'student_record.remark')
+            ->select(
+                DB::raw('DISTINCT(student_record.id_student)'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'angkatan.angkatan',
+                'dosen.nama as nama_dsn',
+                'kelas.kelas',
+                'student_record.remark'
+            )
             ->get();
 
-        return view('sadmin/approv', ['appr' => $appr, 'angk' => $angk, 'dsn' => $dsn]);
+        return view('sadmin/approv', ['appr' => $appr]);
     }
 
     public function data_dosen_luar()
@@ -930,25 +884,32 @@ class SadminController extends Controller
 
     public function view_ktm(Request $request)
     {
-        $ang = Angkatan::all();
-        $prd = Prodi::all();
-        $kls = Kelas::all();
-        $mhs = Student::where('idangkatan', $request->idangkatan)
-            ->where('kodeprodi', $request->kodeprodi)
-            ->where('idstatus', $request->idstatus)
+        $mhs = Student::join('prodi', 'prodi.kodeprodi', '=', 'student.kodeprodi')
+            ->join('angkatan', 'angkatan.idangkatan', '=', 'student.idangkatan')
+            ->join('kelas', 'kelas.idkelas', '=', 'student.idstatus')
+            ->where('student.idangkatan', $request->idangkatan)
+            ->where('student.kodeprodi', $request->kodeprodi)
+            ->where('student.idstatus', $request->idstatus)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'angkatan.angkatan',
+                'kelas.kelas'
+            )
             ->get();
 
-        return view('sadmin/data_ktm', ['mhs' => $mhs, 'ang' => $ang, 'prd' => $prd, 'kls' => $kls]);
+        return view('sadmin/data_ktm', ['mhs' => $mhs]);
     }
 
     public function downloadktm($id)
     {
-        $prd = Prodi::all();
-        $mhs = Student::where('idstudent', $id)->get();
-        foreach ($mhs as $keymhs) {
-            // code...
-        }
-        $thn = $keymhs->idangkatan;
+        $mhs = Student::join('prodi', 'prodi.kodeprodi', '=', 'student.kodeprodi')
+            ->where('student.idstudent', $id)
+            ->first();
+
+        $thn = $mhs->idangkatan;
         $ttl = $thn + 3;
         $t1 = $ttl - 1;
 
@@ -956,8 +917,8 @@ class SadminController extends Controller
 
         //return view('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
         //return PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
-        $pdf = PDF::loadView('sadmin/ktm', ['mhs' => $keymhs, 'prd' => $prd, 'hs' => $hs])->setPaper('a4', 'landscape');
-        return $pdf->download('KTM_' . $keymhs->nim . '_' . $keymhs->nama . '.pdf');
+        $pdf = PDF::loadView('sadmin/ktm', ['mhs' => $mhs, 'hs' => $hs])->setPaper('a4', 'landscape');
+        return $pdf->download('KTM_' . $mhs->nim . '_' . $mhs->nama . '.pdf');
     }
 
     public function nilai_khs()
@@ -978,12 +939,14 @@ class SadminController extends Controller
         $prodi = Prodi::where('id_prodi', $prd)
             ->select('prodi', 'kodeprodi')
             ->first();
+
         $pro = $prodi->prodi;
         $kd = $prodi->kodeprodi;
 
         $tahun = Periode_tahun::where('id_periodetahun', $ta)
             ->select('periode_tahun')
             ->first();
+
         $thn = $tahun->periode_tahun;
         $ganti = str_replace('/', '_', $thn);
 
@@ -992,81 +955,8 @@ class SadminController extends Controller
             ->first();
         $tpe = $tipe->periode_tipe;
 
-        $nilai = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-            ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-            ->where('kurikulum_periode.id_prodi', $request->id_prodi)
-            ->where('student.active', 1)
-            ->select(DB::raw('DISTINCT(student_record.id_kurtrans)'), 'prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks_hasil'))
-            ->get();
-
         $nama_file = 'Nilai' . ' ' . $pro . ' ' . $ganti . ' ' . $tpe . '.xlsx';
         return Excel::download(new DataNilaiKHSExport($prd, $ta, $tp, $kd), $nama_file);
-    }
-
-    public function nilai_prausta()
-    {
-        $tahun = Periode_tahun::orderBy('periode_tahun', 'ASC')->get();
-        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
-        $prodi = Prodi::all();
-
-        return view('sadmin/prausta/nilai_prausta', compact('tahun', 'tipe', 'prodi'));
-    }
-
-    public function export_nilai_prausta(Request $request)
-    {
-        $prd = $request->id_prodi;
-        $ta = $request->id_periodetahun;
-        $tp = $request->id_periodetipe;
-
-        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('student_record', 'student.idstudent', '=', 'student_record.id_student')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
-            ->where('kurikulum_periode.id_periodetahun', $ta)
-            ->where('kurikulum_periode.id_periodetipe', $tp)
-            ->where('kurikulum_periode.id_prodi', $prd)
-            ->select('student.nim', 'student.nama', 'matakuliah.makul')
-            ->get();
-
-        $data1 = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('prausta_master_kode', 'matakuliah.kode', '=', 'prausta_master_kode.kode_prausta')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            //->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            //->join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->where('kurikulum_periode.id_periodetahun', $ta)
-            ->where('kurikulum_periode.id_periodetipe', $tp)
-            ->where('kurikulum_periode.id_prodi', $prd)
-            ->where('student_record.status', 'TAKEN')
-            ->select('prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.makul')
-            ->orderBy('student.nim', 'ASC')
-            ->get();
-
-        $datas = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
-            //->join('kuliah_nilaihuruf', 'prausta_trans_hasil.nilai_huruf', '=', 'kuliah_nilaihuruf.nilai_huruf')
-            ->where('prausta_trans_hasil.status', 'ACTIVE')
-            ->where('student.active', 1)
-            ->select('prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.makul', DB::raw('sum(matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek) as sks'), 'prausta_trans_hasil.nilai_huruf')
-            ->groupBy('prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.makul', 'prausta_trans_hasil.nilai_huruf')
-            ->orderBy('student.nim', 'ASC')
-            ->get();
     }
 
     public function data_krs()
@@ -1136,6 +1026,7 @@ class SadminController extends Controller
         $prodi = Prodi::where('id_prodi', $prd)
             ->select('prodi', 'kodeprodi')
             ->first();
+
         $pro = $prodi->prodi;
         $kd = $prodi->kodeprodi;
 
@@ -2533,5 +2424,62 @@ class SadminController extends Controller
 
         Alert::success('', 'User berhasil dihapus')->autoclose(3500);
         return redirect('data_admin_prodi');
+    }
+
+    public function master_bom()
+    {
+        $data = Matakuliah_bom::join('matakuliah', 'matakuliah_bom.master_idmakul', '=', 'matakuliah.idmakul')
+            ->where('matakuliah_bom.status', 'ACTIVE')
+            ->select('matakuliah.makul', 'matakuliah_bom.master_idmakul', 'matakuliah_bom.slave_idmakul')
+            ->get();
+
+        $makul = Matakuliah::where('active', 1)->get();
+
+
+        return view('sadmin/masterakademik/master_bom', compact('data', 'makul'));
+    }
+
+    public function penilaian_prausta()
+    {
+        $data = Prausta_master_penilaian::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_penilaian_prausta', compact('data'));
+    }
+
+    public function simpan_penilaian_prausta(Request $request)
+    {
+        $ang = new Prausta_master_penilaian();
+        $ang->komponen = $request->komponen;
+        $ang->bobot = $request->bobot;
+        $ang->acuan = $request->acuan;
+        $ang->kategori = $request->kategori;
+        $ang->jenis_form = $request->jenis_form;
+        $ang->save();
+
+        Alert::success('', 'Master Penilaian PraUSTA berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_penilaianprausta');
+    }
+
+    public function put_penilaian_prausta(Request $request, $id)
+    {
+        $ang = Prausta_master_penilaian::find($id);
+        $ang->komponen = $request->komponen;
+        $ang->bobot = $request->bobot;
+        $ang->acuan = $request->acuan;
+        $ang->kategori = $request->kategori;
+        $ang->jenis_form = $request->jenis_form;
+        $ang->save();
+
+        Alert::success('', 'Master Penilaian PraUSTA berhasil diedit')->autoclose(3500);
+        return redirect('master_penilaianprausta');
+    }
+
+    public function hapus_penilaian_prausta(Request $request)
+    {
+        $akun = Prausta_master_penilaian::where('id_penilaian_prausta', $request->id_penilaian_prausta)
+            ->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Penilaian PraUSTA berhasil dihapus')->autoclose(3500);
+        return redirect('master_penilaianprausta');
     }
 }

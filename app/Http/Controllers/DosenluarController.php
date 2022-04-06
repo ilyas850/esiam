@@ -33,6 +33,8 @@ use App\Ujian_transaction;
 use App\Prausta_setting_relasi;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
+use App\Prausta_master_penilaian;
+use App\Prausta_trans_penilaian;
 use App\Exports\DataNilaiExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -2668,22 +2670,80 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_pkl', compact('data', 'id'));
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Pembimbing')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        $form_seminar = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Seminar')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_pkl', compact('data', 'id', 'form_dosbing', 'form_seminar'));
     }
 
     public function simpan_nilai_prakerin(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_1 = $request->nilai_pembimbing_lapangan;
-        $nilai_2 = $request->total;
-        $nilai_3 = $request->totals;
+        $nilai_pem_lap = $request->nilai_pembimbing_lapangan;
+        $id_penilaian1 = $request->id_penilaian_prausta1;
+        $id_penilaian2 = $request->id_penilaian_prausta2;
+        $nilai1 = $request->nilai1;
+        $nilai2 = $request->nilai2;
 
-        if ($nilai_1 == null) {
+        $hitung_id_penilaian1 = count($id_penilaian1);
+        $hitung_id_penilaian2 = count($id_penilaian2);
 
-            $huruf = ($nilai_2 + $nilai_3) / 2;
-        } elseif ($nilai_1 != null) {
+        for ($i = 0; $i < $hitung_id_penilaian1; $i++) {
+            $id_nilai1 = $id_penilaian1[$i];
+            $n1 = $nilai1[$i];
 
-            $huruf = (($nilai_1 + $nilai_2 + $nilai_3) / 3);
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai1;
+            $usta->nilai = $n1;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        for ($i = 0; $i < $hitung_id_penilaian2; $i++) {
+            $id_nilai2 = $id_penilaian2[$i];
+            $n2 = $nilai2[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai2;
+            $usta->nilai = $n2;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai_1 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $ceknilai_2 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Seminar')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
+            ->first();
+
+        // $nilai_2 = $request->total;
+        // $nilai_3 = $request->totals;
+
+        if ($nilai_pem_lap == null) {
+
+            $huruf = ($ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 2;
+        } elseif ($nilai_pem_lap != null) {
+
+            $huruf = (($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3);
         }
 
         $hasilavg = round($huruf, 2);
@@ -2707,14 +2767,15 @@ class DosenluarController extends Controller
 
         $usta = new Prausta_trans_hasil();
         $usta->id_settingrelasi_prausta = $id_prausta;
-        $usta->nilai_1 = $nilai_1;
-        $usta->nilai_2 = $nilai_2;
-        $usta->nilai_3 = $nilai_3;
+        $usta->nilai_1 = $nilai_pem_lap;
+        $usta->nilai_2 = $ceknilai_1->nilai1;
+        $usta->nilai_3 = $ceknilai_2->nilai2;
         $usta->nilai_huruf = $nilai_huruf;
         $usta->added_by = Auth::user()->name;
         $usta->status = 'ACTIVE';
         $usta->save();
 
+        Alert::success('', 'Nilai Prakerin berhasil disimpan')->autoclose(3500);
         return redirect('penguji_pkl_dsnlr');
     }
 
@@ -2834,13 +2895,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_sempro_dospem', compact('data', 'id'));
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 2)
+            ->where('jenis_form', 'Form Pembimbing')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_sempro_dospem', compact('data', 'id', 'form_dosbing'));
     }
 
     public function simpan_nilai_sempro_dospem(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dospem = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -2898,6 +2989,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
     }
 
@@ -2908,13 +3000,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_sempro_dosji1', compact('data', 'id'));
+        $form_peng1 = Prausta_master_penilaian::where('kategori', 2)
+            ->where('jenis_form', 'Form Penguji I')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_sempro_dosji1', compact('data', 'id', 'form_peng1'));
     }
 
     public function simpan_nilai_sempro_dosji1(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dosji1 = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dosji1 = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -2972,6 +3094,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
     }
 
@@ -2982,13 +3105,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_sempro_dosji2', compact('data', 'id'));
+        $form_peng2 = Prausta_master_penilaian::where('kategori', 2)
+            ->where('jenis_form', 'Form Penguji II')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_sempro_dosji2', compact('data', 'id', 'form_peng2'));
     }
 
     public function simpan_nilai_sempro_dosji2(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dosji2 = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dosji2 = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -3046,6 +3199,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
     }
 
@@ -3198,13 +3352,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_ta_dospem', compact('data', 'id'));
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 3)
+            ->where('jenis_form', 'Form Pembimbing')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_ta_dospem', compact('data', 'id', 'form_dosbing'));
     }
 
     public function simpan_nilai_ta_dospem(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dospem = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -3263,6 +3447,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
     }
 
@@ -3273,13 +3458,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_ta_dosji1', compact('data', 'id'));
+        $form_peng1 = Prausta_master_penilaian::where('kategori', 3)
+            ->where('jenis_form', 'Form Penguji I')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_ta_dosji1', compact('data', 'id', 'form_peng1'));
     }
 
     public function simpan_nilai_ta_dosji1(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dosji1 = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dosji1 = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -3337,6 +3552,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
     }
 
@@ -3347,13 +3563,43 @@ class DosenluarController extends Controller
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        return view('dosenluar/prausta/form_nilai_ta_dosji2', compact('data', 'id'));
+        $form_peng2 = Prausta_master_penilaian::where('kategori', 3)
+            ->where('jenis_form', 'Form Penguji II')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosenluar/prausta/form_nilai_ta_dosji2', compact('data', 'id', 'form_peng2'));
     }
 
     public function simpan_nilai_ta_dosji2(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
-        $nilai_dosji2 = $request->total;
+        $id_penilaian = $request->id_penilaian_prausta;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai;
+            $usta->nilai = $n;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dosji2 = $ceknilai->nilai1;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
@@ -3411,6 +3657,7 @@ class DosenluarController extends Controller
                 ]);
         }
 
+        Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
     }
 }

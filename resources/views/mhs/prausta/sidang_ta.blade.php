@@ -68,14 +68,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Judul Prakerin</label>
+                                            <label>Judul Tugas Akhir</label>
                                             <textarea class="form-control" rows="2" cols="60" name="judul_prausta"
                                                 readonly>{{ $data->judul_prausta }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Tempat Prakerin</label>
+                                            <label>Tempat </label>
                                             <input type="text" class="form-control" value="{{ $data->tempat_prausta }}"
                                                 name="tempat_prausta" readonly>
                                         </div>
@@ -113,14 +113,14 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Tanggal Seminar Prakerin</label>
+                                            <label>Tanggal Sidang Tugas Akhir</label>
                                             <input type="text" class="form-control"
                                                 value="{{ $data->tanggal_selesai }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Ruangan Seminar Prakerin</label>
+                                            <label>Ruangan Sidang Tugas Akhir</label>
                                             <input type="text" class="form-control" value="{{ $data->ruangan }}"
                                                 readonly>
                                         </div>
@@ -165,7 +165,7 @@
                                                             cols="60" required> {{ $data->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>Tempat Prakerin</label>
+                                                        <label>Tempat </label>
                                                         <input type="text" class="form-control" name="tempat_prausta"
                                                             value="{{ $data->tempat_prausta }}" required>
                                                     </div>
@@ -180,7 +180,7 @@
                             </div>
                             <div class="tab-pane" id="tab_2">
                                 @if ($data->judul_prausta == null)
-                                    <span class="badge bg-red">Data Prakerin belum ada</span>
+                                    <span class="badge bg-red">Data Tugas Akhir belum ada</span>
                                 @else
                                     @if (count($errors) > 0)
                                         <div class="alert alert-danger">
@@ -258,6 +258,7 @@
                                                         <th>No</th>
                                                         <th>Tanggal Bimbingan</th>
                                                         <th>Uraian Bimbingan</th>
+                                                        <th>Komentar Bimbingan</th>
                                                         <th>Validasi</th>
                                                         <th>File</th>
                                                         <th>
@@ -272,6 +273,18 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $key->tanggal_bimbingan }}</td>
                                                             <td>{{ $key->remark_bimbingan }}</td>
+                                                            <td>
+                                                                <center>
+                                                                    @if ($key->komentar_bimbingan == null)
+                                                                        <span class="badge bg-yellow">BELUM</span>
+                                                                    @else
+                                                                        <a class="btn btn-success btn-xs"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">
+                                                                            <i class="fa fa-eye "></i> Lihat</a>
+                                                                    @endif
+                                                                </center>
+                                                            </td>
                                                             <td>
                                                                 @if ($key->validasi == 'BELUM')
                                                                     <span class="badge bg-yellow">BELUM</span>
@@ -294,6 +307,29 @@
                                                                 </center>
                                                             </td>
                                                         </tr>
+                                                        <div class="modal fade"
+                                                            id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
+                                                            tabindex="-1" aria-labelledby="modalTambahKomentar"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Komentar Bimbingan</h5>
+                                                                    </div>
+                                                                    <div class="modal-body">
+
+                                                                        <div class="form-group">
+                                                                            <textarea class="form-control" cols="20"
+                                                                                rows="10"
+                                                                                readonly> {{ $key->komentar_bimbingan }} </textarea>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Tutup</button>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="modal fade"
                                                             id="modalUpdatebimbingan{{ $key->id_transbimb_prausta }}"
                                                             tabindex="-1" aria-labelledby="modalUpdatebimbingan"
@@ -355,8 +391,8 @@
                                     <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 4</span>
                                 @elseif ($jml_bim >= 4)
                                     @if ($data->acc_seminar_sidang == null)
-                                        <form class="" action="{{ url('ajukan_sidang_ta') }}" method="post"
-                                            enctype="multipart/form-data">
+                                        <form class="" action="{{ url('ajukan_sidang_ta') }}"
+                                            method="post" enctype="multipart/form-data">
                                             {{ csrf_field() }}
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -373,13 +409,12 @@
                                                 <div class="col-md-2">
                                                     <input type="hidden" name="id_settingrelasi_prausta"
                                                         value="{{ $data->id_settingrelasi_prausta }}">
-                                                    <button type="submit" class="btn btn-info">Ajukan Seminar
-                                                        Prakerin</button>
+                                                    <button type="submit" class="btn btn-info">Ajukan Sidang Tugas
+                                                        Akhir</button>
                                                 </div>
                                             </div>
                                         </form>
                                     @elseif ($data->acc_seminar_sidang == 'PENGAJUAN')
-
                                         <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                             target="_blank"> File bimbingan</a><br>
                                         <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
@@ -389,7 +424,7 @@
                                         <button class="btn btn-warning"> Pengajuan di Tolak Dosen Pembimbing
                                         </button>
                                         <a href="/ajukan_seminar_lagi/{{ $data->id_settingrelasi_prausta }}"
-                                            class="btn btn-info">Ajukan Seminar Prakerin Lagi</a>
+                                            class="btn btn-info">Ajukan Sidang Tugas Akhir Lagi</a>
                                     @endif
                                 @endif
                             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use File;
 use Alert;
 use App\User;
@@ -21,6 +22,7 @@ use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_master_kategori;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -155,40 +157,57 @@ class PraustaController extends Controller
             $idstatus = $maha->idstatus;
             $kodeprodi = $maha->kodeprodi;
 
+            $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->where('student.idstudent', $id)
+                ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+                ->first();
+
             $biaya = Biaya::where('idangkatan', $idangkatan)
                 ->where('idstatus', $idstatus)
                 ->where('kodeprodi', $kodeprodi)
-                ->select('spp5')
+                ->select('spp5', 'spp6')
                 ->first();
 
-            $biaya_spp5 = $biaya->spp5;
-
             //cek beasiswa mahasiswa
-            $cekbeasiswa = Beasiswa::where('idstudent', $id)->get();
+            $cb = Beasiswa::where('idstudent', $id)->first();
 
-            if (count($cekbeasiswa) > 0) {
-                foreach ($cekbeasiswa as $cb) {
+            if ($cek_study->study_year == 3) {
+                $biaya_spp = $biaya->spp5;
+
+                if (($cb) != null) {
+
+                    $spp = $biaya->spp5 - ($biaya->spp5 * $cb->spp5) / 100;
+                } elseif (($cb) == null) {
+
+                    $spp = $biaya->spp5;
                 }
 
-                $spp5 = $biaya->spp5 - ($biaya->spp5 * $cb->spp5) / 100;
+                $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                    ->where('kuitansi.idstudent', $id)
+                    ->where('bayar.iditem', 8)
+                    ->sum('bayar.bayar');
+            } elseif ($cek_study->study_year == 4) {
+                $biaya_spp = $biaya->spp6;
 
-                $total_spp5 = $spp5;
-            } else {
-                $spp5 = $biaya->spp5;
+                if (($cb) != null) {
 
-                $total_spp5 = $spp5;
+                    $spp = $biaya->spp6 - ($biaya->spp6 * $cb->spp6) / 100;
+                } elseif (($cb) == null) {
+
+                    $spp = $biaya->spp6;
+                }
+
+                $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                    ->where('kuitansi.idstudent', $id)
+                    ->where('bayar.iditem', 26)
+                    ->sum('bayar.bayar');
             }
 
-            $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 8)
-                ->sum('bayar.bayar');
+            $hasil_spp = $sisaspp - $spp;
 
-            $hasil_spp5 = $sisaspp5 - $total_spp5;
-
-            if ($hasil_spp5 == 0 or $hasil_spp5 > 0) {
+            if ($hasil_spp == 0 or $hasil_spp > 0) {
                 $validasi = 'Sudah Lunas';
-            } elseif ($hasil_spp5 < 0) {
+            } elseif ($hasil_spp < 0) {
                 $validasi = 'Belum Lunas';
             }
 
@@ -238,7 +257,7 @@ class PraustaController extends Controller
                 foreach ($data as $usta) {
                 }
 
-                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'hasil_spp5', 'cekdata_nilai'));
+                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'hasil_spp', 'cekdata_nilai'));
             }
         }
     }
@@ -598,37 +617,43 @@ class PraustaController extends Controller
                         $idstatus = $maha->idstatus;
                         $kodeprodi = $maha->kodeprodi;
 
+                        $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                            ->where('student.idstudent', $id)
+                            ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+                            ->first();
+
                         $biaya = Biaya::where('idangkatan', $idangkatan)
                             ->where('idstatus', $idstatus)
                             ->where('kodeprodi', $kodeprodi)
                             ->select('seminar')
                             ->first();
 
-
-                        $biaya_seminar = $biaya->seminar;
-
                         //cek beasiswa mahasiswa
-                        $cekbeasiswa = Beasiswa::where('idstudent', $id)->get();
+                        $cb = Beasiswa::where('idstudent', $id)->first();
 
-                        if (count($cekbeasiswa) > 0) {
-                            foreach ($cekbeasiswa as $cb) {
-                            }
+                        if (($cb) != null) {
 
                             $seminar = $biaya->seminar - ($biaya->seminar * $cb->seminar) / 100;
+                        } elseif (($cb) == null) {
 
-                            $total_seminar = $seminar;
-                        } else {
                             $seminar = $biaya->seminar;
-
-                            $total_seminar = $seminar;
                         }
 
-                        $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                            ->where('kuitansi.idstudent', $id)
-                            ->where('bayar.iditem', 14)
-                            ->sum('bayar.bayar');
+                        if ($cek_study->study_year == 3) {
 
-                        $hasil_seminar = $sisaseminar - $total_seminar;
+                            $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                ->where('kuitansi.idstudent', $id)
+                                ->where('bayar.iditem', 14)
+                                ->sum('bayar.bayar');
+                        } elseif ($cek_study->study_year == 4) {
+
+                            $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                ->where('kuitansi.idstudent', $id)
+                                ->where('bayar.iditem', 37)
+                                ->sum('bayar.bayar');
+                        }
+
+                        $hasil_seminar = $sisaseminar - $seminar;
 
                         if ($hasil_seminar == 0) {
                             $validasi = 'Sudah Lunas';
@@ -649,6 +674,7 @@ class PraustaController extends Controller
                                 'prausta_trans_bimbingan.validasi',
                                 'prausta_trans_bimbingan.tanggal_bimbingan',
                                 'prausta_trans_bimbingan.remark_bimbingan',
+                                'prausta_trans_bimbingan.komentar_bimbingan',
                                 'prausta_trans_bimbingan.id_transbimb_prausta',
                                 'prausta_trans_bimbingan.id_settingrelasi_prausta'
                             )
@@ -954,8 +980,6 @@ class PraustaController extends Controller
             )
             ->get();
 
-
-
         if ($hasil_krs == 0) {
 
             Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
@@ -1032,36 +1056,43 @@ class PraustaController extends Controller
                             $idstatus = $maha->idstatus;
                             $kodeprodi = $maha->kodeprodi;
 
+                            $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                                ->where('student.idstudent', $id)
+                                ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+                                ->first();
+
                             $biaya = Biaya::where('idangkatan', $idangkatan)
                                 ->where('idstatus', $idstatus)
                                 ->where('kodeprodi', $kodeprodi)
                                 ->select('sidang')
                                 ->first();
 
-                            $biaya_sidang = $biaya->sidang;
-
                             //cek beasiswa mahasiswa
-                            $cekbeasiswa = Beasiswa::where('idstudent', $id)->get();
+                            $cb = Beasiswa::where('idstudent', $id)->first();
 
-                            if (count($cekbeasiswa) > 0) {
-                                foreach ($cekbeasiswa as $cb) {
-                                }
+                            if (($cb) != null) {
 
                                 $sidang = $biaya->sidang - ($biaya->sidang * $cb->sidang) / 100;
+                            } elseif (($cb) == null) {
 
-                                $total_sidang = $sidang;
-                            } else {
                                 $sidang = $biaya->sidang;
-
-                                $total_sidang = $sidang;
                             }
 
-                            $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                ->where('kuitansi.idstudent', $id)
-                                ->where('bayar.iditem', 15)
-                                ->sum('bayar.bayar');
+                            if ($cek_study->study_year == 3) {
 
-                            $hasil_sidang = $sisasidang - $total_sidang;
+                                $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                    ->where('kuitansi.idstudent', $id)
+                                    ->where('bayar.iditem', 15)
+                                    ->sum('bayar.bayar');
+                            } elseif ($cek_study->study_year == 4) {
+
+                                $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                    ->where('kuitansi.idstudent', $id)
+                                    ->where('bayar.iditem', 38)
+                                    ->sum('bayar.bayar');
+                            }
+
+                            $hasil_sidang = $sisasidang - $sidang;
 
                             if ($hasil_sidang == 0) {
                                 $validasi = 'Sudah Lunas';
@@ -1082,6 +1113,7 @@ class PraustaController extends Controller
                                     'prausta_trans_bimbingan.validasi',
                                     'prausta_trans_bimbingan.tanggal_bimbingan',
                                     'prausta_trans_bimbingan.remark_bimbingan',
+                                    'prausta_trans_bimbingan.komentar_bimbingan',
                                     'prausta_trans_bimbingan.id_transbimb_prausta',
                                     'prausta_trans_bimbingan.id_settingrelasi_prausta'
                                 )

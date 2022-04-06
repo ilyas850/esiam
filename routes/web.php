@@ -19,6 +19,15 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::put('put_angkatan/{id}', 'SadminController@put_angkatan');
     Route::post('hapusangkatan', 'SadminController@hapusangkatan');
 
+    //matakuliah BOM
+    Route::get('master_bom', 'SadminController@master_bom');
+
+    //penilaian prausta
+    Route::get('master_penilaianprausta', 'SadminController@penilaian_prausta');
+    Route::post('simpan_penilaian_prausta', 'SadminController@simpan_penilaian_prausta');
+    Route::put('put_penilaian_prausta/{id}', 'SadminController@put_penilaian_prausta');
+    Route::post('hapus_penilaian_prausta', 'SadminController@hapus_penilaian_prausta');
+
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');
     Route::get('show_mhs', 'SadminController@show_mhs');
@@ -87,8 +96,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master khs
     Route::get('nilai_khs', 'SadminController@nilai_khs');
     Route::post('export_nilai_khs', 'SadminController@export_nilai_khs');
-    Route::get('nilai_prausta', 'SadminController@nilai_prausta');
-    Route::post('export_nilai_prausta', 'SadminController@export_nilai_prausta');
+   
 
     //master krs
     Route::get('data_krs', 'SadminController@data_krs');
@@ -344,6 +352,10 @@ Route::group(['middleware' => 'mhs'], function () {
 
     //dosen pembimbing
     Route::get('dosbing', 'MhsController@dosbing');
+
+    //biaya kuliah
+    Route::get('record_biaya', 'MhsController@record_biaya');
+    Route::get('data_biaya', 'MhsController@data_biaya');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -590,6 +602,16 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('simpan_nilai_ta_dosji1_kprd', 'KaprodiController@simpan_nilai_ta_dosji1');
     Route::get('isi_form_nilai_ta_dosji2_kprd/{id}', 'KaprodiController@isi_form_nilai_ta_dosji2');
     Route::post('simpan_nilai_ta_dosji2_kprd', 'KaprodiController@simpan_nilai_ta_dosji2');
+
+    //monitoring prausta
+    Route::get('bimbingan_prakerin', 'KaprodiController@bimbingan_prakerin');
+    Route::get('detail_bim_prakerin/{id}', 'KaprodiController@detail_bim_prakerin');
+
+    Route::get('bimbingan_sempro', 'KaprodiController@bimbingan_sempro');
+    Route::get('detail_bim_sempro/{id}', 'KaprodiController@detail_bim_sempro');
+
+    Route::get('bimbingan_ta', 'KaprodiController@bimbingan_ta');
+    Route::get('detail_bim_ta/{id}', 'KaprodiController@detail_bim_ta');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
@@ -657,4 +679,35 @@ Route::group(['middleware' => 'prausta'], function () {
 
     //nilai tugas akhir
     Route::get('nilai_ta', 'AdminPraustaController@nilai_ta');
+
+    //non aktifkan prausta
+    Route::get('nonatifkan_prausta/{id}', 'AdminPraustaController@nonatifkan_prausta');
+
+    //download record bimbingan
+    Route::post('download_bimbingan_prakerin', 'AdminPraustaController@download_bimbingan_prakerin');
+    Route::post('download_bimbingan_sempro', 'AdminPraustaController@download_bimbingan_sempro');
+    Route::post('download_bimbingan_ta', 'AdminPraustaController@download_bimbingan_ta');
+
+    //berita acara prausta
+    Route::get('bap_sempro', 'AdminPraustaController@bap_sempro');
+    Route::get('bap_ta', 'AdminPraustaController@bap_ta');
+
+    //download BAP prausta
+    Route::post('download_bap_sempro', 'AdminPraustaController@download_bap_sempro');
+    Route::post('download_bap_ta', 'AdminPraustaController@download_bap_ta');
+
+    //download nilai prausta
+    Route::get('unduh_nilai_prakerin_b/{id}', 'AdminPraustaController@unduh_nilai_prakerin_b');
+    Route::get('unduh_nilai_prakerin_c/{id}', 'AdminPraustaController@unduh_nilai_prakerin_c');
+    Route::get('unduh_nilai_sempro_a/{id}', 'AdminPraustaController@unduh_nilai_sempro_a');
+    Route::get('unduh_nilai_sempro_b/{id}', 'AdminPraustaController@unduh_nilai_sempro_b');
+    Route::get('unduh_nilai_sempro_c/{id}', 'AdminPraustaController@unduh_nilai_sempro_c');
+    Route::get('unduh_nilai_ta_a/{id}', 'AdminPraustaController@unduh_nilai_ta_a');
+    Route::get('unduh_nilai_ta_b/{id}', 'AdminPraustaController@unduh_nilai_ta_b');
+    Route::get('unduh_nilai_ta_c/{id}', 'AdminPraustaController@unduh_nilai_ta_c');
+
+    //export prausta
+    Route::get('export_data', 'AdminPraustaController@export_data');
+    Route::post('excel_prakerin', 'AdminPraustaController@excel_prakerin');
+    Route::post('excel_ta', 'AdminPraustaController@excel_ta');
 });

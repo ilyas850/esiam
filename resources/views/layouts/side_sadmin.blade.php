@@ -25,6 +25,7 @@
             <li><a href="/master_kodeprausta"><i class="fa fa-circle-o"></i> Master Kode PraUSTA</a></li>
             <li><a href="/master_edom"><i class="fa fa-circle-o"></i> Master EDOM</a></li>
             <li><a href="/master_kategoriprausta"><i class="fa fa-circle-o"></i> Master Kategori PraUSTA</a></li>
+            <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Master Penilaian PraUSTA</a></li>
         </ul>
     </li>
     <li class="treeview">
@@ -75,7 +76,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('nilai_khs') }}"><i class="fa fa-circle-o"></i> Data Nilai KHS</a></li>
-            <li><a href="{{ url('nilai_prausta') }}"><i class="fa fa-circle-o"></i> Data Nilai PraUSTA</a></li>
+            <li><a href="{{ url('nilai_prausta_admin') }}"><i class="fa fa-circle-o"></i> Data Nilai PraUSTA</a></li>
         </ul>
     </li>
     <li class="treeview">

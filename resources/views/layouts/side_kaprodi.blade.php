@@ -46,4 +46,17 @@
             <li><a href="{{ url('penguji_ta_kprd') }}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Monitoring PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('bimbingan_prakerin') }}"><i class="fa fa-circle-o"></i> Bimbingan Prakerin</a></li>
+            <li><a href="{{ url('bimbingan_sempro') }}"><i class="fa fa-circle-o"></i> Bimbingan SEMPRO</a></li>
+            <li><a href="{{ url('bimbingan_ta') }}"><i class="fa fa-circle-o"></i> Bimbingan TA</a></li>
+        </ul>
+    </li>
 </ul>

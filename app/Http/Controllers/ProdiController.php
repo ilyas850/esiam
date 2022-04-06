@@ -25,6 +25,7 @@ class ProdiController extends Controller
     $data = Student::join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
       ->where('student.active', 1)
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->orderBy('student.nim', 'DESC')
       ->get();
 
@@ -64,7 +65,7 @@ class ProdiController extends Controller
 
 
     $dosen = Dosen::where('active', 1)
-      ->whereIn('idstatus', [1, 2])
+      ->whereIn('idstatus', [1, 2, 3])
       ->get();
 
     return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen', 'id2'));
@@ -89,6 +90,7 @@ class ProdiController extends Controller
 
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
           ->where('id_masterkode_prausta', $idms)
+          ->where('status', 'ACTIVE')
           ->get();
 
         if (count($cekmhs) == 0) {
@@ -147,6 +149,7 @@ class ProdiController extends Controller
     $data = Student::join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
       ->where('student.active', 1)
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->orderBy('student.nim', 'DESC')
       ->get();
 
@@ -198,6 +201,7 @@ class ProdiController extends Controller
 
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
           ->where('id_masterkode_prausta', $idms)
+          ->where('status', 'ACTIVE')
           ->get();
 
         if (count($cekmhs) == 0) {
@@ -256,6 +260,7 @@ class ProdiController extends Controller
     $data = Student::join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
       ->where('student.active', 1)
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->orderBy('student.nim', 'DESC')
       ->get();
 
@@ -307,6 +312,7 @@ class ProdiController extends Controller
 
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
           ->where('id_masterkode_prausta', $idms)
+          ->where('status', 'ACTIVE')
           ->get();
 
         if (count($cekmhs) == 0) {

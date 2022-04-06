@@ -20,335 +20,171 @@ use Illuminate\Support\Facades\Auth;
 
 class NilaiController extends Controller
 {
-    public function nilai()
-    {
-      $id = Auth::user()->username;
-      $maha = Student::where('nim', Auth::user()->username)->get();
+  public function nilai()
+  {
+    $id = Auth::user()->id_user;
+    $maha = Student::where('idstudent', $id)->first();
 
-      foreach ($maha as $key) {
-        # code...
-      }
-      $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-      foreach ($thn as $tahun) {
-        // code...
-      }
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-      $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-      foreach ($tp as $tipe) {
-        // code...
-      }
+    $tpee = Periode_tipe::all();
 
-      $semester = Semester::all();
-      $thunn = Periode_tahun::all();
-      $tpee = Periode_tipe::all();
+    $sub_thn = substr($thn->periode_tahun, 6, 2);
+    $idtp = $tp->id_periodetipe;
+    $smt = $sub_thn . $idtp;
+    $angk = $maha->idangkatan;
 
-      $sub_thn = substr($tahun->periode_tahun,6,2);
-      $tp = $tipe->id_periodetipe;
-      $smt = $sub_thn.$tp;
-      $angk = $key->idangkatan;
-
-      if ($smt %2 != 0){
-      $a = (($smt + 10)-1)/10;
+    if ($smt % 2 != 0) {
+      $a = (($smt + 10) - 1) / 10;
       $b = $a - $angk;
-      $c = ($b*2)-1;
-      }else{
-        $a = (($smt + 10)-2)/10;
-        $b = $a - $angk;
-        $c = $b * 2;
-      }
-
-      $record = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                              ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-                              ->where('student_record.id_student', $key->idstudent)
-                              ->where('student_record.status', 'TAKEN')
-                              ->whereNotIn('kurikulum_periode.id_semester', [$c])
-                              // ->whereNotIn('kurikulum_periode.id_periodetahun', [$tahun->id_periodetahun])
-                              // ->whereNotIn('kurikulum_periode.id_periodetipe', [$tipe->id_periodetipe])
-                              ->select( 'kurikulum_periode.id_periodetahun')
-                              ->groupBy( 'kurikulum_periode.id_periodetahun')
-                              ->orderBy('kurikulum_periode.id_periodetahun', 'ASC')
-                              ->get();
-
-      $hitung = count($record);
-
-      return view('mhs/nilai/cek', ['tpe'=>$tpee,'thun'=>$thunn,'add'=>$record,  'idmhs'=>$key]);
+      $c = ($b * 2) - 1;
+    } else {
+      $a = (($smt + 10) - 2) / 10;
+      $b = $a - $angk;
+      $c = $b * 2;
     }
 
-    public function view_nilai(Request $request)
-    {
-      $tahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)
-                            ->select('periode_tahun','id_periodetahun')
-                            ->get();
-      foreach ($tahun as $keytahun) {
-        // code...
-      }
-      $periodetahun = $keytahun->periode_tahun;
-      $idperiodetahun = $keytahun->id_periodetahun;
+    $record = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->where('student_record.id_student', $id)
+      ->where('student_record.status', 'TAKEN')
+      ->whereNotIn('kurikulum_periode.id_semester', [$c])
+      ->select('kurikulum_periode.id_periodetahun', 'periode_tahun.periode_tahun')
+      ->groupBy('kurikulum_periode.id_periodetahun', 'periode_tahun.periode_tahun')
+      ->orderBy('kurikulum_periode.id_periodetahun', 'ASC')
+      ->get();
 
-      $tipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)
-                          ->select('periode_tipe','id_periodetipe')
-                          ->get();
-      foreach ($tipe as $keytipe) {
-        // code...
-      }
-      $periodetipe = $keytipe->periode_tipe;
-      $idperiodetipe = $keytipe->id_periodetipe;
+    $hitung = count($record);
 
-      $id = Auth::user()->username;
-      $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-                      ->where('student.nim', $id)
-                      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas','student.idstudent')
-                      ->get();
-      foreach ($maha as $mhs) {
-        # code...
-      }
+    return view('mhs/nilai/cek', ['tpe' => $tpee, 'add' => $record,  'idmhs' => $maha]);
+  }
 
-      $makul = Matakuliah::all();
-      $iduser = $mhs->idstudent;
+  public function view_nilai(Request $request)
+  {
+    $tahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)
+      ->select('periode_tahun', 'id_periodetahun')
+      ->first();
 
-      $cekrecord = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                            ->where('student_record.id_student', $iduser)
-                            ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-                            ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                            ->where('student_record.status', 'TAKEN')
-                            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'student_record.nilai_AKHIR', 'kurikulum_transaction.id_makul', 'student_record.nilai_ANGKA', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe')
-                            ->groupBy('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'student_record.nilai_AKHIR', 'kurikulum_transaction.id_makul', 'student_record.nilai_ANGKA', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe')
-                            ->get();
-      $cn = count($cekrecord);
+    $periodetahun = $tahun->periode_tahun;
+    $idperiodetahun = $tahun->id_periodetahun;
 
-      if ($cn == 0) {
-        Alert::error('Tahun Akademik yang anda pilih belum ada', 'MAAF !!');
-        return redirect()->back();
-      }elseif ($cn > 0) {
+    $tipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)
+      ->select('periode_tipe', 'id_periodetipe')
+      ->first();
 
-        $record = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $iduser)
-                                ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
-                                ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                                ->where('student_record.status', 'TAKEN')
-                                ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA','kurikulum_transaction.id_makul', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                                ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'kurikulum_transaction.id_makul', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                                ->get();
+    $periodetipe = $tipe->periode_tipe;
+    $idperiodetipe = $tipe->id_periodetipe;
 
-        $record1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $iduser)
-                                ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
-                                ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                                ->where('student_record.status', 'TAKEN')
-                                ->select('student_record.id_kurtrans', DB::raw('COUNT(student_record.id_kurtrans) as products_count'), 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                                ->groupBy('student_record.id_kurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek')
-                                ->having('products_count', '>' , 1)
-                                ->get();
+    $id = Auth::user()->id_user;
 
-      foreach ($record1 as $key1) {
-        // code...
-      }
+    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $id)
+      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'student.idstudent')
+      ->first();
 
-      $kurangi = $key1->akt_sks_teori + $key1->akt_sks_praktek;
+    $iduser = $mhs->idstudent;
 
-      $jml_mkl = count($record1);
+    //cek nilai tahun akademik 
+    $cekrecord = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->where('student_record.id_student', $iduser)
+      ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
+      ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
+      ->where('student_record.status', 'TAKEN')
+      ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'student_record.nilai_AKHIR', 'kurikulum_transaction.id_makul', 'student_record.nilai_ANGKA', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe')
+      ->groupBy('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'student_record.nilai_AKHIR', 'kurikulum_transaction.id_makul', 'student_record.nilai_ANGKA', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe')
+      ->get();
 
-      $skst = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                            ->where('student_record.id_student', $iduser)
-                            ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-                            ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                            ->where('student_record.status', 'TAKEN')
-                            ->sum('matakuliah.akt_sks_teori');
+    $cn = count($cekrecord);
 
+    if ($cn == 0) {
+      Alert::error('Tahun Akademik yang anda pilih belum ada', 'MAAF !!');
+      return redirect()->back();
+    } elseif ($cn > 0) {
 
-      $sksp = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                            ->where('student_record.id_student', $iduser)
-                            ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-                            ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                            ->where('student_record.status', 'TAKEN')
-                            ->sum('matakuliah.akt_sks_praktek');
+      $record = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+        ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        ->where('student_record.id_student', $iduser)
+        ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
+        ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
+        ->where('student_record.status', 'TAKEN')
+        ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA',  'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+        ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA',  'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+        ->get();
 
-      if ($jml_mkl == 0) {
-        $sks = $skst + $sksp;
-      }elseif ($jml_mkl > 0) {
-        $sks = $skst + $sksp - $kurangi;
+      //jumlah sks
+      $sks = 0;
+      foreach ($record as $keysks) {
+        $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
       }
 
-      $ceknilaisksd1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                              ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                              ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                              ->where('student_record.id_student', $iduser)
-                              ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
-                              ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                              ->where('student_record.status', 'TAKEN')
-                              ->select('student_record.id_kurtrans', DB::raw('COUNT(student_record.id_kurtrans) as products_count'), 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'student_record.nilai_ANGKA')
-                              ->groupBy('student_record.id_kurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek', 'student_record.nilai_ANGKA')
-                              ->having('products_count', '>' , 1)
-                              ->get();
-
-      foreach ($ceknilaisksd1 as $keysks) {
-        // code...
-      }
-      $hslsks = ($keysks->akt_sks_teori + $keysks->akt_sks_praktek) * $keysks->nilai_ANGKA;
-
-      $ceknilaisksd = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                    ->where('student_record.id_student', $iduser)
-                                    ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-                                    ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                                    ->where('student_record.status', 'TAKEN')
-                                    ->select(DB::raw('sum((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks'))
-                                    ->get();
-
-        foreach ($ceknilaisksd as $keynia) {
-          // code...
-        }
-        $nia = ($keynia->akt_sks - $hslsks);
-
-      // return view('mhs/nilai/nilai_khs', compact('periodetahun','periodetipe','mhs'));
-      return view('mhs/nilai/nilai_khs', ['periodetahun'=>$periodetahun,'periodetipe'=>$periodetipe, 'idperiodetipe'=>$idperiodetipe, 'idperiodetahun' => $idperiodetahun, 'nia' => $nia, 'mk' => $makul, 'sks' => $sks, 'mhs' => $mhs, 'data' => $record, 'iduser' => $iduser]);
+      //cek nilai x sks
+      $nxsks = 0;
+      foreach ($record as $totsks) {
+        $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
       }
 
+      return view('mhs/nilai/nilai_khs', ['periodetahun' => $periodetahun, 'periodetipe' => $periodetipe, 'idperiodetipe' => $idperiodetipe, 'idperiodetahun' => $idperiodetahun, 'nxsks' => $nxsks, 'sks' => $sks, 'mhs' => $mhs, 'data' => $record, 'iduser' => $iduser]);
+    }
+  }
+
+  public function unduh_khs_nilaipdf(Request $request)
+  {
+    $thns = $request->id_periodetahun;
+    $tps = $request->id_periodetipe;
+    $iduser = $request->id_student;
+
+    $tahun = Periode_tahun::where('id_periodetahun', $thns)
+      ->select('periode_tahun', 'id_periodetahun')
+      ->first();
+
+    $periodetahun = $tahun->periode_tahun;
+    $idperiodetahun = $tahun->id_periodetahun;
+
+    $tipe = Periode_tipe::where('id_periodetipe', $tps)
+      ->select('periode_tipe', 'id_periodetipe')
+      ->first();
+
+    $periodetipe = $tipe->periode_tipe;
+    $idperiodetipe = $tipe->id_periodetipe;
+
+    $id = Auth::user()->id_user;
+
+    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $id)
+      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'student.idstudent')
+      ->first();
+
+    $ds = $mhs->idstudent;
+
+    $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->where('student_record.id_student', $ds)
+      ->where('kurikulum_periode.id_periodetipe', $tps)
+      ->where('kurikulum_periode.id_periodetahun', $thns)
+      ->where('student_record.status', 'TAKEN')
+      ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+      ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+      ->get();
+
+    //jumlah sks
+    $sks = 0;
+    foreach ($data as $keysks) {
+      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
     }
 
-    public function unduh_khs_nilaipdf(Request $request)
-    {
-      $thns = $request->id_periodetahun;
-      $tps = $request->id_periodetipe;
-      $iduser = $request->id_student;
-
-      $tahun = Periode_tahun::where('id_periodetahun', $thns)
-                            ->select('periode_tahun','id_periodetahun')
-                            ->get();
-      foreach ($tahun as $keytahun) {
-        // code...
-      }
-      $periodetahun = $keytahun->periode_tahun;
-      $idperiodetahun = $keytahun->id_periodetahun;
-
-      $tipe = Periode_tipe::where('id_periodetipe', $tps)
-                          ->select('periode_tipe','id_periodetipe')
-                          ->get();
-      foreach ($tipe as $keytipe) {
-        // code...
-      }
-      $periodetipe = $keytipe->periode_tipe;
-      $idperiodetipe = $keytipe->id_periodetipe;
-
-      $id = Auth::user()->username;
-
-      $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-                      ->where('student.nim', $id)
-                      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas','student.idstudent')
-                      ->get();
-      foreach ($maha as $mhs) {
-        # code...
-      }
-
-      $ds = $mhs->idstudent;
-
-      $mk = Matakuliah::all();
-
-      $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                              ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                              ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                              ->where('student_record.id_student', $ds)
-                              ->where('kurikulum_periode.id_periodetipe', $tps)
-                              ->where('kurikulum_periode.id_periodetahun', $thns)
-                              ->where('student_record.status', 'TAKEN')
-                              ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA','kurikulum_transaction.id_makul', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                              ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'kurikulum_transaction.id_makul', 'kurikulum_periode.id_periodetahun', 'kurikulum_periode.id_periodetipe', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                              ->get();
-
-      $record1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $iduser)
-                                ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
-                                ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                                ->where('student_record.status', 'TAKEN')
-                                ->select('student_record.id_kurtrans', DB::raw('COUNT(student_record.id_kurtrans) as products_count'), 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-                                ->groupBy('student_record.id_kurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek')
-                                ->having('products_count', '>' , 1)
-                                ->get();
-
-        foreach ($record1 as $key1) {
-        // code...
-        }
-
-        $kurangi = $key1->akt_sks_teori + $key1->akt_sks_praktek;
-
-        $jml_mkl = count($record1);
-
-        $skst = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $ds)
-                                ->where('kurikulum_periode.id_periodetipe', $tps)
-                                ->where('kurikulum_periode.id_periodetahun', $thns)
-                                ->where('student_record.status', 'TAKEN')
-                                ->sum('matakuliah.akt_sks_teori');
-
-        $sksp = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $ds)
-                                ->where('kurikulum_periode.id_periodetipe', $tps)
-                                ->where('kurikulum_periode.id_periodetahun', $thns)
-                                ->where('student_record.status', 'TAKEN')
-                                ->sum('matakuliah.akt_sks_praktek');
-
-        if ($jml_mkl == 0) {
-          $sks = $skst + $sksp;
-        }elseif ($jml_mkl > 0) {
-          $sks = $skst + $sksp - $kurangi;
-        }
-
-        $ceknilaisksd1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                ->where('student_record.id_student', $iduser)
-                                ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
-                                ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-                                ->where('student_record.status', 'TAKEN')
-                                ->select('student_record.id_kurtrans', DB::raw('COUNT(student_record.id_kurtrans) as products_count'), 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'student_record.nilai_ANGKA')
-                                ->groupBy('student_record.id_kurtrans','matakuliah.akt_sks_teori','matakuliah.akt_sks_praktek', 'student_record.nilai_ANGKA')
-                                ->having('products_count', '>' , 1)
-                                ->get();
-
-        foreach ($ceknilaisksd1 as $keysks) {
-          // code...
-        }
-        $hslsks = ($keysks->akt_sks_teori + $keysks->akt_sks_praktek) * $keysks->nilai_ANGKA;
-
-        $ceknilaisksd=Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                                    ->where('student_record.id_student', $ds)
-                                    ->where('kurikulum_periode.id_periodetipe', $tps)
-                                    ->where('kurikulum_periode.id_periodetahun', $thns)
-                                    ->where('student_record.status', 'TAKEN')
-                                    ->select(DB::raw('sum((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks'))
-                                    ->get();
-
-
-
-        foreach ($ceknilaisksd as $keynia) {
-          // code...
-        }
-        $nia = ($keynia->akt_sks - $hslsks);
-
-      //return view('mhs/nilai/khs_nilai_pdf', ['periodetahun'=>$periodetahun,'periodetipe'=>$periodetipe, 'idperiodetipe'=>$idperiodetipe, 'idperiodetahun' => $idperiodetahun, 'nia' => $nia, 'mk' => $makul, 'sks' => $sks, 'mhs' => $mhs, 'data' => $record, 'iduser' => $iduser]);
-      $pdf= PDF::loadView('mhs/nilai/khs_nilai_pdf',compact('periodetahun','periodetipe','idperiodetipe','idperiodetahun','nia','mk','sks','mhs','data','iduser'));
-      return $pdf->download('KHS-'.Auth::user()->name.'-'.date("d-m-Y").'.pdf');
+    //cek nilai x sks
+    $nxsks = 0;
+    foreach ($data as $totsks) {
+      $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
     }
+
+    $pdf = PDF::loadView('mhs/nilai/khs_nilai_pdf', compact('periodetahun', 'periodetipe', 'nxsks', 'sks', 'mhs', 'data', 'iduser'));
+    return $pdf->download('KHS-' . Auth::user()->name . '-' . date("d-m-Y") . '.pdf');
+  }
 }

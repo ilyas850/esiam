@@ -161,8 +161,8 @@
                                                     @method('put')
                                                     <div class="form-group">
                                                         <label>Judul Seminar Prakerin</label>
-                                                        <textarea class="form-control" name="judul_prausta" rows="3"
-                                                            cols="60" required> {{ $usta->judul_prausta }}</textarea>
+                                                        <textarea class="form-control" name="judul_prausta" rows="3" cols="60"
+                                                            required> {{ $usta->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Tempat Prakerin</label>
@@ -210,8 +210,7 @@
 
                                                         <div class="form-group">
                                                             <label>Uraian Bimbingan</label>
-                                                            <textarea class="form-control" name="remark_bimbingan"
-                                                                cols="30" rows="2" required></textarea>
+                                                            <textarea class="form-control" name="remark_bimbingan" cols="30" rows="2" required></textarea>
                                                         </div>
 
                                                         <div class="form-group">
@@ -252,6 +251,7 @@
                                             Tabel Bimbingan
                                         </div>
                                         <div class="box-body">
+
                                             <table id="example1" class="table table-bordered table-striped">
                                                 <thead>
                                                     <tr>
@@ -319,18 +319,12 @@
                                                                         <h5 class="modal-title">Komentar Bimbingan</h5>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        <form
-                                                                            action="/komentar_bimbingan/{{ $key->id_transbimb_prausta }}"
-                                                                            method="post" enctype="multipart/form-data">
-                                                                            @csrf
-                                                                            @method('put')
-                                                                            <div class="form-group">
-                                                                                <textarea class="form-control" cols="20"
-                                                                                    rows="10"> {{ $key->komentar_bimbingan }} </textarea>
-                                                                            </div>
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Tutup</button>
-                                                                        </form>
+                                                                        <div class="form-group">
+                                                                            <textarea class="form-control" cols="20" rows="10" readonly> {{ $key->komentar_bimbingan }} </textarea>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Tutup</button>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -391,7 +385,7 @@
                                 @if ($jml_bim < 6)
                                     <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
                                 @elseif ($jml_bim >= 6)
-                                    @if ($hasil_spp5 >= 0)
+                                    @if ($hasil_spp >= 0)
                                         @if ($usta->acc_seminar_sidang == null)
                                             <form class="" action="{{ url('ajukan_seminar_pkl') }}"
                                                 method="post" enctype="multipart/form-data">

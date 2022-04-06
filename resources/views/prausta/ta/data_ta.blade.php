@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -32,6 +30,7 @@
                                 <center>Acc. Sempro</center>
                             </th>
                             <th rowspan="2" style="font-size:85%">Aksi</th>
+                            <th rowspan="2" style="font-size:85%">Status</th>
                         </tr>
                         <tr>
                             <th style="font-size:85%">
@@ -82,8 +81,19 @@
                                 <td style="font-size:85%">
                                     <center>{{ $key->acc_seminar_sidang }}</center>
                                 </td>
-                                <td> <a href="atur_ta/{{ $key->id_settingrelasi_prausta }}" class="btn btn-info btn-xs">
-                                        Setting </a>
+                                <td>
+                                    <center> <a href="atur_ta/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-info btn-xs">
+                                            Setting </a></center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($key->status == 'ACTIVE')
+                                            <a href="nonatifkan_prausta/{{ $key->id_settingrelasi_prausta }}"
+                                                class="btn btn-danger btn-xs"
+                                                onclick="return confirm('anda yakin akan menonaktifkan?')">Nonaktifkan</a>
+                                        @endif
+                                    </center>
                                 </td>
                             </tr>
                         @endforeach

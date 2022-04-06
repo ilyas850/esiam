@@ -30,6 +30,12 @@
                 </table>
             </div>
             <div class="box-body">
+                <form action="{{ url('download_bimbingan_ta') }}" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id_settingrelasi_prausta" value="{{ $mhs->id_settingrelasi_prausta }}">
+                    <button class="btn btn-danger">Download PDF</button>
+                </form>
+                <br>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -66,6 +72,55 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">Draft & Laporan Akhir TA Mahasiswa</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Draft Laporan TA</span>
+                        <span class="info-box-number">
+                            @if ($mhs->file_draft_laporan == null)
+                                Belum ada
+                            @elseif ($mhs->file_draft_laporan != null)
+                                <a href="/File Draft Laporan/{{ $mhs->idstudent }}/{{ $mhs->file_draft_laporan }}"
+                                    target="_blank" style="font: white"> File Draft Laporan</a>
+                            @endif
+
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Laporan Akhir TA</span>
+                        <span class="info-box-number">
+                            @if ($mhs->file_laporan_revisi == null)
+                                Belum ada
+                            @elseif ($mhs->file_laporan_revisi != null)
+                                <a href="/File Laporan Revisi/{{ $mhs->idstudent }}/{{ $mhs->file_laporan_revisi }}"
+                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                            @endif
+
+                        </span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

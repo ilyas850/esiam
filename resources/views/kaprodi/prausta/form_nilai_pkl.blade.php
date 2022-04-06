@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -46,6 +44,8 @@
                 </table>
             </div>
         </div>
+
+
         <form class="" action="{{ url('simpan_nilai_prakerin_kprd') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
@@ -67,141 +67,94 @@
                     </div>
                 </div>
             </div>
+
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Dosen Pembimbing</b> </h3>
+                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
-                        <tr>
-                            <th></th>
-                            <th>
-                                <center>Parameter Penilaian</center>
-                            </th>
-                            <th>Bobot (%)</th>
-                            <th>Nilai</th>
-                        </tr>
-                        <tr>
-                            <td>A</td>
-                            <td>
-                                <b>Persiapan Prakerin</b> <br>
-                                1. Proses pembuatan proposal dan penentuan tempat Prakerin <br>
-                                2. Proses Bimbingan
-                            </td>
-                            <td>20(%)</td>
-                            <td><input type="number" name="nilai_pkl_persiapan" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">B</td>
-                            <td>
-                                <b>Pelaksanaan Prakerin</b> <br>
-                                1. Pemahaman akan sistem dan tugas yang dikerjakan
-                            </td>
-                            <td>40(%)</td>
-                            <td><input type="number" name="nilai_pkl_pemahaman" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                2. Motivasi, kreativitas, dan keaktifan mahasiswa
-                            </td>
-                            <td>10(%)</td>
-                            <td><input type="number" name="nilai_pkl_motivasi" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">C</td>
-                            <td>
-                                <b>Laporan Prakerin</b> <br>
-                                1. Substansi isi
-                            </td>
-                            <td>20(%)</td>
-                            <td><input type="number" name="nilai_pkl_isi" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                2. Format dan tata tulis
-                            </td>
-                            <td>10(%)</td>
-                            <td><input type="number" name="nilai_pkl_format" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td> <b>Total</b> </td>
-                            <td>100</td>
-                            <td><input type="text" name="total" value="0" readonly></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th width="3%" align="center">No</th>
+                                <th width="82%">
+                                    <center>Parameter Penilaian</center>
+                                </th>
+                                <th width="10%">
+                                    <center>Bobot (%)</center>
+                                </th>
+                                <th width="5%">
+                                    <center>Nilai</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($form_dosbing as $item)
+                                <tr>
+                                    <td>
+                                        <center>{{ $no++ }}</center>
+                                    </td>
+                                    <td>{{ $item->komponen }}</td>
+                                    <td>
+                                        <center>{{ $item->bobot }}%</center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <input type="hidden" name="id_penilaian_prausta1[]"
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai1[]" required>
+                                            <center>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
-
                 </div>
             </div>
+
             <div class="box box-danger">
                 <div class="box-header">
                     <h3 class="box-title"><b>Form Penilaian Seminar</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
-                        <tr>
-                            <th></th>
-                            <th>
-                                <center>Parameter Penilaian</center>
-                            </th>
-                            <th>Bobot (%)</th>
-                            <th>Nilai</th>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">A</td>
-                            <td>
-                                <b>Presentasi</b> <br>
-                                1. Komunikasi, penampilan, dan sikap <br>
-                            </td>
-                            <td>15(%)</td>
-                            <td><input type="number" name="nilai_pkl_komunikasi" onFocus="startCalc();"
-                                    onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                2. Aspek materi dan estetika slide presentasi
-                            </td>
-                            <td>20(%)</td>
-                            <td><input type="number" name="nilai_pkl_materi" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>B</td>
-                            <td>
-                                <b>Penguasaan Materi</b> <br>
-                                1. Pemahaman akan sistem <br>
-                                2. Pemahaman akan tugas yang dikerjakan
-                            </td>
-                            <td>50(%)</td>
-                            <td><input type="number" name="nilai_pkl_pemahamansistug" onFocus="startCalc();"
-                                    onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>C</td>
-                            <td>
-                                <b>Kemampuan Menjawab Pertanyaan</b> <br>
-                                1. Cara Menjawab <br>
-                                2. Substansi jawaban
-                            </td>
-                            <td>15(%)</td>
-                            <td><input type="number" name="nilai_pkl_jawab" onFocus="startCalc();" onBlur="stopCalc();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td> <b>Total</b> </td>
-                            <td>100</td>
-                            <td><input type="text" name="totals" value="0" readonly></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th width="3%" align="center">No</th>
+                                <th width="82%">
+                                    <center>Parameter Penilaian</center>
+                                </th>
+                                <th width="10%">
+                                    <center>Bobot (%)</center>
+                                </th>
+                                <th width="5%">
+                                    <center>Nilai</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($form_seminar as $item)
+                                <tr>
+                                    <td>
+                                        <center>{{ $no++ }}</center>
+                                    </td>
+                                    <td>{{ $item->komponen }}</td>
+                                    <td>
+                                        <center>{{ $item->bobot }}%</center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <input type="hidden" name="id_penilaian_prausta2[]"
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai2[]" required>
+                                            <center>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
-
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Simpan</button>

@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -86,6 +84,7 @@
                             <th>No</th>
                             <th>Tanggal Bimbingan</th>
                             <th>Uraian Bimbingan</th>
+                            <th>Komentar</th>
                             <th>Validasi</th>
                             <th>File</th>
                         </tr>
@@ -98,6 +97,18 @@
                                 <td>{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
                                 <td>
+                                    <center>
+                                        @if ($key->komentar_bimbingan == null)
+                                            <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
+                                        @else
+                                            <a class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
+                                                    class="fa fa-eye "></i> Lihat</a>
+                                        @endif
+                                    </center>
+                                </td>
+                                <td>
                                     @if ($key->validasi == 'BELUM')
                                         <a href="/val_bim_pkl/{{ $key->id_transbimb_prausta }}"
                                             class="btn btn-info btn-xs">Validasi</a>
@@ -108,14 +119,37 @@
                                 </td>
                                 <td>
                                     @if ($key->file_bimbingan == null)
-
                                     @elseif ($key->file_bimbingan != null)
                                         <a href="/File Bimbingan TA/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
                             </tr>
-
+                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
+                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar Bimbingan</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/komentar_bimbingan/{{ $key->id_transbimb_prausta }}"
+                                                method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
+                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

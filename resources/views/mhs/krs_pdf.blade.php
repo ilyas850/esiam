@@ -46,13 +46,7 @@
             <td><b><span style="font-size:65%"><u>{{ $mhs->nim }}</u></span></b></td>
             <td><b><span style="font-size:65%">Tahun Ajaran</span></b></td>
             <td> : </td>
-            <td><b><span style="font-size:65%"><u>
-                            @foreach ($thn as $TA)
-                                {{ $TA->periode_tahun }}
-                            @endforeach
-                            @foreach ($tp as $key)
-                                {{ $key->periode_tipe }}
-                            @endforeach
+            <td><b><span style="font-size:65%"><u>{{ $thn->periode_tahun }} {{ $tp->periode_tipe }}
                         </u></span></b>
             </td>
         </tr>
@@ -81,7 +75,6 @@
             @php
                 $i = 0;
             @endphp
-
             @foreach ($krs as $item)
                 <tr>
                     <td align=center><span style="font-size:50%"><b>{{ ++$i }}</b></span></td>

@@ -41,6 +41,9 @@
                             <th>
                                 <center>Nilai Huruf</center>
                             </th>
+                            <th>
+                                <center>Unduh Form</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +75,16 @@
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>
                                 </td>
-
+                                <td>
+                                    <center>
+                                        <a href="/unduh_nilai_sempro_a/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-info btn-xs">Pembimbing</a>
+                                        <a href="/unduh_nilai_sempro_b/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-success btn-xs">Penguji I</a>
+                                        <a href="/unduh_nilai_sempro_c/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-warning btn-xs">Penguji II</a>
+                                    </center>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

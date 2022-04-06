@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -100,26 +98,24 @@
                                         @elseif($key->acc_seminar_sidang == 'TOLAK')
                                             <span class="badge bg-danger">Pengajuan sidang/seminar ditolak</span>
                                         @elseif($key->acc_seminar_sidang == 'TERIMA')
-
                                             @if ($key->id_dosen_pembimbing == $id && $key->nilai_1 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dospem/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji1/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji2/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @else
                                                 <span class="badge bg-blue">Nilai Sudah ada</span>
                                             @endif
-
                                         @endif
 
                                     </center>
