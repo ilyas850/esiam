@@ -1,15 +1,14 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
     <section class="content">
         @if (Auth::user()->role == 1)
         @elseif (Auth::user()->role == 2)
+
         @elseif (Auth::user()->role == 3)
         @endif
 
@@ -92,19 +91,8 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Tahun Akademik</span>
                             <span class="info-box-number">
-                                @foreach ($tahun as $key)
-                                    @if ($key->status == 'ACTIVE')
-                                        {{ $key->periode_tahun }}
-                                    @endif
-                                @endforeach
-                            </span>
-                            <span class="info-box-number">
-                                @foreach ($tipe as $key)
-                                    @if ($key->status == 'ACTIVE')
-                                        {{ $key->periode_tipe }}
-                                    @endif
-                                @endforeach
-                            </span>
+                                {{ $tahun->periode_tahun }}</span>
+                            <span class="info-box-number">{{ $tipe->periode_tipe }}</span>
                         </div>
                     </div>
                 </div>
@@ -117,7 +105,8 @@
                                 @if ($time->status == 0)
                                     Jadwal Belum ada
                                 @elseif ($time->status == 1)
-                                    {{ $time->waktu_awal }} s/d {{ $time->waktu_akhir }}
+                                    {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
+                                    {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
                                 @endif
                             </span>
                         </div>
@@ -273,20 +262,8 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Tahun Akademik</span>
-                            <span class="info-box-number">
-                                @foreach ($tahun as $key)
-                                    @if ($key->status == 'ACTIVE')
-                                        {{ $key->periode_tahun }}
-                                    @endif
-                                @endforeach
-                            </span>
-                            <span class="info-box-number">
-                                @foreach ($tipe as $key)
-                                    @if ($key->status == 'ACTIVE')
-                                        {{ $key->periode_tipe }}
-                                    @endif
-                                @endforeach
-                            </span>
+                            <span class="info-box-number"> {{ $tahun->periode_tahun }}</span>
+                            <span class="info-box-number">{{ $tipe->periode_tipe }} </span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -301,7 +278,8 @@
                                 @if ($time->status == 0)
                                     Jadwal Belum ada
                                 @elseif ($time->status == 1)
-                                    {{ $time->waktu_awal }} s/d {{ $time->waktu_akhir }}
+                                    {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
+                                    {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
                                 @endif
                             </span>
                         </div>
@@ -331,7 +309,6 @@
                                                 <img class="img-circle"
                                                     src="{{ asset('/data_file/' . $item->file) }}">
                                             @else
-
                                             @endif
 
                                         </div>

@@ -13,7 +13,6 @@
 </div> --}}
 <div class="row">
     <div class="col-md-6">
-
         @if (count($errors) > 0)
             <div class="alert alert-danger">
                 Validasi Upload Error<br><br>
@@ -46,7 +45,7 @@
                     </div>
                     <div class="col-sm-4 border-right">
                         <center>
-                            <a href="/ganti_foto/{{ Auth::user()->username }}"><span class="fa fa-camera"></span>
+                            <a href="/ganti_foto/{{ $mhs->nim }}"><span class="fa fa-camera"></span>
                                 Ganti foto</a>
                         </center>
                     </div>
@@ -55,186 +54,156 @@
                             <h5 class="description-header"></h5>
                             <span class="description-text"></span>
                         </div>
-                        <!-- /.description-block -->
                     </div>
-                    <!-- /.col -->
                 </div>
-                <!-- /.row -->
             </div>
             <table class="table table-striped">
-                @foreach ($mhs as $item)
-                    <tbody>
-                        <tr>
-                            <td style="width:25%">Nama</td>
-                            <td style="width:5%">:</td>
-                            <td>{{ Auth::user()->name }}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>NIM</td>
-                            <td>:</td>
-                            <td>{{ Auth::user()->username }}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Program Studi</td>
-                            <td>:</td>
-                            <td>
-                                @if ($item->kodeprodi == 23)
-                                    Teknik Industri
-                                @elseif ($item->kodeprodi ==22)
-                                    Teknik Komputer
-                                @elseif ($item->kodeprodi ==24)
-                                    Farmasi
-                                @endif
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Kelas</td>
-                            <td>:</td>
-                            <td>
-                                @if ($item->idstatus == 1)
-                                    Reguler A
-                                @elseif ($item->idstatus ==2)
-                                    Reguler C
-                                @elseif ($item->idstatus ==3)
-                                    Reguler B
-                                @endif
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Angkatan</td>
-                            <td>:</td>
-                            <td>
-                                @foreach ($angk as $aktan)
-                                    @if ($item->idangkatan == $aktan->idangkatan)
-                                        {{ $aktan->angkatan }}
-                                    @endif
-                                @endforeach
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>No HP</td>
-                            <td>:</td>
-                            <td>
-                                @if ($item->hp_baru == null)
-                                    {{ $item->hp }}
-                                @elseif (($item->hp_baru) != null)
-                                    {{ $item->hp_baru }}
-                                @endif
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>E-Mail</td>
-                            <td>:</td>
-                            <td>
-                                @if ($item->email_baru == null)
-                                    {{ $item->email }}
-                                @elseif (($item->email_baru) != null)
-                                    {{ $item->email_baru }}
-                                @endif
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>NISN</td>
-                            <td>:</td>
-                            <td>{{ $item->nisn }}</td>
-                            <td>
-                                <button class="btn btn-warning btn-xs" data-toggle="modal"
-                                    data-target="#modalUpdateNisn{{ $item->idstudent }}" title="klik untuk edit"><i
-                                        class="fa fa-edit"> Edit NISN</i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                @if ($item->id_mhs == null)
-                                    <a class="btn btn-success btn-block" href="/update/{{ $item->idstudent }}"><i
-                                            class="fa fa-edit"></i> Edit No HP dan E-mail</a>
-                                @elseif (($item->id_mhs) !=null)
-                                    <a class="btn btn-success btn-block" href="/change/{{ $item->id }}"><i
-                                            class="fa fa-edit"></i> Edit data No HP dan E-mail</a>
-                                @endif
-                            </td>
-                        </tr>
-                    </tbody>
+                <tbody>
+                    <tr>
+                        <td style="width:25%">Nama</td>
+                        <td style="width:5%">:</td>
+                        <td>{{ $mhs->nama }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NIM</td>
+                        <td>:</td>
+                        <td>{{ $mhs->nim }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Program Studi</td>
+                        <td>:</td>
+                        <td>{{ $mhs->prodi }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Kelas</td>
+                        <td>:</td>
+                        <td>{{ $mhs->kelas }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Angkatan</td>
+                        <td>:</td>
+                        <td>{{ $mhs->angkatan }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>No HP</td>
+                        <td>:</td>
+                        <td>
+                            @if ($mhs->hp_baru == null)
+                                {{ $mhs->hp }}
+                            @elseif ($mhs->hp_baru != null)
+                                {{ $mhs->hp_baru }}
+                            @endif
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E-Mail</td>
+                        <td>:</td>
+                        <td>
+                            @if ($mhs->email_baru == null)
+                                {{ $mhs->email }}
+                            @elseif ($mhs->email_baru != null)
+                                {{ $mhs->email_baru }}
+                            @endif
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NISN</td>
+                        <td>:</td>
+                        <td>{{ $mhs->nisn }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modalUpdateNisn{{ $mhs->idstudent }}" title="klik untuk edit"><i
+                                    class="fa fa-edit"> Edit NISN</i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Teams(Username)</td>
+                        <td>:</td>
+                        <td>
+                            {{ $mhs->username }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Teams(Password)</td>
+                        <td>:</td>
+                        <td>
+                            {{ $mhs->password }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            @if ($mhs->id_mhs == null)
+                                <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
+                                        class="fa fa-edit"></i> Edit No HP dan E-mail</a>
+                            @elseif ($mhs->id_mhs != null)
+                                <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i
+                                        class="fa fa-edit"></i> Edit data No HP dan E-mail</a>
+                            @endif
+                        </td>
+                    </tr>
+                </tbody>
 
-                    <div class="modal fade" id="modalUpdateNisn{{ $item->idstudent }}" tabindex="-1"
-                        aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Update NISN</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <!--FORM UPDATE Tingkat-->
-                                    <form action="/put_nisn/{{ $item->idstudent }}" method="post">
-                                        @csrf
-                                        @method('put')
-                                        <div class="form-group">
-                                            <label>NISN Mahasiswa</label>
-                                            <input class="form-control" type="number" name="nisn"
-                                                value="{{ $item->nisn }}">
-                                        </div>
-                                        <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
-                                        <button type="submit" class="btn btn-primary">Perbarui Data</button>
-                                    </form>
-                                    <!--END FORM Tingkat-->
-                                </div>
+                <div class="modal fade" id="modalUpdateNisn{{ $mhs->idstudent }}" tabindex="-1"
+                    aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update NISN</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/put_nisn/{{ $mhs->idstudent }}" method="post">
+                                    @csrf
+                                    @method('put')
+                                    <div class="form-group">
+                                        <label>NISN Mahasiswa</label>
+                                        <input class="form-control" type="number" name="nisn"
+                                            value="{{ $mhs->nisn }}">
+                                    </div>
+                                    <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
+                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                </div>
             </table>
         </div>
-
     </div>
+
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
             <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
-
             <div class="info-box-content">
                 <span class="info-box-text">Tahun Akademik</span>
-                <span class="info-box-number">
-                    @foreach ($tahun as $key)
-                        @if ($key->status == 'ACTIVE')
-                            {{ $key->periode_tahun }}
-                        @endif
-                    @endforeach
-                </span>
-                <span class="info-box-number">
-                    @foreach ($tipe as $key)
-                        @if ($key->status == 'ACTIVE')
-                            {{ $key->periode_tipe }}
-                        @endif
-                    @endforeach
-                </span>
+                <span class="info-box-number">{{ $tahun->periode_tahun }}</span>
+                <span class="info-box-number"> {{ $tipe->periode_tipe }}</span>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
     </div>
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
             <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
-
             <div class="info-box-content">
                 <span class="info-box-text">Jadwal KRS</span>
                 <span class="info-box-number">
                     @if ($time->status == 0)
                         Jadwal Belum ada
-                    @elseif ($time->status== 1)
-                        {{ $time->waktu_awal }} s/d {{ $time->waktu_akhir }}
+                    @elseif ($time->status == 1)
+                        {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
+                        {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
                     @endif
                 </span>
             </div>
-            <!-- /.info-box-content -->
         </div>
-        <!-- /.info-box -->
     </div>
     <div class="col-md-6">
         <div class="box box-info">
@@ -242,7 +211,6 @@
                 <span class="glyphicon glyphicon-info-sign"></span>
                 <h3 class="box-title">Waktu Pengisian KRS</h3>
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
                 <form role="form">
                     <div id="waktumundur">
@@ -300,13 +268,11 @@
             </style>
         </div>
 
-
         <div class="box box-info">
             <div class="box-header with-border">
                 <span class="glyphicon glyphicon-info-sign"></span>
                 <h3 class="box-title">Waktu Pengisian EDOM</h3>
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
                 <form role="form">
                     <div id="waktumunduredom">
@@ -318,7 +284,6 @@
                     </div>
                 </form>
             </div>
-            <!-- /.box-body -->
         </div>
         <script type='text/javascript'>
             //<![CDATA[
@@ -383,9 +348,7 @@
                                 @if ($item->file != null)
                                     <img class="img-circle" src="/images/bell.jpg">
                                 @else
-
                                 @endif
-
                             </div>
                             <div class="product-info">
                                 <a href="/lihat/{{ $item->id_informasi }}"

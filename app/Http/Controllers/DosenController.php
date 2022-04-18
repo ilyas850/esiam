@@ -1665,70 +1665,66 @@ class DosenController extends Controller
         $idk = $kur->id_kurperiode;
         $per = $kur->pertemuan;
 
-        $abs = Absensi_mahasiswa::leftjoin('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('absensi_mahasiswa.id_bap', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurperiode',
-                'absensi_mahasiswa.id_absensi',
-                'angkatan.angkatan',
-                'kelas.kelas',
-                'prodi.prodi',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'absensi_mahasiswa.absensi'
-            )
-            ->get();
-
-        foreach ($abs as $ab) {
-        }
-
-        $absen = Student_record::leftjoin('absensi_mahasiswa', 'student_record.id_studentrecord', '=', 'absensi_mahasiswa.id_studentrecord')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->where('student_record.id_kurperiode', $idk)
-            ->where('bap.pertemuan', $per)
-            ->where('student_record.status', 'TAKEN')
-            ->where(function ($query)  use ($id, $idk) {
-                $query->where('absensi_mahasiswa.id_bap', $id)
-                    ->orWhere('absensi_mahasiswa.id_bap', NULL);
-            })
-            ->select(
-                'student_record.id_kurperiode',
-                'student_record.id_studentrecord',
-                'absensi_mahasiswa.id_bap',
-                'angkatan.angkatan',
-                'kelas.kelas',
-                'prodi.prodi',
-                'student.nama',
-                'student.nim',
-                'absensi_mahasiswa.absensi',
-                'absensi_mahasiswa.id_absensi',
-                'bap.pertemuan'
-            )
-            ->get();
-
-        dd($absen);
-        $dt = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $idk)
-
-            ->where('student_record.status', 'TAKEN')
-            ->select('angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim')
-            ->get();
+        // $abs = Absensi_mahasiswa::leftjoin('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
+        //     ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+        //     ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        //     ->where('absensi_mahasiswa.id_bap', $id)
+        //     ->where('student_record.status', 'TAKEN')
+        //     ->select(
+        //         'student_record.id_kurperiode',
+        //         'absensi_mahasiswa.id_absensi',
+        //         'angkatan.angkatan',
+        //         'kelas.kelas',
+        //         'prodi.prodi',
+        //         'student_record.id_studentrecord',
+        //         'student.nama',
+        //         'student.nim',
+        //         'absensi_mahasiswa.absensi'
+        //     )
+        //     ->get();
 
 
-        return view('dosen/edit_absen', ['idk' => $idk, 'abs' => $abs, 'id' => $id, 'dt' => $dt, 'absen' => $absen, 'ab' => $ab]);
+        // $m = DB::table('kurikulum_periode')
+        //     ->leftjoin('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+        //     ->leftjoin('student', 'student_record.id_student', '=', 'student.idstudent')
+        //     ->leftjoin('bap', 'student_record.id_kurperiode', '=', 'bap.id_kurperiode')
+        //     ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        //     ->leftjoin('absensi_mahasiswa', function ($query) {
+        //         $query->on('bap.id_bap', '=', 'absensi_mahasiswa.id_bap')
+        //             ->where('student_record.id_studentrecord', '=', 'absensi_mahasiswa.id_studentrecord')
+        //             ->where('absensi_mahasiswa.status', '=', 'ACTIVE');
+        //     })
+        //     ->where('student_record.status', 'TAKEN')
+        //     ->where('student.active', 1)
+        //     ->where('bap.status', 'ACTIVE')
+        //     ->where('student_record.id_kurperiode', $idk)
+        //     ->where('bap.pertemuan', $per)
+        //     ->select(
+        //         'student_record.id_kurperiode',
+        //         'absensi_mahasiswa.id_absensi',
+        //         'angkatan.angkatan',
+        //         'kelas.kelas',
+        //         'prodi.prodi',
+        //         'student_record.id_studentrecord',
+        //         'student_record.id_student',
+        //         'student.nama',
+        //         'bap.pertemuan',
+        //         'bap.id_bap',
+        //         'student.nim',
+        //         'absensi_mahasiswa.absensi'
+        //     )
+        //     ->orderBy('bap.pertemuan', 'asc')
+        //     ->get();
+
+
+        $p = DB::select('CALL editAbsenMhs(?,?)', array($idk, $per));
+        
+
+        return view('dosen/edit_absen', ['idk' => $idk, 'abs' => $p, 'id' => $id]);
     }
 
     public function save_edit_absensi(Request $request)
@@ -3272,11 +3268,6 @@ class DosenController extends Controller
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
             ->first();
-
-        // $id_prausta = $request->id_settingrelasi_prausta;
-        // $nilai_1 = $request->nilai_pembimbing_lapangan;
-        // $nilai_2 = $request->total;
-        // $nilai_3 = $request->totals;
 
         if ($nilai_pem_lap == null) {
 

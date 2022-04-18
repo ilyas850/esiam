@@ -4,6 +4,10 @@
     {{-- <li><a href="{{ url('krs') }}"><i class="fa fa-list-alt"></i> <span>KRS</span></a></li> --}}
     <li><a href="{{ url('isi_krs') }}"><i class="fa fa-list-alt"></i> <span>Input KRS</span></a></li>
     <li><a href="{{ url('isi_edom') }}"><i class="fa fa-pencil-square-o"></i> <span>Input EDOM</span></a></li>
+    <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner Mahasiswa</span></a>
+    </li>
+
+
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>KHS</span>
@@ -62,6 +66,6 @@
         </ul>
     </li>
     <li><a href="{{ url('dosbing') }}"><i class="fa fa-user"></i> <span>Dosen Pembimbing</span></a></li>
-    <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li>
+    {{-- <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li> --}}
     <li><a href="{{ url('pedoman_akademik') }}"><i class="fa fa-file"></i> <span>Pedoman</span></a></li>
 </ul>

@@ -28,6 +28,23 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::put('put_penilaian_prausta/{id}', 'SadminController@put_penilaian_prausta');
     Route::post('hapus_penilaian_prausta', 'SadminController@hapus_penilaian_prausta');
 
+    //master kategori kuisioner
+    Route::get('master_kategorikuisioner', 'SadminController@master_kategorikuisioner');
+    Route::post('simpan_kategori_kuisioner', 'SadminController@simpan_kategori_kuisioner');
+    Route::put('put_kategori_kuisioner/{id}', 'SadminController@put_kategori_kuisioner');
+    Route::post('hapus_kategori_kuisioner', 'SadminController@hapus_kategori_kuisioner');
+
+    //master aspek kuisioner
+    Route::get('master_aspekkuisioner', 'SadminController@master_aspekkuisioner');
+    Route::post('simpan_aspek_kuisioner', 'SadminController@simpan_aspek_kuisioner');
+    Route::put('put_aspek_kuisioner/{id}', 'SadminController@put_aspek_kuisioner');
+    Route::post('hapus_aspek_kuisioner', 'SadminController@hapus_aspek_kuisioner');
+
+    //master kuisioner
+    Route::get('master_kuisioner', 'SadminController@master_kuisioner');
+    Route::post('simpan_master_kuisioner', 'SadminController@simpan_master_kuisioner');
+    Route::put('put_kuisioner_master/{id}', 'SadminController@put_kuisioner_master');
+
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');
     Route::get('show_mhs', 'SadminController@show_mhs');
@@ -96,7 +113,6 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master khs
     Route::get('nilai_khs', 'SadminController@nilai_khs');
     Route::post('export_nilai_khs', 'SadminController@export_nilai_khs');
-   
 
     //master krs
     Route::get('data_krs', 'SadminController@data_krs');
@@ -156,6 +172,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('post_adminprodi', 'SadminController@post_adminprodi');
     Route::put('put_adminprodi/{id}', 'SadminController@put_adminprodi');
     Route::get('hapusadminprodi/{id}', 'SadminController@hapusadminprodi');
+
+    //Master Microsoft
+    Route::get('user_microsoft', 'SadminController@user_microsoft');
+    Route::post('post_microsoft_user', 'SadminController@post_microsoft_user');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -356,6 +376,25 @@ Route::group(['middleware' => 'mhs'], function () {
     //biaya kuliah
     Route::get('record_biaya', 'MhsController@record_biaya');
     Route::get('data_biaya', 'MhsController@data_biaya');
+
+    //kuisioner
+    Route::get('kuisioner', 'MhsController@kuisioner');
+    Route::get('isi_dosen_pa/{id}', 'MhsController@isi_dosen_pa');
+    Route::post('save_kuisioner_dsn_pa', 'MhsController@save_kuisioner_dsn_pa');
+    Route::get('isi_dosen_pkl/{id}', 'MhsController@isi_dosen_pkl');
+    Route::post('save_kuisioner_dsn_pkl', 'MhsController@save_kuisioner_dsn_pkl');
+    Route::get('isi_dosen_ta/{id}', 'MhsController@isi_dosen_ta');
+    Route::post('save_kuisioner_dsn_ta', 'MhsController@save_kuisioner_dsn_ta');
+    Route::get('isi_dosen_ta_peng1/{id}', 'MhsController@isi_dosen_ta_peng1');
+    Route::post('save_kuisioner_dsn_ta_peng1', 'MhsController@save_kuisioner_dsn_ta_peng1');
+    Route::get('isi_dosen_ta_peng2/{id}', 'MhsController@isi_dosen_ta_peng2');
+    Route::post('save_kuisioner_dsn_ta_peng2', 'MhsController@save_kuisioner_dsn_ta_peng2');
+    Route::get('isi_kuis_baak/{id}', 'MhsController@isi_kuis_baak');
+    Route::post('save_kuisioner_baak', 'MhsController@save_kuisioner_baak');
+    Route::get('isi_kuis_bauk/{id}', 'MhsController@isi_kuis_bauk');
+    Route::post('save_kuisioner_bauk', 'MhsController@save_kuisioner_bauk');
+    Route::get('isi_kuis_perpus/{id}', 'MhsController@isi_kuis_perpus');
+    Route::post('save_kuisioner_perpus', 'MhsController@save_kuisioner_perpus');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -673,12 +712,26 @@ Route::group(['middleware' => 'prausta'], function () {
 
     //nilai prakerin
     Route::get('nilai_prakerin', 'AdminPraustaController@nilai_prakerin');
+    Route::get('edit_nilai_prakerin/{id}', 'AdminPraustaController@edit_nilai_prakerin');
+    Route::post('put_nilai_prakerin', 'AdminPraustaController@put_nilai_prakerin');
 
     //nilai sempro
     Route::get('nilai_sempro', 'AdminPraustaController@nilai_sempro');
+    Route::get('edit_nilai_sempro_bim/{id}', 'AdminPraustaController@edit_nilai_sempro_bim');
+    Route::post('put_nilai_sempro_dospem', 'AdminPraustaController@put_nilai_sempro_dospem');
+    Route::get('edit_nilai_sempro_p1/{id}', 'AdminPraustaController@edit_nilai_sempro_p1');
+    Route::post('put_nilai_sempro_dospeng1', 'AdminPraustaController@put_nilai_sempro_dospeng1');
+    Route::get('edit_nilai_sempro_p2/{id}', 'AdminPraustaController@edit_nilai_sempro_p2');
+    Route::post('put_nilai_sempro_dospeng2', 'AdminPraustaController@put_nilai_sempro_dospeng2');
 
     //nilai tugas akhir
     Route::get('nilai_ta', 'AdminPraustaController@nilai_ta');
+    Route::get('edit_nilai_ta_bim/{id}', 'AdminPraustaController@edit_nilai_ta_bim');
+    Route::post('put_nilai_ta_dospem', 'AdminPraustaController@put_nilai_ta_dospem');
+    Route::get('edit_nilai_ta_p1/{id}', 'AdminPraustaController@edit_nilai_ta_p1');
+    Route::post('put_nilai_ta_dospeng1', 'AdminPraustaController@put_nilai_ta_dospeng1');
+    Route::get('edit_nilai_ta_p2/{id}', 'AdminPraustaController@edit_nilai_ta_p2');
+    Route::post('put_nilai_ta_dospeng2', 'AdminPraustaController@put_nilai_ta_dospeng2');
 
     //non aktifkan prausta
     Route::get('nonatifkan_prausta/{id}', 'AdminPraustaController@nonatifkan_prausta');

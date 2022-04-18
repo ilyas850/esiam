@@ -27,6 +27,11 @@
                         <td>:</td>
                         <td>{{ $mhs->kelas }}</td>
                     </tr>
+                    <tr>
+                        <td>Dosen Pembimbing</td>
+                        <td>:</td>
+                        <td>{{ $mhs->dosen_pembimbing }}, {{ $mhs->akademik }}</td>
+                    </tr>
                 </table>
             </div>
             <div class="box-body">

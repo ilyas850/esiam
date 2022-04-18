@@ -1154,21 +1154,14 @@ class DosenluarController extends Controller
 
     public function edit_absen($id)
     {
-        $abs = Absensi_mahasiswa::join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('absensi_mahasiswa.id_bap', $id)
-            ->select('student_record.id_kurperiode', 'absensi_mahasiswa.id_absensi', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'absensi_mahasiswa.absensi')
-            ->get();
+        $kur = Bap::where('id_bap', $id)->first();
 
-        foreach ($abs as $key) {
-            # code...
-        }
-        $idk = $key->id_kurperiode;
+        $idk = $kur->id_kurperiode;
+        $per = $kur->pertemuan;
 
-        return view('dosenluar/edit_absen', ['idk' => $idk, 'abs' => $abs, 'id' => $id]);
+        $p = DB::select('CALL editAbsenMhs(?,?)', array($idk, $per));
+
+        return view('dosenluar/edit_absen', ['idk' => $idk, 'abs' => $p, 'id' => $id]);
     }
 
     public function save_edit_absensi(Request $request)
@@ -1178,6 +1171,7 @@ class DosenluarController extends Controller
 
         $id_bp = $request->id_bap;
         $absen = $request->absensi;
+        $absr = $request->abs;
 
         if ($absen != null) {
             $jmlabsen = count($request->absensi);
@@ -1199,10 +1193,6 @@ class DosenluarController extends Controller
 
                 Absensi_mahasiswa::where('id_absensi', $trsen)->update(['absensi' => $trsi]);
             }
-
-            $bp = Bap::where('id_bap', $id_bp)->update(['hadir' => $jmlabsen]);
-
-            $bp = Bap::where('id_bap', $id_bp)->update(['tidak_hadir' => $jmlrecord - $jmlabsen]);
         } elseif ($absen == null) {
 
             for ($i = 0; $i < $jmlrecord; $i++) {
@@ -1214,11 +1204,39 @@ class DosenluarController extends Controller
                     ->where('id_bap', $id_bp)
                     ->update(['absensi' => 'HADIR']);
             }
-
-            $bp = Bap::where('id_bap', $id_bp)->update(['hadir' => 0]);
-
-            $bp = Bap::where('id_bap', $id_bp)->update(['tidak_hadir' => $jmlrecord - 0]);
         }
+
+        if ($absr != null) {
+            $jmlabs = count($request->abs);
+            for ($i = 0; $i < $jmlabs; $i++) {
+                $absn = $request->abs[$i];
+                $idab = explode(',', $absn, 2);
+                $trsen = $idab[0];
+                $trsi = $idab[1];
+
+                $bsa = new Absensi_mahasiswa();
+                $bsa->id_bap = $id_bp;
+                $bsa->id_studentrecord = $trsen;
+                $bsa->absensi = $trsi;
+                $bsa->save();
+            }
+        }
+
+        $cekhdr = Absensi_mahasiswa::where('id_bap', $id_bp)
+            ->where('absensi', 'ABSEN')
+            ->get();
+
+        $cekthdr = Absensi_mahasiswa::where('id_bap', $id_bp)
+            ->where('absensi', 'HADIR')
+            ->get();
+
+        $hithdr = count($cekhdr);
+
+        $hitthdr = count($cekthdr);
+
+        $bp = Bap::where('id_bap', $id_bp)->update(['hadir' => $hithdr]);
+
+        $bp = Bap::where('id_bap', $id_bp)->update(['tidak_hadir' => $hitthdr]);
 
         $kur = Bap::where('id_bap', $id_bp)
             ->select('id_kurperiode')

@@ -42,6 +42,11 @@ use App\Prausta_master_kode;
 use App\Prausta_setting_relasi;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
+use App\Kuisioner_master;
+use App\Kuisioner_kategori;
+use App\Kuisioner_aspek;
+use App\Kuisioner_transaction;
+use App\Microsoft_user;
 use App\Wadir;
 use App\Wrkpersonalia;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -49,6 +54,7 @@ use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
 use App\Exports\DataPrakerinExport;
+use App\Imports\ImportMicrosoftUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -2481,5 +2487,157 @@ class SadminController extends Controller
 
         Alert::success('', 'Master Penilaian PraUSTA berhasil dihapus')->autoclose(3500);
         return redirect('master_penilaianprausta');
+    }
+
+    public function master_kategorikuisioner()
+    {
+        $data = Kuisioner_kategori::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_kategori_kuisioner', compact('data'));
+    }
+
+    public function simpan_kategori_kuisioner(Request $request)
+    {
+        $ang = new Kuisioner_kategori();
+        $ang->kategori_kuisioner = $request->kategori_kuisioner;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Kuisioner berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_kategorikuisioner');
+    }
+
+    public function put_kategori_kuisioner(Request $request, $id)
+    {
+        $ang = Kuisioner_kategori::find($id);
+        $ang->kategori_kuisioner = $request->kategori_kuisioner;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Kuisioner berhasil diedit')->autoclose(3500);
+        return redirect('master_kategorikuisioner');
+    }
+
+    public function hapus_kategori_kuisioner(Request $request)
+    {
+        $akun = Kuisioner_kategori::where('id_kategori_kuisioner', $request->id_kategori_kuisioner)
+            ->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kategori Kuisioner berhasil dihapus')->autoclose(3500);
+        return redirect('master_kategorikuisioner');
+    }
+
+    public function master_aspekkuisioner()
+    {
+        $data = Kuisioner_aspek::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_aspek_kuisioner', compact('data'));
+    }
+
+    public function simpan_aspek_kuisioner(Request $request)
+    {
+        $ang = new Kuisioner_aspek();
+        $ang->aspek_kuisioner = $request->aspek_kuisioner;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Aspek Kuisioner berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_aspekkuisioner');
+    }
+
+    public function put_aspek_kuisioner(Request $request, $id)
+    {
+        $ang = Kuisioner_aspek::find($id);
+        $ang->aspek_kuisioner = $request->aspek_kuisioner;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Aspek Kuisioner berhasil diedit')->autoclose(3500);
+        return redirect('master_aspekkuisioner');
+    }
+
+    public function hapus_aspek_kuisioner(Request $request)
+    {
+        $akun = Kuisioner_aspek::where('id_aspek_kuisioner', $request->id_aspek_kuisioner)
+            ->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kategori Kuisioner berhasil dihapus')->autoclose(3500);
+        return redirect('master_aspekkuisioner');
+    }
+
+    public function master_kuisioner()
+    {
+        $data = Kuisioner_master::join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+            ->where('kuisioner_master.status', 'ACTIVE')
+            ->get();
+
+        $kategori = Kuisioner_kategori::where('status', 'ACTIVE')->get();
+
+        $aspek = Kuisioner_aspek::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_kuisioner', compact('data', 'kategori', 'aspek'));
+    }
+
+    public function simpan_master_kuisioner(Request $request)
+    {
+        $ang = new Kuisioner_master();
+        $ang->id_kategori_kuisioner = $request->id_kategori_kuisioner;
+        $ang->id_aspek_kuisioner = $request->id_aspek_kuisioner;
+        $ang->komponen_kuisioner = $request->komponen_kuisioner;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kuisioner berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_kuisioner');
+    }
+
+    public function put_kuisioner_master(Request $request, $id)
+    {
+        $ang = Kuisioner_master::find($id);
+        $ang->id_kategori_kuisioner = $request->id_kategori_kuisioner;
+        $ang->id_aspek_kuisioner = $request->id_aspek_kuisioner;
+        $ang->komponen_kuisioner = $request->komponen_kuisioner;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kuisioner berhasil diedit')->autoclose(3500);
+        return redirect('master_kuisioner');
+    }
+
+    public function user_microsoft()
+    {
+        $data = Microsoft_user::join('student', 'microsoft_user.id_student', '=', 'student.idstudent')
+            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('microsoft_user.status', 'ACTIVE')
+            ->select('student.nama', 'student.nim', 'microsoft_user.username', 'microsoft_user.password', 'prodi.prodi', 'kelas.kelas')
+            ->get();
+
+        return view('sadmin/microsoft/akun', compact('data'));
+    }
+
+    public function post_microsoft_user(Request $request)
+    {
+        // validasi
+        $this->validate($request, [
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // menangkap file excel
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $nama_file = rand() . $file->getClientOriginalName();
+
+        // upload ke folder file_siswa di dalam folder public
+        $file->move('File Microsoft User', $nama_file);
+
+        // import data
+        Excel::import(new ImportMicrosoftUser(), public_path('/File Microsoft User/' . $nama_file));
+
+        // notifikasi dengan session
+        Alert::success('', 'Data Microsoft User Berhasil Diimport!')->autoclose(3500);
+        return redirect('user_microsoft');
     }
 }

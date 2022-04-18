@@ -308,7 +308,7 @@ class AdminPraustaController extends Controller
 
     public function bim_prakerin()
     {
-        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+        $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -323,11 +323,11 @@ class AdminPraustaController extends Controller
                 'prodi.prodi',
                 'kelas.kelas',
                 'angkatan.angkatan',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->groupBy(
                 'student.nama',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
                 'student.nim',
                 'prodi.prodi',
                 'kelas.kelas',
@@ -335,6 +335,7 @@ class AdminPraustaController extends Controller
             )
             ->orderBy('student.nim', 'DESC')
             ->get();
+
 
         return view('prausta/prakerin/bimbingan_prakerin', compact('data'));
     }
@@ -357,6 +358,7 @@ class AdminPraustaController extends Controller
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
                 'student.nama',
@@ -367,7 +369,9 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.file_draft_laporan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'student.idstudent',
-                'prausta_setting_relasi.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'dosen.akademik'
             )
             ->first();
 
@@ -376,7 +380,7 @@ class AdminPraustaController extends Controller
 
     public function bim_sempro()
     {
-        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+        $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -391,15 +395,15 @@ class AdminPraustaController extends Controller
                 'prodi.prodi',
                 'kelas.kelas',
                 'angkatan.angkatan',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->groupBy(
                 'student.nama',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
                 'student.nim',
                 'prodi.prodi',
                 'kelas.kelas',
-                'angkatan.angkatan'
+                'angkatan.angkatan',
             )
             ->orderBy('student.nim', 'DESC')
             ->get();
@@ -425,6 +429,7 @@ class AdminPraustaController extends Controller
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
                 'student.nama',
@@ -435,7 +440,9 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.file_draft_laporan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'student.idstudent',
-                'prausta_setting_relasi.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'dosen.akademik'
             )
             ->first();
 
@@ -444,7 +451,7 @@ class AdminPraustaController extends Controller
 
     public function bim_ta()
     {
-        $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+        $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -459,15 +466,15 @@ class AdminPraustaController extends Controller
                 'prodi.prodi',
                 'kelas.kelas',
                 'angkatan.angkatan',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->groupBy(
                 'student.nama',
-                'prausta_trans_bimbingan.id_settingrelasi_prausta',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
                 'student.nim',
                 'prodi.prodi',
                 'kelas.kelas',
-                'angkatan.angkatan'
+                'angkatan.angkatan',
             )
             ->orderBy('student.nim', 'DESC')
             ->get();
@@ -493,6 +500,7 @@ class AdminPraustaController extends Controller
             ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
                 'student.nama',
@@ -503,7 +511,9 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.file_draft_laporan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'student.idstudent',
-                'prausta_setting_relasi.id_settingrelasi_prausta'
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'dosen.akademik'
             )
             ->first();
 
@@ -538,6 +548,132 @@ class AdminPraustaController extends Controller
         return view('prausta/prakerin/nilai_prakerin', compact('data'));
     }
 
+    public function edit_nilai_prakerin($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_prakerin');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pkl = Prausta_trans_hasil::where('prausta_trans_hasil.id_settingrelasi_prausta', $id)->first();
+            $nilai_1 = $nilai_pkl->nilai_1;
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 1)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
+                ->get();
+
+            $nilai_sem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 1)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Seminar')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
+                ->get();
+
+            return view('prausta/prakerin/edit_nilai_prakerin', compact('nilai_pem', 'datadiri', 'nilai_sem', 'id', 'nilai_1'));
+        }
+    }
+
+    public function put_nilai_prakerin(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $nilai_pem_lap = $request->nilai_pembimbing_lapangan;
+        $id_penilaian1 = $request->id_penilaian_prausta1;
+        $id_penilaian2 = $request->id_penilaian_prausta2;
+        $nilai1 = $request->nilai1;
+        $nilai2 = $request->nilai2;
+
+        $hitung_id_penilaian1 = count($id_penilaian1);
+        $hitung_id_penilaian2 = count($id_penilaian2);
+
+        for ($i = 0; $i < $hitung_id_penilaian1; $i++) {
+            $id_nilai1 = $id_penilaian1[$i];
+            $n1 = $nilai1[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)
+                ->update([
+                    'nilai' => $n1,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        for ($i = 0; $i < $hitung_id_penilaian2; $i++) {
+            $id_nilai2 = $id_penilaian2[$i];
+            $n2 = $nilai2[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai2)
+                ->update([
+                    'nilai' => $n2,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai_1 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $ceknilai_2 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Seminar')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
+            ->first();
+
+        if ($nilai_pem_lap == null) {
+
+            $huruf = ($ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 2;
+        } elseif ($nilai_pem_lap != null) {
+
+            $huruf = (($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3);
+        }
+
+        $hasilavg = round($huruf, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $usta = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_1' => $nilai_pem_lap,
+                'nilai_2' => $ceknilai_1->nilai1,
+                'nilai_3' => $ceknilai_2->nilai2,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Prakerin berhasil disimpan')->autoclose(3500);
+        return redirect('nilai_prakerin');
+    }
+
     public function nilai_sempro()
     {
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -566,6 +702,288 @@ class AdminPraustaController extends Controller
         return view('prausta/sempro/nilai_sempro', compact('data'));
     }
 
+    public function edit_nilai_sempro_bim($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_sempro');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 2)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/sempro/edit_nilai_sempro', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_sempro_dospem(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai1;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_1' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        return redirect('nilai_sempro');
+    }
+
+    public function edit_nilai_sempro_p1($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_sempro');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 2)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/sempro/edit_nilai_sempro_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_sempro_dospeng1(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai2;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_2' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        return redirect('nilai_sempro');
+    }
+
+    public function edit_nilai_sempro_p2($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_sempro');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 2)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/sempro/edit_nilai_sempro_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_sempro_dospeng2(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai3;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_3' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        return redirect('nilai_sempro');
+    }
+
     public function nilai_ta()
     {
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -592,6 +1010,288 @@ class AdminPraustaController extends Controller
             ->get();
 
         return view('prausta/ta/nilai_ta', compact('data'));
+    }
+
+    public function edit_nilai_ta_bim($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_ta');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 3)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/ta/edit_nilai_ta', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_ta_dospem(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai1;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_1' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
+        return redirect('nilai_ta');
+    }
+
+    public function edit_nilai_ta_p1($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_ta');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 3)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/ta/edit_nilai_ta_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_ta_dospeng1(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai2;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_2' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        return redirect('nilai_ta');
+    }
+
+    public function edit_nilai_ta_p2($id)
+    {
+        $ceknilai = Prausta_trans_penilaian::where('id_settingrelasi_prausta', $id)->get();
+        $jml = count($ceknilai);
+
+        if ($jml == 0) {
+
+            Alert::error('', 'Maaf nilai ini belum ada di history sistem')->autoclose(3500);
+            return redirect('nilai_ta');
+        } elseif ($jml != 0) {
+            $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+                ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+                ->first();
+
+            $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+                ->where('prausta_master_penilaian.kategori', 3)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->select(
+                    'prausta_master_penilaian.komponen',
+                    'prausta_master_penilaian.bobot',
+                    'prausta_master_penilaian.acuan',
+                    'prausta_trans_penilaian.nilai',
+                    'prausta_trans_penilaian.id_trans_penilaian'
+                )
+                ->get();
+
+            return view('prausta/ta/edit_nilai_ta_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
+        }
+    }
+
+    public function put_nilai_sempro_dospeng2(Request $request)
+    {
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $id_penilaian = $request->id_trans_penilaian;
+        $nilai = $request->nilai;
+
+        $hit_jml_nilai = count($id_penilaian);
+
+        for ($i = 0; $i < $hit_jml_nilai; $i++) {
+            $id_nilai = $id_penilaian[$i];
+            $n = $nilai[$i];
+
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
+                ->update([
+                    'nilai' => $n,
+                    'updated_by' => Auth::user()->name
+                ]);
+        }
+
+        $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))
+            ->first();
+
+        $nilai_dospem = $ceknilai->nilai3;
+
+        $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
+
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasilavg = round($hasil, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
+            ->update([
+                'nilai_3' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'updated_by' => Auth::user()->name
+            ]);
+
+        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        return redirect('nilai_sempro');
     }
 
     public function nonatifkan_prausta($id)

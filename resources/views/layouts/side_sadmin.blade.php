@@ -26,6 +26,9 @@
             <li><a href="/master_edom"><i class="fa fa-circle-o"></i> Master EDOM</a></li>
             <li><a href="/master_kategoriprausta"><i class="fa fa-circle-o"></i> Master Kategori PraUSTA</a></li>
             <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Master Penilaian PraUSTA</a></li>
+            <li><a href="/master_kategorikuisioner"><i class="fa fa-circle-o"></i> Master Kategori Kuisioner</a></li>
+            <li><a href="/master_aspekkuisioner"><i class="fa fa-circle-o"></i> Master Aspek Kuisioner</a></li>
+            <li><a href="/master_kuisioner"><i class="fa fa-circle-o"></i> Master Kuisioner</a></li>
         </ul>
     </li>
     <li class="treeview">
@@ -140,6 +143,17 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('mhs_ta') }}"><i class="fa fa-circle-o"></i>Mahasiswa Tugas Akhir</a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-th"></i> <span>Master Microsoft</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('user_microsoft') }}"><i class="fa fa-circle-o"></i>Data Akun Microsoft</a></li>
         </ul>
     </li>
 </ul>

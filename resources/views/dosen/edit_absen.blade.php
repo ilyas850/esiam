@@ -61,7 +61,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($absen as $item)
+                            @foreach ($abs as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>
@@ -79,7 +79,6 @@
                                     </td>
                                     <td>
                                         <center>
-
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
                                             @if ($item->absensi == 'HADIR')
@@ -94,54 +93,8 @@
                                             @endif
                                         </center>
                                     </td>
-
                                 </tr>
                             @endforeach
-                            {{-- @foreach ($dt as $item)
-                                @foreach ($abs as $d)
-                                    @if ($item->id_studentrecord == $d->id_studentrecord)
-                                        <tr>
-                                            <td>
-                                                <center>{{ $no++ }}</center>
-                                            </td>
-                                            <td>
-                                                <center>{{ $item->nim }}</center>
-                                            </td>
-                                            <td>{{ $item->nama }}</td>
-                                            <td>{{ $item->prodi }}</td>
-                                            <td>
-                                                <center>{{ $item->kelas }}</center>
-                                            </td>
-                                            <td>
-                                                <center>{{ $item->angkatan }}</center>
-                                            </td>
-                                            <td>
-                                                <center>
-
-
-
-                                                    <input type="hidden" name="id_studentrecord[]"
-                                                        value="{{ $item->id_studentrecord }}">
-                                                    @if ($d->absensi == 'HADIR')
-                                                        <input type="checkbox" name="absensi[]"
-                                                            value="{{ $d->id_absensi }},ABSEN">
-                                                    @elseif($d->absensi == 'ABSEN')
-                                                        <input type="checkbox" name="absensi[]"
-                                                            value="{{ $item->id_absensi }},ABSEN" checked>
-                                                    @endif
-
-
-                                                </center>
-                                            </td>
-
-                                        </tr>
-                                    @elseif($item->id_studentrecord != $d->id_studentrecord)
-                                        <tr>
-                                            <td>nama</td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            @endforeach --}}
 
                         </tbody>
                     </table>
