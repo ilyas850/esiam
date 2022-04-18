@@ -1076,7 +1076,7 @@ class AdminPraustaController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasil = (($nilai_dospem * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -1166,11 +1166,11 @@ class AdminPraustaController extends Controller
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
             ->first();
 
-        $nilai_dospem = $ceknilai->nilai2;
+        $nilai_dospeng1 = $ceknilai->nilai2;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasil = (($nilai_dospeng1 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -1191,12 +1191,12 @@ class AdminPraustaController extends Controller
 
         $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
             ->update([
-                'nilai_2' => $nilai_dospem,
+                'nilai_2' => $nilai_dospeng1,
                 'nilai_huruf' => $nilai_huruf,
                 'updated_by' => Auth::user()->name
             ]);
 
-        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
         return redirect('nilai_ta');
     }
 
@@ -1233,7 +1233,7 @@ class AdminPraustaController extends Controller
         }
     }
 
-    public function put_nilai_sempro_dospeng2(Request $request)
+    public function put_nilai_ta_dospeng2(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_trans_penilaian;
@@ -1260,11 +1260,11 @@ class AdminPraustaController extends Controller
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))
             ->first();
 
-        $nilai_dospem = $ceknilai->nilai3;
+        $nilai_dospeng2 = $ceknilai->nilai3;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasil = (($nilai_dospeng2 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100));
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -1285,13 +1285,13 @@ class AdminPraustaController extends Controller
 
         $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
             ->update([
-                'nilai_3' => $nilai_dospem,
+                'nilai_3' => $nilai_dospeng2,
                 'nilai_huruf' => $nilai_huruf,
                 'updated_by' => Auth::user()->name
             ]);
 
-        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
-        return redirect('nilai_sempro');
+        Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
+        return redirect('nilai_ta');
     }
 
     public function nonatifkan_prausta($id)

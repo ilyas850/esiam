@@ -45,7 +45,7 @@
                                 <center>Unduh Form</center>
                             </th>
                             <th>
-                                <center>Aksi</center>
+                                <center>Edit</center>
                             </th>
                         </tr>
                     </thead>

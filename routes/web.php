@@ -44,6 +44,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('master_kuisioner', 'SadminController@master_kuisioner');
     Route::post('simpan_master_kuisioner', 'SadminController@simpan_master_kuisioner');
     Route::put('put_kuisioner_master/{id}', 'SadminController@put_kuisioner_master');
+    Route::post('hapus_kuisioner_master', 'SadminController@hapus_kuisioner_master');
 
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');

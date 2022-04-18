@@ -25,13 +25,13 @@
                 </table>
             </div>
         </div>
-        <form class="" action="{{ url('put_nilai_ta_dospem') }}" method="post" enctype="multipart/form-data"
-            name="autoSumForm">
+        <form class="" action="{{ url('put_nilai_ta_dospeng2') }}" method="post"
+            enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Dosen Pembimbing</b> </h3>
+                    <h3 class="box-title"><b>Form Penilaian Dosen Penguji II</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">

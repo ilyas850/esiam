@@ -2604,6 +2604,15 @@ class SadminController extends Controller
         Alert::success('', 'Master Kuisioner berhasil diedit')->autoclose(3500);
         return redirect('master_kuisioner');
     }
+    
+    public function hapus_kuisioner_master(Request $request)
+    {
+        $akun = Kuisioner_master::where('id_kuisioner', $request->id_kuisioner)
+            ->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kuisioner berhasil dihapus')->autoclose(3500);
+        return redirect('master_kuisioner');
+    }
 
     public function user_microsoft()
     {
