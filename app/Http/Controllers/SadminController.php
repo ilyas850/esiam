@@ -69,7 +69,8 @@ class SadminController extends Controller
     public function master_angkatan()
     {
         $data = Angkatan::all();
-
+        $pass = decrypt(12345678);
+        dd($pass);
         return view('sadmin/masterakademik/master_angkatan', compact('data'));
     }
 
@@ -2604,7 +2605,7 @@ class SadminController extends Controller
         Alert::success('', 'Master Kuisioner berhasil diedit')->autoclose(3500);
         return redirect('master_kuisioner');
     }
-    
+
     public function hapus_kuisioner_master(Request $request)
     {
         $akun = Kuisioner_master::where('id_kuisioner', $request->id_kuisioner)

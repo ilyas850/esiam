@@ -368,11 +368,17 @@ class PraustaController extends Controller
             $message,
         );
 
+        $nama = Auth::user()->name;
+        $nama_ok = str_replace("'", "", $nama);
+
+        $bimbingan = $request->remark_bimbingan;
+        $bim_ok = str_replace("'", "", $bimbingan);
+
         $usta = new Prausta_trans_bimbingan();
         $usta->id_settingrelasi_prausta = $request->id_settingrelasi_prausta;
         $usta->tanggal_bimbingan = $request->tanggal_bimbingan;
-        $usta->remark_bimbingan = $request->remark_bimbingan;
-        $usta->added_by = Auth::user()->name;
+        $usta->remark_bimbingan = $bim_ok;
+        $usta->added_by = $nama_ok;
         $usta->status = 'ACTIVE';
 
         if ($request->hasFile('file_bimbingan')) {
@@ -784,10 +790,13 @@ class PraustaController extends Controller
             $message,
         );
 
+        $bimbingan = $request->remark_bimbingan;
+        $bim_ok = str_replace("'", "", $bimbingan);
+
         $usta = new Prausta_trans_bimbingan();
         $usta->id_settingrelasi_prausta = $request->id_settingrelasi_prausta;
         $usta->tanggal_bimbingan = $request->tanggal_bimbingan;
-        $usta->remark_bimbingan = $request->remark_bimbingan;
+        $usta->remark_bimbingan = $bim_ok;
         $usta->added_by = Auth::user()->name;
         $usta->status = 'ACTIVE';
 
@@ -992,151 +1001,151 @@ class PraustaController extends Controller
                 return redirect('home');
             } elseif (count($cekdata) != null) {
 
-                if ($cekdata_nilai == null) {
-                    Alert::error('Maaf anda belum melakukan upload draft laporan Sempro', 'MAAF !!');
-                    return redirect('home');
-                } elseif ($cekdata_nilai->file_draft_laporan != null) {
+                // if ($cekdata_nilai == null) {
+                //     Alert::error('Maaf anda belum melakukan upload draft laporan Sempro', 'MAAF !!');
+                //     return redirect('home');
+                // } elseif ($cekdata_nilai->file_draft_laporan != null) {
 
-                    if ($cekdata_nilai->nilai_huruf == null) {
+                //     if ($cekdata_nilai->nilai_huruf == null) {
 
-                        Alert::error('Maaf nilai Sempro anda belum dientri oleh dosen', 'MAAF !!');
-                        return redirect('home');
-                    } elseif ($cekdata_nilai->nilai_huruf != null) {
+                //         Alert::error('Maaf nilai Sempro anda belum dientri oleh dosen', 'MAAF !!');
+                //         return redirect('home');
+                //     } elseif ($cekdata_nilai->nilai_huruf != null) {
 
-                        if ($cekdata_nilai->validasi_pembimbing == 'BELUM' && $cekdata_nilai->validasi_penguji_1 == 'BELUM' && $cekdata_nilai->validasi_penguji_2 == 'BELUM') {
+                //         if ($cekdata_nilai->validasi_pembimbing == 'BELUM' && $cekdata_nilai->validasi_penguji_1 == 'BELUM' && $cekdata_nilai->validasi_penguji_2 == 'BELUM') {
 
-                            Alert::error('Maaf pembimbing dan penguji belum validasi SEMPRO anda', 'MAAF !!');
-                            return redirect('home');
-                        } elseif ($cekdata_nilai->validasi_pembimbing == 'BELUM' or $cekdata_nilai->validasi_penguji_1 == 'BELUM' or $cekdata_nilai->validasi_penguji_2 == 'BELUM') {
+                //             Alert::error('Maaf pembimbing dan penguji belum validasi SEMPRO anda', 'MAAF !!');
+                //             return redirect('home');
+                //         } elseif ($cekdata_nilai->validasi_pembimbing == 'BELUM' or $cekdata_nilai->validasi_penguji_1 == 'BELUM' or $cekdata_nilai->validasi_penguji_2 == 'BELUM') {
 
-                            Alert::error('Maaf pembimbing atau penguji belum validasi SEMPRO anda', 'MAAF !!');
-                            return redirect('home');
-                        } elseif ($cekdata_nilai->validasi_pembimbing == 'SUDAH' or $cekdata_nilai->validasi_penguji_1 == 'SUDAH' or $cekdata_nilai->validasi_penguji_2 == 'SUDAH') {
+                //             Alert::error('Maaf pembimbing atau penguji belum validasi SEMPRO anda', 'MAAF !!');
+                //             return redirect('home');
+                //         } elseif ($cekdata_nilai->validasi_pembimbing == 'SUDAH' or $cekdata_nilai->validasi_penguji_1 == 'SUDAH' or $cekdata_nilai->validasi_penguji_2 == 'SUDAH') {
 
-                            //data seminar proposal
-                            $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                                ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                                ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
-                                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-                                ->where('prausta_setting_relasi.id_student', $id)
-                                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                ->select(
-                                    'prausta_setting_relasi.file_laporan_revisi',
-                                    'prausta_setting_relasi.file_draft_laporan',
-                                    'prausta_setting_relasi.jam_selesai_sidang',
-                                    'prausta_setting_relasi.jam_mulai_sidang',
-                                    'prausta_setting_relasi.ruangan',
-                                    'prausta_setting_relasi.tanggal_selesai',
-                                    'prausta_setting_relasi.dosen_penguji_1',
-                                    'prausta_setting_relasi.dosen_penguji_2',
-                                    'prausta_setting_relasi.tanggal_mulai',
-                                    'prausta_master_kategori.kategori',
-                                    'prausta_setting_relasi.acc_seminar_sidang',
-                                    'prausta_setting_relasi.id_settingrelasi_prausta',
-                                    'student.nama',
-                                    'student.nim',
-                                    'prausta_master_kode.kode_prausta',
-                                    'prausta_master_kode.nama_prausta',
-                                    'prodi.prodi',
-                                    'prausta_setting_relasi.dosen_pembimbing',
-                                    'prausta_setting_relasi.judul_prausta',
-                                    'prausta_setting_relasi.tempat_prausta',
-                                    'prausta_setting_relasi.acc_judul_dospem',
-                                    'prausta_setting_relasi.acc_judul_kaprodi'
-                                )
-                                ->first();
+                //data seminar proposal
+                $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                    ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->where('prausta_setting_relasi.id_student', $id)
+                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                    ->select(
+                        'prausta_setting_relasi.file_laporan_revisi',
+                        'prausta_setting_relasi.file_draft_laporan',
+                        'prausta_setting_relasi.jam_selesai_sidang',
+                        'prausta_setting_relasi.jam_mulai_sidang',
+                        'prausta_setting_relasi.ruangan',
+                        'prausta_setting_relasi.tanggal_selesai',
+                        'prausta_setting_relasi.dosen_penguji_1',
+                        'prausta_setting_relasi.dosen_penguji_2',
+                        'prausta_setting_relasi.tanggal_mulai',
+                        'prausta_master_kategori.kategori',
+                        'prausta_setting_relasi.acc_seminar_sidang',
+                        'prausta_setting_relasi.id_settingrelasi_prausta',
+                        'student.nama',
+                        'student.nim',
+                        'prausta_master_kode.kode_prausta',
+                        'prausta_master_kode.nama_prausta',
+                        'prodi.prodi',
+                        'prausta_setting_relasi.dosen_pembimbing',
+                        'prausta_setting_relasi.judul_prausta',
+                        'prausta_setting_relasi.tempat_prausta',
+                        'prausta_setting_relasi.acc_judul_dospem',
+                        'prausta_setting_relasi.acc_judul_kaprodi'
+                    )
+                    ->first();
 
-                            // data untuk keuangan
-                            $maha = Student::where('idstudent', $id)
-                                ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
-                                ->first();
+                // data untuk keuangan
+                $maha = Student::where('idstudent', $id)
+                    ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
+                    ->first();
 
-                            $idangkatan = $maha->idangkatan;
-                            $idstatus = $maha->idstatus;
-                            $kodeprodi = $maha->kodeprodi;
+                $idangkatan = $maha->idangkatan;
+                $idstatus = $maha->idstatus;
+                $kodeprodi = $maha->kodeprodi;
 
-                            $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                                ->where('student.idstudent', $id)
-                                ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
-                                ->first();
+                $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->where('student.idstudent', $id)
+                    ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+                    ->first();
 
-                            $biaya = Biaya::where('idangkatan', $idangkatan)
-                                ->where('idstatus', $idstatus)
-                                ->where('kodeprodi', $kodeprodi)
-                                ->select('sidang')
-                                ->first();
+                $biaya = Biaya::where('idangkatan', $idangkatan)
+                    ->where('idstatus', $idstatus)
+                    ->where('kodeprodi', $kodeprodi)
+                    ->select('sidang')
+                    ->first();
 
-                            //cek beasiswa mahasiswa
-                            $cb = Beasiswa::where('idstudent', $id)->first();
+                //cek beasiswa mahasiswa
+                $cb = Beasiswa::where('idstudent', $id)->first();
 
-                            if (($cb) != null) {
+                if (($cb) != null) {
 
-                                $sidang = $biaya->sidang - ($biaya->sidang * $cb->sidang) / 100;
-                            } elseif (($cb) == null) {
+                    $sidang = $biaya->sidang - ($biaya->sidang * $cb->sidang) / 100;
+                } elseif (($cb) == null) {
 
-                                $sidang = $biaya->sidang;
-                            }
-
-                            if ($cek_study->study_year == 3) {
-
-                                $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                    ->where('kuitansi.idstudent', $id)
-                                    ->where('bayar.iditem', 15)
-                                    ->sum('bayar.bayar');
-                            } elseif ($cek_study->study_year == 4) {
-
-                                $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                                    ->where('kuitansi.idstudent', $id)
-                                    ->where('bayar.iditem', 38)
-                                    ->sum('bayar.bayar');
-                            }
-
-                            $hasil_sidang = $sisasidang - $sidang;
-
-                            if ($hasil_sidang == 0) {
-                                $validasi = 'Sudah Lunas';
-                            } else {
-                                $validasi = 'Belum Lunas';
-                            }
-
-                            $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                                ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-                                ->where('prausta_setting_relasi.id_student', $id)
-                                //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
-                                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                ->select(
-                                    'prausta_trans_bimbingan.id_transbimb_prausta',
-                                    'prausta_trans_bimbingan.file_bimbingan',
-                                    'prausta_trans_bimbingan.validasi',
-                                    'prausta_trans_bimbingan.tanggal_bimbingan',
-                                    'prausta_trans_bimbingan.remark_bimbingan',
-                                    'prausta_trans_bimbingan.komentar_bimbingan',
-                                    'prausta_trans_bimbingan.id_transbimb_prausta',
-                                    'prausta_trans_bimbingan.id_settingrelasi_prausta'
-                                )
-                                ->get();
-
-                            $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-                                ->where('prausta_setting_relasi.id_student', $id)
-                                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                ->count();
-
-                            $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-                                ->where('prausta_setting_relasi.id_student', $id)
-                                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                                ->limit(1)
-                                ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
-                                ->first();
-
-                            return view('mhs/prausta/sidang_ta', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb'));
-                        }
-                    }
+                    $sidang = $biaya->sidang;
                 }
+
+                if ($cek_study->study_year == 3) {
+
+                    $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                        ->where('kuitansi.idstudent', $id)
+                        ->where('bayar.iditem', 15)
+                        ->sum('bayar.bayar');
+                } elseif ($cek_study->study_year == 4) {
+
+                    $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                        ->where('kuitansi.idstudent', $id)
+                        ->where('bayar.iditem', 38)
+                        ->sum('bayar.bayar');
+                }
+
+                $hasil_sidang = $sisasidang - $sidang;
+
+                if ($hasil_sidang == 0) {
+                    $validasi = 'Sudah Lunas';
+                } else {
+                    $validasi = 'Belum Lunas';
+                }
+
+                $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                    ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->where('prausta_setting_relasi.id_student', $id)
+                    //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
+                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                    ->select(
+                        'prausta_trans_bimbingan.id_transbimb_prausta',
+                        'prausta_trans_bimbingan.file_bimbingan',
+                        'prausta_trans_bimbingan.validasi',
+                        'prausta_trans_bimbingan.tanggal_bimbingan',
+                        'prausta_trans_bimbingan.remark_bimbingan',
+                        'prausta_trans_bimbingan.komentar_bimbingan',
+                        'prausta_trans_bimbingan.id_transbimb_prausta',
+                        'prausta_trans_bimbingan.id_settingrelasi_prausta'
+                    )
+                    ->get();
+
+                $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->where('prausta_setting_relasi.id_student', $id)
+                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                    ->count();
+
+                $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->where('prausta_setting_relasi.id_student', $id)
+                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                    ->limit(1)
+                    ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
+                    ->first();
+
+                return view('mhs/prausta/sidang_ta', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb'));
+                //         }
+                //     }
+                // }
             }
         }
     }
@@ -1215,10 +1224,13 @@ class PraustaController extends Controller
             $message,
         );
 
+        $bimbingan = $request->remark_bimbingan;
+        $bim_ok = str_replace("'", "", $bimbingan);
+
         $usta = new Prausta_trans_bimbingan();
         $usta->id_settingrelasi_prausta = $request->id_settingrelasi_prausta;
         $usta->tanggal_bimbingan = $request->tanggal_bimbingan;
-        $usta->remark_bimbingan = $request->remark_bimbingan;
+        $usta->remark_bimbingan = $bim_ok;
         $usta->added_by = Auth::user()->name;
         $usta->status = 'ACTIVE';
 
