@@ -19,6 +19,7 @@ use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Waktu_krs;
 use App\Waktu_edom;
+use App\Microsoft_user;
 use App\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,21 +27,11 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-  /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
   public function __construct()
   {
     $this->middleware('auth');
   }
 
-  /**
-   * Show the application dashboard.
-   *
-   * @return \Illuminate\Contracts\Support\Renderable
-   */
   public function index()
   {
     $vm = Visimisi::all();
@@ -55,27 +46,46 @@ class HomeController extends Controller
 
     $tujuan = $vm->tujuan;
 
-    $id = Auth::user()->username;
+    $id = Auth::user()->id_user;
     $akses = Auth::user()->role;
     $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
-      ->where('student.nim', Auth::user()->username)
-      ->select('student.foto', 'student.hp', 'student.idangkatan', 'student.idstatus', 'student.email', 'student.kodeprodi', 'student.idstudent', 'student.nim', 'student.nisn', 'update_mahasiswas.hp_baru', 'update_mahasiswas.email_baru', 'update_mahasiswas.id_mhs', 'update_mahasiswas.id', 'update_mahasiswas.nim_mhs')
-      ->get();
+      ->leftjoin('microsoft_user', 'student.idstudent', '=', 'microsoft_user.id_student')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student.idstudent', $id)
+      ->select(
+        'student.nama',
+        'student.foto',
+        'student.hp',
+        'angkatan.angkatan',
+        'kelas.kelas',
+        'student.email',
+        'prodi.prodi',
+        'student.idstudent',
+        'student.nim',
+        'student.nisn',
+        'update_mahasiswas.hp_baru',
+        'update_mahasiswas.email_baru',
+        'update_mahasiswas.id_mhs',
+        'update_mahasiswas.id',
+        'update_mahasiswas.nim_mhs',
+        'microsoft_user.username',
+        'microsoft_user.password'
+      )
+      ->first();
 
     $dsn = Dosen::join('agama', 'dosen.idagama', '=', 'agama.idagama')
       ->join('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
-      ->where('dosen.nik', $id)
+      ->where('dosen.iddosen', $id)
       ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
       ->first();
 
-    $tahun = Periode_tahun::orderBy('id_periodetahun', 'ASC')->get();
+    $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
 
-    $tipe = Periode_tipe::all();
+    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
-    $time = Waktu_krs::all();
-
-    foreach ($time as $waktu) {
-    }
+    $time = Waktu_krs::first();
 
     $edom = Waktu_edom::all();
     foreach ($edom as $keyedom) {
@@ -88,6 +98,10 @@ class HomeController extends Controller
 
 
     if ($akses == 1) {
+
+      $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+      $tp = Periode_tipe::orderBy('periode_tipe', 'DESC')->get();
 
       $ldate = date('m/d/Y');
 
@@ -103,24 +117,21 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
     } elseif ($akses == 2) {
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 3) {
 
-      foreach ($mhs as $valuefoto) {
-        // code...
-      }
-      $foto = $valuefoto->foto;
+      $foto = $mhs->foto;
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $waktu, 'tahun' => $tahun, 'tipe' => $tipe]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'mhs' => $mhs, 'id' => $id,]);
     } elseif ($akses == 5) {
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 6) {
       $mhs_ti = Student::where('kodeprodi', 23)
         ->where('active', 1)
@@ -143,7 +154,7 @@ class HomeController extends Controller
         // code...
       }
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 7) {
       $mhs_ti = Student::where('kodeprodi', 23)
         ->where('active', 1)
@@ -169,7 +180,7 @@ class HomeController extends Controller
       return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
     } elseif ($akses == 11) {
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 9) {
 
       $mhs_ti = Student::where('kodeprodi', 23)
@@ -184,7 +195,7 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti]);
+      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti]);
     }
   }
 }

@@ -25,7 +25,6 @@
             </div>
             <div class="box-body">
                 <table width="100%">
-
                     <tr>
                         <td>Nama</td>
                         <td>:</td>

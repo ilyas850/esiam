@@ -88,54 +88,25 @@ class EdomController extends Controller
 
     if ($edom->status == 1) {
 
-      $id = Auth::user()->username;
-      $maha = Student::where('nim', $id)->get();
-      foreach ($maha as $key) {
-        # code...
-      }
+      $id = Auth::user()->id_user;
 
-      $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-      foreach ($thn as $tahun) {
-        // code...
-      }
+      $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-      $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-      foreach ($tp as $tipe) {
-        // code...
-      }
-
-      $sub_thn = substr($tahun->periode_tahun, 6, 2);
-      $tp = $tipe->id_periodetipe;
-      $smt = $sub_thn . $tp;
-      $angk = $key->idangkatan;
-
-      if ($smt % 2 != 0) {
-        $a = (($smt + 10) - 1) / 10;
-        $b = $a - $angk;
-        $c = ($b * 2) - 1;
-      } else {
-        $a = (($smt + 10) - 2) / 10;
-        $b = $a - $angk;
-        $c = $b * 2;
-      }
-
-      $semester = Semester::all();
-      $makul = Matakuliah::all();
-      $dosen = Dosen::all();
+      $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
       $latestPosts = DB::table('student_record')
         ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-        ->select('kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', DB::raw('MAX(student_record.id_kurtrans) as id_kurtrans'), DB::raw('MAX(student_record.id_kurperiode) as id_kurperiode'))
-        ->where('student_record.id_student', $key->idstudent)
-        // ->where('kurikulum_periode.id_semester', $c)
-        ->where('kurikulum_periode.id_periodetipe', $tp)
-        ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+        ->where('student_record.id_student', $id)
+        ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
         ->where('student_record.status', 'TAKEN')
-        ->groupBy('kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student')
+        ->select('matakuliah.makul', 'matakuliah.kode', 'kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', DB::raw('MAX(student_record.id_kurtrans) as id_kurtrans'), DB::raw('MAX(student_record.id_kurperiode) as id_kurperiode'), 'dosen.nama')
+        ->groupBy('matakuliah.makul', 'matakuliah.kode', 'kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', 'dosen.nama')
         ->get();
 
-
-      return view('mhs/edom/isi_edom', ['edom' => $latestPosts, 'mk' => $makul, 'dsn' => $dosen]);
+      return view('mhs/edom/isi_edom', ['edom' => $latestPosts]);
     } else {
 
       alert()->error('Pengisian EDOM Belum dibuka', 'Maaf silahkan menghubungi bagian akademik');
@@ -150,16 +121,14 @@ class EdomController extends Controller
     $kurtr = $request->id_kurtrans;
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
-    $makul = Matakuliah::all();
-    $dosen = Dosen::all();
+    $makul = Matakuliah::where('idmakul', $mk)->first();
+    $dosen = Dosen::where('iddosen', $dsn)->first();
 
     $edm = Edom_master::where('id_edom', 1)->get();
 
     foreach ($edm as $keydm) {
       // code...
     }
-
-
 
     $edom = Edom_master::orderBy('type', 'ASC')
       ->where('status', 'ACTIVE')
@@ -177,32 +146,27 @@ class EdomController extends Controller
       'id_kurtrans' => 'required',
       'nilai_edom' => 'required',
     ]);
-    $name = Student::where('idstudent', $request->id_student)->get();
-    foreach ($name as $value) {
-      // code...
-    }
+    $mhs = Student::where('idstudent', $request->id_student)->first();
 
-    $nama = $value->nama;
+    $nama = $mhs->nama;
     $nama_ok = str_replace("'", "", $nama);
 
-    $jml = count($request->nilai_edom);
-    for ($i = 0; $i < $jml; $i++) {
-      $nilai = $request->nilai_edom[$i];
-      $edom = explode(',', $nilai, 2);
-      $idom = $edom[0];
-      $nidom = $edom[1];
+    $cekedom = Edom_transaction::where('id_student', $request->id_student)
+      ->where('id_kurperiode', $request->id_kurperiode)
+      ->where('id_kurtrans', $request->id_kurtrans)
+      ->get();
 
-      $cekedom = Edom_transaction::where('id_edom', $idom)
-        ->where('id_student', $request->id_student)
-        ->where('id_kurperiode', $request->id_kurperiode)
-        ->where('id_kurtrans', $request->id_kurtrans)
-        ->get();
+    if (count($cekedom) > 0) {
+      Alert::warning('maaf edom mata kuliah sudah dipilih', 'MAAF !!');
+      return redirect('isi_edom');
+    } elseif (count($cekedom) == 0) {
+      $jml = count($request->nilai_edom);
+      for ($i = 0; $i < $jml; $i++) {
+        $nilai = $request->nilai_edom[$i];
+        $edom = explode(',', $nilai, 2);
+        $idom = $edom[0];
+        $nidom = $edom[1];
 
-      if (count($cekedom) > 0) {
-
-        Alert::warning('maaf edom mata kuliah sudah dipilih', 'MAAF !!');
-        return redirect('isi_edom');
-      } else {
         $isi = new Edom_transaction;
         $isi->id_edom = $idom;
         $isi->id_student = $request->id_student;
@@ -215,6 +179,7 @@ class EdomController extends Controller
         $isi->save();
       }
     }
+
     Alert::success('', 'Pengisian EDOM anda berhasil ')->autoclose(3500);
     return redirect('isi_edom');
   }
@@ -226,8 +191,8 @@ class EdomController extends Controller
     $kurtr = $request->id_kurtrans;
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
-    $makul = Matakuliah::all();
-    $dosen = Dosen::all();
+    $makul = Matakuliah::where('idmakul', $mk)->first();
+    $dosen = Dosen::where('iddosen', $dsn)->first();
 
     $edom_com = Edom_master::orderBy('id_edom', 'DESC')
       ->paginate(1);

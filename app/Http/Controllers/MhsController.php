@@ -40,6 +40,10 @@ use App\Prausta_setting_relasi;
 use App\Ujian_menit;
 use App\Ujian_tipe;
 use App\Ujian_transaction;
+use App\Kuisioner_master;
+use App\Kuisioner_kategori;
+use App\Kuisioner_aspek;
+use App\Kuisioner_transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -2182,5 +2186,644 @@ class MhsController extends Controller
       ->first();
 
     return view('mhs/dosbing', compact('dosen_pa', 'dosen_pkl', 'dosen_sempro', 'dosen_ta'));
+  }
+
+  public function kuisioner()
+  {
+    $data = Kuisioner_kategori::where('status', 'ACTIVE')->get();
+
+    return view('mhs/kuisioner/kuisioner_all', compact('data'));
+  }
+
+  public function isi_dosen_pa($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
+      ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('student.idstudent', $ids)
+      ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $periodetahun = $thn->periode_tahun;
+    $periodetipe = $tp->periode_tipe;
+
+    //untuk ke database
+    $id_dsn = $mhs->id_dosen;
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_dsn_pa', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
+  }
+
+  public function save_kuisioner_dsn_pa(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_dosen = $request->id_dosen_pembimbing;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
+      ->where('id_dosen_pembimbing', $id_dosen)
+      ->where('id_periodetahun', $id_tahun)
+      ->where('id_periodetipe', $id_tipe)
+      ->get();
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_dosen_pembimbing = $id_dosen;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_dosen_pkl($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('student.idstudent', $ids)
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+      ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $periodetahun = $thn->periode_tahun;
+    $periodetipe = $tp->periode_tipe;
+
+    //untuk ke database
+    $id_dsn = $mhs->id_dosen_pembimbing;
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_dsn_pkl', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
+  }
+
+  public function save_kuisioner_dsn_pkl(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_dosen = $request->id_dosen_pembimbing;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
+      ->where('id_dosen_pembimbing', $id_dosen)
+      ->where('id_periodetahun', $id_tahun)
+      ->where('id_periodetipe', $id_tipe)
+      ->get();
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_dosen_pembimbing = $id_dosen;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_dosen_ta($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('student.idstudent', $ids)
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $periodetahun = $thn->periode_tahun;
+    $periodetipe = $tp->periode_tipe;
+
+    //untuk ke database
+    $id_dsn = $mhs->id_dosen_pembimbing;
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_dsn_ta', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
+  }
+
+  public function save_kuisioner_dsn_ta(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_dosen = $request->id_dosen_pembimbing;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
+      ->where('id_dosen_pembimbing', $id_dosen)
+      ->where('id_periodetahun', $id_tahun)
+      ->where('id_periodetipe', $id_tipe)
+      ->get();
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_dosen_pembimbing = $id_dosen;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_dosen_ta_peng1($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_1', '=', 'dosen.iddosen')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('student.idstudent', $ids)
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_1')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $periodetahun = $thn->periode_tahun;
+    $periodetipe = $tp->periode_tipe;
+
+    //untuk ke database
+    $id_dsn = $mhs->id_dosen_penguji_1;
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_dsn_ta_peng1', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
+  }
+
+  public function save_kuisioner_dsn_ta_peng1(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_dosen = $request->id_dosen_penguji_1;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
+      ->where('id_dosen_penguji_1', $id_dosen)
+      ->where('id_periodetahun', $id_tahun)
+      ->where('id_periodetipe', $id_tipe)
+      ->get();
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_dosen_penguji_1 = $id_dosen;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_dosen_ta_peng2($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_2', '=', 'dosen.iddosen')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('student.idstudent', $ids)
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_2')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $periodetahun = $thn->periode_tahun;
+    $periodetipe = $tp->periode_tipe;
+
+    //untuk ke database
+    $id_dsn = $mhs->id_dosen_penguji_2;
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_dsn_ta_peng2', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
+  }
+
+  public function save_kuisioner_dsn_ta_peng2(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_dosen = $request->id_dosen_penguji_2;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
+      ->where('id_dosen_penguji_2', $id_dosen)
+      ->where('id_periodetahun', $id_tahun)
+      ->where('id_periodetipe', $id_tipe)
+      ->get();
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_dosen_penguji_2 = $id_dosen;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_kuis_baak($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $ids)
+      ->select('prodi.prodi', 'kelas.kelas')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $kelas = $mhs->kelas;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    //untuk ke database
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_baak', compact('data', 'prodi', 'kelas', 'ids', 'idthn', 'idtp'));
+  }
+
+  public function save_kuisioner_baak(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+      ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+      ->where('kuisioner_transaction.id_student', $id_student)
+      ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+      ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+      ->where('kuisioner_master_kategori.id_kategori_kuisioner', 5)
+      ->get();
+
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_kuis_bauk($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $ids)
+      ->select('prodi.prodi', 'kelas.kelas')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $kelas = $mhs->kelas;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    //untuk ke database
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_bauk', compact('data', 'prodi', 'kelas', 'ids', 'idthn', 'idtp'));
+  }
+
+  public function save_kuisioner_bauk(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+      ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+      ->where('kuisioner_transaction.id_student', $id_student)
+      ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+      ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+      ->where('kuisioner_master_kategori.id_kategori_kuisioner', 6)
+      ->get();
+
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
+  }
+
+  public function isi_kuis_perpus($id)
+  {
+    $ids = Auth()->user()->id_user;
+
+    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $ids)
+      ->select('prodi.prodi', 'kelas.kelas')
+      ->first();
+
+    $prodi = $mhs->prodi;
+    $kelas = $mhs->kelas;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    //untuk ke database
+    $idthn = $thn->id_periodetahun;
+    $idtp = $tp->id_periodetipe;
+
+    $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+      ->where('kuisioner_master.id_kategori_kuisioner', $id)
+      ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+      ->get();
+
+    return view('mhs/kuisioner/kuisioner_perpus', compact('data', 'prodi', 'kelas', 'ids', 'idthn', 'idtp'));
+  }
+
+  public function save_kuisioner_perpus(Request $request)
+  {
+    $id_student = $request->id_student;
+    $id_tahun = $request->id_periodetahun;
+    $id_tipe = $request->id_periodetipe;
+    $nilai = $request->nilai;
+    $hitung = count($nilai);
+
+    $mhs = Student::where('idstudent', $id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+      ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+      ->where('kuisioner_transaction.id_student', $id_student)
+      ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+      ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+      ->where('kuisioner_master_kategori.id_kategori_kuisioner', 7)
+      ->get();
+
+
+    if (count($cek_kuis) > 0) {
+
+      Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+      return redirect('kuisioner');
+    } elseif (count($cek_kuis) == 0) {
+      for ($i = 0; $i < $hitung; $i++) {
+        $nilai = $request->nilai[$i];
+        $kuis = explode(',', $nilai, 2);
+        $id1 = $kuis[0];
+        $id2 = $kuis[1];
+
+        $isi = new Kuisioner_transaction;
+        $isi->id_kuisioner = $id1;
+        $isi->id_student = $id_student;
+        $isi->id_periodetahun = $id_tahun;
+        $isi->id_periodetipe = $id_tipe;
+        $isi->nilai = $id2;
+        $isi->created_by = $nama_ok;
+        $isi->save();
+      }
+    }
+    Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+    return redirect('kuisioner');
   }
 }

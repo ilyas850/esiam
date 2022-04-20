@@ -44,6 +44,9 @@
                             <th>
                                 <center>Unduh Form</center>
                             </th>
+                            <th>
+                                <center>Aksi</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +82,14 @@
                                     <center>
                                         <a href="/unduh_nilai_prakerin_b/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-info btn-xs">Pembimbing</a>
-                                        <a href="/unduh_nilai_prakerin_c/{{ $key->id_settingrelasi_prausta }}" class="btn btn-success btn-xs">Seminar</a>
+                                        <a href="/unduh_nilai_prakerin_c/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-success btn-xs">Seminar</a>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <a href="edit_nilai_prakerin/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-warning btn-xs">Edit</a>
                                     </center>
                                 </td>
                             </tr>

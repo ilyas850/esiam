@@ -1151,57 +1151,89 @@ class KaprodiController extends Controller
 
   public function edit_absen($id)
   {
-    $abs = Absensi_mahasiswa::join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-      ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-      ->where('absensi_mahasiswa.id_bap', $id)
-      ->select('student_record.id_kurperiode', 'absensi_mahasiswa.id_absensi', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'absensi_mahasiswa.absensi')
-      ->get();
+    $kur = Bap::where('id_bap', $id)->first();
 
-    foreach ($abs as $key) {
-      # code...
-    }
-    $idk = $key->id_kurperiode;
+    $idk = $kur->id_kurperiode;
+    $per = $kur->pertemuan;
 
-    return view('kaprodi/bap/edit_absen', ['idk' => $idk, 'abs' => $abs, 'id' => $id]);
+    $p = DB::select('CALL editAbsenMhs(?,?)', array($idk, $per));
+
+    return view('kaprodi/bap/edit_absen', ['idk' => $idk, 'abs' => $p, 'id' => $id]);
   }
 
   public function save_edit_absensi(Request $request)
   {
-    $id_record  = $request->id_studentrecord;
-    $jmlrecord  = count($id_record);
+    $id_record = $request->id_studentrecord;
+    $jmlrecord = count($id_record);
 
-    $id_bp      = $request->id_bap;
-    $absen      = $request->absensi;
-    $jmlabsen   = count($request->absensi);
+    $id_bp = $request->id_bap;
+    $absen = $request->absensi;
+    $absr = $request->abs;
 
-    for ($i = 0; $i < $jmlrecord; $i++) {
-      $kurp = $request->id_studentrecord[$i];
-      $idr = explode(',', $kurp);
-      $tra = $idr[0];
+    if ($absen != null) {
+      $jmlabsen = count($request->absensi);
+      for ($i = 0; $i < $jmlrecord; $i++) {
+        $kurp = $request->id_studentrecord[$i];
+        $idr = explode(',', $kurp);
+        $tra = $idr[0];
 
-      $cek = Absensi_mahasiswa::where('id_studentrecord', $tra)
-        ->where('id_bap', $id_bp)
-        ->update(['absensi' => 'HADIR', 'updated_by' => Auth::user()->name]);
+        $cek = Absensi_mahasiswa::where('id_studentrecord', $tra)
+          ->where('id_bap', $id_bp)
+          ->update(['absensi' => 'HADIR']);
+      }
+
+      for ($i = 0; $i < $jmlabsen; $i++) {
+        $abs = $request->absensi[$i];
+        $idab = explode(',', $abs, 2);
+        $trsen = $idab[0];
+        $trsi = $idab[1];
+
+        Absensi_mahasiswa::where('id_absensi', $trsen)->update(['absensi' => $trsi]);
+      }
+    } elseif ($absen == null) {
+
+      for ($i = 0; $i < $jmlrecord; $i++) {
+        $kurp = $request->id_studentrecord[$i];
+        $idr = explode(',', $kurp);
+        $tra = $idr[0];
+
+        $cek = Absensi_mahasiswa::where('id_studentrecord', $tra)
+          ->where('id_bap', $id_bp)
+          ->update(['absensi' => 'HADIR']);
+      }
     }
 
-    for ($i = 0; $i < $jmlabsen; $i++) {
-      $abs    = $request->absensi[$i];
-      $idab   = explode(',', $abs, 2);
-      $trsen  = $idab[0];
-      $trsi   = $idab[1];
+    if ($absr != null) {
+      $jmlabs = count($request->abs);
+      for ($i = 0; $i < $jmlabs; $i++) {
+        $absn = $request->abs[$i];
+        $idab = explode(',', $absn, 2);
+        $trsen = $idab[0];
+        $trsi = $idab[1];
 
-      Absensi_mahasiswa::where('id_absensi', $trsen)
-        ->update(['absensi' => $trsi, 'updated_by' => Auth::user()->name]);
+        $bsa = new Absensi_mahasiswa();
+        $bsa->id_bap = $id_bp;
+        $bsa->id_studentrecord = $trsen;
+        $bsa->absensi = $trsi;
+        $bsa->save();
+      }
     }
 
-    $bp = Bap::where('id_bap', $id_bp)
-      ->update(['hadir' => $jmlabsen]);
+    $cekhdr = Absensi_mahasiswa::where('id_bap', $id_bp)
+      ->where('absensi', 'ABSEN')
+      ->get();
 
-    $bp = Bap::where('id_bap', $id_bp)
-      ->update(['tidak_hadir' => $jmlrecord - $jmlabsen]);
+    $cekthdr = Absensi_mahasiswa::where('id_bap', $id_bp)
+      ->where('absensi', 'HADIR')
+      ->get();
+
+    $hithdr = count($cekhdr);
+
+    $hitthdr = count($cekthdr);
+
+    $bp = Bap::where('id_bap', $id_bp)->update(['hadir' => $hithdr]);
+
+    $bp = Bap::where('id_bap', $id_bp)->update(['tidak_hadir' => $hitthdr]);
 
     $kur = Bap::where('id_bap', $id_bp)
       ->select('id_kurperiode')
@@ -4530,7 +4562,7 @@ class KaprodiController extends Controller
       ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
       ->first();
 
-    $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+    $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -4546,12 +4578,12 @@ class KaprodiController extends Controller
         'prodi.prodi',
         'kelas.kelas',
         'angkatan.angkatan',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'prausta_setting_relasi.dosen_pembimbing'
       )
       ->groupBy(
         'student.nama',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'student.nim',
         'prodi.prodi',
         'kelas.kelas',
@@ -4583,6 +4615,7 @@ class KaprodiController extends Controller
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
       ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
       ->select(
         'student.nama',
@@ -4593,7 +4626,9 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.file_draft_laporan',
         'prausta_setting_relasi.file_laporan_revisi',
         'student.idstudent',
-        'prausta_setting_relasi.id_settingrelasi_prausta'
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'dosen.akademik'
       )
       ->first();
 
@@ -4608,7 +4643,8 @@ class KaprodiController extends Controller
       ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
       ->first();
 
-    $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+
+    $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -4624,12 +4660,12 @@ class KaprodiController extends Controller
         'prodi.prodi',
         'kelas.kelas',
         'angkatan.angkatan',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'prausta_setting_relasi.dosen_pembimbing'
       )
       ->groupBy(
         'student.nama',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'student.nim',
         'prodi.prodi',
         'kelas.kelas',
@@ -4661,6 +4697,7 @@ class KaprodiController extends Controller
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
       ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
       ->select(
         'student.nama',
@@ -4671,7 +4708,9 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.file_draft_laporan',
         'prausta_setting_relasi.file_laporan_revisi',
         'student.idstudent',
-        'prausta_setting_relasi.id_settingrelasi_prausta'
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'dosen.akademik'
       )
       ->first();
 
@@ -4686,7 +4725,7 @@ class KaprodiController extends Controller
       ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
       ->first();
 
-    $data = Prausta_trans_bimbingan::leftjoin('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+    $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -4702,12 +4741,12 @@ class KaprodiController extends Controller
         'prodi.prodi',
         'kelas.kelas',
         'angkatan.angkatan',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'prausta_setting_relasi.dosen_pembimbing'
       )
       ->groupBy(
         'student.nama',
-        'prausta_trans_bimbingan.id_settingrelasi_prausta',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
         'student.nim',
         'prodi.prodi',
         'kelas.kelas',
@@ -4739,6 +4778,7 @@ class KaprodiController extends Controller
       ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
       ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
       ->select(
         'student.nama',
@@ -4749,7 +4789,9 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.file_draft_laporan',
         'prausta_setting_relasi.file_laporan_revisi',
         'student.idstudent',
-        'prausta_setting_relasi.id_settingrelasi_prausta'
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'dosen.akademik'
       )
       ->first();
 

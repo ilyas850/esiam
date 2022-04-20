@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 @section('content_header')
     <section class="content-header">
@@ -23,18 +21,15 @@
                 <div class="box box-info">
                     <div class="box-header">
                         <h3 class="box-title">Isi EDOM Mahasiswa</h3>
-
                         <div class="box-tools">
                             <div class="input-group input-group-sm hidden-xs" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- /.box-header -->
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-striped">
                             <tr>
@@ -49,7 +44,6 @@
                                 <th width="7%" colspan="2">
                                     <center>Aksi</center>
                                 </th>
-
                             </tr>
                             <?php $no = 1; ?>
                             @foreach ($edom as $item)
@@ -59,27 +53,10 @@
                                     </td>
                                     <td>
                                         <center>
-                                            @foreach ($mk as $makul)
-                                                @if ($item->id_makul == $makul->idmakul)
-                                                    {{ $makul->kode }}
-                                                @endif
-                                            @endforeach
-                                        </center>
+                                            {{ $item->kode }}</center>
                                     </td>
-                                    <td>
-                                        @foreach ($mk as $makul)
-                                            @if ($item->id_makul == $makul->idmakul)
-                                                {{ $makul->makul }}
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        @foreach ($dsn as $dosen)
-                                            @if ($item->id_dosen == $dosen->iddosen)
-                                                {{ $dosen->nama }}
-                                            @endif
-                                        @endforeach
-                                    </td>
+                                    <td>{{ $item->makul }}</td>
+                                    <td>{{ $item->nama }}</td>
                                     <td>
                                         <form action="{{ 'form_edom' }}" method="post">
                                             <input type="hidden" name="id_student" value="{{ $item->id_student }}">

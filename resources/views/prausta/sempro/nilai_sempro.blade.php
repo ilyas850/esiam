@@ -44,6 +44,9 @@
                             <th>
                                 <center>Unduh Form</center>
                             </th>
+                            <th>
+                                <center>Edit</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,11 +81,21 @@
                                 <td>
                                     <center>
                                         <a href="/unduh_nilai_sempro_a/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs">Pembimbing</a>
+                                            class="btn btn-info btn-xs">P</a>
                                         <a href="/unduh_nilai_sempro_b/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-success btn-xs">Penguji I</a>
+                                            class="btn btn-success btn-xs">P I</a>
                                         <a href="/unduh_nilai_sempro_c/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-warning btn-xs">Penguji II</a>
+                                            class="btn btn-warning btn-xs">P II</a>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <a href="edit_nilai_sempro_bim/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-info btn-xs">EP</a>
+                                        <a href="edit_nilai_sempro_p1/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-success btn-xs">EP I</a>
+                                        <a href="edit_nilai_sempro_p2/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-warning btn-xs">EP II</a>
                                     </center>
                                 </td>
                             </tr>
