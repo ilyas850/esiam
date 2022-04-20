@@ -163,16 +163,28 @@
                                         </form>
                                     </div>
                                 </div>
+<<<<<<< HEAD
                                 <div class="modal fade" id="modalHapusPenilaian{{ $item->id_kuisioner }}"
                                     tabindex="-1" aria-labelledby="modalHapusPenilaian" aria-hidden="true">
+=======
+                                <div class="modal fade" id="modalHapusKuisioner{{ $item->id_kuisioner }}"
+                                    tabindex="-1" aria-labelledby="modalHapusKuisioner" aria-hidden="true">
+>>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-body">
                                                 <h4 class="text-center">Apakah anda yakin menghapus data master
+<<<<<<< HEAD
                                                     angkatan ini ?</h4>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url('hapus_penilaian_prausta') }}" method="post">
+=======
+                                                    kuisioner ini ?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{{ url('hapus_kuisioner_master') }}" method="post">
+>>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
                                                     {{ csrf_field() }}
                                                     <input type="hidden" name="id_kuisioner"
                                                         value="{{ $item->id_kuisioner }}" />

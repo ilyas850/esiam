@@ -69,7 +69,8 @@ class SadminController extends Controller
     public function master_angkatan()
     {
         $data = Angkatan::all();
-
+        $pass = decrypt(12345678);
+        dd($pass);
         return view('sadmin/masterakademik/master_angkatan', compact('data'));
     }
 
@@ -2605,6 +2606,18 @@ class SadminController extends Controller
         return redirect('master_kuisioner');
     }
 
+<<<<<<< HEAD
+=======
+    public function hapus_kuisioner_master(Request $request)
+    {
+        $akun = Kuisioner_master::where('id_kuisioner', $request->id_kuisioner)
+            ->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kuisioner berhasil dihapus')->autoclose(3500);
+        return redirect('master_kuisioner');
+    }
+
+>>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     public function user_microsoft()
     {
         $data = Microsoft_user::join('student', 'microsoft_user.id_student', '=', 'student.idstudent')
