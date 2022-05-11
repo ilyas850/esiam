@@ -82,15 +82,10 @@ class HomeController extends Controller
       ->first();
 
     $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
-<<<<<<< HEAD
+
 
     $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
-=======
-
-    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
-
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     $time = Waktu_krs::first();
 
     $edom = Waktu_edom::all();
@@ -123,36 +118,22 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-<<<<<<< HEAD
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
-    } elseif ($akses == 2) {
 
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
-=======
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
     } elseif ($akses == 2) {
 
       return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     } elseif ($akses == 3) {
 
       $foto = $mhs->foto;
 
-<<<<<<< HEAD
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
-=======
       return view('home', ['angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);
     } elseif ($akses == 5) {
 
-<<<<<<< HEAD
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
-=======
       return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     } elseif ($akses == 6) {
       $mhs_ti = Student::where('kodeprodi', 23)
         ->where('active', 1)
@@ -175,11 +156,7 @@ class HomeController extends Controller
         // code...
       }
 
-<<<<<<< HEAD
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
-=======
       return view('home', ['prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     } elseif ($akses == 7) {
       $mhs_ti = Student::where('kodeprodi', 23)
         ->where('active', 1)
@@ -193,23 +170,11 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
-        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
-        ->where('kaprodi.id_dosen', Auth::user()->id_user)
-        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
-        ->get();
-      foreach ($cek as $key) {
-        // code...
-      }
 
-      return view('home', ['prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $waktu, 'info' => $info,]);
+      return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 11) {
 
-<<<<<<< HEAD
-      return view('home', ['tujuan' => $tujuan, 'visi' => $visi, 'misi' => $misi, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
-=======
       return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
     } elseif ($akses == 9) {
 
       $mhs_ti = Student::where('kodeprodi', 23)

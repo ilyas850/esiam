@@ -8,6 +8,7 @@ use App\Dosen;
 use App\Student;
 use App\Semester;
 use App\Matakuliah;
+use App\Prodi;
 use App\Kurikulum_master;
 use App\Kurikulum_periode;
 use App\Kurikulum_transaction;
@@ -121,21 +122,33 @@ class EdomController extends Controller
     $kurtr = $request->id_kurtrans;
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
-    $makul = Matakuliah::where('idmakul', $mk)->first();
-    $dosen = Dosen::where('iddosen', $dsn)->first();
 
-    $edm = Edom_master::where('id_edom', 1)->get();
+    $cekedom = Edom_transaction::where('id_student', $request->id_student)
+      ->where('id_kurperiode', $request->id_kurperiode)
+      ->where('id_kurtrans', $request->id_kurtrans)
+      ->get();
 
-    foreach ($edm as $keydm) {
-      // code...
+    if (count($cekedom) > 0) {
+      Alert::warning('maaf edom mata kuliah isi sudah diisi', 'MAAF !!');
+      return redirect('isi_edom');
+    } elseif (count($cekedom) == 0) {
+
+      $makul = Matakuliah::where('idmakul', $mk)->first();
+      $dosen = Dosen::where('iddosen', $dsn)->first();
+
+      $edm = Edom_master::where('id_edom', 1)->get();
+
+      foreach ($edm as $keydm) {
+        // code...
+      }
+
+      $edom = Edom_master::orderBy('type', 'ASC')
+        ->where('status', 'ACTIVE')
+        ->orderBy('description', 'ASC')
+        ->paginate(30);
+
+      return view('mhs/edom/form_edom', ['keydm' => $keydm, 'dsn' => $dsn, 'edom' => $edom, 'dosen' => $dosen, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
     }
-
-    $edom = Edom_master::orderBy('type', 'ASC')
-      ->where('status', 'ACTIVE')
-      ->orderBy('description', 'ASC')
-      ->paginate(30);
-
-    return view('mhs/edom/form_edom', ['keydm' => $keydm, 'dsn' => $dsn, 'edom' => $edom, 'dosen' => $dosen, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
   }
 
   public function save_edom(Request $request)
@@ -242,10 +255,62 @@ class EdomController extends Controller
     }
   }
 
-  public function data_edom()
+  public function master_edom()
   {
+    $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
+    $periodetipe = Periode_tipe::orderBy('id_periodetipe', 'DESC')->get();
+    $prodi = Prodi::orderBy('id_prodi', 'DESC')->get();
 
+    return view('sadmin/edom/master_edom', compact('periodetahun', 'periodetipe', 'prodi'));
+  }
 
-    return view('sadmin/data_edom');
+  public function report_edom(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idprodi = $request->id_prodi;
+
+    $data_dsn = Kurikulum_periode::join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+      ->where('kurikulum_periode.id_prodi', $idprodi)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->where('student_record.status', 'TAKEN')
+      ->select(DB::raw('DISTINCT(dosen.nama) as nama_dosen'), DB::raw('COUNT(student_record.id_kurperiode) as jumlah_mhs'), 'dosen.iddosen')
+      ->groupBy('dosen.nama', 'dosen.iddosen')
+      ->orderBy('dosen.nama', 'ASC')
+      ->get();
+
+    $data_mk = Kurikulum_periode::join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+      ->where('kurikulum_periode.id_prodi', $idprodi)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->select(DB::raw('DISTINCT(dosen.nama) as nama_dosen'), DB::raw('COUNT(kurikulum_periode.id_kurperiode) as jumlah_mk'), 'dosen.iddosen')
+      ->groupBy('dosen.nama', 'dosen.iddosen')
+      ->get();
+
+    $data_edom = Edom_transaction::select(
+      DB::raw('COUNT(edom_transaction.id_student) as student'),
+      DB::raw('DISTINCT(edom_transaction.id_kurperiode)'),
+      'edom_transaction.id_kurperiode'
+    )
+      ->groupBy('edom_transaction.id_kurperiode', 'edom_transaction.id_student')
+      ->paginate(5);
+
+    dd($data_edom);
+
+    $data = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+      ->where('kurikulum_periode.id_prodi', $idprodi)
+      ->select(DB::raw('DISTINCT((dosen.nama)) AS dsn'))
+      // ->select(DB::raw('DISTINCT((count(kurikulum_periode.id_makul))) AS jml_mkl, dosen.nama'))
+      ->groupBy('dosen.nama')
+      ->get();
+
+    return view('sadmin/edom/report_edom', compact('data_dsn', 'data_mk'));
   }
 }

@@ -3,64 +3,64 @@
 @section('side')
     @include('layouts.side')
 @endsection
-
 @section('content')
     <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Data Bimbingan Prakerin</h3>
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Laporan EDOM</h3>
             </div>
             <div class="box-body">
-
-                <table id="example1" class="table table-bordered table-striped">
+                <table class="table table-bordered" id="example1">
                     <thead>
                         <tr>
                             <th>
                                 <center>No</center>
                             </th>
                             <th>
-                                <center>Mahasiswa/NIM</center>
+                                <center>Dosen</center>
                             </th>
                             <th>
-                                <center>Prodi</center>
+                                <center>MAKUL Qty</center>
                             </th>
                             <th>
-                                <center>Kelas</center>
+                                <center>MHS Qty</center>
                             </th>
                             <th>
-                                <center>Angkatan</center>
+                                <center>EDOM Qty</center>
                             </th>
                             <th>
-                                <center>Jumlah Bimbingan</center>
+                                <center>Nilai Angka</center>
                             </th>
                             <th>
-                                <center>Cek Bimbingan</center>
+                                <center>Nilai Huruf</center>
                             </th>
                         </tr>
                     </thead>
+                    <?php $no = 1; ?>
                     <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $key)
+                        @foreach ($data_dsn as $item)
                             <tr>
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
-                                <td>{{ $key->nama }}/{{ $key->nim }}</td>
-                                <td>{{ $key->prodi }}</td>
                                 <td>
-                                    <center>{{ $key->kelas }}</center>
+                                    {{ $item->nama_dosen }}
                                 </td>
                                 <td>
-                                    <center>{{ $key->angkatan }}</center>
+                                    <center>
+                                        @foreach ($data_mk as $item_mk)
+                                            @if ($item_mk->iddosen == $item->iddosen)
+                                                {{ $item_mk->jumlah_mk }}
+                                            @endif
+                                        @endforeach
+                                    </center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->jml_bim }}</center>
+                                    <center>{{ $item->jumlah_mhs }}</center>
                                 </td>
-
-                                <td>
-                                    <center> <a href="cek_bim_prakerin/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs"> lihat </a></center>
-                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         @endforeach
                     </tbody>

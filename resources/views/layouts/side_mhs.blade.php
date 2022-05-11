@@ -1,13 +1,7 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MENU MAHASISWA</li>
     <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
-    {{-- <li><a href="{{ url('krs') }}"><i class="fa fa-list-alt"></i> <span>KRS</span></a></li> --}}
-    <li><a href="{{ url('isi_krs') }}"><i class="fa fa-list-alt"></i> <span>Input KRS</span></a></li>
-    <li><a href="{{ url('isi_edom') }}"><i class="fa fa-pencil-square-o"></i> <span>Input EDOM</span></a></li>
-    <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner Mahasiswa</span></a>
-    </li>
-
-
+    <li><a href="{{ url('isi_krs') }}"><i class="fa fa-list-alt"></i> <span> KRS</span></a></li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>KHS</span>
@@ -20,7 +14,6 @@
             <li><a href="{{ url('khs_final') }}"><i class="fa fa-circle-o"></i> KHS Final-term</a></li>
         </ul>
     </li>
-    <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-calendar"></i> <span>Lihat Jadwal</span>
@@ -66,6 +59,9 @@
         </ul>
     </li>
     <li><a href="{{ url('dosbing') }}"><i class="fa fa-user"></i> <span>Dosen Pembimbing</span></a></li>
+    <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner</span></a>
+    </li>
+    <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li>
     {{-- <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li> --}}
     <li><a href="{{ url('pedoman_akademik') }}"><i class="fa fa-file"></i> <span>Pedoman</span></a></li>
 </ul>

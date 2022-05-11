@@ -45,11 +45,7 @@
                                 <center>Unduh Form</center>
                             </th>
                             <th>
-<<<<<<< HEAD
-                                <center>Aksi</center>
-=======
                                 <center>Edit</center>
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
                             </th>
                         </tr>
                     </thead>

@@ -971,8 +971,6 @@ class PraustaController extends Controller
             )
             ->first();
 
-
-
         //cek pembimbing tugas akhir
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')

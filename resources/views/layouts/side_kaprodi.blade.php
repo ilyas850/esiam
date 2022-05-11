@@ -57,6 +57,12 @@
             <li><a href="{{ url('bimbingan_prakerin') }}"><i class="fa fa-circle-o"></i> Bimbingan Prakerin</a></li>
             <li><a href="{{ url('bimbingan_sempro') }}"><i class="fa fa-circle-o"></i> Bimbingan SEMPRO</a></li>
             <li><a href="{{ url('bimbingan_ta') }}"><i class="fa fa-circle-o"></i> Bimbingan TA</a></li>
+            <li><a href="{{ url('nilai_prakerin_kaprodi') }}"><i class="fa fa-circle-o"></i> <span>
+                        Nilai Prakerin</span></a></li>
+            <li><a href="{{ url('nilai_sempro_kaprodi') }}"><i class="fa fa-circle-o"></i> <span>
+                        Nilai SEMPRO</span></a></li>
+            <li><a href="{{ url('nilai_ta_kaprodi') }}"><i class="fa fa-circle-o"></i> <span>
+                        Nilai TA</span></a></li>
         </ul>
     </li>
 </ul>

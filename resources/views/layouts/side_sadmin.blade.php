@@ -13,24 +13,6 @@
             </span>
         </a>
         <ul class="treeview-menu">
-<<<<<<< HEAD
-            <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Master Angkatan</a></li>
-            <li><a href="/master_bom"><i class="fa fa-circle-o"></i> Master BOM (Bill of Makul)</a></li>
-            <li><a href="/master_jam"><i class="fa fa-circle-o"></i> Master Jam</a></li>
-            <li><a href="/master_makul"><i class="fa fa-circle-o"></i> Master Matakuliah</a></li>
-            <li><a href="/master_menitsks"><i class="fa fa-circle-o"></i> Master Menit SKS</a></li>
-            <li><a href="/master_menitujian"><i class="fa fa-circle-o"></i> Master Menit Ujian</a></li>
-            <li><a href="/master_nilai_angkahuruf"><i class="fa fa-circle-o"></i> Master Nilai Angka-Huruf</a></li>
-            <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Master Program Studi</a></li>
-            <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Master Ruang Kelas</a></li>
-            <li><a href="/master_kodeprausta"><i class="fa fa-circle-o"></i> Master Kode PraUSTA</a></li>
-            <li><a href="/master_edom"><i class="fa fa-circle-o"></i> Master EDOM</a></li>
-            <li><a href="/master_kategoriprausta"><i class="fa fa-circle-o"></i> Master Kategori PraUSTA</a></li>
-            <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Master Penilaian PraUSTA</a></li>
-            <li><a href="/master_kategorikuisioner"><i class="fa fa-circle-o"></i> Master Kategori Kuisioner</a></li>
-            <li><a href="/master_aspekkuisioner"><i class="fa fa-circle-o"></i> Master Aspek Kuisioner</a></li>
-            <li><a href="/master_kuisioner"><i class="fa fa-circle-o"></i> Master Kuisioner</a></li>
-=======
             <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Angkatan</a></li>
             <li><a href="/master_bom"><i class="fa fa-circle-o"></i> BOM (Bill of Makul)</a></li>
             <li><a href="/master_jam"><i class="fa fa-circle-o"></i> Jam</a></li>
@@ -40,14 +22,12 @@
             <li><a href="/master_nilai_angkahuruf"><i class="fa fa-circle-o"></i> Nilai Angka-Huruf</a></li>
             <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Program Studi</a></li>
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
-
             <li><a href="/master_kategorikuisioner"><i class="fa fa-circle-o"></i> Kategori Kuisioner</a></li>
             <li><a href="/master_aspekkuisioner"><i class="fa fa-circle-o"></i> Aspek Kuisioner</a></li>
             <li><a href="/master_kuisioner"><i class="fa fa-circle-o"></i> Kuisioner</a></li>
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
         </ul>
     </li>
     <li class="treeview">
@@ -129,7 +109,6 @@
         <ul class="treeview-menu">
             <li><a href="/master_edom"><i class="fa fa-circle-o"></i> EDOM</a></li>
             <li><a href="/edom"><i class="fa fa-circle-o"></i> Setting EDOM</a></li>
-
         </ul>
     </li>
     <li class="treeview">
@@ -173,17 +152,6 @@
             <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Penilaian PraUSTA</a></li>
             <li><a href="{{ url('data_prausta') }}"><i class="fa fa-circle-o"></i> Mahasiswa PraUSTA</a>
             </li>
-        </ul>
-    </li>
-    <li class="treeview">
-        <a href="#">
-            <i class="fa fa-th"></i> <span>Master Microsoft</span>
-            <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            <li><a href="{{ url('user_microsoft') }}"><i class="fa fa-circle-o"></i>Data Akun Microsoft</a></li>
         </ul>
     </li>
 </ul>

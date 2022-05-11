@@ -42,6 +42,9 @@ use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
 use App\Exports\DataMhsExport;
 use App\Exports\DataMhsAllExport;
+use App\Exports\DataBimbinganPrakerinExport;
+use App\Exports\DataBimbinganSemproExport;
+use App\Exports\DataBimbinganTaExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -4593,7 +4596,9 @@ class KaprodiController extends Controller
       ->orderBy('student.nim', 'DESC')
       ->get();
 
-    return view('kaprodi/monitoring/bimbingan_prakerin', compact('data'));
+    $kode = $cek->kodeprodi;
+
+    return view('kaprodi/monitoring/bimbingan_prakerin', compact('data', 'kode'));
   }
 
   public function detail_bim_prakerin($id)
@@ -4675,7 +4680,9 @@ class KaprodiController extends Controller
       ->orderBy('student.nim', 'DESC')
       ->get();
 
-    return view('kaprodi/monitoring/bimbingan_sempro', compact('data'));
+    $kode = $cek->kodeprodi;
+
+    return view('kaprodi/monitoring/bimbingan_sempro', compact('data', 'kode'));
   }
 
   public function detail_bim_sempro($id)
@@ -4756,7 +4763,9 @@ class KaprodiController extends Controller
       ->orderBy('student.nim', 'DESC')
       ->get();
 
-    return view('kaprodi/monitoring/bimbingan_ta', compact('data'));
+    $kode = $cek->kodeprodi;
+
+    return view('kaprodi/monitoring/bimbingan_ta', compact('data', 'kode'));
   }
 
   public function detail_bim_ta($id)
@@ -4796,5 +4805,140 @@ class KaprodiController extends Controller
       ->first();
 
     return view('kaprodi/monitoring/detail_bimbingan_ta', compact('data', 'mhs'));
+  }
+
+  public function excel_bimbingan_prakerin(Request $request)
+  {
+    $kode = $request->kodeprodi;
+    $prodi = Prodi::where('kodeprodi', $kode)->first();
+    $nama_prd = $prodi->prodi;
+
+    $nama_file = 'Data Bimbingan Prakerin' . ' ' . $nama_prd  . '.xlsx';
+    return Excel::download(new DataBimbinganPrakerinExport($kode), $nama_file);
+  }
+
+  public function excel_bimbingan_sempro(Request $request)
+  {
+    $kode = $request->kodeprodi;
+    $prodi = Prodi::where('kodeprodi', $kode)->first();
+    $nama_prd = $prodi->prodi;
+
+    $nama_file = 'Data Bimbingan Sempro' . ' ' . $nama_prd  . '.xlsx';
+    return Excel::download(new DataBimbinganSemproExport($kode), $nama_file);
+  }
+
+  public function excel_bimbingan_ta(Request $request)
+  {
+    $kode = $request->kodeprodi;
+    $prodi = Prodi::where('kodeprodi', $kode)->first();
+    $nama_prd = $prodi->prodi;
+
+    $nama_file = 'Data Bimbingan TA' . ' ' . $nama_prd  . '.xlsx';
+    return Excel::download(new DataBimbinganTaExport($kode), $nama_file);
+  }
+
+  public function nilai_prakerin_kaprodi()
+  {
+    $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->where('kaprodi.id_dosen', Auth::user()->id_user)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
+      ->first();
+
+    $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+      ->where('student.active', 1)
+      ->where('student.kodeprodi', $cek->kodeprodi)
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'prausta_trans_hasil.id_settingrelasi_prausta'
+      )
+      ->orderBy('student.nim', 'DESC')
+      ->get();
+
+    return view('kaprodi/monitoring/nilai_prakerin', compact('data'));
+  }
+
+  public function nilai_sempro_kaprodi()
+  {
+    $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->where('kaprodi.id_dosen', Auth::user()->id_user)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
+      ->first();
+
+    $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+      ->where('student.active', 1)
+      ->where('student.kodeprodi', $cek->kodeprodi)
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'prausta_trans_hasil.id_settingrelasi_prausta'
+      )
+      ->orderBy('student.nim', 'DESC')
+      ->get();
+
+    return view('kaprodi/monitoring/nilai_sempro', compact('data'));
+  }
+
+  public function nilai_ta_kaprodi()
+  {
+    $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->where('kaprodi.id_dosen', Auth::user()->id_user)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.id_prodi', 'prodi.kodeprodi')
+      ->first();
+
+    $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+      ->where('student.active', 1)
+      ->where('student.kodeprodi', $cek->kodeprodi)
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'prausta_trans_hasil.id_settingrelasi_prausta'
+      )
+      ->orderBy('student.nim', 'DESC')
+      ->get();
+
+    return view('kaprodi/monitoring/nilai_ta', compact('data'));
   }
 }

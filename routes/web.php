@@ -44,10 +44,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('master_kuisioner', 'SadminController@master_kuisioner');
     Route::post('simpan_master_kuisioner', 'SadminController@simpan_master_kuisioner');
     Route::put('put_kuisioner_master/{id}', 'SadminController@put_kuisioner_master');
-<<<<<<< HEAD
-=======
     Route::post('hapus_kuisioner_master', 'SadminController@hapus_kuisioner_master');
->>>>>>> f2566136b8bcdaa67b35ec415e3e48fdf485b04e
 
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');
@@ -78,10 +75,15 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::put('simpanedit/{id}', 'SadminController@simpanedit');
     Route::post('resetuser', 'SadminController@resetuser');
     Route::delete('hapususer/{id}', 'SadminController@hapususer');
+
+    //EDOM
     Route::get('edom', 'EdomController@edom');
     Route::post('simpanedom', 'EdomController@simpanedom');
     Route::post('edit_time_edom', 'EdomController@edit_edom');
-    Route::get('data_edom', 'EdomController@data_edom');
+
+    Route::get('master_edom', 'EdomController@master_edom');
+    Route::post('report_edom', 'EdomController@report_edom');
+
     Route::get('data_foto', 'SadminController@data_foto');
     Route::get('lihat_foto_ti', 'SadminController@lihat_foto_ti');
     Route::get('lihat_foto_tk', 'SadminController@lihat_foto_tk');
@@ -649,12 +651,19 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //monitoring prausta
     Route::get('bimbingan_prakerin', 'KaprodiController@bimbingan_prakerin');
     Route::get('detail_bim_prakerin/{id}', 'KaprodiController@detail_bim_prakerin');
+    Route::post('excel_bimbingan_prakerin', 'KaprodiController@excel_bimbingan_prakerin');
 
     Route::get('bimbingan_sempro', 'KaprodiController@bimbingan_sempro');
     Route::get('detail_bim_sempro/{id}', 'KaprodiController@detail_bim_sempro');
+    Route::post('excel_bimbingan_sempro', 'KaprodiController@excel_bimbingan_sempro');
 
     Route::get('bimbingan_ta', 'KaprodiController@bimbingan_ta');
     Route::get('detail_bim_ta/{id}', 'KaprodiController@detail_bim_ta');
+    Route::post('excel_bimbingan_ta', 'KaprodiController@excel_bimbingan_ta');
+
+    Route::get('nilai_prakerin_kaprodi', 'KaprodiController@nilai_prakerin_kaprodi');
+    Route::get('nilai_sempro_kaprodi', 'KaprodiController@nilai_sempro_kaprodi');
+    Route::get('nilai_ta_kaprodi', 'KaprodiController@nilai_ta_kaprodi');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
@@ -680,6 +689,20 @@ Route::group(['middleware' => 'adminprodi'], function () {
 Route::group(['middleware' => 'wadir1'], function () {
     Route::get('data_bap', 'Wadir1Controller@data_bap');
     Route::get('cek_jurnal_bap_wadir/{id}', 'Wadir1Controller@cek_jurnal_bap_wadir');
+
+    //monitoring PRAUSTA
+    Route::get('bimbingan_prakerin_wadir', 'Wadir1Controller@bimbingan_prakerin_wadir');
+    Route::get('cek_bim_prakerin_wadir/{id}', 'Wadir1Controller@cek_bim_prakerin_wadir');
+
+    Route::get('bimbingan_sempro_wadir', 'Wadir1Controller@bimbingan_sempro_wadir');
+    Route::get('cek_bim_sempro_wadir/{id}', 'Wadir1Controller@cek_bim_sempro_wadir');
+
+    Route::get('bimbingan_ta_wadir', 'Wadir1Controller@bimbingan_ta_wadir');
+    Route::get('cek_bim_ta_wadir/{id}', 'Wadir1Controller@cek_bim_ta_wadir');
+
+    Route::get('nilai_prakerin_wadir', 'Wadir1Controller@nilai_prakerin_wadir');
+    Route::get('nilai_sempro_wadir', 'Wadir1Controller@nilai_sempro_wadir');
+    Route::get('nilai_ta_wadir', 'Wadir1Controller@nilai_ta_wadir');
 });
 
 Route::group(['middleware' => 'prausta'], function () {

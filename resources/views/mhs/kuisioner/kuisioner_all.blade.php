@@ -53,16 +53,16 @@
                                         @elseif($item->id_kategori_kuisioner == 4)
                                             <a href="/isi_dosen_ta_peng1/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
-                                        @elseif($item->id_kategori_kuisioner == 8)
+                                        @elseif($item->id_kategori_kuisioner == 5)
                                             <a href="/isi_dosen_ta_peng2/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
-                                        @elseif($item->id_kategori_kuisioner == 5)
+                                        @elseif($item->id_kategori_kuisioner == 6)
                                             <a href="/isi_kuis_baak/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
-                                        @elseif($item->id_kategori_kuisioner == 6)
+                                        @elseif($item->id_kategori_kuisioner == 7)
                                             <a href="/isi_kuis_bauk/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
-                                        @elseif($item->id_kategori_kuisioner == 7)
+                                        @elseif($item->id_kategori_kuisioner == 8)
                                             <a href="/isi_kuis_perpus/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
                                         @endif

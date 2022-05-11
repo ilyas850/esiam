@@ -11,6 +11,14 @@
                 <h3 class="box-title">Data Bimbingan Prakerin</h3>
             </div>
             <div class="box-body">
+                <form class="form" role="form" action="{{ url('excel_bimbingan_prakerin') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="kodeprodi" value="{{ $kode }}">
+
+                    <button type="submit" class="btn btn-success">Export Excel</button>
+
+                </form>
+                <br>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
