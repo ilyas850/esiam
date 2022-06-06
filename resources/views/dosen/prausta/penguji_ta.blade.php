@@ -113,8 +113,30 @@
                                                     href="/isi_form_nilai_ta_dosji2/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
                                                     Penilaian TA</a>
-                                            @else
-                                                <span class="badge bg-blue">Nilai Sudah ada</span>
+                                            @elseif ($key->id_dosen_pembimbing == $id && $key->nilai_1 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_ta_by_dospem_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
+                                            @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_ta_by_dospeng1_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
+                                            @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_ta_by_dospeng2_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
                                             @endif
                                         @endif
 

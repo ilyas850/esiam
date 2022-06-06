@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -47,6 +45,9 @@
                             <th>
                                 <center>Aksi</center>
                             </th>
+                            <th>
+                                <center>Validasi BAAK</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,6 +71,15 @@
                                     <center>
                                         <a class="btn btn-info btn-xs"
                                             href="/record_bim_pkl/{{ $key->id_settingrelasi_prausta }}">Cek Bimbingan</a>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($key->validasi_baak == 'BELUM')
+                                            <span class="badge bg-yellow">Belum</span>
+                                        @elseif($key->validasi_baak == 'SUDAH')
+                                            <span class="badge bg-green">Sudah</span>
+                                        @endif
                                     </center>
                                 </td>
                             </tr>

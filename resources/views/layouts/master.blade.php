@@ -392,6 +392,28 @@
                 'info': true,
                 'autoWidth': true
             })
+
+            $('#example7').DataTable({
+                'paging': false,
+                'lengthChange': true,
+                'searching': false,
+                'ordering': true,
+                'info': false,
+                'autoWidth': true,
+                scrollX: true,
+                scrollCollapse: true,
+            })
+
+            $('#example8').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                scrollX: true,
+                scrollCollapse: true,
+            })
         })
     </script>
 
@@ -401,6 +423,24 @@
                 // scrollY: "465px",
                 scrollX: true,
                 scrollCollapse: true
+
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#example6').DataTable({
+                // scrollY: "465px",
+                scrollX: true,
+                scrollCollapse: true,
+
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': false,
+                'info': false,
+                'autoWidth': true
 
             });
         });

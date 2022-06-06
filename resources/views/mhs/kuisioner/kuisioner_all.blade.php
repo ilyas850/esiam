@@ -8,10 +8,6 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">Kuisioner Mahasiswa</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                </div>
             </div>
             <div class="box-body">
                 <div class="table-responsive">
@@ -21,7 +17,6 @@
                                 <th>No</th>
                                 <th>Kategori</th>
                                 <th>Aksi</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,9 +25,6 @@
                                 <td>KUISIONER KEPUASAN MAHASISWA TERHADAP EVALUASI DOSEN MENGAJAR (EDOM)</td>
                                 <td>
                                     <a href=" {{ url('isi_edom') }} " class="btn btn-info btn-xs">Isi Kuisioner</a>
-                                </td>
-                                <td>
-                                    <span class="label label-success">Shipped</span>
                                 </td>
                             </tr>
                             <?php $no = 2; ?>
@@ -67,9 +59,6 @@
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
                                         @endif
 
-                                    </td>
-                                    <td>
-                                        <span class="label label-success">Shipped</span>
                                     </td>
                                 </tr>
                             @endforeach

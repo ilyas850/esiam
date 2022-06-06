@@ -11,6 +11,23 @@
                 <h3 class="box-title">Data Tugas Akhir</h3>
             </div>
             <div class="box-body">
+                <div class="row">
+                    <form class="form" role="form" action="{{ url('filter_ta_use_prodi') }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="col-xs-3">
+                            <select class="form-control" name="id_prodi" required>
+                                <option></option>
+                                @foreach ($prodi as $key)
+                                    <option value="{{ $key->id_prodi }}">
+                                        {{ $key->prodi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Filter Prodi</button>
+                    </form>
+                </div>
+                <br>
                 <table id="example4" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -79,7 +96,13 @@
                                     <center>{{ $key->jam_selesai_sidang }}</center>
                                 </td>
                                 <td style="font-size:85%">
-                                    <center>{{ $key->acc_seminar_sidang }}</center>
+                                    <center>
+                                        @if ($key->file_laporan_revisi == null)
+                                            {{ $key->acc_seminar_sidang }}
+                                        @elseif($key->file_laporan_revisi != null)
+                                            Selesai
+                                        @endif
+                                    </center>
                                 </td>
                                 <td>
                                     <center> <a href="atur_ta/{{ $key->id_settingrelasi_prausta }}"
@@ -89,7 +112,7 @@
                                 <td>
                                     <center>
                                         @if ($key->status == 'ACTIVE')
-                                            <a href="nonatifkan_prausta/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="nonatifkan_prausta_ta/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-danger btn-xs"
                                                 onclick="return confirm('anda yakin akan menonaktifkan?')">Nonaktifkan</a>
                                         @endif

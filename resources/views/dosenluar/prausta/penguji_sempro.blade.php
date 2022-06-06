@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -124,7 +122,6 @@
                                         @elseif($key->acc_seminar_sidang == 'TOLAK')
                                             <span class="badge bg-danger">Pengajuan sidang/seminar ditolak</span>
                                         @elseif($key->acc_seminar_sidang == 'TERIMA')
-
                                             @if ($key->id_dosen_pembimbing == $id && $key->nilai_1 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_proposal_dospem_dsnlr/{{ $key->id_settingrelasi_prausta }}">
@@ -137,8 +134,30 @@
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_proposal_dosji2_dsnlr/{{ $key->id_settingrelasi_prausta }}">
                                                     Form SEMPRO</a>
-                                            @else
-                                                <span class="badge bg-blue">Sudah</span>
+                                            @elseif ($key->id_dosen_pembimbing == $id && $key->nilai_1 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_sempro_by_dospem_luar/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
+                                            @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_sempro_by_dospeng1_luar/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
+                                            @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 != null)
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_sempro_by_dospeng2_luar/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
                                             @endif
                                         @endif
                                     </center>
@@ -160,7 +179,6 @@
                                                 @elseif($key->validasi_pembimbing == 'SUDAH')
                                                     <span class="badge bg-blue">Sudah</span>
                                                 @endif
-
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->file_laporan_revisi != null)
                                                 @if ($key->validasi_penguji_1 == 'BELUM')
                                                     <a class="btn btn-success btn-xs"
@@ -169,7 +187,6 @@
                                                 @elseif($key->validasi_penguji_1 == 'SUDAH')
                                                     <span class="badge bg-blue">Sudah</span>
                                                 @endif
-
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->file_laporan_revisi != null)
                                                 @if ($key->validasi_penguji_2 == 'BELUM')
                                                     <a class="btn btn-success btn-xs"
@@ -178,7 +195,6 @@
                                                 @elseif($key->validasi_penguji_2 == 'SUDAH')
                                                     <span class="badge bg-blue">Sudah</span>
                                                 @endif
-
                                             @else
                                                 <span class="badge bg-blue">Belum</span>
                                             @endif

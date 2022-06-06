@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -26,7 +24,6 @@
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>{{ $message }}</strong>
             </div>
-
         @endif
         <div class="box box-info">
             <div class="box-header with-border">
@@ -55,10 +52,9 @@
                 <a href="/sum_absen/{{ $bap->id_kurperiode }}" class="btn btn-info">Absensi Perkuliahan</a>
                 <a href="/jurnal_bap/{{ $bap->id_kurperiode }}" class="btn btn-warning">Jurnal Perkuliahan</a>
                 <br><br>
-                <table class="table table-bordered table-striped">
+                <table id="example4" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-
                             <th rowspan="2">
                                 <center>Pertemuan</center>
                             </th>

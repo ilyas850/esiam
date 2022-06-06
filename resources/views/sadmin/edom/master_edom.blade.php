@@ -41,6 +41,14 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="col-xs-3">
+                        <label>Tipe Laporan</label>
+                        <select class="form-control" name="tipe_laporan" required>
+                            <option></option>
+                            <option value="by_makul">Per Matakuliah</option>
+                            <option value="by_dosen">Per Dosen</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="box-footer">
                     <div class="col-xs-3">

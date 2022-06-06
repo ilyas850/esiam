@@ -83,6 +83,8 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     Route::get('master_edom', 'EdomController@master_edom');
     Route::post('report_edom', 'EdomController@report_edom');
+    Route::post('detail_edom_dosen', 'EdomController@detail_edom_dosen');
+    Route::post('detail_edom_makul', 'EdomController@detail_edom_makul');
 
     Route::get('data_foto', 'SadminController@data_foto');
     Route::get('lihat_foto_ti', 'SadminController@lihat_foto_ti');
@@ -182,6 +184,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     //Master Microsoft
     Route::get('user_microsoft', 'SadminController@user_microsoft');
     Route::post('post_microsoft_user', 'SadminController@post_microsoft_user');
+
+    //SKPI
+    Route::get('skpi', 'SadminController@skpi');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -252,6 +257,8 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('penguji_pkl', 'DosenController@penguji_pkl');
     Route::get('isi_form_nilai_pkl/{id}', 'DosenController@isi_form_nilai_pkl');
     Route::post('simpan_nilai_prakerin', 'DosenController@simpan_nilai_prakerin');
+    Route::get('edit_nilai_pkl_by_dosen_dlm/{id}', 'DosenController@edit_nilai_pkl_by_dosen_dlm');
+    Route::post('put_nilai_prakerin_dosen_dlm', 'DosenController@put_nilai_prakerin_dosen_dlm');
 
     //PraUSTA SEMPRO
     Route::get('pembimbing_sempro', 'DosenController@pembimbing_sempro');
@@ -265,6 +272,13 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('simpan_nilai_sempro_dosji1', 'DosenController@simpan_nilai_sempro_dosji1');
     Route::get('isi_form_nilai_proposal_dosji2/{id}', 'DosenController@isi_form_nilai_proposal_dosji2');
     Route::post('simpan_nilai_sempro_dosji2', 'DosenController@simpan_nilai_sempro_dosji2');
+
+    Route::get('edit_nilai_sempro_by_dospem_dlm/{id}', 'DosenController@edit_nilai_sempro_by_dospem_dlm');
+    Route::post('put_nilai_sempro_dospem_dlm', 'DosenController@put_nilai_sempro_dospem_dlm');
+    Route::get('edit_nilai_sempro_by_dospeng1_dlm/{id}', 'DosenController@edit_nilai_sempro_by_dospeng1_dlm');
+    Route::post('put_nilai_sempro_dospeng1_dlm', 'DosenController@put_nilai_sempro_dospeng1_dlm');
+    Route::get('edit_nilai_sempro_by_dospeng2_dlm/{id}', 'DosenController@edit_nilai_sempro_by_dospeng2_dlm');
+    Route::post('put_nilai_sempro_dospeng2_dlm', 'DosenController@put_nilai_sempro_dospeng2_dlm');
 
     //validasi revisi
     Route::get('validasi_dospem/{id}', 'DosenController@validasi_dospem');
@@ -283,6 +297,18 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('simpan_nilai_ta_dosji1', 'DosenController@simpan_nilai_ta_dosji1');
     Route::get('isi_form_nilai_ta_dosji2/{id}', 'DosenController@isi_form_nilai_ta_dosji2');
     Route::post('simpan_nilai_ta_dosji2', 'DosenController@simpan_nilai_ta_dosji2');
+
+    Route::get('edit_nilai_ta_by_dospem_dlm/{id}', 'DosenController@edit_nilai_ta_by_dospem_dlm');
+    Route::post('put_nilai_ta_dospem_dlm', 'DosenController@put_nilai_ta_dospem_dlm');
+    Route::get('edit_nilai_ta_by_dospeng1_dlm/{id}', 'DosenController@edit_nilai_ta_by_dospeng1_dlm');
+    Route::post('put_nilai_ta_dospeng1_dlm', 'DosenController@put_nilai_ta_dospeng1_dlm');
+    Route::get('edit_nilai_ta_by_dospeng2_dlm/{id}', 'DosenController@edit_nilai_ta_by_dospeng2_dlm');
+    Route::post('put_nilai_ta_dospeng2_dlm', 'DosenController@put_nilai_ta_dospeng2_dlm');
+
+    //jadwal prausta
+    Route::get('jadwal_seminar_prakerin_dlm', 'DosenController@jadwal_seminar_prakerin_dlm');
+    Route::get('jadwal_seminar_proposal_dlm', 'DosenController@jadwal_seminar_proposal_dlm');
+    Route::get('jadwal_sidang_ta_dlm', 'DosenController@jadwal_sidang_ta_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -295,10 +321,9 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('krs', 'MhsController@krs');
     Route::post('submitdata', 'MhsController@testfunction');
     Route::post('add_krs', 'MhsController@add_krs');
-    Route::post('input_krs', 'MhsController@input_krs');
-    Route::post('save_krs', 'MhsController@save_krs');
+
     Route::post('post_krs', 'MhsController@post_krs');
-    Route::post('simpan_krs', 'MhsController@simpan_krs');
+
     Route::get('khs_mid', 'MhsController@khs_mid');
     Route::get('khs_final', 'MhsController@khs_final');
     Route::get('unduh_khs_mid', 'MhsController@unduh_khs_mid');
@@ -310,7 +335,15 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
-    Route::get('isi_krs', 'KrsController@isi_krs');
+
+    //isi KRS
+    // Route::get('isi_krs', 'KrsController@isi_krs');
+    Route::get('isi_krs', 'KrsController@add_krs');
+    Route::post('simpan_krs', 'MhsController@simpan_krs');
+
+    Route::get('input_krs', 'KrsController@input_krs');
+    Route::post('save_krs', 'KrsController@save_krs');
+
     Route::post('batalkrs', 'KrsController@batalkrs');
     Route::get('isi_edom', 'EdomController@isi_edom');
     Route::post('form_edom', 'EdomController@form_edom');
@@ -401,6 +434,18 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('save_kuisioner_bauk', 'MhsController@save_kuisioner_bauk');
     Route::get('isi_kuis_perpus/{id}', 'MhsController@isi_kuis_perpus');
     Route::post('save_kuisioner_perpus', 'MhsController@save_kuisioner_perpus');
+
+    //kartu ujian
+    Route::get('kartu_uts', 'MhsController@kartu_uts');
+    Route::get('kartu_uas', 'MhsController@kartu_uas');
+    Route::get('unduh_kartu_uas', 'MhsController@unduh_kartu_uas');
+    Route::get('unduh_kartu_uts', 'MhsController@unduh_kartu_uts');
+
+    //upload sertifikat
+    Route::get('upload_sertifikat', 'MhsController@upload_sertifikat');
+    Route::post('post_sertifikat', 'MhsController@post_sertifikat');
+    Route::put('put_sertifikat/{id}', 'MhsController@put_sertifikat');
+    Route::get('hapus_sertifikat/{id}', 'MhsController@hapus_sertifikat');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -467,6 +512,8 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('penguji_pkl_dsnlr', 'DosenluarController@penguji_pkl');
     Route::get('isi_form_nilai_pkl_dsnlr/{id}', 'DosenluarController@isi_form_nilai_pkl');
     Route::post('simpan_nilai_prakerin_dsnlr', 'DosenluarController@simpan_nilai_prakerin');
+    Route::get('edit_nilai_pkl_by_dosen_luar/{id}', 'DosenluarController@edit_nilai_pkl_by_dosen_luar');
+    Route::post('put_nilai_prakerin_dosen_luar', 'DosenluarController@put_nilai_prakerin_dosen_luar');
 
     //PraUSTA SEMPRO
     Route::get('pembimbing_sempro_dsnlr', 'DosenluarController@pembimbing_sempro');
@@ -480,6 +527,13 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::post('simpan_nilai_sempro_dosji1_dsnlr', 'DosenluarController@simpan_nilai_sempro_dosji1');
     Route::get('isi_form_nilai_proposal_dosji2_dsnlr/{id}', 'DosenluarController@isi_form_nilai_proposal_dosji2');
     Route::post('simpan_nilai_sempro_dosji2_dsnlr', 'DosenluarController@simpan_nilai_sempro_dosji2');
+
+    Route::get('edit_nilai_sempro_by_dospem_luar/{id}', 'DosenluarController@edit_nilai_sempro_by_dospem_luar');
+    Route::post('put_nilai_sempro_dospem_luar', 'DosenluarController@put_nilai_sempro_dospem_luar');
+    Route::get('edit_nilai_sempro_by_dospeng1_luar/{id}', 'DosenluarController@edit_nilai_sempro_by_dospeng1_luar');
+    Route::post('put_nilai_sempro_dospeng1_luar', 'DosenluarController@put_nilai_sempro_dospeng1_luar');
+    Route::get('edit_nilai_sempro_by_dospeng2_luar/{id}', 'DosenluarController@edit_nilai_sempro_by_dospeng2_luar');
+    Route::post('put_nilai_sempro_dospeng2_luar', 'DosenluarController@put_nilai_sempro_dospeng2_luar');
 
     //validasi revisi
     Route::get('validasi_dospem_dsnlr/{id}', 'DosenluarController@validasi_dospem_dsnlr');
@@ -498,6 +552,18 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::post('simpan_nilai_ta_dosji1_dsnlr', 'DosenluarController@simpan_nilai_ta_dosji1');
     Route::get('isi_form_nilai_ta_dosji2_dsnlr/{id}', 'DosenluarController@isi_form_nilai_ta_dosji2');
     Route::post('simpan_nilai_ta_dosji2_dsnlr', 'DosenluarController@simpan_nilai_ta_dosji2');
+
+    Route::get('edit_nilai_ta_by_dospem_luar/{id}', 'DosenluarController@edit_nilai_ta_by_dospem_luar');
+    Route::post('put_nilai_ta_dospem_luar', 'DosenluarController@put_nilai_ta_dospem_luar');
+    Route::get('edit_nilai_ta_by_dospeng1_luar/{id}', 'DosenluarController@edit_nilai_ta_by_dospeng1_luar');
+    Route::post('put_nilai_ta_dospeng1_luar', 'DosenluarController@put_nilai_ta_dospeng1_luar');
+    Route::get('edit_nilai_ta_by_dospeng2_luar/{id}', 'DosenluarController@edit_nilai_ta_by_dospeng2_luar');
+    Route::post('put_nilai_ta_dospeng2_luar', 'DosenluarController@put_nilai_ta_dospeng2_luar');
+
+    //jadwal prausta
+    Route::get('jadwal_seminar_prakerin_luar', 'DosenluarController@jadwal_seminar_prakerin_luar');
+    Route::get('jadwal_seminar_proposal_luar', 'DosenluarController@jadwal_seminar_proposal_luar');
+    Route::get('jadwal_sidang_ta_luar', 'DosenluarController@jadwal_sidang_ta_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -616,6 +682,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('penguji_pkl_kprd', 'KaprodiController@penguji_pkl');
     Route::get('isi_form_nilai_pkl_kprd/{id}', 'KaprodiController@isi_form_nilai_pkl');
     Route::post('simpan_nilai_prakerin_kprd', 'KaprodiController@simpan_nilai_prakerin');
+    Route::get('edit_nilai_pkl_by_dosen_kprd/{id}', 'KaprodiController@edit_nilai_pkl_by_dosen_kprd');
+    Route::post('put_nilai_prakerin_dosen_kprd', 'KaprodiController@put_nilai_prakerin_dosen_kprd');
 
     //PraUSTA SEMPRO
     Route::get('pembimbing_sempro_kprd', 'KaprodiController@pembimbing_sempro');
@@ -629,6 +697,13 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('simpan_nilai_sempro_dosji1_kprd', 'KaprodiController@simpan_nilai_sempro_dosji1');
     Route::get('isi_form_nilai_proposal_dosji2_kprd/{id}', 'KaprodiController@isi_form_nilai_proposal_dosji2');
     Route::post('simpan_nilai_sempro_dosji2_kprd', 'KaprodiController@simpan_nilai_sempro_dosji2');
+
+    Route::get('edit_nilai_sempro_by_dospem_kprd/{id}', 'KaprodiController@edit_nilai_sempro_by_dospem_kprd');
+    Route::post('put_nilai_sempro_dospem_kprd', 'KaprodiController@put_nilai_sempro_dospem_kprd');
+    Route::get('edit_nilai_sempro_by_dospeng1_kprd/{id}', 'KaprodiController@edit_nilai_sempro_by_dospeng1_kprd');
+    Route::post('put_nilai_sempro_dospeng1_kprd', 'KaprodiController@put_nilai_sempro_dospeng1_kprd');
+    Route::get('edit_nilai_sempro_by_dospeng2_kprd/{id}', 'KaprodiController@edit_nilai_sempro_by_dospeng2_kprd');
+    Route::post('put_nilai_sempro_dospeng2_kprd', 'KaprodiController@put_nilai_sempro_dospeng2_kprd');
 
     //validasi revisi
     Route::get('validasi_dospem_kprd/{id}', 'KaprodiController@validasi_dospem_kprd');
@@ -648,6 +723,13 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('isi_form_nilai_ta_dosji2_kprd/{id}', 'KaprodiController@isi_form_nilai_ta_dosji2');
     Route::post('simpan_nilai_ta_dosji2_kprd', 'KaprodiController@simpan_nilai_ta_dosji2');
 
+    Route::get('edit_nilai_ta_by_dospem_kprd/{id}', 'KaprodiController@edit_nilai_ta_by_dospem_kprd');
+    Route::post('put_nilai_ta_dospem_kprd', 'KaprodiController@put_nilai_ta_dospem_kprd');
+    Route::get('edit_nilai_ta_by_dospeng1_kprd/{id}', 'KaprodiController@edit_nilai_ta_by_dospeng1_kprd');
+    Route::post('put_nilai_ta_dospeng1_kprd', 'KaprodiController@put_nilai_ta_dospeng1_kprd');
+    Route::get('edit_nilai_ta_by_dospeng2_kprd/{id}', 'KaprodiController@edit_nilai_ta_by_dospeng2_kprd');
+    Route::post('put_nilai_ta_dospeng2_kprd', 'KaprodiController@put_nilai_ta_dospeng2_kprd');
+
     //monitoring prausta
     Route::get('bimbingan_prakerin', 'KaprodiController@bimbingan_prakerin');
     Route::get('detail_bim_prakerin/{id}', 'KaprodiController@detail_bim_prakerin');
@@ -664,6 +746,11 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('nilai_prakerin_kaprodi', 'KaprodiController@nilai_prakerin_kaprodi');
     Route::get('nilai_sempro_kaprodi', 'KaprodiController@nilai_sempro_kaprodi');
     Route::get('nilai_ta_kaprodi', 'KaprodiController@nilai_ta_kaprodi');
+
+    //jadwal prausta
+    Route::get('jadwal_seminar_prakerin_kprd', 'KaprodiController@jadwal_seminar_prakerin_kprd');
+    Route::get('jadwal_seminar_proposal_kprd', 'KaprodiController@jadwal_seminar_proposal_kprd');
+    Route::get('jadwal_sidang_ta_kprd', 'KaprodiController@jadwal_sidang_ta_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
@@ -761,7 +848,9 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('put_nilai_ta_dospeng2', 'AdminPraustaController@put_nilai_ta_dospeng2');
 
     //non aktifkan prausta
-    Route::get('nonatifkan_prausta/{id}', 'AdminPraustaController@nonatifkan_prausta');
+    Route::get('nonatifkan_prausta_prakerin/{id}', 'AdminPraustaController@nonatifkan_prausta_prakerin');
+    Route::get('nonatifkan_prausta_sempro/{id}', 'AdminPraustaController@nonatifkan_prausta_sempro');
+    Route::get('nonatifkan_prausta_ta/{id}', 'AdminPraustaController@nonatifkan_prausta_ta');
 
     //download record bimbingan
     Route::post('download_bimbingan_prakerin', 'AdminPraustaController@download_bimbingan_prakerin');
@@ -790,4 +879,40 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('export_data', 'AdminPraustaController@export_data');
     Route::post('excel_prakerin', 'AdminPraustaController@excel_prakerin');
     Route::post('excel_ta', 'AdminPraustaController@excel_ta');
+
+    //validasi prausta
+    Route::get('validate_nilai_prakerin/{id}', 'AdminPraustaController@validate_nilai_prakerin');
+    Route::get('unvalidate_nilai_prakerin/{id}', 'AdminPraustaController@unvalidate_nilai_prakerin');
+
+    Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');
+    Route::get('unvalidate_nilai_sempro/{id}', 'AdminPraustaController@unvalidate_nilai_sempro');
+
+    Route::get('validate_nilai_ta/{id}', 'AdminPraustaController@validate_nilai_ta');
+    Route::get('unvalidate_nilai_ta/{id}', 'AdminPraustaController@unvalidate_nilai_ta');
+
+    //filter prausta
+    Route::post('filter_prakerin_use_prodi', 'AdminPraustaController@filter_prakerin_use_prodi');
+    Route::post('filter_sempro_use_prodi', 'AdminPraustaController@filter_sempro_use_prodi');
+    Route::post('filter_ta_use_prodi', 'AdminPraustaController@filter_ta_use_prodi');
+
+    Route::post('filter_bim_prakerin_use_prodi', 'AdminPraustaController@filter_bim_prakerin_use_prodi');
+    Route::post('filter_bim_sempro_use_prodi', 'AdminPraustaController@filter_bim_sempro_use_prodi');
+    Route::post('filter_bim_ta_use_prodi', 'AdminPraustaController@filter_bim_ta_use_prodi');
+
+    Route::post('filter_nilai_prakerin_use_prodi', 'AdminPraustaController@filter_nilai_prakerin_use_prodi');
+    Route::post('filter_nilai_sempro_use_prodi', 'AdminPraustaController@filter_nilai_sempro_use_prodi');
+    Route::post('filter_nilai_ta_use_prodi', 'AdminPraustaController@filter_nilai_ta_use_prodi');
+
+    Route::post('filter_bap_sempro_use_prodi', 'AdminPraustaController@filter_bap_sempro_use_prodi');
+    Route::post('filter_bap_ta_use_prodi', 'AdminPraustaController@filter_bap_ta_use_prodi');
+
+    //validasi prausta
+    Route::get('validasi_prakerin', 'AdminPraustaController@validasi_prakerin');
+
+    Route::get('validasi_sempro', 'AdminPraustaController@validasi_sempro');
+
+    Route::get('validasi_ta', 'AdminPraustaController@validasi_ta');
+
+    Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
+    Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
 });

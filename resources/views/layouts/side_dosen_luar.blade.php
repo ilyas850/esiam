@@ -26,4 +26,19 @@
             <li><a href="{{ url('penguji_ta_dsnlr') }}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Jadwal PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_seminar_prakerin_luar') }}"><i class="fa fa-circle-o"></i> Seminar
+                    Prakerin</a></li>
+            <li><a href="{{ url('jadwal_seminar_proposal_luar') }}"><i class="fa fa-circle-o"></i> Seminar
+                    Proposal</a></li>
+            <li><a href="{{ url('jadwal_sidang_ta_luar') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
+        </ul>
+    </li>
 </ul>

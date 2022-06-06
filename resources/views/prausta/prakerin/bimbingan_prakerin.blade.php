@@ -11,7 +11,23 @@
                 <h3 class="box-title">Data Bimbingan Prakerin</h3>
             </div>
             <div class="box-body">
-
+                <div class="row">
+                    <form class="form" role="form" action="{{ url('filter_bim_prakerin_use_prodi') }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="col-xs-3">
+                            <select class="form-control" name="id_prodi" required>
+                                <option></option>
+                                @foreach ($prodi as $key)
+                                    <option value="{{ $key->id_prodi }}">
+                                        {{ $key->prodi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Filter Prodi</button>
+                    </form>
+                </div>
+                <br>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>

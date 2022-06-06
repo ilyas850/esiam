@@ -269,48 +269,89 @@ class EdomController extends Controller
     $idperiodetahun = $request->id_periodetahun;
     $idperiodetipe = $request->id_periodetipe;
     $idprodi = $request->id_prodi;
+    $tipe = $request->tipe_laporan;
 
-    $data_dsn = Kurikulum_periode::join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+    $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+    $prodi = Prodi::where('id_prodi', $idprodi)->first();
+
+    $thn = $periodetahun->periode_tahun;
+    $tp = $periodetipe->periode_tipe;
+    $prd = $prodi->prodi;
+
+    if ($tipe == 'by_makul') {
+
+      $data = DB::select('CALL edom_by_makul(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      return view('sadmin/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe'));
+    } elseif ($tipe == 'by_dosen') {
+
+      $data = DB::select('CALL edom_by_dosen(?,?)', array($idperiodetahun, $idperiodetipe));
+      return view('sadmin/edom/report_edom_by_dosen', compact('data', 'thn', 'tp', 'idperiodetahun', 'idperiodetipe'));
+    }
+  }
+
+  public function detail_edom_dosen(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $iddosen = $request->id_dosen;
+    $periodetahun = $request->periodetahun;
+    $periodetipe = $request->periodetipe;
+    $nama = $request->nama;
+
+    $data = DB::select('CALL detail_edom_dosen(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+    return view('sadmin/edom/detail_edom_dosen', compact('data', 'nama', 'periodetahun', 'periodetipe'));
+  }
+
+  public function detail_edom_makul(Request $request)
+  {
+    $idkurperiode = $request->id_kurperiode;
+
+    $data = Edom_master::join('edom_transaction', 'edom_master.id_edom', '=', 'edom_transaction.id_edom')
+      ->where('edom_transaction.id_kurperiode', $idkurperiode)
+      ->select('edom_master.id_edom', 'edom_master.description')
+      ->groupBy('edom_master.id_edom', 'edom_master.description')
+      ->orderBy('edom_master.type', 'ASC')
+      ->orderBy('edom_master.description', 'ASC')
+      ->get();
+
+    $data1 = Edom_master::join('edom_transaction', 'edom_master.id_edom', '=', 'edom_transaction.id_edom')
+      ->where('edom_transaction.id_kurperiode', $idkurperiode)
+      ->where('edom_transaction.nilai_edom', 1)
+      ->select('edom_master.id_edom', DB::raw('count(edom_transaction.nilai_edom) as nilai_1'), 'edom_transaction.id_kurperiode')
+      ->groupBy('edom_master.id_edom', 'edom_transaction.id_kurperiode')
+      ->get();
+
+    $data2 = Edom_master::join('edom_transaction', 'edom_master.id_edom', '=', 'edom_transaction.id_edom')
+      ->where('edom_transaction.id_kurperiode', $idkurperiode)
+      ->where('edom_transaction.nilai_edom', 2)
+      ->select('edom_master.id_edom', DB::raw('count(edom_transaction.nilai_edom) as nilai_2'), 'edom_transaction.id_kurperiode')
+      ->groupBy('edom_master.id_edom', 'edom_transaction.id_kurperiode')
+      ->get();
+
+    $data3 = Edom_master::join('edom_transaction', 'edom_master.id_edom', '=', 'edom_transaction.id_edom')
+      ->where('edom_transaction.id_kurperiode', $idkurperiode)
+      ->where('edom_transaction.nilai_edom', 3)
+      ->select('edom_master.id_edom', DB::raw('count(edom_transaction.nilai_edom) as nilai_3'), 'edom_transaction.id_kurperiode')
+      ->groupBy('edom_master.id_edom', 'edom_transaction.id_kurperiode')
+      ->get();
+
+    $data4 = Edom_master::join('edom_transaction', 'edom_master.id_edom', '=', 'edom_transaction.id_edom')
+      ->where('edom_transaction.id_kurperiode', $idkurperiode)
+      ->where('edom_transaction.nilai_edom', 4)
+      ->select('edom_master.id_edom', DB::raw('count(edom_transaction.nilai_edom) as nilai_4'), 'edom_transaction.id_kurperiode')
+      ->groupBy('edom_master.id_edom', 'edom_transaction.id_kurperiode')
+      ->get();
+
+    $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
-      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
-      ->where('kurikulum_periode.id_prodi', $idprodi)
-      ->where('kurikulum_periode.status', 'ACTIVE')
-      ->where('student_record.status', 'TAKEN')
-      ->select(DB::raw('DISTINCT(dosen.nama) as nama_dosen'), DB::raw('COUNT(student_record.id_kurperiode) as jumlah_mhs'), 'dosen.iddosen')
-      ->groupBy('dosen.nama', 'dosen.iddosen')
-      ->orderBy('dosen.nama', 'ASC')
-      ->get();
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_periode.id_kurperiode', $idkurperiode)
+      ->select('dosen.nama', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'matakuliah.makul')
+      ->first();
 
-    $data_mk = Kurikulum_periode::join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
-      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
-      ->where('kurikulum_periode.id_prodi', $idprodi)
-      ->where('kurikulum_periode.status', 'ACTIVE')
-      ->select(DB::raw('DISTINCT(dosen.nama) as nama_dosen'), DB::raw('COUNT(kurikulum_periode.id_kurperiode) as jumlah_mk'), 'dosen.iddosen')
-      ->groupBy('dosen.nama', 'dosen.iddosen')
-      ->get();
-
-    $data_edom = Edom_transaction::select(
-      DB::raw('COUNT(edom_transaction.id_student) as student'),
-      DB::raw('DISTINCT(edom_transaction.id_kurperiode)'),
-      'edom_transaction.id_kurperiode'
-    )
-      ->groupBy('edom_transaction.id_kurperiode', 'edom_transaction.id_student')
-      ->paginate(5);
-
-    dd($data_edom);
-
-    $data = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-      ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
-      ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
-      ->where('kurikulum_periode.id_prodi', $idprodi)
-      ->select(DB::raw('DISTINCT((dosen.nama)) AS dsn'))
-      // ->select(DB::raw('DISTINCT((count(kurikulum_periode.id_makul))) AS jml_mkl, dosen.nama'))
-      ->groupBy('dosen.nama')
-      ->get();
-
-    return view('sadmin/edom/report_edom', compact('data_dsn', 'data_mk'));
+    return view('sadmin/edom/detail_edom_makul', compact('data', 'data1', 'data2', 'data3', 'data4', 'data_mk'));
   }
 }

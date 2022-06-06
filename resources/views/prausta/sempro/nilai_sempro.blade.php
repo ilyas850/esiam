@@ -11,41 +11,67 @@
                 <h3 class="box-title">Data Nilai Sempro Mahasiswa</h3>
             </div>
             <div class="box-body">
+                <div class="row">
+                    <form class="form" role="form" action="{{ url('filter_nilai_sempro_use_prodi') }}"
+                        method="POST">
+                        {{ csrf_field() }}
+                        <div class="col-xs-3">
+                            <select class="form-control" name="id_prodi" required>
+                                <option></option>
+                                @foreach ($prodi as $key)
+                                    <option value="{{ $key->id_prodi }}">
+                                        {{ $key->prodi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Filter Prodi</button>
+                    </form>
+                </div>
+                <br>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="3%">
+                            <th width="3%" rowspan="2">
                                 <center>No</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
+                                <center>Tanggal Seminar</center>
+                            </th>
+                            <th rowspan="2">
                                 <center>Nama Mahasiswa</center>
                             </th>
-                            <th width="6%">
+                            <th width="6%" rowspan="2">
                                 <center>NIM</center>
                             </th>
-                            <th width="11%">
+                            <th width="11%" rowspan="2">
                                 <center>Program Studi</center>
                             </th>
-                            <th width="8%">
+                            <th width="8%" rowspan="2">
                                 <center>Kelas</center>
                             </th>
-                            <th>
-                                <center>Nilai 1</center>
+                            <th colspan="4">
+                                <center>Nilai</center>
                             </th>
-                            <th>
-                                <center>Nilai 2</center>
-                            </th>
-                            <th>
-                                <center>Nilai 3</center>
-                            </th>
-                            <th>
-                                <center>Nilai Huruf</center>
-                            </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Unduh Form</center>
                             </th>
+                            <th rowspan="2">
+                                <center>Aksi</center>
+                            </th>
+                        </tr>
+                        <tr>
                             <th>
-                                <center>Edit</center>
+                                <center>1</center>
+                            </th>
+                            <th>
+                                <center>2</center>
+                            </th>
+                            <th>
+                                <center>3</center>
+                            </th>
+                            <th>
+                                <center>Huruf</center>
                             </th>
                         </tr>
                     </thead>
@@ -55,6 +81,10 @@
                             <tr>
                                 <td>
                                     <center>{{ $no++ }}</center>
+                                </td>
+
+                                <td>
+                                    <center>{{ $key->tanggal_selesai }}</center>
                                 </td>
                                 <td>{{ $key->nama }}</td>
                                 <td>
@@ -96,6 +126,13 @@
                                             class="btn btn-success btn-xs">EP I</a>
                                         <a href="edit_nilai_sempro_p2/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-warning btn-xs">EP II</a>
+                                        @if ($key->validasi == 0)
+                                            <a href="validate_nilai_sempro/{{ $key->id_settingrelasi_prausta }}"
+                                                class="btn btn-primary btn-xs">Validate</a>
+                                        @else
+                                            <a href="unvalidate_nilai_sempro/{{ $key->id_settingrelasi_prausta }}"
+                                                class="btn btn-danger btn-xs">Unvalidate</a>
+                                        @endif
                                     </center>
                                 </td>
                             </tr>

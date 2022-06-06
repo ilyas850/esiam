@@ -48,8 +48,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Judul Prakerin</label>
-                                <textarea class="form-control" rows="1" cols="60"
-                                    readonly>{{ $jdl->judul_prausta }}</textarea>
+                                <textarea class="form-control" rows="1" cols="60" readonly>{{ $jdl->judul_prausta }}</textarea>
                             </div>
                             <div class="form-group">
                                 <label>Tempat Prakerin</label>
@@ -170,16 +169,59 @@
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
                         <span class="badge bg-blue">Sudah di Acc.</span>
                     @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
-                        <a href="/acc_seminar_pkl_dsnlr/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                        <span class="badge bg-red">Pengajuan ditolak</span>
+                        {{-- <a href="/acc_seminar_pkl_dsnlr/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
                             Seminar Prakerin</a>
                         <a href="/tolak_seminar_pkl_dsnlr/{{ $jdl->id_settingrelasi_prausta }}"
                             class="btn btn-danger">Tolak
-                            Seminar Prakerin</a>
+                            Seminar Prakerin</a> --}}
                     @endif
                 </div>
-
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Draft Laporan Prakerin</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_draft_laporan == null)
+                                Belum ada
+                            @elseif ($jdl->file_draft_laporan != null)
+                                <a href="/File Draft Laporan/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
+                                    target="_blank" style="font: white"> File Draft Laporan</a>
+                            @endif
 
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Laporan Akhir Prakerin</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_laporan_revisi == null)
+                                Belum ada
+                            @elseif ($jdl->file_laporan_revisi != null)
+                                <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
+                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                            @endif
+
+                        </span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection

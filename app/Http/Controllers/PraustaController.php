@@ -142,7 +142,9 @@ class PraustaController extends Controller
                     'prausta_setting_relasi.dosen_pembimbing',
                     'prausta_setting_relasi.judul_prausta',
                     'prausta_setting_relasi.tempat_prausta',
-                    'prausta_setting_relasi.file_draft_laporan'
+                    'prausta_setting_relasi.file_draft_laporan',
+                    'prausta_setting_relasi.validasi_baak',
+                    'student.kodeprodi'
                 )
                 ->get();
 

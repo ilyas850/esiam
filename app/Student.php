@@ -13,4 +13,6 @@ class Student extends Model
   protected $primaryKey = 'idstudent';
 
   protected $dates = ['tgllahir'];
+
+  protected $dateFormat = 'Y-m-d H:i';
 }

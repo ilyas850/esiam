@@ -28,6 +28,7 @@
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>
+            <li><a href="/skpi"><i class="fa fa-circle-o"></i> SKPI</a></li>
         </ul>
     </li>
     <li class="treeview">
@@ -107,7 +108,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="/master_edom"><i class="fa fa-circle-o"></i> EDOM</a></li>
+            <li><a href="/master_edom"><i class="fa fa-circle-o"></i>Report EDOM</a></li>
             <li><a href="/edom"><i class="fa fa-circle-o"></i> Setting EDOM</a></li>
         </ul>
     </li>

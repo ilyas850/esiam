@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -50,8 +48,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Judul Tugas Akhir</label>
-                                <textarea class="form-control" rows="1" cols="60"
-                                    readonly>{{ $jdl->judul_prausta }}</textarea>
+                                <textarea class="form-control" rows="1" cols="60" readonly>{{ $jdl->judul_prausta }}</textarea>
                             </div>
                             <div class="form-group">
                                 <label>Tempat</label>
@@ -86,6 +83,7 @@
                             <th>No</th>
                             <th>Tanggal Bimbingan</th>
                             <th>Uraian Bimbingan</th>
+                            <th>Komentar</th>
                             <th>Validasi</th>
                             <th>File</th>
                         </tr>
@@ -98,6 +96,16 @@
                                 <td>{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
                                 <td>
+                                    @if ($key->komentar_bimbingan == null)
+                                        <button class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
+                                    @else
+                                        <a class="btn btn-success btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
+                                                class="fa fa-eye "></i> Lihat</a>
+                                    @endif
+                                </td>
+                                <td>
                                     @if ($key->validasi == 'BELUM')
                                         <a href="/val_bim_pkl_kprd/{{ $key->id_transbimb_prausta }}"
                                             class="btn btn-info btn-xs">Validasi</a>
@@ -108,14 +116,37 @@
                                 </td>
                                 <td>
                                     @if ($key->file_bimbingan == null)
-
                                     @elseif ($key->file_bimbingan != null)
                                         <a href="/File Bimbingan TA/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
                             </tr>
-
+                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
+                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar Bimbingan</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/komentar_bimbingan_kprd/{{ $key->id_transbimb_prausta }}"
+                                                method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
+                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -145,9 +176,48 @@
                             Seminar Prakerin</a>
                     @endif
                 </div>
-
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Draft Laporan TA</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_draft_laporan == null)
+                                Belum ada
+                            @elseif ($jdl->file_draft_laporan != null)
+                                <a href="/File Draft Laporan/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
+                                    target="_blank" style="font: white"> File Draft Laporan</a>
+                            @endif
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Laporan Akhir TA</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_laporan_revisi == null)
+                                Belum ada
+                            @elseif ($jdl->file_laporan_revisi != null)
+                                <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
+                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                            @endif
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection

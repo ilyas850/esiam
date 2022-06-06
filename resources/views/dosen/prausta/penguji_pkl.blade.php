@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -100,7 +98,13 @@
                                             <span class="badge bg-danger">Pengajuan sidang/seminar ditolak</span>
                                         @elseif($key->acc_seminar_sidang == 'TERIMA')
                                             @if ($key->nilai_huruf != null)
-                                                <span class="badge bg-green">Sudah ada nilai</span>
+                                                @if ($key->validasi == 0)
+                                                    <a class="btn btn-success btn-xs"
+                                                        href="/edit_nilai_pkl_by_dosen_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        nilai</a>
+                                                @elseif ($key->validasi == 1)
+                                                    <span class="badge bg-yellow">Sudah divalidasi </span>
+                                                @endif
                                             @elseif($key->nilai_huruf == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_pkl/{{ $key->id_settingrelasi_prausta }}">Isi

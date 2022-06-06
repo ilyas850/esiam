@@ -49,6 +49,8 @@ use App\Kuisioner_transaction;
 use App\Microsoft_user;
 use App\Wadir;
 use App\Wrkpersonalia;
+use App\Sertifikat;
+use App\Skpi;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -56,7 +58,7 @@ use App\Exports\DataKRSMhsExport;
 use App\Exports\DataPrakerinExport;
 use App\Imports\ImportMicrosoftUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -2649,5 +2651,18 @@ class SadminController extends Controller
         // notifikasi dengan session
         Alert::success('', 'Data Microsoft User Berhasil Diimport!')->autoclose(3500);
         return redirect('user_microsoft');
+    }
+
+    public function skpi()
+    {
+        $prodi = Prodi::all();
+        $angkatan = Angkatan::all();
+
+        $data = Student::leftjoin('skpi', 'student.idstudent', '=', 'skpi.id_student')
+            ->where('student.active', 1)
+            ->select('student.nim', 'student.nama', 'student.idstudent', 'skpi.id_skpi', 'skpi.no_skpi', 'student.tmptlahir', 'student.tgllahir', 'skpi.gelar')
+            ->get();
+
+        return view('sadmin/skpi/skpi', compact('data', 'prodi', 'angkatan'));
     }
 }

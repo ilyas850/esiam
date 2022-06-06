@@ -43,7 +43,6 @@
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
                 </div>
                 <div class="box-footer">

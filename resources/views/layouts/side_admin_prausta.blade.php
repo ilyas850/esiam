@@ -75,4 +75,20 @@
                         Export Data</span></a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Validasi PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('validasi_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
+                        Prakerin</span></a></li>
+            <li><a href="{{ url('validasi_sempro') }}"><i class="fa fa-circle-o"></i> <span>
+                        Seminar Proposal</span></a></li>
+            <li><a href="{{ url('validasi_ta') }}"><i class="fa fa-circle-o"></i> <span>
+                        Tugas Akhir</span></a></li>
+        </ul>
+    </li>
 </ul>
