@@ -974,7 +974,7 @@ class PraustaController extends Controller
             ->where('prausta_setting_relasi.id_student', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->first();
 
