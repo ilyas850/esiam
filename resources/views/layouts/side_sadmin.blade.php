@@ -22,9 +22,7 @@
             <li><a href="/master_nilai_angkahuruf"><i class="fa fa-circle-o"></i> Nilai Angka-Huruf</a></li>
             <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Program Studi</a></li>
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
-            <li><a href="/master_kategorikuisioner"><i class="fa fa-circle-o"></i> Kategori Kuisioner</a></li>
-            <li><a href="/master_aspekkuisioner"><i class="fa fa-circle-o"></i> Aspek Kuisioner</a></li>
-            <li><a href="/master_kuisioner"><i class="fa fa-circle-o"></i> Kuisioner</a></li>
+
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>
@@ -45,6 +43,7 @@
             <li><a href="/data_ktm"><i class="fa fa-circle-o"></i> KTM Mahasiswa</a></li>
             <li><a href="/data_foto"><i class="fa fa-circle-o"></i> Foto Mahasiswa</a></li>
             <li><a href="{{ url('mhs_ta') }}"><i class="fa fa-circle-o"></i>Mahasiswa Tugas Akhir</a></li>
+            <li><a href="{{ url('kartu_ujian_mhs') }}"><i class="fa fa-circle-o"></i>Kartu Ujian Mahasiswa</a></li>
         </ul>
     </li>
     <li class="treeview">
@@ -153,6 +152,20 @@
             <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Penilaian PraUSTA</a></li>
             <li><a href="{{ url('data_prausta') }}"><i class="fa fa-circle-o"></i> Mahasiswa PraUSTA</a>
             </li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-th"></i> <span>Master Kuisioner</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/master_kategorikuisioner"><i class="fa fa-circle-o"></i>Kategori Kuisioner</a></li>
+            <li><a href="/master_aspekkuisioner"><i class="fa fa-circle-o"></i>Aspek Kuisioner</a></li>
+            <li><a href="/master_kuisioner"><i class="fa fa-circle-o"></i>Kuisioner</a></li>
+            <li><a href="/report_kuisioner"><i class="fa fa-circle-o"></i>Report Kuisioner</a></li>
         </ul>
     </li>
 </ul>

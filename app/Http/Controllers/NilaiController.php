@@ -78,7 +78,10 @@ class NilaiController extends Controller
 
     $id = Auth::user()->id_user;
 
-    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+    $mhs = Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->where('student.idstudent', $id)
       ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'student.idstudent')
@@ -153,7 +156,10 @@ class NilaiController extends Controller
 
     $id = Auth::user()->id_user;
 
-    $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+    $mhs = Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->where('student.idstudent', $id)
       ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'student.idstudent')

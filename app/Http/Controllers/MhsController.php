@@ -209,7 +209,10 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $maha = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
@@ -556,7 +559,10 @@ class MhsController extends Controller
     public function khs_mid()
     {
         $id = Auth::user()->id_user;
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
@@ -712,7 +718,10 @@ class MhsController extends Controller
     public function unduh_khs_mid()
     {
         $id = Auth::user()->id_user;
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
@@ -768,7 +777,10 @@ class MhsController extends Controller
     public function khs_final()
     {
         $id = Auth::user()->id_user;
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
@@ -1307,7 +1319,10 @@ class MhsController extends Controller
 
         $maha = Student::where('idstudent', $id)->first();
 
-        $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $cek_study = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->where('student.idstudent', $id)
             ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
             ->first();
@@ -1783,7 +1798,10 @@ class MhsController extends Controller
 
             $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
                 ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->where('student.idstudent', $ids)
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
                 ->first();
@@ -1903,7 +1921,10 @@ class MhsController extends Controller
             } elseif (count($cekdata_bim) > 0) {
                 $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                     ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
-                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->leftJoin('prodi', (function ($join) {
+                        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                            ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                    }))
                     ->where('student.idstudent', $ids)
                     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -2026,7 +2047,10 @@ class MhsController extends Controller
             } elseif (count($cekdata) > 0) {
                 $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                     ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
-                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->leftJoin('prodi', (function ($join) {
+                        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                            ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                    }))
                     ->where('student.idstudent', $ids)
                     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -2156,7 +2180,10 @@ class MhsController extends Controller
                 } elseif ($cek_peng1->id_dosen_penguji_1 != null) {
                     $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                         ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_1', '=', 'dosen.iddosen')
-                        ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                        ->leftJoin('prodi', (function ($join) {
+                            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                        }))
                         ->where('student.idstudent', $ids)
                         ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
                         ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_1')
@@ -2286,7 +2313,10 @@ class MhsController extends Controller
                 } elseif ($cek_peng1->id_dosen_penguji_2 != null) {
                     $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                         ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_2', '=', 'dosen.iddosen')
-                        ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                        ->leftJoin('prodi', (function ($join) {
+                            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                        }))
                         ->where('student.idstudent', $ids)
                         ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
                         ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_2')
@@ -2386,7 +2416,10 @@ class MhsController extends Controller
         } elseif ($waktu_edom->status == 1) {
             $ids = Auth()->user()->id_user;
 
-            $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            $mhs = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->where('student.idstudent', $ids)
                 ->select('prodi.prodi', 'kelas.kelas')
@@ -2480,7 +2513,10 @@ class MhsController extends Controller
         } elseif ($waktu_edom->status == 1) {
             $ids = Auth()->user()->id_user;
 
-            $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            $mhs = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->where('student.idstudent', $ids)
                 ->select('prodi.prodi', 'kelas.kelas')
@@ -2574,7 +2610,10 @@ class MhsController extends Controller
         } elseif ($waktu_edom->status == 1) {
             $ids = Auth()->user()->id_user;
 
-            $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            $mhs = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->where('student.idstudent', $ids)
                 ->select('prodi.prodi', 'kelas.kelas')
@@ -2662,7 +2701,10 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
@@ -2807,7 +2849,10 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
@@ -3034,7 +3079,10 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
@@ -3078,7 +3126,10 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')

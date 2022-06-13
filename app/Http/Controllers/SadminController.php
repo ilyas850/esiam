@@ -139,7 +139,10 @@ class SadminController extends Controller
 
     public function show_mhs()
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.active', 1)
@@ -153,7 +156,10 @@ class SadminController extends Controller
     {
         $usermhs = Student::leftJoin('passwords', 'user', '=', 'student.nim')
             ->leftJoin('users', 'username', '=', 'passwords.user')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->select(
                 'users.id',
@@ -483,7 +489,10 @@ class SadminController extends Controller
     {
         $id = $request->id_student;
         //data mahasiswa
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
@@ -542,7 +551,10 @@ class SadminController extends Controller
     {
         $pem = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.active', 1)
             ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'dosen.nama as nama_dsn')
@@ -611,7 +623,10 @@ class SadminController extends Controller
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->leftjoin('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
@@ -636,7 +651,10 @@ class SadminController extends Controller
 
     public function cek_krs($id)
     {
-        $datamhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
@@ -749,7 +767,10 @@ class SadminController extends Controller
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->leftjoin('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
@@ -999,7 +1020,10 @@ class SadminController extends Controller
     public function cek_krs_mhs($id)
     {
         $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student_record.id_kurperiode', $id)
@@ -1131,7 +1155,10 @@ class SadminController extends Controller
 
     public function transkrip_nilai()
     {
-        $nilai = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $nilai = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.active', 1)
@@ -1144,7 +1171,10 @@ class SadminController extends Controller
 
     public function cek_transkrip($id)
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
             ->get();
@@ -1167,7 +1197,10 @@ class SadminController extends Controller
         $tns->created_by = Auth::user()->name;
         $tns->save();
 
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
             ->where('student.idstudent', $id)
             ->select('transkrip_nilai.id_transkrip', 'transkrip_nilai.no_transkrip', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
@@ -1210,7 +1243,10 @@ class SadminController extends Controller
         foreach ($cekid as $keyid) {
             // code...
         }
-        $trans = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $trans = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
             ->where('student.idstudent', $keyid->id_student)
             ->select('transkrip_nilai.id_transkrip', 'transkrip_nilai.no_transkrip', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'student.kodeprodi')
@@ -1262,7 +1298,10 @@ class SadminController extends Controller
     public function no_transkrip()
     {
         $nomor = Transkrip_nilai::join('student', 'transkrip_nilai.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'transkrip_nilai.no_transkrip')
             ->get();
@@ -1274,7 +1313,10 @@ class SadminController extends Controller
     {
         $nilai = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->leftjoin('transkrip_final', 'prausta_setting_relasi.id_student', '=', 'transkrip_final.id_student')
@@ -1290,7 +1332,10 @@ class SadminController extends Controller
 
     public function input_transkrip_final($id)
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
             ->where('student.idstudent', $id)
@@ -1326,7 +1371,10 @@ class SadminController extends Controller
 
     public function lihat_transkrip_final($id)
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->where('student.idstudent', $id)
@@ -1389,7 +1437,10 @@ class SadminController extends Controller
 
     public function print_transkrip_final($id)
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->where('student.idstudent', $id)
@@ -1424,7 +1475,10 @@ class SadminController extends Controller
 
     public function downloadAbleFile($id)
     {
-        $mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->where('student.idstudent', $id)
@@ -1539,7 +1593,10 @@ class SadminController extends Controller
     public function edit_transkrip_final($id)
     {
         $item = Transkrip_final::join('student', 'transkrip_final.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('transkrip_final.id_transkrip_final', $id)
             ->select('transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_ijazah', 'transkrip_final.no_transkrip_final', 'transkrip_final.id_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
@@ -1612,7 +1669,10 @@ class SadminController extends Controller
     public function cek_nilai_mhs($id)
     {
         $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student_record.id_kurperiode', $id)
@@ -2319,7 +2379,10 @@ class SadminController extends Controller
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prausta_master_kode', 'matakuliah.kode', '=', 'prausta_master_kode.kode_prausta')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('kurikulum_periode.id_periodetahun', $id_tahun)
             ->where('kurikulum_periode.id_periodetipe', $id_tipe)
@@ -2620,7 +2683,10 @@ class SadminController extends Controller
     public function user_microsoft()
     {
         $data = Microsoft_user::join('student', 'microsoft_user.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('microsoft_user.status', 'ACTIVE')
             ->select('student.nama', 'student.nim', 'microsoft_user.username', 'microsoft_user.password', 'prodi.prodi', 'kelas.kelas')
@@ -2664,5 +2730,155 @@ class SadminController extends Controller
             ->get();
 
         return view('sadmin/skpi/skpi', compact('data', 'prodi', 'angkatan'));
+    }
+
+    public function kartu_ujian_mhs()
+    {
+        $data = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+
+            ->where('student.active', 1)
+            ->select('student.nim', 'student.nama', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+            ->get();
+
+        return view('sadmin/datamahasiswa/kartu_ujian', compact('data'));
+    }
+
+    public function kartu_uts_mhs($id)
+    {
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->first();
+
+        $nama = $datamhs->nama;
+        $prodi = $datamhs->prodi;
+        $kelas = $datamhs->kelas;
+
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $periodetahun = $thn->periode_tahun;
+        $periodetipe = $tp->periode_tipe;
+
+        $data_uts = DB::select('CALL jadwal_uts(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $d = date('d');
+        $m = $bulan[date('m')];
+        $y = date('Y');
+
+        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uts_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
+        return $pdf->download('Kartu UTS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $periodetahun . ' ' . $periodetipe . ')' . '.pdf');
+    }
+
+    public function kartu_uas_mhs($id)
+    {
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->first();
+
+        $nama = $datamhs->nama;
+        $prodi = $datamhs->prodi;
+        $kelas = $datamhs->kelas;
+
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $periodetahun = $thn->periode_tahun;
+        $periodetipe = $tp->periode_tipe;
+
+        $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $d = date('d');
+        $m = $bulan[date('m')];
+        $y = date('Y');
+
+        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uas_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
+        return $pdf->download('Kartu UAS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $periodetahun . ' ' . $periodetipe . ')' . '.pdf');
+    }
+
+    public function report_kuisioner()
+    {
+        $data = Kuisioner_kategori::all();
+
+        return view('sadmin/kuisioner/report_kuisioner', compact('data'));
+    }
+
+    public function report_kuisioner_kategori($id)
+    {
+        if ($id == 1) {
+            return $this->report_dospem_aka($id);
+        } elseif ($id == 2) {
+            return $this->report_dospem_pkl($id);
+        } elseif ($id == 3) {
+            # code...
+        }
+    }
+
+    public function report_dospem_aka($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+
+        $data = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->join('dosen', 'kuisioner_transaction.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', $id)
+            ->where('kuisioner_transaction.id_periodetahun', $idperiodetahun)
+            ->where('kuisioner_transaction.id_periodetipe', $idperiodetipe)
+            ->groupBy('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama')
+            ->select('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama')
+            ->get();
+
+        return view('sadmin/kuisioner/report_dospem_aka', compact('data'));
+    }
+
+    public function report_dospem_pkl($id)
+    {
+        dd($id);
     }
 }

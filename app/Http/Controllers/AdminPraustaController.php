@@ -41,7 +41,10 @@ class AdminPraustaController extends Controller
         $prodi = Prodi::all();
 
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
@@ -75,7 +78,10 @@ class AdminPraustaController extends Controller
         $prodi = Prodi::all();
 
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
@@ -108,7 +114,10 @@ class AdminPraustaController extends Controller
     public function atur_prakerin($id)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -194,7 +203,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student.active', 1)
@@ -226,7 +238,10 @@ class AdminPraustaController extends Controller
     public function atur_sempro($id)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -326,7 +341,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student.active', 1)
@@ -358,7 +376,10 @@ class AdminPraustaController extends Controller
     public function atur_ta($id)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -426,7 +447,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -461,7 +485,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -506,7 +533,10 @@ class AdminPraustaController extends Controller
             ->get();
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -535,7 +565,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -570,7 +603,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -615,7 +651,10 @@ class AdminPraustaController extends Controller
             ->get();
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -644,7 +683,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -679,7 +721,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -724,7 +769,10 @@ class AdminPraustaController extends Controller
             ->get();
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -753,7 +801,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -785,7 +836,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -943,7 +997,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -975,7 +1032,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -1289,7 +1349,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -1321,7 +1384,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -1674,7 +1740,10 @@ class AdminPraustaController extends Controller
         $id = $request->id_settingrelasi_prausta;
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -1706,7 +1775,10 @@ class AdminPraustaController extends Controller
         $id = $request->id_settingrelasi_prausta;
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -1747,7 +1819,10 @@ class AdminPraustaController extends Controller
         $id = $request->id_settingrelasi_prausta;
 
         $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -1789,7 +1864,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -1815,7 +1893,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -1842,7 +1923,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -1933,7 +2017,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -1959,7 +2046,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -1986,7 +2076,10 @@ class AdminPraustaController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -2092,7 +2185,10 @@ class AdminPraustaController extends Controller
         } elseif ($jml != 0) {
 
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -2170,7 +2266,10 @@ class AdminPraustaController extends Controller
         } elseif ($jml != 0) {
 
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -2248,7 +2347,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -2355,7 +2457,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_1', '=', 'dosen.iddosen')
@@ -2462,7 +2567,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_2', '=', 'dosen.iddosen')
@@ -2569,7 +2677,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
@@ -2676,7 +2787,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_1', '=', 'dosen.iddosen')
@@ -2783,7 +2897,10 @@ class AdminPraustaController extends Controller
             return redirect('nilai_sempro');
         } elseif ($jml != 0) {
             $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->join('dosen', 'prausta_setting_relasi.id_dosen_penguji_2', '=', 'dosen.iddosen')
@@ -3022,7 +3139,10 @@ class AdminPraustaController extends Controller
     public function validasi_prakerin()
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
@@ -3071,7 +3191,10 @@ class AdminPraustaController extends Controller
     public function validasi_sempro()
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
@@ -3120,7 +3243,10 @@ class AdminPraustaController extends Controller
     public function validasi_ta()
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')

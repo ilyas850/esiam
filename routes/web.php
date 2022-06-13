@@ -55,6 +55,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('show_ta', 'SadminController@show_ta');
     Route::post('save_krs_time', 'SadminController@save_krs_time');
     Route::post('delete_time_krs', 'SadminController@delete_time_krs');
+
     //data ipk mahasiswa aktif
     Route::get('data_ipk', 'SadminController@data_ipk');
     Route::get('export_nilai_ipk', 'SadminController@export_nilai_ipk');
@@ -187,6 +188,15 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //SKPI
     Route::get('skpi', 'SadminController@skpi');
+
+    //Kartu ujian mahasiswa
+    Route::get('kartu_ujian_mhs', 'SadminController@kartu_ujian_mhs');
+    Route::get('kartu_uts_mhs/{id}', 'SadminController@kartu_uts_mhs');
+    Route::get('kartu_uas_mhs/{id}', 'SadminController@kartu_uas_mhs');
+
+    //report kuisioner
+    Route::get('report_kuisioner', 'SadminController@report_kuisioner');
+    Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

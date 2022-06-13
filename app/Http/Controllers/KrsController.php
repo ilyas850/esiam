@@ -44,7 +44,10 @@ class KrsController extends Controller
     } elseif ($time->status == 1) {
       $id = Auth::user()->id_user;
 
-      $maha = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      $maha = Student::leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
         ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
         ->where('student.idstudent', $id)
         ->select(
@@ -160,7 +163,10 @@ class KrsController extends Controller
       }
 
       //cek masa studi 
-      $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      $cek_study = Student::leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
         ->where('student.idstudent', $ids)
         ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
         ->first();
@@ -494,7 +500,10 @@ class KrsController extends Controller
     } elseif ($time->status == 1) {
       $id = Auth::user()->id_user;
 
-      $data_mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      $data_mhs = Student::leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
         ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
         ->where('student.idstudent', $id)
         ->select(
@@ -742,7 +751,10 @@ class KrsController extends Controller
   {
     $id = Auth::user()->id_user;
 
-    $data_mhs = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+    $data_mhs = Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->where('student.idstudent', $id)
       ->select(

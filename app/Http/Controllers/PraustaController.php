@@ -116,7 +116,10 @@ class PraustaController extends Controller
         } elseif ($hasil_krs > 0) {
             //data prakerin
             $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                 ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -159,7 +162,10 @@ class PraustaController extends Controller
             $idstatus = $maha->idstatus;
             $kodeprodi = $maha->kodeprodi;
 
-            $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            $cek_study = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
                 ->where('student.idstudent', $id)
                 ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
                 ->first();
@@ -215,7 +221,10 @@ class PraustaController extends Controller
 
             $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
                 ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
@@ -280,7 +289,10 @@ class PraustaController extends Controller
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
@@ -313,9 +325,15 @@ class PraustaController extends Controller
             'tempat_prausta' => 'required',
         ]);
 
+        $judul = $request->judul_prausta;
+        $judul_ok = str_replace("'", "", $judul);
+
+        $tempat = $request->tempat_prausta;
+        $tempat_ok = str_replace("'", "", $tempat);
+
         $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
-            'judul_prausta' => $request->judul_prausta,
-            'tempat_prausta' => $request->tempat_prausta,
+            'judul_prausta' => $judul_ok,
+            'tempat_prausta' => $tempat_ok,
             'id_kategori_prausta' => $request->id_kategori_prausta,
             'tanggal_mulai' => $request->tanggal_mulai,
         ]);
@@ -367,7 +385,7 @@ class PraustaController extends Controller
             [
                 'file_bimbingan' => 'file:pdf,PDF|max:4096',
             ],
-            $message,
+            $message
         );
 
         $nama = Auth::user()->name;
@@ -581,7 +599,10 @@ class PraustaController extends Controller
 
                         //data seminar proposal
                         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                            ->leftJoin('prodi', (function ($join) {
+                                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                            }))
                             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                             ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
                             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
@@ -625,7 +646,10 @@ class PraustaController extends Controller
                         $idstatus = $maha->idstatus;
                         $kodeprodi = $maha->kodeprodi;
 
-                        $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                        $cek_study = Student::leftJoin('prodi', (function ($join) {
+                            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                        }))
                             ->where('student.idstudent', $id)
                             ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
                             ->first();
@@ -671,7 +695,10 @@ class PraustaController extends Controller
 
                         $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
                             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                            ->leftJoin('prodi', (function ($join) {
+                                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                            }))
                             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
                             ->where('prausta_setting_relasi.id_student', $id)
                             //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
@@ -734,7 +761,10 @@ class PraustaController extends Controller
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
@@ -767,9 +797,15 @@ class PraustaController extends Controller
             'tempat_prausta' => 'required',
         ]);
 
+        $judul = $request->judul_prausta;
+        $judul_ok = str_replace("'", "", $judul);
+
+        $tempat = $request->tempat_prausta;
+        $tempat_ok = str_replace("'", "", $tempat);
+
         $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
-            'judul_prausta' => $request->judul_prausta,
-            'tempat_prausta' => $request->tempat_prausta,
+            'judul_prausta' => $judul_ok,
+            'tempat_prausta' => $tempat_ok,
             'id_kategori_prausta' => $request->id_kategori_prausta,
             'tanggal_mulai' => $request->tanggal_mulai,
         ]);
@@ -1024,7 +1060,10 @@ class PraustaController extends Controller
 
                 //data seminar proposal
                 $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->leftJoin('prodi', (function ($join) {
+                        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                            ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                    }))
                     ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                     ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
                     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -1065,7 +1104,10 @@ class PraustaController extends Controller
                 $idstatus = $maha->idstatus;
                 $kodeprodi = $maha->kodeprodi;
 
-                $cek_study = Student::join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                $cek_study = Student::leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
                     ->where('student.idstudent', $id)
                     ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
                     ->first();
@@ -1111,7 +1153,10 @@ class PraustaController extends Controller
 
                 $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
                     ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                    ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+                    ->leftJoin('prodi', (function ($join) {
+                        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                            ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                    }))
                     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
                     ->where('prausta_setting_relasi.id_student', $id)
                     //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
@@ -1166,7 +1211,10 @@ class PraustaController extends Controller
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select(
@@ -1199,11 +1247,17 @@ class PraustaController extends Controller
             'tempat_prausta' => 'required',
         ]);
 
+        $judul = $request->judul_prausta;
+        $judul_ok = str_replace("'", "", $judul);
+
+        $tempat = $request->tempat_prausta;
+        $tempat_ok = str_replace("'", "", $tempat);
+
         $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
-            'judul_prausta' => $request->judul_prausta,
-            'tempat_prausta' => $request->tempat_prausta,
+            'judul_prausta' => $judul_ok,
+            'tempat_prausta' => $tempat_ok,
             'id_kategori_prausta' => $request->id_kategori_prausta,
-            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_mulai' => $request->tanggal_mulai
         ]);
 
         Alert::success('', 'Data Tugas Akhir Berhasil Diinput')->autoclose(3500);
