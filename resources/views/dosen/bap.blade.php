@@ -52,7 +52,7 @@
                 <a href="/sum_absen/{{ $bap->id_kurperiode }}" class="btn btn-info">Absensi Perkuliahan</a>
                 <a href="/jurnal_bap/{{ $bap->id_kurperiode }}" class="btn btn-warning">Jurnal Perkuliahan</a>
                 <br><br>
-                <table id="example4" class="table table-bordered table-striped">
+                <table id="example6" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th rowspan="2">
