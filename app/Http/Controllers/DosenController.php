@@ -1419,9 +1419,11 @@ class DosenController extends Controller
 
     public function input_bap($id)
     {
+        $jam = Kurikulum_jam::all();
+
         $data = Kurikulum_periode::where('id_kurperiode', $id)->get();
 
-        return view('dosen/form_bap', ['id' => $id]);
+        return view('dosen/form_bap', ['id' => $id, 'jam' => $jam]);
     }
 
     public function save_bap(Request $request)

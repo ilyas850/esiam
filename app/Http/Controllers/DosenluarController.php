@@ -889,7 +889,9 @@ class DosenluarController extends Controller
 
     public function input_bap($id)
     {
-        return view('dosenluar/form_bap', ['id' => $id]);
+        $jam = Kurikulum_jam::all();
+
+        return view('dosenluar/form_bap', ['id' => $id, 'jam' => $jam]);
     }
 
     public function save_bap(Request $request)
