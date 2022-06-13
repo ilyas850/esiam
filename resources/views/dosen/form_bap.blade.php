@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -85,8 +83,12 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Mulai
                                 </label>
-                                <input type="text" class="form-control" name="jam_mulai" placeholder="Contoh 12:00"
-                                    required>
+                                <select class="form-control" name="jam_mulai" required>
+                                    <option></option>
+                                    @foreach ($jam as $key)
+                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
+                                    @endforeach
+                                </select>
                                 @if ($errors->has('jam_mulai'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('jam_mulai') }}</strong>
@@ -97,8 +99,12 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai" placeholder="Contoh 16:00"
-                                    required>
+                                <select class="form-control" name="jam_selsai" required>
+                                    <option></option>
+                                    @foreach ($jam as $key)
+                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
+                                    @endforeach
+                                </select>
                                 @if ($errors->has('jam_selsai'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('jam_selsai') }}</strong>
@@ -172,7 +178,6 @@
                                     <span class="help-block">
                                         <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
                                     </span>
-
                                 @endif
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .pdf .png</p>
                             </div>
