@@ -436,11 +436,11 @@
                 scrollCollapse: true,
 
                 'paging': false,
-                'lengthChange': false,
+                'lengthChange': true,
                 'searching': false,
                 'ordering': false,
-                'info': false,
-                'autoWidth': true
+                'info': true,
+                'autoWidth': false
 
             });
         });
