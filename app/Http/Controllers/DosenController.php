@@ -1412,6 +1412,7 @@ class DosenController extends Controller
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             ->select('kuliah_transaction.kurang_jam', 'kuliah_transaction.tanggal_validasi', 'kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->orderBy('bap.id_bap', 'ASC')
             ->get();
 
         return view('dosen/bap', ['bap' => $key, 'data' => $data]);
