@@ -117,7 +117,7 @@
                                 <td>
                                     @if ($key->file_bimbingan == null)
                                     @elseif ($key->file_bimbingan != null)
-                                        <a href="/File Bimbingan PKL/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
+                                        <a href="/File Bimbingan SEMPRO/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
@@ -135,8 +135,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
-                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20" rows="10"> {{ $key->komentar_bimbingan }} </textarea>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>

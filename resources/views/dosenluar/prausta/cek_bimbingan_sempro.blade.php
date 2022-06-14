@@ -117,7 +117,7 @@
                                 <td>
                                     @if ($key->file_bimbingan == null)
                                     @elseif ($key->file_bimbingan != null)
-                                        <a href="/File Bimbingan PKL/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
+                                        <a href="/File Bimbingan SEMPRO/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
