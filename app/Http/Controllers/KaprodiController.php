@@ -3729,6 +3729,7 @@ class KaprodiController extends Controller
     $usta->nilai_huruf = $nilai_huruf;
     $usta->added_by = Auth::user()->name;
     $usta->status = 'ACTIVE';
+    $usta->data_origin = 'eSIAM';
     $usta->save();
 
     Alert::success('', 'Nilai Prakerin berhasil disimpan')->autoclose(3500);
@@ -4047,6 +4048,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
@@ -4152,6 +4154,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = ($nilai_dosji1 + $cek_nilai->nilai_1 + $cek_nilai->nilai_3) / 3;
@@ -4257,6 +4260,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = ($nilai_dosji2 + $cek_nilai->nilai_1 + $cek_nilai->nilai_2) / 3;
@@ -4772,6 +4776,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = (($nilai_dospem * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
@@ -4877,6 +4882,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = (($nilai_dosji1 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
@@ -4982,6 +4988,7 @@ class KaprodiController extends Controller
       $usta->nilai_huruf = $nilai_huruf;
       $usta->added_by = Auth::user()->name;
       $usta->status = 'ACTIVE';
+      $usta->data_origin = 'eSIAM';
       $usta->save();
     } elseif (($cek_nilai) != null) {
       $hasil = (($nilai_dosji2 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100));

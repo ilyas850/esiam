@@ -37,7 +37,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php $no = 1; ?>
                         @foreach ($itembayar as $item)
                             <tr>
