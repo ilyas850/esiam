@@ -3064,7 +3064,7 @@ class MhsController extends Controller
                                 ->first();
 
                             if (count($cek_kuis_perpus) > 0) {
-                                $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+                                $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
                                 return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
                             } elseif (count($cek_kuis_perpus) == 0) {

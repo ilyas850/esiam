@@ -2778,7 +2778,7 @@ class SadminController extends Controller
             ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
             ->first();
 
-        $data_uts = DB::select('CALL jadwal_uts(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+        $data_uts = DB::select('CALL jadwal_uts(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
@@ -2832,7 +2832,7 @@ class SadminController extends Controller
             ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
             ->first();
 
-        $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+        $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
