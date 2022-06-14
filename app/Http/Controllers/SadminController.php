@@ -2762,6 +2762,7 @@ class SadminController extends Controller
         $nama = $datamhs->nama;
         $prodi = $datamhs->prodi;
         $kelas = $datamhs->kelas;
+        $idprodi = $datamhs->id_prodi;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -2769,7 +2770,15 @@ class SadminController extends Controller
         $periodetahun = $thn->periode_tahun;
         $periodetipe = $tp->periode_tipe;
 
-        $data_uts = DB::select('CALL jadwal_uts(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+        $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+            ->first();
+
+        $data_uts = DB::select('CALL jadwal_uts(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
@@ -2807,6 +2816,7 @@ class SadminController extends Controller
         $nama = $datamhs->nama;
         $prodi = $datamhs->prodi;
         $kelas = $datamhs->kelas;
+        $idprodi = $datamhs->id_prodi;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -2814,7 +2824,15 @@ class SadminController extends Controller
         $periodetahun = $thn->periode_tahun;
         $periodetipe = $tp->periode_tipe;
 
-        $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+        $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+            ->first();
+
+        $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
