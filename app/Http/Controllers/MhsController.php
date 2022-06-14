@@ -2713,6 +2713,7 @@ class MhsController extends Controller
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
+        $idprodi = $datamhs->id_prodi;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -2835,8 +2836,16 @@ class MhsController extends Controller
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 50) / 100 - $total_semua_dibayar;
         }
 
+        $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+            ->first();
+
         if ($cekbyr == 0 or $cekbyr < 1) {
-            $data_uts = DB::select('CALL jadwal_uts(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+            $data_uts = DB::select('CALL jadwal_uts(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
             return view('mhs/ujian/kartu_uts', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
         } else {
@@ -2861,6 +2870,7 @@ class MhsController extends Controller
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
+        $idprodi = $datamhs->id_prodi;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -3045,8 +3055,16 @@ class MhsController extends Controller
                                 ->where('kuisioner_transaction.id_periodetipe', $tp->id_periodetipe)
                                 ->get();
 
+                            $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                                ->where('student_record.id_student', $id)
+                                ->where('student_record.status', 'TAKEN')
+                                ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+                                ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+                                ->first();
+
                             if (count($cek_kuis_perpus) > 0) {
-                                $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe]);
+                                $data_uts = DB::select('CALL jadwal_uas(?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
                                 return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
                             } elseif (count($cek_kuis_perpus) == 0) {
