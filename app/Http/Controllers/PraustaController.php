@@ -400,6 +400,7 @@ class PraustaController extends Controller
         $usta->remark_bimbingan = $bim_ok;
         $usta->added_by = $nama_ok;
         $usta->status = 'ACTIVE';
+        $usta->data_origin = 'eSIAM';
 
         if ($request->hasFile('file_bimbingan')) {
             $file = $request->file('file_bimbingan');
@@ -837,6 +838,7 @@ class PraustaController extends Controller
         $usta->remark_bimbingan = $bim_ok;
         $usta->added_by = Auth::user()->name;
         $usta->status = 'ACTIVE';
+        $usta->data_origin = 'eSIAM';
 
         if ($request->hasFile('file_bimbingan')) {
             $file = $request->file('file_bimbingan');
@@ -1287,6 +1289,7 @@ class PraustaController extends Controller
         $usta->remark_bimbingan = $bim_ok;
         $usta->added_by = Auth::user()->name;
         $usta->status = 'ACTIVE';
+        $usta->data_origin = 'eSIAM';
 
         if ($request->hasFile('file_bimbingan')) {
             $file = $request->file('file_bimbingan');

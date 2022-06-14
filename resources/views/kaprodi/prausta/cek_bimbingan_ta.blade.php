@@ -112,7 +112,6 @@
                                     @elseif ($key->validasi == 'SUDAH')
                                         <span class="badge bg-blue">Sudah</span>
                                     @endif
-
                                 </td>
                                 <td>
                                     @if ($key->file_bimbingan == null)
@@ -135,8 +134,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
-                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20" rows="10"> {{ $key->komentar_bimbingan }} </textarea>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>
