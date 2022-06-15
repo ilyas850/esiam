@@ -142,7 +142,7 @@ class ProdiController extends Controller
   {
     $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
     $prodi = Prodi::join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-      ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6])
+      ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6, 7, 8, 9])
       ->select('prodi.kodeprodi', 'prodi.id_prodi', 'prodi.prodi', 'prausta_master_kode.id_masterkode_prausta')
       ->get();
 
@@ -162,6 +162,7 @@ class ProdiController extends Controller
 
   public function view_mhs_bim_sempro(Request $request)
   {
+    dd($request);
     $angkatan = $request->idangkatan;
     $prodi = $request->kodeprodi;
 
@@ -178,7 +179,7 @@ class ProdiController extends Controller
     $dosen = Dosen::where('active', 1)
       ->whereIn('idstatus', [1, 2])
       ->get();
-
+    dd($id2);
     return view('adminprodi/dospem/lihat_sempro', compact('data', 'dosen', 'id2', 'angkatan', 'id1'));
   }
 

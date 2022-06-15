@@ -9,11 +9,11 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing
+            <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
                         PKL</span></a></li>
-            <li><a href="{{ url('dospem_sempro') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing
+            <li><a href="{{ url('dospem_sempro') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
                         SEMPRO</span></a></li>
-            <li><a href="{{ url('dospem_ta') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing
+            <li><a href="{{ url('dospem_ta') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
                         TA</span></a></li>
         </ul>
     </li>
