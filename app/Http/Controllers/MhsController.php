@@ -1407,7 +1407,7 @@ class MhsController extends Controller
 
             $sisaprakerin = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 35)
+                ->where('bayar.iditem', 36)
                 ->sum('bayar.bayar');
 
             $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
@@ -1518,7 +1518,7 @@ class MhsController extends Controller
 
             $sisaprakerin = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 36)
+                ->where('bayar.iditem', 35)
                 ->sum('bayar.bayar');
 
             $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
