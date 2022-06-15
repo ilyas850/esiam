@@ -346,11 +346,12 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
 
-    //isi KRS
+    
     // Route::get('isi_krs', 'KrsController@isi_krs');
-    Route::get('isi_krs', 'KrsController@add_krs');
     Route::post('simpan_krs', 'MhsController@simpan_krs');
 
+    //isi KRS
+    Route::get('isi_krs', 'KrsController@add_krs');
     Route::get('input_krs', 'KrsController@input_krs');
     Route::post('save_krs', 'KrsController@save_krs');
 
