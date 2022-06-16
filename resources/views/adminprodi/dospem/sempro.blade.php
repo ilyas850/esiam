@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -30,7 +28,7 @@
                             <select class="form-control" name="kodeprodi" required>
                                 <option></option>
                                 @foreach ($prodi as $keyprd)
-                                    <option value="{{ $keyprd->kodeprodi }},{{ $keyprd->id_masterkode_prausta }}">
+                                    <option value="{{ $keyprd->kodeprodi }},{{ $keyprd->id_prodi }}">
                                         {{ $keyprd->prodi }}</option>
                                 @endforeach
                             </select>

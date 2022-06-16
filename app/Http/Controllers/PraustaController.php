@@ -98,11 +98,21 @@ class PraustaController extends Controller
     public function seminar_prakerin()
     {
         $id = Auth::user()->id_user;
+
+        $dt_mhs = Student::where('idstudent', $id)->first();
+        $angkatan = $dt_mhs->idangkatan;
+
+        if ($angkatan <= 19) {
+            $kodemk = 'FA-601';
+        } elseif ($angkatan > 19) {
+            $kodemk = 'FA-501';
+        }
+
         //cek KRS prakerin mahasiswa
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-501', 'TI-601', 'TK-601'])
+            ->whereIn('matakuliah.kode', [$kodemk, 'TI-601', 'TK-601'])
             ->where('student_record.id_student', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')

@@ -142,7 +142,7 @@ class ProdiController extends Controller
   {
     $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
     $prodi = Prodi::join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-      ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6, 7, 8, 9])
+      ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6])
       ->select('prodi.kodeprodi', 'prodi.id_prodi', 'prodi.prodi', 'prausta_master_kode.id_masterkode_prausta')
       ->get();
 
@@ -162,7 +162,6 @@ class ProdiController extends Controller
 
   public function view_mhs_bim_sempro(Request $request)
   {
-    dd($request);
     $angkatan = $request->idangkatan;
     $prodi = $request->kodeprodi;
 
@@ -179,14 +178,23 @@ class ProdiController extends Controller
     $dosen = Dosen::where('active', 1)
       ->whereIn('idstatus', [1, 2])
       ->get();
-    dd($id2);
-    return view('adminprodi/dospem/lihat_sempro', compact('data', 'dosen', 'id2', 'angkatan', 'id1'));
+
+    $kode = Prausta_master_kode::where('id_prodi', $id2)
+      ->whereIn('prausta_master_kode.tipe_prausta', ['Seminar', 'TugasAkhir'])
+      ->select('prausta_master_kode.id_masterkode_prausta')
+      ->get();
+
+    $kode1 = $kode[0]->id_masterkode_prausta;
+    $kode2 = $kode[1]->id_masterkode_prausta;
+
+    return view('adminprodi/dospem/lihat_sempro', compact('data', 'dosen', 'kode1', 'kode2', 'angkatan'));
   }
 
   public function save_dsn_bim_sempro(Request $request)
   {
     $dosen = $request->iddosen;
-    $idms = $request->id_masterkode_prausta;
+    $idms1 = $request->id_masterkode_prausta1;
+    $idms2 = $request->id_masterkode_prausta2;
 
     $hitdsn = count($dosen);
 
@@ -201,24 +209,64 @@ class ProdiController extends Controller
         $id3 = $user[2];
 
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
-          ->where('id_masterkode_prausta', $idms)
+          ->where('id_masterkode_prausta', $idms1)
           ->where('status', 'ACTIVE')
           ->get();
 
         if (count($cekmhs) == 0) {
 
           $dt = new Prausta_setting_relasi;
-          $dt->id_masterkode_prausta = $idms;
+          $dt->id_masterkode_prausta = $idms1;
           $dt->id_student = $id1;
           $dt->dosen_pembimbing = $id3;
           $dt->id_dosen_pembimbing = $id2;
           $dt->added_by = Auth::user()->name;
           $dt->status = 'ACTIVE';
+          $dt->data_origin = 'eSIAM';
           $dt->save();
         } elseif (count($cekmhs) > 0) {
 
           $akun = Prausta_setting_relasi::where('id_student', $id1)
-            ->where('id_masterkode_prausta', $idms)
+            ->where('id_masterkode_prausta', $idms1)
+            ->where('status', 'ACTIVE')
+            ->update([
+              'id_dosen_pembimbing' => $id2,
+              'dosen_pembimbing' => $id3
+            ]);
+        }
+      }
+    }
+
+    for ($i = 0; $i < $hitdsn; $i++) {
+      $dta = $request->iddosen[$i];
+
+      if ($dta != null) {
+
+        $user = explode(',', $dta, 3);
+        $id1 = $user[0];
+        $id2 = $user[1];
+        $id3 = $user[2];
+
+        $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
+          ->where('id_masterkode_prausta', $idms2)
+          ->where('status', 'ACTIVE')
+          ->get();
+
+        if (count($cekmhs) == 0) {
+
+          $dt = new Prausta_setting_relasi;
+          $dt->id_masterkode_prausta = $idms2;
+          $dt->id_student = $id1;
+          $dt->dosen_pembimbing = $id3;
+          $dt->id_dosen_pembimbing = $id2;
+          $dt->added_by = Auth::user()->name;
+          $dt->status = 'ACTIVE';
+          $dt->data_origin = 'eSIAM';
+          $dt->save();
+        } elseif (count($cekmhs) > 0) {
+
+          $akun = Prausta_setting_relasi::where('id_student', $id1)
+            ->where('id_masterkode_prausta', $idms2)
             ->where('status', 'ACTIVE')
             ->update([
               'id_dosen_pembimbing' => $id2,

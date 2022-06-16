@@ -57,8 +57,8 @@
                                         </center>
                                     </td>
                                 </tr>
-                                <input type="hidden" name="id_masterkode_prausta" value="{{ $id2 }}">
-
+                                <input type="hidden" name="id_masterkode_prausta1" value="{{ $kode1 }}">
+                                <input type="hidden" name="id_masterkode_prausta2" value="{{ $kode2 }}">
                             @endforeach
                         </tbody>
                     </table>
