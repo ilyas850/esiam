@@ -771,17 +771,11 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::post('save_dsn_bim_pkl', 'ProdiController@save_dsn_bim_pkl');
     Route::put('put_dospem_pkl/{id}', 'ProdiController@put_dospem_pkl');
 
-    //seminar proposal
-    Route::get('dospem_sempro', 'ProdiController@dospem_sempro');
-    Route::post('view_mhs_bim_sempro', 'ProdiController@view_mhs_bim_sempro');
-    Route::post('save_dsn_bim_sempro', 'ProdiController@save_dsn_bim_sempro');
-    Route::put('put_dospem_sempro/{id}', 'ProdiController@put_dospem_sempro');
-
-    //tugas akhir
-    Route::get('dospem_ta', 'ProdiController@dospem_ta');
-    Route::post('view_mhs_bim_ta', 'ProdiController@view_mhs_bim_ta');
-    Route::post('save_dsn_bim_ta', 'ProdiController@save_dsn_bim_ta');
-    Route::put('put_dospem_ta/{id}', 'ProdiController@put_dospem_ta');
+    //sempro dan TA
+    Route::get('dospem_sempro_ta', 'ProdiController@dospem_sempro_ta');
+    Route::post('edit_dospem_sempro_ta', 'ProdiController@edit_dospem_sempro_ta');
+    Route::post('view_mhs_bim_sempro_ta', 'ProdiController@view_mhs_bim_sempro_ta');
+    Route::post('save_dsn_bim_sempro_ta', 'ProdiController@save_dsn_bim_sempro_ta');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {
