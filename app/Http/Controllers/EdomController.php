@@ -98,7 +98,7 @@ class EdomController extends Controller
       $latestPosts = DB::table('student_record')
         ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
         ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-        ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
         ->where('student_record.id_student', $id)
         ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
         ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
