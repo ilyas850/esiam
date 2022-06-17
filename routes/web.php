@@ -319,6 +319,9 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('jadwal_seminar_prakerin_dlm', 'DosenController@jadwal_seminar_prakerin_dlm');
     Route::get('jadwal_seminar_proposal_dlm', 'DosenController@jadwal_seminar_proposal_dlm');
     Route::get('jadwal_sidang_ta_dlm', 'DosenController@jadwal_sidang_ta_dlm');
+
+    //upload soal
+    Route::get('upload_soal_dsn_dlm', 'DosenController@upload_soal_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {

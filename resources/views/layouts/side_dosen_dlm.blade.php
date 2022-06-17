@@ -35,9 +35,13 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('jadwal_seminar_prakerin_dlm') }}"><i class="fa fa-circle-o"></i> Seminar Prakerin</a></li>
-            <li><a href="{{ url('jadwal_seminar_proposal_dlm') }}"><i class="fa fa-circle-o"></i> Seminar Proposal</a></li>
+            <li><a href="{{ url('jadwal_seminar_prakerin_dlm') }}"><i class="fa fa-circle-o"></i> Seminar
+                    Prakerin</a></li>
+            <li><a href="{{ url('jadwal_seminar_proposal_dlm') }}"><i class="fa fa-circle-o"></i> Seminar
+                    Proposal</a></li>
             <li><a href="{{ url('jadwal_sidang_ta_dlm') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
         </ul>
+    </li>
+    <li><a href="{{ url('upload_soal_dsn_dlm') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
     </li>
 </ul>
