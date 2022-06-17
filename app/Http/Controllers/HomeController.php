@@ -34,17 +34,6 @@ class HomeController extends Controller
 
   public function index()
   {
-    // $vm = Visimisi::all();
-
-    // foreach ($vm as $vm) {
-    //   // code...
-    // }
-
-    // $visi = $vm->visi;
-
-    // $misi = $vm->misi;
-
-    // $tujuan = $vm->tujuan;
 
     $id = Auth::user()->id_user;
     $akses = Auth::user()->role;

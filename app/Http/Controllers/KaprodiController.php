@@ -5886,15 +5886,30 @@ class KaprodiController extends Controller
       $id = $cek->id_soal;
       $info = Soal_ujian::find($id);
 
-      if ($request->hasFile('soal_uts')) {
-        $file = $request->file('soal_uts');
+      if ($info->soal_uts) {
+        if ($request->hasFile('soal_uts')) {
+          File::delete('Soal Ujian/' . 'UTS/' . $request->id_kurperiode . '/' . $info->soal_uts);
 
-        $nama_file = time() . '_' . $file->getClientOriginalName();
+          $file = $request->file('soal_uts');
 
-        // isi dengan nama folder tempat kemana file diupload
-        $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
-        $file->move($tujuan_upload, $nama_file);
-        $info->soal_uts = $nama_file;
+          $nama_file = time() . '_' . $file->getClientOriginalName();
+
+          // isi dengan nama folder tempat kemana file diupload
+          $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
+          $file->move($tujuan_upload, $nama_file);
+          $info->soal_uts = $nama_file;
+        }
+      } else {
+        if ($request->hasFile('soal_uts')) {
+          $file = $request->file('soal_uts');
+
+          $nama_file = time() . '_' . $file->getClientOriginalName();
+
+          // isi dengan nama folder tempat kemana file diupload
+          $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
+          $file->move($tujuan_upload, $nama_file);
+          $info->soal_uts = $nama_file;
+        }
       }
 
       $info->save();
@@ -5941,16 +5956,31 @@ class KaprodiController extends Controller
       $id = $cek->id_soal;
       $info = Soal_ujian::find($id);
 
-      if ($request->hasFile('soal_uas')) {
-        $file = $request->file('soal_uas');
+      if ($info->soal_uas) {
+        if ($request->hasFile('soal_uas')) {
+            File::delete('Soal Ujian/' . 'UAS/' . $request->id_kurperiode . '/' . $info->soal_uas);
 
-        $nama_file = time() . '_' . $file->getClientOriginalName();
+            $file = $request->file('soal_uas');
 
-        // isi dengan nama folder tempat kemana file diupload
-        $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
-        $file->move($tujuan_upload, $nama_file);
-        $info->soal_uas = $nama_file;
-      }
+            $nama_file = time() . '_' . $file->getClientOriginalName();
+
+            // isi dengan nama folder tempat kemana file diupload
+            $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+            $file->move($tujuan_upload, $nama_file);
+            $info->soal_uas = $nama_file;
+        }
+    } else {
+        if ($request->hasFile('soal_uas')) {
+            $file = $request->file('soal_uas');
+
+            $nama_file = time() . '_' . $file->getClientOriginalName();
+
+            // isi dengan nama folder tempat kemana file diupload
+            $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+            $file->move($tujuan_upload, $nama_file);
+            $info->soal_uas = $nama_file;
+        }
+    }
 
       $info->save();
     }
