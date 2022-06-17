@@ -7,8 +7,11 @@ use App\Angkatan;
 use App\Prodi;
 use App\Student;
 use App\Dosen;
+use App\Kurikulum_master;
+use App\Kurikulum_transaction;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
+use App\Semester;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -300,5 +303,60 @@ class ProdiController extends Controller
 
     Alert::success('', 'Data Pembimbing Seminar Proposal dan Tugas Akhir Berhasil Diinput')->autoclose(3500);
     return redirect('dospem_sempro_ta');
+  }
+
+  public function setting_standar_kurikulum()
+  {
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::all();
+    $semester = Semester::all();
+    $data = Kurikulum_transaction::all();
+
+    return view('adminprodi/kurikulum/setting_standar', compact('data', 'kurikulum', 'prodi', 'angkatan', 'semester'));
+  }
+
+  public function view_kurikulum_standar(Request $request)
+  {
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::all();
+    $semester = Semester::all();
+
+    $idkurikulum = $request->id_kurikulum;
+    $idprodi = $request->id_prodi;
+    $idangkatan = $request->idangkatan;
+    $idsemester = $request->idsemester;
+
+    if ($idsemester != null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+        ->where('kurikulum_transaction.id_prodi', $idprodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.id_semester', $idsemester)
+        ->where('kurikulum_transaction.status', 'ACTIVE')
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->get();
+    } elseif ($idsemester == null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+        ->where('kurikulum_transaction.id_prodi', $idprodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.status', 'ACTIVE')
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->get();
+    }
+
+    return view('adminprodi/kurikulum/view_kurikulum_standar', compact('data', 'kurikulum', 'prodi', 'angkatan', 'semester'));
   }
 }

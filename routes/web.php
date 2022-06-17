@@ -776,6 +776,10 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::post('edit_dospem_sempro_ta', 'ProdiController@edit_dospem_sempro_ta');
     Route::post('view_mhs_bim_sempro_ta', 'ProdiController@view_mhs_bim_sempro_ta');
     Route::post('save_dsn_bim_sempro_ta', 'ProdiController@save_dsn_bim_sempro_ta');
+
+    //setting standar kurikulum
+    Route::get('setting_standar_kurikulum', 'ProdiController@setting_standar_kurikulum');
+    Route::post('view_kurikulum_standar', 'ProdiController@view_kurikulum_standar');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

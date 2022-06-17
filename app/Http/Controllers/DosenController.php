@@ -1461,7 +1461,7 @@ class DosenController extends Controller
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
                 'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG|max:2048',
+                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
                 'file_materi_tugas' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
@@ -1709,64 +1709,7 @@ class DosenController extends Controller
         $idk = $kur->id_kurperiode;
         $per = $kur->pertemuan;
 
-        // $abs = Absensi_mahasiswa::leftjoin('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-        //     ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-        //     ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-        //     ->where('absensi_mahasiswa.id_bap', $id)
-        //     ->where('student_record.status', 'TAKEN')
-        //     ->select(
-        //         'student_record.id_kurperiode',
-        //         'absensi_mahasiswa.id_absensi',
-        //         'angkatan.angkatan',
-        //         'kelas.kelas',
-        //         'prodi.prodi',
-        //         'student_record.id_studentrecord',
-        //         'student.nama',
-        //         'student.nim',
-        //         'absensi_mahasiswa.absensi'
-        //     )
-        //     ->get();
-
-
-        // $m = DB::table('kurikulum_periode')
-        //     ->leftjoin('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
-        //     ->leftjoin('student', 'student_record.id_student', '=', 'student.idstudent')
-        //     ->leftjoin('bap', 'student_record.id_kurperiode', '=', 'bap.id_kurperiode')
-        //     ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-        //     ->leftjoin('absensi_mahasiswa', function ($query) {
-        //         $query->on('bap.id_bap', '=', 'absensi_mahasiswa.id_bap')
-        //             ->where('student_record.id_studentrecord', '=', 'absensi_mahasiswa.id_studentrecord')
-        //             ->where('absensi_mahasiswa.status', '=', 'ACTIVE');
-        //     })
-        //     ->where('student_record.status', 'TAKEN')
-        //     ->where('student.active', 1)
-        //     ->where('bap.status', 'ACTIVE')
-        //     ->where('student_record.id_kurperiode', $idk)
-        //     ->where('bap.pertemuan', $per)
-        //     ->select(
-        //         'student_record.id_kurperiode',
-        //         'absensi_mahasiswa.id_absensi',
-        //         'angkatan.angkatan',
-        //         'kelas.kelas',
-        //         'prodi.prodi',
-        //         'student_record.id_studentrecord',
-        //         'student_record.id_student',
-        //         'student.nama',
-        //         'bap.pertemuan',
-        //         'bap.id_bap',
-        //         'student.nim',
-        //         'absensi_mahasiswa.absensi'
-        //     )
-        //     ->orderBy('bap.pertemuan', 'asc')
-        //     ->get();
-
-
         $p = DB::select('CALL editAbsenMhs(?,?)', array($idk, $per));
-
 
         return view('dosen/edit_absen', ['idk' => $idk, 'abs' => $p, 'id' => $id]);
     }
@@ -1954,7 +1897,7 @@ class DosenController extends Controller
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
-            'file_materi_kuliah' => 'mimes:jpg,jpeg,pdf,png|max:2000',
+            'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
             'file_materi_tugas' => 'mimes:jpg,jpeg,png|max:2000',
         ]);
 

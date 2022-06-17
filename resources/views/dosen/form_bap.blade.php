@@ -179,7 +179,7 @@
                                         <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
                                     </span>
                                 @endif
-                                <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .pdf .png</p>
+                                <p class="help-block">Max. size 4 mb dengan format .jpg .jpeg .pdf .png .doc</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>

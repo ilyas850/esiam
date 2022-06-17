@@ -13,6 +13,8 @@
                         PKL</span></a></li>
             <li><a href="{{ url('dospem_sempro_ta') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
                         SEMPRO & TA</span></a></li>
+            <li><a href="{{ url('setting_standar_kurikulum') }}"><i class="fa fa-circle-o"></i> <span>Setting Standar
+                        Kurikulum</span></a></li>
         </ul>
     </li>
 </ul>

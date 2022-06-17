@@ -64,7 +64,6 @@
         .example-modal .modal {
             background: transparent !important;
         }
-
     </style>
 </head>
 
@@ -438,6 +437,24 @@
                 'paging': false,
                 'lengthChange': true,
                 'searching': false,
+                'ordering': false,
+                'info': true,
+                'autoWidth': false
+
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#example9').DataTable({
+                // scrollY: "465px",
+                scrollX: true,
+                scrollCollapse: true,
+
+                'paging': false,
+                'lengthChange': true,
+                'searching': true,
                 'ordering': false,
                 'info': true,
                 'autoWidth': false

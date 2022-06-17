@@ -1067,7 +1067,7 @@ class KaprodiController extends Controller
       'metode_kuliah'           => 'required',
       'materi_kuliah'           => 'required',
       'file_kuliah_tatapmuka'   => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
-      'file_materi_kuliah'      => 'mimes:jpg,jpeg,JPG,JPEG,pdf|max:2048',
+      'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
       'file_materi_tugas'       => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
     ], $message);
 
@@ -1407,7 +1407,7 @@ class KaprodiController extends Controller
       'metode_kuliah'           => 'required',
       'materi_kuliah'           => 'required',
       'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
-      'file_materi_kuliah'      => 'mimes:jpg,jpeg,pdf|max:2000',
+      'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
       'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
 
     ]);
