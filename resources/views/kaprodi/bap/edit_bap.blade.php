@@ -67,7 +67,7 @@
                                 <label>
                                     <font color="red-text">*</font>Tanggal
                                 </label>
-                                <input type="date" class="form-control pull-right" name="tanggal" id="datepicker2"
+                                <input type="date" class="form-control pull-right" name="tanggal"
                                     value="{{ $bap->tanggal }}" required>
                             </div>
                             <div class="col-md-3">
@@ -81,8 +81,8 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai" value="{{ $bap->jam_selsai }}"
-                                    required>
+                                <input type="text" class="form-control" name="jam_selsai"
+                                    value="{{ $bap->jam_selsai }}" required>
                             </div>
                         </div>
                         <div class="form-group">

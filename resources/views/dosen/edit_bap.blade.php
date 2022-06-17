@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -69,7 +67,7 @@
                                 <label>
                                     <font color="red-text">*</font>Tanggal
                                 </label>
-                                <input type="date" class="form-control pull-right" name="tanggal" id="datepicker2"
+                                <input type="date" class="form-control pull-right" name="tanggal"
                                     value="{{ $bap->tanggal }}" required>
                             </div>
                             <div class="col-md-3">
@@ -83,8 +81,8 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai" value="{{ $bap->jam_selsai }}"
-                                    required>
+                                <input type="text" class="form-control" name="jam_selsai"
+                                    value="{{ $bap->jam_selsai }}" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -107,9 +105,9 @@
                                     <option value="{{ $bap->id_tipekuliah }}">
                                         @if ($bap->id_tipekuliah == 1)
                                             Teori
-                                        @elseif($bap->id_tipekuliah==2)
+                                        @elseif($bap->id_tipekuliah == 2)
                                             Praktikum
-                                        @elseif($bap->id_tipekuliah==3)
+                                        @elseif($bap->id_tipekuliah == 3)
                                             Teori + Praktikum
                                         @endif
                                     </option>
@@ -134,15 +132,13 @@
                                 <label>
                                     <font color="red-text">*</font>Materi Kuliah/Ujian
                                 </label>
-                                <textarea class="form-control" rows="3" name="materi_kuliah"
-                                    required>{{ $bap->materi_kuliah }}</textarea>
+                                <textarea class="form-control" rows="3" name="materi_kuliah" required>{{ $bap->materi_kuliah }}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label>
                                     <font color="red-text">*</font>Media Pembelajaran/Ujian
                                 </label>
-                                <textarea class="form-control" rows="3" name="media_pembelajaran"
-                                    required>{{ $bap->media_pembelajaran }}</textarea>
+                                <textarea class="form-control" rows="3" name="media_pembelajaran" required>{{ $bap->media_pembelajaran }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">

@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label><font color = "red-text">*</font>Tanggal</label>
-                                <input type="date" class="form-control pull-right" name="tanggal" id="datepicker2" value="{{$bap->tanggal}}" required>
+                                <input type="date" class="form-control pull-right" name="tanggal" value="{{$bap->tanggal}}" required>
                             </div>
                             <div class="col-md-3">
                                 <label><font color = "red-text">*</font>Jam Mulai</label>
