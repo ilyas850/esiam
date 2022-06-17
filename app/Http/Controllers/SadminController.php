@@ -51,6 +51,7 @@ use App\Wadir;
 use App\Wrkpersonalia;
 use App\Sertifikat;
 use App\Skpi;
+use App\Soal_ujian;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -2898,5 +2899,33 @@ class SadminController extends Controller
     public function report_dospem_pkl($id)
     {
         dd($id);
+    }
+
+    public function soal_uts_uas()
+    {
+        $data = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
+
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select(
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester',
+                'soal_ujian.soal_uts',
+                'soal_ujian.soal_uas'
+            )
+            ->get();
+
+        return view('sadmin/soal/soal_ujian', compact('data'));
     }
 }

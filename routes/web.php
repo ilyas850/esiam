@@ -197,6 +197,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     //report kuisioner
     Route::get('report_kuisioner', 'SadminController@report_kuisioner');
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
+
+    //soal UTS dan UAS
+    Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
