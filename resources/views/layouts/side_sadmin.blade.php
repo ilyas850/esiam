@@ -119,8 +119,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('soal_uts') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
-            <li><a href="{{ url('soal_uas') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li>
+            {{-- <li><a href="{{ url('soal_uts') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
+            <li><a href="{{ url('soal_uas') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li> --}}
             <li><a href="{{ url('soal_uts_uas') }}"><i class="fa fa-circle-o"></i> Soal UTS dan UAS</a></li>
         </ul>
     </li>
