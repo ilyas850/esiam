@@ -915,7 +915,7 @@ class DosenluarController extends Controller
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
                 'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
+                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
@@ -1354,7 +1354,7 @@ class DosenluarController extends Controller
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2048',
-            'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX|max:4000',
+            'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
             'file_materi_tugas' => 'mimes:jpg,jpeg,png|max:2048',
         ]);
 
