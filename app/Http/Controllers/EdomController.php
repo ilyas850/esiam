@@ -123,6 +123,8 @@ class EdomController extends Controller
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
 
+
+
     $cekedom = Edom_transaction::where('id_student', $request->id_student)
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('id_kurtrans', $request->id_kurtrans)
@@ -134,7 +136,19 @@ class EdomController extends Controller
     } elseif (count($cekedom) == 0) {
 
       $makul = Matakuliah::where('idmakul', $mk)->first();
-      $dosen = Dosen::where('iddosen', $dsn)->first();
+
+      if ($dsn == 0) {
+        $dosen = '';
+
+        $nama_dsn = '';
+        $akademik = '';
+      } else {
+        $dosen = Dosen::where('iddosen', $dsn)->first();
+        $nama_dsn = $dosen->nama;
+        $akademik = $dosen->akademik;
+      }
+
+
 
       $edm = Edom_master::where('id_edom', 1)->get();
 
@@ -147,7 +161,7 @@ class EdomController extends Controller
         ->orderBy('description', 'ASC')
         ->paginate(30);
 
-      return view('mhs/edom/form_edom', ['keydm' => $keydm, 'dsn' => $dsn, 'edom' => $edom, 'dosen' => $dosen, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
+      return view('mhs/edom/form_edom', ['keydm' => $keydm, 'edom' => $edom, 'akademik' => $akademik, 'nama_dsn' => $nama_dsn, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
     }
   }
 

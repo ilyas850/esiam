@@ -35,7 +35,7 @@
                     <tr>
                         <td>Dosen</td>
                         <td>:</td>
-                        <td>{{ $dosen->nama }}, {{ $dosen->akademik }}</td>
+                        <td>{{ $nama_dsn }}, {{ $akademik }}</td>
                     </tr>
                 </table>
             </div>
