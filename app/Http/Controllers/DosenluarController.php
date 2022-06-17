@@ -883,7 +883,20 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'kuliah_transaction.payroll_check',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir'
+            )
             ->orderBy('bap.id_bap', 'ASC')
             ->get();
 

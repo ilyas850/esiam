@@ -14,29 +14,29 @@
                 <table id="example4" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="8%">
-                                <center>Kode </center>
+                            <th>
+                                <center>Dosen </center>
                             </th>
-                            <th width="20%">
-                                <center>Matakuliah</center>
+                            <th>
+                                <center>Kode/Matakuliah</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Kelas</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Semester</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Id Absen</center>
                             </th>
-                            <th width="8%">Soal UTS</th>
-                            <th width="8%">Soal UAS</th>
+                            <th>Soal UTS</th>
+                            <th>Soal UAS</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,9 +47,9 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->kode }}</center>
+                                    {{ $item->nama }}
                                 </td>
-                                <td>{{ $item->makul }}</td>
+                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>

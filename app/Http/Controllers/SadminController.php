@@ -2910,7 +2910,7 @@ class SadminController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
-
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
             ->where('periode_tahun.status', 'ACTIVE')
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('kurikulum_periode.status', 'ACTIVE')
@@ -2922,7 +2922,8 @@ class SadminController extends Controller
                 'kelas.kelas',
                 'semester.semester',
                 'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
+                'soal_ujian.soal_uas',
+                'dosen.nama'
             )
             ->get();
 
