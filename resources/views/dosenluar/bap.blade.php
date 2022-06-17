@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -135,7 +133,8 @@
                                             <a href="/edit_absen_dsn/{{ $item->id_bap }}" class="btn btn-success btn-xs">
                                                 Edit</a>
                                         @elseif ($item->hadir == null && $item->tidak_hadir == null)
-                                            <a href="/entri_absen_dsn/{{ $item->id_bap }}" class="btn btn-warning btn-xs">
+                                            <a href="/entri_absen_dsn/{{ $item->id_bap }}"
+                                                class="btn btn-warning btn-xs">
                                                 Entri</a>
                                         @endif
                                     </center>
@@ -144,13 +143,13 @@
                                     <center>
                                         <a href="/view_bap_dsn/{{ $item->id_bap }}" class="btn btn-info btn-xs"
                                             title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-                                        @if ($item->payroll_check == 'SUDAH')
-                                            <span class="badge bg-yellow">Valid</span>
-                                        @elseif($item->payroll_check == 'BELUM')
+                                        @if ($item->payroll_check == '2001-01-01')
                                             <a href="/edit_bap_dsn/{{ $item->id_bap }}" class="btn btn-success btn-xs"
                                                 title="klik untuk edit"> <i class="fa fa-edit"></i></a>
                                             <a href="/delete_bap_dsn/{{ $item->id_bap }}" class="btn btn-danger btn-xs"
                                                 title="klik untuk hapus"> <i class="fa fa-trash"></i></a>
+                                        @else
+                                            <span class="badge bg-yellow">Valid</span>
                                         @endif
                                     </center>
                                 </td>
