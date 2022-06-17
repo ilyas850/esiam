@@ -174,7 +174,7 @@
                                 </span>
 
                             @endif
-                            <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .pdf</p>
+                            <p class="help-block">Max. size 4 mb dengan format .jpg .jpeg .pdf .doc</p>
                         </div>
                         <div class="col-md-3">
                             <label>Upload File Materi Tugas/Ujian</label>
