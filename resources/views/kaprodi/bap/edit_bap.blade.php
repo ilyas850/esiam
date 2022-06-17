@@ -152,7 +152,7 @@
                                 <label>Upload File Materi Kuliah/Ujian</label>
                                 <input type="file" name="file_materi_kuliah">{{ $bap->file_materi_kuliah }}
 
-                                <p class="help-block">Max. size 4 mb dengan format .jpg .jpeg .pdf .doc</p>
+                                <p class="help-block">Max. size 4 mb dengan format .png .jpg .jpeg .pdf .doc</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>
