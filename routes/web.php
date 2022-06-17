@@ -322,6 +322,8 @@ Route::group(['middleware' => 'dosen'], function () {
 
     //upload soal
     Route::get('upload_soal_dsn_dlm', 'DosenController@upload_soal_dsn_dlm');
+    Route::post('simpan_soal_uts_dsn_dlm', 'DosenController@simpan_soal_uts_dsn_dlm');
+    Route::post('simpan_soal_uas_dsn_dlm', 'DosenController@simpan_soal_uas_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -578,6 +580,11 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('jadwal_seminar_prakerin_luar', 'DosenluarController@jadwal_seminar_prakerin_luar');
     Route::get('jadwal_seminar_proposal_luar', 'DosenluarController@jadwal_seminar_proposal_luar');
     Route::get('jadwal_sidang_ta_luar', 'DosenluarController@jadwal_sidang_ta_luar');
+
+    //upload soal
+    Route::get('upload_soal_dsn_luar', 'DosenluarController@upload_soal_dsn_luar');
+    Route::post('simpan_soal_uts_dsn_luar', 'DosenluarController@simpan_soal_uts_dsn_luar');
+    Route::post('simpan_soal_uas_dsn_luar', 'DosenluarController@simpan_soal_uas_dsn_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -765,6 +772,11 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('jadwal_seminar_prakerin_kprd', 'KaprodiController@jadwal_seminar_prakerin_kprd');
     Route::get('jadwal_seminar_proposal_kprd', 'KaprodiController@jadwal_seminar_proposal_kprd');
     Route::get('jadwal_sidang_ta_kprd', 'KaprodiController@jadwal_sidang_ta_kprd');
+
+    //upload soal
+    Route::get('upload_soal_dsn_kprd', 'KaprodiController@upload_soal_dsn_kprd');
+    Route::post('simpan_soal_uts_dsn_kprd', 'KaprodiController@simpan_soal_uts_dsn_kprd');
+    Route::post('simpan_soal_uas_dsn_kprd', 'KaprodiController@simpan_soal_uas_dsn_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

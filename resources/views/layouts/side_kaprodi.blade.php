@@ -80,4 +80,6 @@
                         Nilai TA</span></a></li>
         </ul>
     </li>
+    <li><a href="{{ url('upload_soal_dsn_kprd') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
+    </li>
 </ul>

@@ -42,6 +42,7 @@ use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
+use App\Soal_ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -4968,5 +4969,144 @@ class DosenController extends Controller
             ->get();
 
         return view('dosen/prausta/jadwal_sidang_ta', compact('data'));
+    }
+
+    public function upload_soal_dsn_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
+            ->where('kurikulum_periode.id_dosen', $id)
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select(
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester',
+                'soal_ujian.soal_uts',
+                'soal_ujian.soal_uas'
+            )
+            ->get();
+
+        return view('dosen/soal/soal_ujian', compact('data'));
+    }
+
+    public function simpan_soal_uts_dsn_dlm(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'soal_uts' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+            ],
+            $message,
+        );
+
+        $cek = Soal_ujian::where('id_kurperiode', $request->id_kurperiode)->first();
+
+        if (($cek) == null) {
+            $info = new Soal_ujian();
+            $info->id_kurperiode = $request->id_kurperiode;
+            $info->created_by = Auth::user()->name;
+
+            if ($request->hasFile('soal_uts')) {
+                $file = $request->file('soal_uts');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
+                $file->move($tujuan_upload, $nama_file);
+                $info->soal_uts = $nama_file;
+            }
+
+            $info->save();
+        } elseif (($cek) != null) {
+            $id = $cek->id_soal;
+            $info = Soal_ujian::find($id);
+
+            if ($request->hasFile('soal_uts')) {
+                $file = $request->file('soal_uts');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                // isi dengan nama folder tempat kemana file diupload
+                $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
+                $file->move($tujuan_upload, $nama_file);
+                $info->soal_uts = $nama_file;
+            }
+
+            $info->save();
+        }
+
+
+        Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function simpan_soal_uas_dsn_dlm(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'soal_uas' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+            ],
+            $message,
+        );
+
+        $cek = Soal_ujian::where('id_kurperiode', $request->id_kurperiode)->first();
+
+        if (($cek) == null) {
+            $info = new Soal_ujian();
+            $info->id_kurperiode = $request->id_kurperiode;
+            $info->created_by = Auth::user()->name;
+
+            if ($request->hasFile('soal_uas')) {
+                $file = $request->file('soal_uas');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+                $file->move($tujuan_upload, $nama_file);
+                $info->soal_uas = $nama_file;
+            }
+
+            $info->save();
+        } elseif (($cek) != null) {
+            $id = $cek->id_soal;
+            $info = Soal_ujian::find($id);
+
+            if ($request->hasFile('soal_uas')) {
+                $file = $request->file('soal_uas');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                // isi dengan nama folder tempat kemana file diupload
+                $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+                $file->move($tujuan_upload, $nama_file);
+                $info->soal_uas = $nama_file;
+            }
+
+            $info->save();
+        }
+
+        Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
+        return redirect()->back();
     }
 }
