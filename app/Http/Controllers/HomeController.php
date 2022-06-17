@@ -75,8 +75,8 @@ class HomeController extends Controller
       )
       ->first();
 
-    $dsn = Dosen::join('agama', 'dosen.idagama', '=', 'agama.idagama')
-      ->join('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
+    $dsn = Dosen::leftjoin('agama', 'dosen.idagama', '=', 'agama.idagama')
+      ->leftjoin('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
       ->where('dosen.iddosen', $id)
       ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
       ->first();

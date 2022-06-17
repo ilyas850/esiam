@@ -201,11 +201,8 @@
                                         <h5 class="description-header"></h5>
                                         <span class="description-text"></span>
                                     </div>
-                                    <!-- /.description-block -->
                                 </div>
-                                <!-- /.col -->
                             </div>
-                            <!-- /.row -->
                         </div>
                         <table class="table table-striped">
 
