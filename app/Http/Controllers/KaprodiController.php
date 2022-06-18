@@ -5859,7 +5859,7 @@ class KaprodiController extends Controller
     $this->validate(
       $request,
       [
-        'soal_uts' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+        'soal_uts' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
       ],
       $message,
     );
@@ -5929,7 +5929,7 @@ class KaprodiController extends Controller
     $this->validate(
       $request,
       [
-        'soal_uas' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+        'soal_uas' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
       ],
       $message,
     );
@@ -5958,29 +5958,29 @@ class KaprodiController extends Controller
 
       if ($info->soal_uas) {
         if ($request->hasFile('soal_uas')) {
-            File::delete('Soal Ujian/' . 'UAS/' . $request->id_kurperiode . '/' . $info->soal_uas);
+          File::delete('Soal Ujian/' . 'UAS/' . $request->id_kurperiode . '/' . $info->soal_uas);
 
-            $file = $request->file('soal_uas');
+          $file = $request->file('soal_uas');
 
-            $nama_file = time() . '_' . $file->getClientOriginalName();
+          $nama_file = time() . '_' . $file->getClientOriginalName();
 
-            // isi dengan nama folder tempat kemana file diupload
-            $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
-            $file->move($tujuan_upload, $nama_file);
-            $info->soal_uas = $nama_file;
+          // isi dengan nama folder tempat kemana file diupload
+          $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+          $file->move($tujuan_upload, $nama_file);
+          $info->soal_uas = $nama_file;
         }
-    } else {
+      } else {
         if ($request->hasFile('soal_uas')) {
-            $file = $request->file('soal_uas');
+          $file = $request->file('soal_uas');
 
-            $nama_file = time() . '_' . $file->getClientOriginalName();
+          $nama_file = time() . '_' . $file->getClientOriginalName();
 
-            // isi dengan nama folder tempat kemana file diupload
-            $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
-            $file->move($tujuan_upload, $nama_file);
-            $info->soal_uas = $nama_file;
+          // isi dengan nama folder tempat kemana file diupload
+          $tujuan_upload = 'Soal Ujian/' . 'UAS/' . $request->id_kurperiode;
+          $file->move($tujuan_upload, $nama_file);
+          $info->soal_uas = $nama_file;
         }
-    }
+      }
 
       $info->save();
     }

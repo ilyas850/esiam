@@ -4527,7 +4527,7 @@ class DosenluarController extends Controller
         $this->validate(
             $request,
             [
-                'soal_uts' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+                'soal_uts' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
             ],
             $message,
         );
@@ -4597,7 +4597,7 @@ class DosenluarController extends Controller
         $this->validate(
             $request,
             [
-                'soal_uas' => 'mimes:pdf,docx,DOCX,PDF|max:4000'
+                'soal_uas' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
             ],
             $message,
         );
