@@ -2925,6 +2925,8 @@ class SadminController extends Controller
                 'soal_ujian.soal_uas',
                 'dosen.nama'
             )
+            ->orderBy('prodi.prodi', 'asc')
+            ->orderBy('kelas.kelas', 'asc')
             ->get();
 
         return view('sadmin/soal/soal_ujian', compact('data'));
