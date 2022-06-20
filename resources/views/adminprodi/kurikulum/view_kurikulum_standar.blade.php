@@ -17,7 +17,7 @@
                         <div class="col-xs-2">
                             <label>Kurikulum</label>
                             <select class="form-control" name="id_kurikulum" required>
-                                <option></option>
+                                <option value="{{ $krlm->id_kurikulum }}">{{ $krlm->nama_kurikulum }}</option>
                                 @foreach ($kurikulum as $kuri)
                                     <option value="{{ $kuri->id_kurikulum }}">
                                         {{ $kuri->nama_kurikulum }}</option>
@@ -27,7 +27,8 @@
                         <div class="col-xs-7">
                             <label>Prodi</label>
                             <select class="form-control" name="id_prodi" required>
-                                <option></option>
+                                <option value="{{ $prd->id_prodi }}">{{ $prd->prodi }} - {{ $prd->konsentrasi }}
+                                </option>
                                 @foreach ($prodi as $keyprd)
                                     <option value="{{ $keyprd->id_prodi }}">
                                         {{ $keyprd->prodi }} - {{ $keyprd->konsentrasi }}</option>
@@ -37,7 +38,7 @@
                         <div class="col-xs-1">
                             <label>Angkatan</label>
                             <select class="form-control" name="idangkatan" required>
-                                <option></option>
+                                <option value="{{ $angk->idangkatan }}">{{ $angk->angkatan }}</option>
                                 @foreach ($angkatan as $keyangk)
                                     <option value="{{ $keyangk->idangkatan }}">{{ $keyangk->angkatan }}</option>
                                 @endforeach
@@ -46,11 +47,33 @@
                         <div class="col-xs-2">
                             <label>Semester</label>
                             <select class="form-control" name="idsemester">
-                                <option></option>
+                                
+                                @if ($smtr == null)
+                                    <option></option>
+                                @else
+                                    <option value="{{ $smtr->idsemester }}">{{ $smtr->semester }}</option>
+                                @endif
                                 @foreach ($semester as $smt)
                                     <option value="{{ $smt->idsemester }}">
                                         {{ $smt->semester }}</option>
                                 @endforeach
+                                <option></option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <label>Status</label>
+                            <select class="form-control" name="status" required>
+                                <option value="{{ $status }}">{{ $status }}</option>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="NOT ACTIVE">NOT ACTIVE</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <label>Paket</label>
+                            <select class="form-control" name="pelaksanaan_paket" required>
+                                <option value="{{ $paket }}">{{ $paket }}</option>
+                                <option value="OPEN">OPEN</option>
+                                <option value="CLOSED">CLOSED</option>
                             </select>
                         </div>
                     </div>
@@ -68,7 +91,9 @@
                 <h3 class="box-title">Data Standar Kurikulum</h3>
             </div>
             <div class="box-body">
-                <div class="box-body">
+                @if ($cdata == 0)
+                    kosong
+                @else
                     <table class="table table-condensed" id="example9">
                         <thead>
                             <tr>
@@ -122,7 +147,8 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+                @endif
+
             </div>
         </div>
     </section>

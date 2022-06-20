@@ -309,7 +309,7 @@ class ProdiController extends Controller
   {
     $kurikulum = Kurikulum_master::all();
     $prodi = Prodi::all();
-    $angkatan = Angkatan::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
     $semester = Semester::all();
     $data = Kurikulum_transaction::all();
 
@@ -318,15 +318,24 @@ class ProdiController extends Controller
 
   public function view_kurikulum_standar(Request $request)
   {
+
     $kurikulum = Kurikulum_master::all();
     $prodi = Prodi::all();
-    $angkatan = Angkatan::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
     $semester = Semester::all();
 
     $idkurikulum = $request->id_kurikulum;
     $idprodi = $request->id_prodi;
     $idangkatan = $request->idangkatan;
     $idsemester = $request->idsemester;
+    $status = $request->status;
+    $paket = $request->pelaksanaan_paket;
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $idkurikulum)->first();
+    $prd = Prodi::where('id_prodi', $idprodi)->first();
+    $angk = Angkatan::where('idangkatan', $idangkatan)->first();
+
+    $smtr = Semester::where('idsemester', $idsemester)->first();
 
     if ($idsemester != null) {
       $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
@@ -338,7 +347,8 @@ class ProdiController extends Controller
         ->where('kurikulum_transaction.id_prodi', $idprodi)
         ->where('kurikulum_transaction.id_angkatan', $idangkatan)
         ->where('kurikulum_transaction.id_semester', $idsemester)
-        ->where('kurikulum_transaction.status', 'ACTIVE')
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
         ->orderBy('semester.semester', 'ASC')
         ->orderBy('matakuliah.kode', 'ASC')
         ->get();
@@ -351,12 +361,14 @@ class ProdiController extends Controller
         ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
         ->where('kurikulum_transaction.id_prodi', $idprodi)
         ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('kurikulum_transaction.status', 'ACTIVE')
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
         ->orderBy('semester.semester', 'ASC')
         ->orderBy('matakuliah.kode', 'ASC')
         ->get();
     }
 
-    return view('adminprodi/kurikulum/view_kurikulum_standar', compact('data', 'kurikulum', 'prodi', 'angkatan', 'semester'));
+    $cdata = count($data);
+    return view('adminprodi/kurikulum/view_kurikulum_standar', compact('cdata', 'data', 'kurikulum', 'prodi', 'angkatan', 'semester', 'krlm', 'prd', 'angk', 'smtr', 'status', 'paket'));
   }
 }

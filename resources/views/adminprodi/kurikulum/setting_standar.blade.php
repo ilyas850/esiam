@@ -24,7 +24,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-7">
+                        <div class="col-xs-6">
                             <label>Prodi</label>
                             <select class="form-control" name="id_prodi" required>
                                 <option></option>
@@ -53,6 +53,20 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-xs-2">
+                            <label>Status</label>
+                            <select class="form-control" name="status" required>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="NOT ACTIVE">NOT ACTIVE</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <label>Paket</label>
+                            <select class="form-control" name="pelaksanaan_paket" required>
+                                <option value="OPEN">OPEN</option>
+                                <option value="CLOSED">CLOSED</option>
+                            </select>
+                        </div>
                     </div>
                     <br>
                     <div class="row">
@@ -63,7 +77,7 @@
                 </form>
             </div>
         </div>
-        <div class="box box-info">
+        {{-- <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">Setting Standar Kurikulum</h3>
             </div>
@@ -81,7 +95,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-7">
+                        <div class="col-xs-6">
                             <label>Prodi</label>
                             <select class="form-control" name="id_prodi" required>
                                 <option></option>
@@ -110,6 +124,20 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-xs-2">
+                            <label>Status</label>
+                            <select class="form-control" name="status" required>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="NOT ACTIVE">NOT ACTIVE</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <label>Paket</label>
+                            <select class="form-control" name="pelaksanaan_paket" required>
+                                <option value="OPEN">OPEN</option>
+                                <option value="CLOSED">CLOSED</option>
+                            </select>
+                        </div>
                     </div>
                     <br>
                     <div class="row">
@@ -119,6 +147,6 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </section>
 @endsection
