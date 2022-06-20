@@ -2927,6 +2927,7 @@ class SadminController extends Controller
             )
             ->orderBy('prodi.prodi', 'asc')
             ->orderBy('kelas.kelas', 'asc')
+            ->orderBy('matakuliah.kode', 'asc')
             ->get();
 
         return view('sadmin/soal/soal_ujian', compact('data'));
