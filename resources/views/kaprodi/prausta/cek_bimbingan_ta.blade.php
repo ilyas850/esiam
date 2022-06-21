@@ -44,7 +44,8 @@
                 <div class="row">
                     <form class="" action="{{ url('status_judul_kprd') }}" method="post">
                         {{ csrf_field() }}
-                        <input type="hidden" name="id_settingrelasi_prausta" value="{{ $jdl->id_settingrelasi_prausta }}">
+                        <input type="hidden" name="id_settingrelasi_prausta"
+                            value="{{ $jdl->id_settingrelasi_prausta }}">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Judul Tugas Akhir</label>
@@ -152,7 +153,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
-                Pengajuan Seminar Prakerin
+                Pengajuan Sidang Tugas Akhir
             </div>
             <div class="box-body">
                 <div class="form">
@@ -160,18 +161,18 @@
                         <span class="badge bg-red">Belum ada pengajuan</span>
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
                         <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Prakerin</a>
+                            Sidang Tugas Akhir</a>
                         <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}"
                             class="btn btn-danger">Tolak
-                            Seminar Prakerin</a>
+                            Sidang Tugas Akhir</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
                         <span class="badge bg-blue">Sudah di Acc.</span>
                     @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
                         <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Prakerin</a>
+                            Sidang Tugas Akhir</a>
                         <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}"
                             class="btn btn-danger">Tolak
-                            Seminar Prakerin</a>
+                            Sidang Tugas Akhir</a>
                     @endif
                 </div>
             </div>
