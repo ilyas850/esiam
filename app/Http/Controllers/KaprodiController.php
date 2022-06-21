@@ -1160,6 +1160,7 @@ class KaprodiController extends Controller
       ->where('student_record.id_kurperiode', $idp)
       ->where('student_record.status', 'TAKEN')
       ->select('angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim')
+      ->orderBy('student.nim', 'asc')
       ->get();
 
     return view('kaprodi/bap/absensi', ['absen' => $cks, 'idk' => $idp, 'id' => $id]);
