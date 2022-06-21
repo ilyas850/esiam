@@ -371,4 +371,9 @@ class ProdiController extends Controller
     $cdata = count($data);
     return view('adminprodi/kurikulum/view_kurikulum_standar', compact('cdata', 'data', 'kurikulum', 'prodi', 'angkatan', 'semester', 'krlm', 'prd', 'angk', 'smtr', 'status', 'paket'));
   }
+
+  public function add_setting_kurikulum(Request $request)
+  {
+    dd($request);
+  }
 }

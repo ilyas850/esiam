@@ -798,6 +798,7 @@ Route::group(['middleware' => 'adminprodi'], function () {
     //setting standar kurikulum
     Route::get('setting_standar_kurikulum', 'ProdiController@setting_standar_kurikulum');
     Route::post('view_kurikulum_standar', 'ProdiController@view_kurikulum_standar');
+    Route::post('add_setting_kurikulum', 'ProdiController@add_setting_kurikulum');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

@@ -47,7 +47,6 @@
                         <div class="col-xs-2">
                             <label>Semester</label>
                             <select class="form-control" name="idsemester">
-                                
                                 @if ($smtr == null)
                                     <option></option>
                                 @else
@@ -92,7 +91,13 @@
             </div>
             <div class="box-body">
                 @if ($cdata == 0)
-                    kosong
+                    <form action="{{ url('add_setting_kurikulum') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id_kurikulum" value="{{ $krlm->id_kurikulum }}">
+                        <input type="hidden" name="id_prodi" value="{{ $prd->id_prodi }}">
+                        <input type="hidden" name="idangkatan" value="{{ $angk->idangkatan }}">
+                        <button class="btn btn-info">Tambah</button>
+                    </form>
                 @else
                     <table class="table table-condensed" id="example9">
                         <thead>
