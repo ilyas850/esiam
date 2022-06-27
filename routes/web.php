@@ -204,6 +204,15 @@ Route::group(['middleware' => 'sadmin'], function () {
     //kurikulum standar
     Route::get('master_kurikulum_standar', 'SadminController@master_kurikulum_standar');
     Route::post('lihat_kurikulum_standar', 'SadminController@lihat_kurikulum_standar');
+
+    //master yudisium
+    Route::get('master_yudisium', 'SadminController@master_yudisium');
+    Route::get('validate_yudisium/{id}', 'SadminController@validate_yudisium');
+    Route::get('unvalidate_yudisium/{id}', 'SadminController@unvalidate_yudisium');
+    Route::put('saveedit_yudisium/{id}', 'SadminController@saveedit_yudisium');
+
+    //master wisuda
+    Route::get('master_wisuda', 'SadminController@master_wisuda');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

@@ -52,6 +52,7 @@ use App\Wrkpersonalia;
 use App\Sertifikat;
 use App\Skpi;
 use App\Soal_ujian;
+use App\Yudisium;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -73,7 +74,7 @@ class SadminController extends Controller
     {
         $data = Angkatan::all();
         $pass = decrypt(12345678);
-        dd($pass);
+
         return view('sadmin/masterakademik/master_angkatan', compact('data'));
     }
 
@@ -2954,5 +2955,62 @@ class SadminController extends Controller
     public function lihat_kurikulum_standar(Request $request)
     {
         # code...
+    }
+
+    public function master_yudisium()
+    {
+        $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->where('student.active', 1)
+            ->select(
+                'yudisium.id_yudisium',
+                'yudisium.nama_lengkap',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'yudisium.nik',
+                'student.nim',
+                'prodi.prodi',
+                'yudisium.id_student',
+                'yudisium.file_ijazah',
+                'yudisium.file_ktp',
+                'yudisium.file_foto',
+                'yudisium.validasi'
+            )
+            ->get();
+
+        return view('sadmin/masterakademik/master_yudisium', compact('data'));
+    }
+
+    public function validate_yudisium($id)
+    {
+        Yudisium::where('id_yudisium', $id)->update(['validasi' => 'SUDAH']);
+
+        Alert::success('', 'Data Yudisium berhasil divalidasi')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function unvalidate_yudisium($id)
+    {
+        Yudisium::where('id_yudisium', $id)->update(['validasi' => 'BELUM']);
+
+        Alert::success('', 'Data Yudisium batal divalidasi')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function saveedit_yudisium(Request $request, $id)
+    {
+        $prd = Yudisium::find($id);
+        $prd->nama_lengkap = $request->nama_lengkap;
+        $prd->tmpt_lahir = $request->tmpt_lahir;
+        $prd->tgl_lahir = $request->tgl_lahir;
+        $prd->nik = $request->nik;
+        $prd->updated_by = Auth::user()->name;
+        $prd->save();
+
+        Alert::success('', 'Data Yudisium berhasil diedit')->autoclose(3500);
+        return redirect()->back();
     }
 }

@@ -157,9 +157,34 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <button class="btn btn-success" data-toggle="modal"
-                                data-target="#modalUpdateYudisium{{ $data->id_yudisium }}" title="klik untuk edit"><i
-                                    class="fa fa-edit"></i> Edit</button>
+
+                            @if ($data->validasi == 'BELUM')
+                                <button class="btn btn-success" data-toggle="modal"
+                                    data-target="#modalUpdateYudisium{{ $data->id_yudisium }}"
+                                    title="klik untuk edit"><i class="fa fa-edit"></i> Edit</button>
+                            @else
+                                <button type="button" class="btn btn-warning" data-toggle="modal"
+                                    data-target="#modal-warning">
+                                    Data sudah valid
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal modal-warning fade" id="modal-warning">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Sudah divalidasi</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Maaf data tidak bisa diedit lagi&hellip;</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
