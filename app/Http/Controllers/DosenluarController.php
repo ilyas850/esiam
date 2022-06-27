@@ -84,7 +84,7 @@ class DosenluarController extends Controller
             ->where('kurikulum_periode.id_dosen', $iddsn)
             ->where('periode_tahun.id_periodetahun', $thn)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            // ->where('periode_tipe.status', 'ACTIVE')
             ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
             ->get();
 

@@ -2932,4 +2932,27 @@ class SadminController extends Controller
 
         return view('sadmin/soal/soal_ujian', compact('data'));
     }
+
+    public function master_kurikulum_standar()
+    {
+        $data = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+            ->join('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+            ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+            ->join('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->where('kurikulum_transaction.status', 'ACTIVE')
+            ->get();
+
+        $kurikulum = Kurikulum_master::all();
+        $prodi = Prodi::all();
+        $semester = Semester::all();
+        $angkatan = Angkatan::orderBy('angkatan', 'desc')->get();
+
+        return view('sadmin/kurikulum/standar_kurikulum', compact('kurikulum', 'prodi', 'semester', 'angkatan'));
+    }
+
+    public function lihat_kurikulum_standar(Request $request)
+    {
+        # code...
+    }
 }

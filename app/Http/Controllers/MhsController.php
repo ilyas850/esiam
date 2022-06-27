@@ -47,6 +47,8 @@ use App\Kuisioner_transaction;
 use App\Waktu_edom;
 use App\Sertifikat;
 use App\Skpi;
+use App\Yudisium;
+use App\Wisuda;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -1982,10 +1984,13 @@ class MhsController extends Controller
         $nama = $mhs->nama;
         $nama_ok = str_replace("'", '', $nama);
 
-        $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
-            ->where('id_dosen_pembimbing', $id_dosen)
-            ->where('id_periodetahun', $id_tahun)
-            ->where('id_periodetipe', $id_tipe)
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_dosen_pembimbing', $id_dosen)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 2)
             ->get();
 
         if (count($cek_kuis) > 0) {
@@ -2096,6 +2101,7 @@ class MhsController extends Controller
 
     public function save_kuisioner_dsn_ta(Request $request)
     {
+
         $id_student = $request->id_student;
         $id_dosen = $request->id_dosen_pembimbing;
         $id_tahun = $request->id_periodetahun;
@@ -2108,10 +2114,13 @@ class MhsController extends Controller
         $nama = $mhs->nama;
         $nama_ok = str_replace("'", '', $nama);
 
-        $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
-            ->where('id_dosen_pembimbing', $id_dosen)
-            ->where('id_periodetahun', $id_tahun)
-            ->where('id_periodetipe', $id_tipe)
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_dosen_pembimbing', $id_dosen)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 3)
             ->get();
 
         if (count($cek_kuis) > 0) {
@@ -2242,10 +2251,13 @@ class MhsController extends Controller
         $nama = $mhs->nama;
         $nama_ok = str_replace("'", '', $nama);
 
-        $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
-            ->where('id_dosen_penguji_1', $id_dosen)
-            ->where('id_periodetahun', $id_tahun)
-            ->where('id_periodetipe', $id_tipe)
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_dosen_penguji_1', $id_dosen)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 4)
             ->get();
 
         if (count($cek_kuis) > 0) {
@@ -2375,10 +2387,13 @@ class MhsController extends Controller
         $nama = $mhs->nama;
         $nama_ok = str_replace("'", '', $nama);
 
-        $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
-            ->where('id_dosen_penguji_2', $id_dosen)
-            ->where('id_periodetahun', $id_tahun)
-            ->where('id_periodetipe', $id_tipe)
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_dosen_penguji_2', $id_dosen)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 5)
             ->get();
 
         if (count($cek_kuis) > 0) {
@@ -3298,5 +3313,508 @@ class MhsController extends Controller
 
         Alert::success('', 'Sertifikat berhasil dihapus')->autoclose(3500);
         return redirect('upload_sertifikat');
+    }
+
+    public function yudisium()
+    {
+        $id = Auth::user()->id_user;
+
+        $data_mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi'
+            )
+            ->first();
+
+        $idangkatan = $data_mhs->idangkatan;
+        $idstatus = $data_mhs->idstatus;
+        $kodeprodi = $data_mhs->kodeprodi;
+        $idprodi = $data_mhs->id_prodi;
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+            ->where('idstatus', $idstatus)
+            ->where('kodeprodi', $kodeprodi)
+            ->select(
+                'daftar',
+                'awal',
+                'dsp',
+                'spp1',
+                'spp2',
+                'spp3',
+                'spp4',
+                'spp5',
+                'spp6',
+                'spp7',
+                'spp8',
+                'spp9',
+                'spp10',
+                'spp11',
+                'spp12',
+                'spp13',
+                'spp14',
+                'prakerin',
+                'seminar',
+                'sidang',
+                'wisuda'
+            )
+            ->first();
+
+        $cb = Beasiswa::where('idstudent', $id)->first();
+
+        //list biaya kuliah mahasiswa
+        if (($cb) != null) {
+
+            $daftar = $biaya->daftar - (($biaya->daftar * ($cb->daftar)) / 100);
+            $awal = $biaya->awal - (($biaya->awal * ($cb->awal)) / 100);
+            $dsp = $biaya->dsp - (($biaya->dsp * ($cb->dsp)) / 100);
+            $spp1 = $biaya->spp1 - (($biaya->spp1 * ($cb->spp1)) / 100);
+            $spp2 = $biaya->spp2 - (($biaya->spp2 * ($cb->spp2)) / 100);
+            $spp3 = $biaya->spp3 - (($biaya->spp3 * ($cb->spp3)) / 100);
+            $spp4 = $biaya->spp4 - (($biaya->spp4 * ($cb->spp4)) / 100);
+            $spp5 = $biaya->spp5 - (($biaya->spp5 * ($cb->spp5)) / 100);
+            $spp6 = $biaya->spp6 - (($biaya->spp6 * ($cb->spp6)) / 100);
+            $spp7 = $biaya->spp7 - (($biaya->spp7 * ($cb->spp7)) / 100);
+            $spp8 = $biaya->spp8 - (($biaya->spp8 * ($cb->spp8)) / 100);
+            $spp9 = $biaya->spp9 - (($biaya->spp9 * ($cb->spp9)) / 100);
+            $spp10 = $biaya->spp10 - (($biaya->spp10 * ($cb->spp10)) / 100);
+            $spp11 = $biaya->spp11 - (($biaya->spp11 * ($cb->spp11)) / 100);
+            $spp12 = $biaya->spp12 - (($biaya->spp12 * ($cb->spp12)) / 100);
+            $spp13 = $biaya->spp13 - (($biaya->spp13 * ($cb->spp13)) / 100);
+            $spp14 = $biaya->spp14 - (($biaya->spp14 * ($cb->spp14)) / 100);
+            $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cb->prakerin)) / 100);
+            $seminar = $biaya->seminar - (($biaya->seminar * ($cb->seminar)) / 100);
+            $sidang = $biaya->sidang - (($biaya->sidang * ($cb->sidang)) / 100);
+            $wisuda = $biaya->wisuda - (($biaya->wisuda * ($cb->wisuda)) / 100);
+        } elseif (($cb) == null) {
+
+            $daftar = $biaya->daftar;
+            $awal = $biaya->awal;
+            $dsp = $biaya->dsp;
+            $spp1 = $biaya->spp1;
+            $spp2 = $biaya->spp2;
+            $spp3 = $biaya->spp3;
+            $spp4 = $biaya->spp4;
+            $spp5 = $biaya->spp5;
+            $spp6 = $biaya->spp6;
+            $spp7 = $biaya->spp7;
+            $spp8 = $biaya->spp8;
+            $spp9 = $biaya->spp9;
+            $spp10 = $biaya->spp10;
+            $spp11 = $biaya->spp11;
+            $spp12 = $biaya->spp12;
+            $spp13 = $biaya->spp13;
+            $spp14 = $biaya->spp14;
+            $prakerin = $biaya->prakerin;
+            $seminar = $biaya->seminar;
+            $sidang = $biaya->sidang;
+            $wisuda = $biaya->wisuda;
+        }
+
+        //total pembayaran kuliah
+        $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->sum('bayar.bayar');
+
+        //total semua pembayaran kecuali wisuda
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 + $prakerin + $seminar + $sidang);
+
+        //hasil
+        $hasil_semua = $cekbyr - $total_semua_dibayar;
+
+        if ($hasil_semua < 0 or $hasil_semua == 0) {
+            $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                ->where('prausta_setting_relasi.id_student', $id)
+                ->where('prausta_setting_relasi.status', 'ACTIVE')
+                ->select(
+                    'prausta_setting_relasi.id_settingrelasi_prausta',
+                    'validasi_baak'
+                )
+                ->first();
+            if ($cekdata_prausta == 'SUDAH') {
+                //cek nilai kosong atau tidak lulus
+                $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
+                    ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                    ->where('kurikulum_transaction.id_prodi', $idprodi)
+                    ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+                    ->where('kurikulum_transaction.status', 'ACTIVE')
+                    ->where('student_record.id_student', $id)
+                    ->where('student_record.status', 'TAKEN')
+                    ->where(function ($query) {
+                        $query
+                            ->where('student_record.nilai_AKHIR', '0')
+                            ->orWhere('student_record.nilai_AKHIR', 'D')
+                            ->orWhere('student_record.nilai_AKHIR', 'E');
+                    })
+                    ->select('kurikulum_transaction.id_makul', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                    ->get();
+
+                $hitjml_kur = count($cek_kur);
+
+                if ($hitjml_kur == 0) {
+                    $serti = Sertifikat::where('id_student', $id)->count();
+
+                    if ($serti >= 10) {
+                        //cek kuisioner dosen pembimbing pkl
+                        $cek_kuis_dospem_pkl = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                            ->where('kuisioner_transaction.id_student', $id)
+                            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 2)
+                            ->count();
+
+                        if (($cek_kuis_dospem_pkl) > 0) {
+
+                            //cek kuisioner dosen pembimbing ta
+                            $cek_kuis_dospem_ta = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                ->where('kuisioner_transaction.id_student', $id)
+                                ->where('kuisioner_master_kategori.id_kategori_kuisioner', 3)
+                                ->count();
+
+                            if (($cek_kuis_dospem_ta) > 0) {
+
+                                //cek kuisioner dosen penguji 1 ta
+                                $cek_kuis_dospeng_ta_1 = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                    ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                    ->where('kuisioner_transaction.id_student', $id)
+                                    ->where('kuisioner_master_kategori.id_kategori_kuisioner', 4)
+                                    ->count();
+
+                                if (($cek_kuis_dospeng_ta_1) > 0) {
+
+                                    //cek kuisioner dosen penguji 2 ta
+                                    $cek_kuis_dospeng_ta_2 = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                        ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                        ->where('kuisioner_transaction.id_student', $id)
+                                        ->where('kuisioner_master_kategori.id_kategori_kuisioner', 5)
+                                        ->count();
+
+                                    if (($cek_kuis_dospeng_ta_2) > 0) {
+                                        $data = Yudisium::where('id_student', $id)->first();
+
+                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data'));
+                                    } else {
+                                        alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
+                                        return redirect('home');
+                                    }
+                                } else {
+                                    alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 1 TA')->autoclose(5000);
+                                    return redirect('home');
+                                }
+                            } else {
+                                alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen pembimbing TA')->autoclose(5000);
+                                return redirect('home');
+                            }
+                        } else {
+                            alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen pembimbing PKL')->autoclose(5000);
+                            return redirect('home');
+                        }
+                    } else {
+                        alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena sertifikat anda kurang dari 10')->autoclose(5000);
+                        return redirect('home');
+                    }
+                } else {
+                    alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena ada nilai yang masih kosong / belum lulus')->autoclose(5000);
+                    return redirect('home');
+                }
+            } else {
+                alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena BAAK belum validasi Tugas Akhir anda')->autoclose(5000);
+                return redirect('home');
+            }
+        } else {
+            alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena keuangan Anda belum memenuhi syarat')->autoclose(5000);
+            return redirect('home');
+        }
+    }
+
+    public function save_yudisium(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'nama_lengkap' => 'required',
+                'tmpt_lahir' => 'required',
+                'tgl_lahir' => 'required',
+                'nik' => 'required',
+                'file_ijazah'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_foto'     => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+            ],
+            $message,
+        );
+
+        $bap = new Yudisium();
+        $bap->id_student = $request->id_student;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->tmpt_lahir = $request->tmpt_lahir;
+        $bap->tgl_lahir = $request->tgl_lahir;
+        $bap->nik = $request->nik;
+
+        if ($request->hasFile('file_ijazah')) {
+            $file = $request->file('file_ijazah');
+            $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_ijazah = $nama_file;
+        }
+
+        if ($request->hasFile('file_ktp')) {
+            $file = $request->file('file_ktp');
+            $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_ktp = $nama_file;
+        }
+
+        if ($request->hasFile('file_foto')) {
+            $file = $request->file('file_foto');
+            $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_foto = $nama_file;
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Yudisium berhasil ditambahkan')->autoclose(3500);
+        return redirect('yudisium');
+    }
+
+    public function put_yudisium(Request $request, $id)
+    {
+
+        $bap = Yudisium::find($id);
+        $bap->id_student = Auth::user()->id_user;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->tmpt_lahir = $request->tmpt_lahir;
+        $bap->tgl_lahir = $request->tgl_lahir;
+        $bap->nik = $request->nik;
+
+        if ($bap->file_ijazah) {
+            if ($request->hasFile('file_ijazah')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_ijazah);
+                $file = $request->file('file_ijazah');
+                $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ijazah = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_ijazah')) {
+                $file = $request->file('file_ijazah');
+                $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ijazah = $nama_file;
+            }
+        }
+
+        if ($bap->file_ktp) {
+            if ($request->hasFile('file_ktp')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_ktp);
+                $file = $request->file('file_ktp');
+                $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ktp = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_ktp')) {
+                $file = $request->file('file_ktp');
+                $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ktp = $nama_file;
+            }
+        }
+
+        if ($bap->file_foto) {
+            if ($request->hasFile('file_foto')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_foto);
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_foto = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_foto')) {
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_foto = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Yudisium berhasil diedit')->autoclose(3500);
+        return redirect('yudisium');
+    }
+
+    public function wisuda()
+    {
+        $id = Auth::user()->id_user;
+
+        $data_mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi'
+            )
+            ->first();
+
+        $idangkatan = $data_mhs->idangkatan;
+        $idstatus = $data_mhs->idstatus;
+        $kodeprodi = $data_mhs->kodeprodi;
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+            ->where('idstatus', $idstatus)
+            ->where('kodeprodi', $kodeprodi)
+            ->select(
+                'wisuda'
+            )
+            ->first();
+
+        $cb = Beasiswa::where('idstudent', $id)->first();
+
+        //list biaya kuliah mahasiswa
+        if (($cb) != null) {
+
+            $biayawisuda = $biaya->wisuda - (($biaya->wisuda * ($cb->wisuda)) / 100);
+        } elseif (($cb) == null) {
+
+            $biayawisuda = $biaya->wisuda;
+        }
+
+        //cek masa studi 
+        $cek_study = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->where('student.idstudent', $id)
+            ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+            ->first();
+
+        if ($cek_study->study_year == 3) {
+            $pembayaranwisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                ->where('kuitansi.idstudent', $id)
+                ->where('bayar.iditem', 16)
+                ->sum('bayar.bayar');
+        } elseif ($cek_study->study_year == 4) {
+
+            $pembayaranwisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                ->where('kuitansi.idstudent', $id)
+                ->where('bayar.iditem', 39)
+                ->sum('bayar.bayar');
+        }
+
+        //hasil
+        $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
+
+        if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
+            $data = Wisuda::where('id_student', $id)->first();
+
+            return view('mhs/pendaftaran/wisuda', compact('id', 'data'));
+        } else {
+            alert()->warning('Anda tidak dapat melakukan Pendaftaran Wisuda karena keuangan Anda belum memenuhi syarat')->autoclose(5000);
+            return redirect('home');
+        }
+    }
+
+    public function save_wisuda(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'ukuran_toga' => 'required',
+                'status_vaksin' => 'required',
+                'file_vaksin'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+            ],
+            $message,
+        );
+
+        $bap = new Wisuda();
+        $bap->id_student = $request->id_student;
+        $bap->ukuran_toga = $request->ukuran_toga;
+        $bap->status_vaksin = $request->status_vaksin;
+
+        if ($request->hasFile('file_vaksin')) {
+            $file = $request->file('file_vaksin');
+            $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Vaksin/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_vaksin = $nama_file;
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Wisuda berhasil ditambahkan')->autoclose(3500);
+        return redirect('wisuda');
+    }
+
+    public function put_wisuda(Request $request, $id)
+    {
+        $bap = Wisuda::find($id);
+        $bap->id_student = Auth::user()->id_user;
+        $bap->ukuran_toga = $request->ukuran_toga;
+        $bap->status_vaksin = $request->status_vaksin;
+
+        if ($bap->file_vaksin) {
+            if ($request->hasFile('file_vaksin')) {
+                File::delete('File Vaksin/' . Auth::user()->id_user . '/' . $bap->file_vaksin);
+                $file = $request->file('file_vaksin');
+                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Vaksin/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_vaksin = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_vaksin')) {
+                $file = $request->file('file_vaksin');
+                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Vaksin/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_vaksin = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Wisuda berhasil diedit')->autoclose(3500);
+        return redirect('wisuda');
     }
 }

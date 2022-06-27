@@ -114,7 +114,6 @@
                                             <h5 class="modal-title">Update Kaprodi</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <!--FORM UPDATE Tingkat-->
                                             <form action="/put_kaprodi/{{ $key->id_kaprodi }}" method="post">
                                                 @csrf
                                                 @method('put')
@@ -138,13 +137,10 @@
                                                         <option value="wadir3,9">Wadir 3</option>
                                                         <option value="wadir4,10">Wadir 4</option>
                                                     </select>
-
-
                                                 </div>
                                                 <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
                                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                             </form>
-                                            <!--END FORM Tingkat-->
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +158,8 @@
                                                 {{ csrf_field() }}
                                                 {{-- @csrf
                               @method('delete') --}}
-                                                <input type="hidden" name="id_kaprodi" value="{{ $key->id_kaprodi }}" />
+                                                <input type="hidden" name="id_kaprodi"
+                                                    value="{{ $key->id_kaprodi }}" />
                                                 <button type="submit" class="btn btn-primary">Hapus data!</button>
                                             </form>
                                             <button type="button" class="btn btn-secondary"

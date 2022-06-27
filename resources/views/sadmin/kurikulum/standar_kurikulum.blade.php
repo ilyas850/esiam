@@ -11,7 +11,7 @@
                 <h3 class="box-title">Pilih Standar Kurikulum</h3>
             </div>
             <div class="box-body">
-                <form class="form" role="form" action="{{ url('view_kurikulum_standar') }}" method="POST">
+                <form class="form" role="form" action="{{ url('lihat_kurikulum_standar') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-xs-2">
@@ -34,7 +34,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-xs-2">
                             <label>Angkatan</label>
                             <select class="form-control" name="id_angkatan" required>
                                 <option></option>
@@ -53,6 +53,8 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-2">
                             <label>Status</label>
                             <select class="form-control" name="status" required>
@@ -77,6 +79,5 @@
                 </form>
             </div>
         </div>
-
     </section>
 @endsection

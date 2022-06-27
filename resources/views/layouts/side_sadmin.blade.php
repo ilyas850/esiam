@@ -13,6 +13,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="/master_kurikulum_standar"><i class="fa fa-circle-o"></i> Kurikulum Standar</a></li>
             <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Angkatan</a></li>
             <li><a href="/master_bom"><i class="fa fa-circle-o"></i> BOM (Bill of Makul)</a></li>
             <li><a href="/master_jam"><i class="fa fa-circle-o"></i> Jam</a></li>
@@ -22,7 +23,6 @@
             <li><a href="/master_nilai_angkahuruf"><i class="fa fa-circle-o"></i> Nilai Angka-Huruf</a></li>
             <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Program Studi</a></li>
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
-
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>

@@ -200,6 +200,10 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //soal UTS dan UAS
     Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');
+
+    //kurikulum standar
+    Route::get('master_kurikulum_standar', 'SadminController@master_kurikulum_standar');
+    Route::post('lihat_kurikulum_standar', 'SadminController@lihat_kurikulum_standar');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -354,7 +358,6 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
 
-    
     // Route::get('isi_krs', 'KrsController@isi_krs');
     Route::post('simpan_krs', 'MhsController@simpan_krs');
 
@@ -465,6 +468,16 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('post_sertifikat', 'MhsController@post_sertifikat');
     Route::put('put_sertifikat/{id}', 'MhsController@put_sertifikat');
     Route::get('hapus_sertifikat/{id}', 'MhsController@hapus_sertifikat');
+
+    //pendaftaran yudisium
+    Route::get('yudisium', 'MhsController@yudisium');
+    Route::post('save_yudisium', 'MhsController@save_yudisium');
+    Route::put('put_yudisium/{id}', 'MhsController@put_yudisium');
+
+    //pendaftaran wisuda
+    Route::get('wisuda', 'MhsController@wisuda');
+    Route::post('save_wisuda', 'MhsController@save_wisuda');
+    Route::put('put_wisuda/{id}', 'MhsController@put_wisuda');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -798,7 +811,14 @@ Route::group(['middleware' => 'adminprodi'], function () {
     //setting standar kurikulum
     Route::get('setting_standar_kurikulum', 'ProdiController@setting_standar_kurikulum');
     Route::post('view_kurikulum_standar', 'ProdiController@view_kurikulum_standar');
-    Route::post('add_setting_kurikulum', 'ProdiController@add_setting_kurikulum');
+    Route::get('add_setting_kurikulum', 'ProdiController@add_setting_kurikulum');
+    Route::post('save_setting_kurikulum', 'ProdiController@save_setting_kurikulum');
+    Route::get('edit_setting_kurikulum/{id}', 'ProdiController@edit_setting_kurikulum');
+    Route::put('put_setting_kurikulum/{id}', 'ProdiController@put_setting_kurikulum');
+    Route::get('hapus_setting_kurikulum/{id}', 'ProdiController@hapus_setting_kurikulum');
+    Route::get('aktif_setting_kurikulum/{id}', 'ProdiController@aktif_setting_kurikulum');
+    Route::get('closed_setting_kurikulum/{id}', 'ProdiController@closed_setting_kurikulum');
+    Route::get('open_setting_kurikulum/{id}', 'ProdiController@open_setting_kurikulum');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

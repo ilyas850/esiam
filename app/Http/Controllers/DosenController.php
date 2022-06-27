@@ -679,7 +679,7 @@ class DosenController extends Controller
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
             ->where('kurikulum_periode.id_dosen', $id)
             ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            // ->where('periode_tipe.status', 'ACTIVE')
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
             ->get();

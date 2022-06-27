@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use File;
 use PDF;
 use Alert;
 use App\Bap;
@@ -874,7 +875,7 @@ class KaprodiController extends Controller
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
       ->where('kurikulum_periode.id_dosen', $iddsn)
       ->where('periode_tahun.id_periodetahun', $thn)
-      ->where('periode_tipe.id_periodetipe', $tp)
+      // ->where('periode_tipe.id_periodetipe', $tp)
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
       ->orderBy('semester.semester', 'ASC')
       ->get();
