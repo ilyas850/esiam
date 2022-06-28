@@ -100,7 +100,11 @@
                                         @if ($key->file_laporan_revisi == null)
                                             {{ $key->acc_seminar_sidang }}
                                         @elseif($key->file_laporan_revisi != null)
-                                            Selesai
+                                            @if ($key->tanggal_selesai == null)
+                                                Belum
+                                            @elseif ($key->tanggal_selesai != null)
+                                                Selesai
+                                            @endif
                                         @endif
                                     </center>
                                 </td>
