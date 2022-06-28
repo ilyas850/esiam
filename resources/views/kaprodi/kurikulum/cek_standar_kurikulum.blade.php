@@ -11,7 +11,7 @@
                 <h3 class="box-title">Pilih Standar Kurikulum</h3>
             </div>
             <div class="box-body">
-                <form class="form" role="form" action="{{ url('view_kurikulum_standar') }}" method="POST">
+                <form class="form" role="form" action="{{ url('lihat_kurikulum_standar_prodi') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-xs-2">
@@ -90,7 +90,7 @@
                 <h3 class="box-title">Data Kurikulum</h3>
             </div>
             <div class="box-body">
-                <a href="{{ url('add_setting_kurikulum') }}" class="btn btn-info">Tambah</a>
+                <a href="{{ url('add_setting_kurikulum_kprd') }}" class="btn btn-info">Tambah</a>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table table-condensed" id="example9">
@@ -139,27 +139,29 @@
                                         </td>
                                         <td align="center"> {{ $item->pelaksanaan_paket }}</td>
                                         <td align="center">
-                                            @if ($item->validasi == 'SUDAH')
-                                                <span class="badge bg-blue">Valid</span>
-                                            @else
-                                                @if ($item->status == 'ACTIVE')
-                                                    <a href="/edit_setting_kurikulum/{{ $item->idkurtrans }}"
-                                                        class="btn btn-info btn-xs">Edit</a>
-                                                    <a href="/hapus_setting_kurikulum/{{ $item->idkurtrans }}"
-                                                        class="btn btn-danger btn-xs">hapus</a>
-                                                    @if ($item->pelaksanaan_paket == 'OPEN')
-                                                        <a href="/closed_setting_kurikulum/{{ $item->idkurtrans }}"
-                                                            class="btn btn-warning btn-xs">Closed</a>
+                                            @if ($item->status == 'ACTIVE')
+                                                <a href="/edit_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                    class="btn btn-info btn-xs">Edit</a>
+                                                <a href="/hapus_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                    class="btn btn-danger btn-xs">hapus</a>
+                                                @if ($item->pelaksanaan_paket == 'OPEN')
+                                                    <a href="/closed_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                        class="btn btn-warning btn-xs">Closed</a>
+                                                    @if ($item->validasi == 'SUDAH')
+                                                        <a href="/unvalidate_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                            class="btn btn-danger btn-xs">Unvalidate</a>
                                                     @else
-                                                        <a href="/open_setting_kurikulum/{{ $item->idkurtrans }}"
-                                                            class="btn btn-success btn-xs">Open</a>
+                                                        <a href="/validate_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                            class="btn btn-success btn-xs">Validate</a>
                                                     @endif
-                                                @elseif ($item->status == 'NOT ACTIVE')
-                                                    <a href="/aktif_setting_kurikulum/{{ $item->idkurtrans }}"
-                                                        class="btn btn-warning btn-xs">Aktifkan</a>
+                                                @else
+                                                    <a href="/open_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                        class="btn btn-success btn-xs">Open</a>
                                                 @endif
+                                            @elseif ($item->status == 'NOT ACTIVE')
+                                                <a href="/aktif_setting_kurikulum_kprd/{{ $item->idkurtrans }}"
+                                                    class="btn btn-warning btn-xs">Aktifkan</a>
                                             @endif
-
                                         </td>
                                     </tr>
                                 @endforeach

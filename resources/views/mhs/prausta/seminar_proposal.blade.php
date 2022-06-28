@@ -38,7 +38,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Program Studi</label>
-                                            <input type="text" class="form-control" value="{{ $data->prodi }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->prodi }}"
+                                                readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -69,8 +70,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Judul Sempro</label>
-                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta"
-                                                readonly>{{ $data->judul_prausta }}</textarea>
+                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta" readonly>{{ $data->judul_prausta }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -85,7 +85,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Validasi Keuangan</label>
-                                            <input type="text" class="form-control" value="{{ $validasi }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $validasi }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -161,8 +162,7 @@
                                                     @method('put')
                                                     <div class="form-group">
                                                         <label>Judul Seminar Proposal</label>
-                                                        <textarea class="form-control" name="judul_prausta" rows="3" cols="60"
-                                                            required> {{ $data->judul_prausta }}</textarea>
+                                                        <textarea class="form-control" name="judul_prausta" rows="3" cols="60" required> {{ $data->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Tempat </label>
@@ -215,8 +215,8 @@
 
                                                         <div class="form-group">
                                                             <label>File Bimbingan</label>
-                                                            <input type="file" name="file_bimbingan" class="form-control"
-                                                                required>
+                                                            <input type="file" name="file_bimbingan"
+                                                                class="form-control" required>
                                                             <span>max. size file 4mb format pdf</span>
                                                         </div>
                                                     </div>
@@ -238,7 +238,8 @@
                                                             <div class="col-md-2">
                                                                 <input type="hidden" name="id_settingrelasi_prausta"
                                                                     value="{{ $data->id_settingrelasi_prausta }}">
-                                                                <button type="submit" class="btn btn-info">Simpan</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-info">Simpan</button>
                                                             </div>
                                                         </div>
                                                     @endif
@@ -356,13 +357,15 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label>File Bimbingan</label>
-                                                                                <input type="file" name="file_bimbingan"
+                                                                                <input type="file"
+                                                                                    name="file_bimbingan"
                                                                                     class="form-control"><a
                                                                                     href="/File Bimbingan SEMPRO/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                                     target="_blank">
                                                                                     {{ $key->file_bimbingan }}</a>
                                                                             </div>
-                                                                            <button type="button" class="btn btn-secondary"
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
                                                                                 data-dismiss="modal">Batal</button>
                                                                             <button type="submit"
                                                                                 class="btn btn-primary">Perbarui
@@ -429,8 +432,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}" method="post"
-                                                            enctype="multipart/form-data">
+                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                            method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
                                                                 value="{{ $data->id_settingrelasi_prausta }}">
@@ -472,8 +475,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}" method="post"
-                                                            enctype="multipart/form-data">
+                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                            method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
                                                                 value="{{ $data->id_settingrelasi_prausta }}">
@@ -515,8 +518,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}" method="post"
-                                                            enctype="multipart/form-data">
+                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                            method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
                                                                 value="{{ $data->id_settingrelasi_prausta }}">
@@ -551,128 +554,135 @@
                                 @elseif ($data->acc_seminar_sidang == 'PENGAJUAN')
                                     <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
                                 @elseif ($data->acc_seminar_sidang == 'TERIMA')
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="info-box">
-                                                <span class="info-box-icon bg-red"><i class="fa fa-files-o"></i></span>
+                                    @if ($data->tanggal_selesai == null)
+                                        <span class="badge bg-red">Menunggu Jadwal Seminar</span>
+                                    @else
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="info-box">
+                                                    <span class="info-box-icon bg-red"><i
+                                                            class="fa fa-files-o"></i></span>
 
-                                                <div class="info-box-content">
-                                                    <span class="info-box-text">Laporan SEMPRO</span>
-                                                    <span class="info-box-number">
-                                                        @if ($data->file_laporan_revisi == null)
-                                                            Belum ada
-                                                        @elseif ($data->file_laporan_revisi != null)
-                                                            <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $data->file_laporan_revisi }}"
-                                                                target="_blank"> File Laporan</a>
-                                                        @endif
-                                                    </span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">Laporan SEMPRO</span>
+                                                        <span class="info-box-number">
+                                                            @if ($data->file_laporan_revisi == null)
+                                                                Belum ada
+                                                            @elseif ($data->file_laporan_revisi != null)
+                                                                <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $data->file_laporan_revisi }}"
+                                                                    target="_blank"> File Laporan</a>
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="info-box">
+                                                    <form action="{{ url('simpan_draft_sempro') }}" method="post"
+                                                        enctype="multipart/form-data">
+                                                        {{ csrf_field() }}
+                                                        <input type="hidden" name="id_settingrelasi_prausta"
+                                                            value="{{ $data->id_settingrelasi_prausta }}">
+                                                        <div class="form-group">
+
+                                                            <input type="file" name="file_laporan_revisi"
+                                                                class="form-control">
+                                                            <span>Format file pdf max. size 5mb</span> <br>
+                                                            <button type="submit" class="btn btn-info">Simpan</button>
+
+
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="info-box">
-                                                <form action="{{ url('simpan_draft_sempro') }}" method="post"
-                                                    enctype="multipart/form-data">
-                                                    {{ csrf_field() }}
-                                                    <input type="hidden" name="id_settingrelasi_prausta"
-                                                        value="{{ $data->id_settingrelasi_prausta }}">
-                                                    <div class="form-group">
-
-                                                        <input type="file" name="file_laporan_revisi"
-                                                            class="form-control">
-                                                        <span>Format file pdf max. size 5mb</span> <br>
-                                                        <button type="submit" class="btn btn-info">Simpan</button>
-
-
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="info-box bg-aqua">
-                                                <span class="info-box-icon">
-                                                    @if ($data->validasi_pembimbing == 'BELUM')
-                                                        <i class="fa fa-thumbs-o-down"></i>
-                                                    @elseif($data->validasi_pembimbing == 'SUDAH')
-                                                        <i class="fa fa-thumbs-o-up"></i>
-                                                    @endif
-                                                </span>
-
-                                                <div class="info-box-content">
-                                                    <span class="info-box-text">Pembimbing</span>
-                                                    <span class="info-box-number">{{ $data->dosen_pembimbing }}</span>
-
-                                                    <div class="progress">
-                                                        <div class="progress-bar" style="width: 70%"></div>
-                                                    </div>
-                                                    <span class="progress-description">
-                                                        Validasi = {{ $data->validasi_pembimbing }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="info-box bg-green">
-                                                <span class="info-box-icon">
-                                                    @if ($data->validasi_penguji_1 == 'BELUM')
-                                                        <i class="fa fa-thumbs-o-down"></i>
-                                                    @elseif($data->validasi_penguji_1 == 'SUDAH')
-                                                        <i class="fa fa-thumbs-o-up"></i>
-                                                    @endif
-                                                </span>
-
-                                                <div class="info-box-content">
-                                                    <span class="info-box-text">Penguji 1</span>
-                                                    <span class="info-box-number">
-                                                        @if ($data->dosen_penguji_1 == null)
-                                                            Belum di setting
-                                                        @elseif ($data->dosen_penguji_1 != null)
-                                                            {{ $data->dosen_penguji_1 }}
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <div class="info-box bg-aqua">
+                                                    <span class="info-box-icon">
+                                                        @if ($data->validasi_pembimbing == 'BELUM')
+                                                            <i class="fa fa-thumbs-o-down"></i>
+                                                        @elseif($data->validasi_pembimbing == 'SUDAH')
+                                                            <i class="fa fa-thumbs-o-up"></i>
                                                         @endif
                                                     </span>
 
-                                                    <div class="progress">
-                                                        <div class="progress-bar" style="width: 70%"></div>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">Pembimbing</span>
+                                                        <span
+                                                            class="info-box-number">{{ $data->dosen_pembimbing }}</span>
+
+                                                        <div class="progress">
+                                                            <div class="progress-bar" style="width: 70%"></div>
+                                                        </div>
+                                                        <span class="progress-description">
+                                                            Validasi = {{ $data->validasi_pembimbing }}
+                                                        </span>
                                                     </div>
-                                                    <span class="progress-description">
-                                                        Validasi = {{ $data->validasi_penguji_1 }}
-                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="info-box bg-yellow">
-                                                <span class="info-box-icon">
-                                                    @if ($data->validasi_penguji_2 == 'BELUM')
-                                                        <i class="fa fa-thumbs-o-down"></i>
-                                                    @elseif($data->validasi_penguji_2 == 'SUDAH')
-                                                        <i class="fa fa-thumbs-o-up"></i>
-                                                    @endif
-                                                </span>
-
-                                                <div class="info-box-content">
-                                                    <span class="info-box-text">Penguji 2</span>
-                                                    <span class="info-box-number">
-                                                        @if ($data->dosen_penguji_2 == null)
-                                                            Belum di setting
-                                                        @elseif ($data->dosen_penguji_2 != null)
-                                                            {{ $data->dosen_penguji_2 }}
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <div class="info-box bg-green">
+                                                    <span class="info-box-icon">
+                                                        @if ($data->validasi_penguji_1 == 'BELUM')
+                                                            <i class="fa fa-thumbs-o-down"></i>
+                                                        @elseif($data->validasi_penguji_1 == 'SUDAH')
+                                                            <i class="fa fa-thumbs-o-up"></i>
                                                         @endif
                                                     </span>
 
-                                                    <div class="progress">
-                                                        <div class="progress-bar" style="width: 70%"></div>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">Penguji 1</span>
+                                                        <span class="info-box-number">
+                                                            @if ($data->dosen_penguji_1 == null)
+                                                                Belum di setting
+                                                            @elseif ($data->dosen_penguji_1 != null)
+                                                                {{ $data->dosen_penguji_1 }}
+                                                            @endif
+                                                        </span>
+
+                                                        <div class="progress">
+                                                            <div class="progress-bar" style="width: 70%"></div>
+                                                        </div>
+                                                        <span class="progress-description">
+                                                            Validasi = {{ $data->validasi_penguji_1 }}
+                                                        </span>
                                                     </div>
-                                                    <span class="progress-description">
-                                                        Validasi = {{ $data->validasi_penguji_2 }}
-                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <div class="info-box bg-yellow">
+                                                    <span class="info-box-icon">
+                                                        @if ($data->validasi_penguji_2 == 'BELUM')
+                                                            <i class="fa fa-thumbs-o-down"></i>
+                                                        @elseif($data->validasi_penguji_2 == 'SUDAH')
+                                                            <i class="fa fa-thumbs-o-up"></i>
+                                                        @endif
+                                                    </span>
 
-                                    </div>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">Penguji 2</span>
+                                                        <span class="info-box-number">
+                                                            @if ($data->dosen_penguji_2 == null)
+                                                                Belum di setting
+                                                            @elseif ($data->dosen_penguji_2 != null)
+                                                                {{ $data->dosen_penguji_2 }}
+                                                            @endif
+                                                        </span>
+
+                                                        <div class="progress">
+                                                            <div class="progress-bar" style="width: 70%"></div>
+                                                        </div>
+                                                        <span class="progress-description">
+                                                            Validasi = {{ $data->validasi_penguji_2 }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    @endif
                                 @elseif ($data->acc_seminar_sidang == 'TOLAK')
                                     <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
                                 @endif

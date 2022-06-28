@@ -805,6 +805,17 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     //validasi kurikulum
     Route::get('val_kurikulum_kprd', 'KaprodiController@val_kurikulum_kprd');
+    Route::post('lihat_kurikulum_standar_prodi', 'KaprodiController@lihat_kurikulum_standar_prodi');
+    Route::get('add_setting_kurikulum_kprd', 'KaprodiController@add_setting_kurikulum_kprd');
+    Route::post('save_setting_kurikulum_kprd', 'KaprodiController@save_setting_kurikulum_kprd');
+    Route::get('edit_setting_kurikulum_kprd/{id}', 'KaprodiController@edit_setting_kurikulum_kprd');
+    Route::put('put_setting_kurikulum_kprd/{id}', 'KaprodiController@put_setting_kurikulum_kprd');
+    Route::get('hapus_setting_kurikulum_kprd/{id}', 'KaprodiController@hapus_setting_kurikulum_kprd');
+    Route::get('aktif_setting_kurikulum_kprd/{id}', 'KaprodiController@aktif_setting_kurikulum_kprd');
+    Route::get('closed_setting_kurikulum_kprd/{id}', 'KaprodiController@closed_setting_kurikulum_kprd');
+    Route::get('open_setting_kurikulum_kprd/{id}', 'KaprodiController@open_setting_kurikulum_kprd');
+    Route::get('validate_setting_kurikulum_kprd/{id}', 'KaprodiController@validate_setting_kurikulum_kprd');
+    Route::get('unvalidate_setting_kurikulum_kprd/{id}', 'KaprodiController@unvalidate_setting_kurikulum_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

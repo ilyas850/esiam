@@ -5996,8 +5996,912 @@ class KaprodiController extends Controller
 
   public function val_kurikulum_kprd()
   {
-    $data = Kurikulum_transaction::all();
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
 
-    dd($data);
+    return view('kaprodi/kurikulum/standar_kurikulum_prodi', compact('kurikulum', 'prodi', 'angkatan', 'semester'));
+  }
+
+  public function lihat_kurikulum_standar_prodi(Request $request)
+  {
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $idkurikulum = $request->id_kurikulum;
+    $idprodi = $request->id_prodi;
+    $idangkatan = $request->id_angkatan;
+    $idsemester = $request->id_semester;
+    $status = $request->status;
+    $paket = $request->pelaksanaan_paket;
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $idkurikulum)->first();
+    $prd = Prodi::where('id_prodi', $idprodi)->first();
+    $angk = Angkatan::where('idangkatan', $idangkatan)->first();
+    $smtr = Semester::where('idsemester', $idsemester)->first();
+    $mk = Matakuliah::where('active', '1')->get();
+
+    if ($idsemester != null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+        ->where('kurikulum_transaction.id_prodi', $idprodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.id_semester', $idsemester)
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    } elseif ($idsemester == null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+        ->where('kurikulum_transaction.id_prodi', $idprodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    }
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact('data', 'kurikulum', 'prodi', 'angkatan', 'semester', 'krlm', 'prd', 'angk', 'smtr', 'status', 'paket'));
+  }
+
+  public function add_setting_kurikulum_kprd()
+  {
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+    $matakuliah = Matakuliah::where('active', '1')->get();
+
+    return view('kaprodi/kurikulum/add_standar_kurikulum', compact('kurikulum', 'prodi', 'angkatan', 'semester', 'matakuliah'));
+  }
+
+  public function save_setting_kurikulum_kprd(Request $request)
+  {
+    $idmakul = $request->id_makul;
+    $id_kurikulum = $request->id_kurikulum;
+    $id_prodi = $request->id_prodi;
+    $idangkatan = $request->id_angkatan;
+    $idsemester = $request->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $cek_mk = count($idmakul);
+
+    for ($i = 0; $i < $cek_mk; $i++) {
+      $idmk = $request->id_makul[$i];
+      if ($idmk != null) {
+
+        $cekid_kur = Kurikulum_transaction::where('id_kurikulum', $id_kurikulum)
+          ->where('id_prodi', $id_prodi)
+          ->where('id_angkatan', $idangkatan)
+          ->where('id_semester', $idsemester)
+          ->where('id_makul', $idmk)
+          ->where('status', 'ACTIVE')
+          ->where('pelaksanaan_paket', 'OPEN')
+          ->count();
+
+        if ($cekid_kur == 0) {
+          $bsa = new Kurikulum_transaction();
+          $bsa->id_kurikulum = $request->id_kurikulum;
+          $bsa->id_prodi = $request->id_prodi;
+          $bsa->id_semester = $request->id_semester;
+          $bsa->id_angkatan = $request->id_angkatan;
+          $bsa->id_makul = $idmk;
+          $bsa->save();
+        }
+      }
+    }
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $idangkatan)->first();
+    $smtr = Semester::where('idsemester', $idsemester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    if ($idsemester != null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $id_kurikulum)
+        ->where('kurikulum_transaction.id_prodi', $id_prodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.id_semester', $idsemester)
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    } elseif ($idsemester == null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $id_kurikulum)
+        ->where('kurikulum_transaction.id_prodi', $id_prodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('kurikulum_transaction.status', $status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    }
+
+    Alert::success('', 'Kurikulum berhasil ditambahkan')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function edit_setting_kurikulum_kprd($id)
+  {
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+    $matakuliah = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    return view('kaprodi/kurikulum/edit_standar_kurikulum', compact('id', 'data', 'kurikulum', 'prodi', 'angkatan', 'semester', 'matakuliah'));
+  }
+
+  public function put_setting_kurikulum_kprd(Request $request, $id)
+  {
+    $bsa = Kurikulum_transaction::find($id);
+    $bsa->id_kurikulum = $request->id_kurikulum;
+    $bsa->id_prodi = $request->id_prodi;
+    $bsa->id_semester = $request->id_semester;
+    $bsa->id_angkatan = $request->id_angkatan;
+    $bsa->id_makul = $request->id_makul;
+    $bsa->status = $request->status;
+    $bsa->pelaksanaan_paket = $request->pelaksanaan_paket;
+    $bsa->save();
+
+    $id_kurikulum = $request->id_kurikulum;
+    $id_prodi = $request->id_prodi;
+    $idangkatan = $request->id_angkatan;
+    $idsemester = $request->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $request->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $request->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $request->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    if ($request->id_semester != null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $request->id_kurikulum)
+        ->where('kurikulum_transaction.id_prodi', $request->id_prodi)
+        ->where('kurikulum_transaction.id_angkatan', $request->id_angkatan)
+        ->where('kurikulum_transaction.id_semester', $request->id_semester)
+        ->where('kurikulum_transaction.status', $request->status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $request->pelaksanaan_paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    } elseif ($request->id_semester == null) {
+      $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->where('kurikulum_transaction.id_kurikulum', $request->id_kurikulum)
+        ->where('kurikulum_transaction.id_prodi', $request->id_prodi)
+        ->where('kurikulum_transaction.id_angkatan', $request->id_angkatan)
+        ->where('kurikulum_transaction.status', $request->status)
+        ->where('kurikulum_transaction.pelaksanaan_paket', $request->pelaksanaan_paket)
+        ->orderBy('semester.semester', 'ASC')
+        ->orderBy('matakuliah.kode', 'ASC')
+        ->select(
+          'kurikulum_transaction.idkurtrans',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_prodi',
+          'kurikulum_transaction.id_kurikulum',
+          'kurikulum_transaction.id_semester',
+          'kurikulum_transaction.id_angkatan',
+          'kurikulum_transaction.id_makul',
+          'kurikulum_transaction.pelaksanaan_paket',
+          'kurikulum_transaction.validasi',
+          'kurikulum_transaction.status',
+          'kurikulum_master.nama_kurikulum',
+          'prodi.prodi',
+          'angkatan.angkatan',
+          'semester.semester',
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'matakuliah.akt_sks_teori',
+          'matakuliah.akt_sks_praktek'
+        )
+        ->get();
+    }
+
+    Alert::success('', 'Setting kurikulum berhasil diedit')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function hapus_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['status' => 'NOT ACTIVE']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function aktif_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['status' => 'ACTIVE']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function closed_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['pelaksanaan_paket' => 'CLOSED']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function open_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['pelaksanaan_paket' => 'OPEN']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function validate_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['validasi' => 'SUDAH']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum berhasil divalidasi')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
+  }
+
+  public function unvalidate_setting_kurikulum_kprd($id)
+  {
+    $data_kur = Kurikulum_transaction::where('kurikulum_transaction.idkurtrans', $id)
+      ->first();
+
+    $id_kurikulum = $data_kur->id_kurikulum;
+    $id_prodi = $data_kur->id_prodi;
+    $idangkatan = $data_kur->id_angkatan;
+    $idsemester = $data_kur->id_semester;
+    $status = 'ACTIVE';
+    $paket = 'OPEN';
+
+    $kurikulum = Kurikulum_master::all();
+    $prodi = Prodi::all();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+    $semester = Semester::all();
+
+    $krlm = Kurikulum_master::where('id_kurikulum', $data_kur->id_kurikulum)->first();
+    $prd = Prodi::where('id_prodi', $data_kur->id_prodi)->first();
+    $angk = Angkatan::where('idangkatan', $data_kur->id_angkatan)->first();
+    $smtr = Semester::where('idsemester', $data_kur->id_semester)->first();
+    $mk = Matakuliah::where('active', '1')
+      ->orderBy('kode', 'asc')
+      ->get();
+
+    Kurikulum_transaction::where('idkurtrans', $id)->update(['validasi' => 'BELUM']);
+
+
+    $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+      ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+      ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_transaction.id_kurikulum', $data_kur->id_kurikulum)
+      ->where('kurikulum_transaction.id_prodi', $data_kur->id_prodi)
+      ->where('kurikulum_transaction.id_angkatan', $data_kur->id_angkatan)
+      ->where('kurikulum_transaction.id_semester', $data_kur->id_semester)
+      ->where('kurikulum_transaction.status', 'ACTIVE')
+      ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
+      ->select(
+        'kurikulum_transaction.idkurtrans',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_prodi',
+        'kurikulum_transaction.id_kurikulum',
+        'kurikulum_transaction.id_semester',
+        'kurikulum_transaction.id_angkatan',
+        'kurikulum_transaction.id_makul',
+        'kurikulum_transaction.pelaksanaan_paket',
+        'kurikulum_transaction.validasi',
+        'kurikulum_transaction.status',
+        'kurikulum_master.nama_kurikulum',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'semester.semester',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek'
+      )
+      ->get();
+
+
+    Alert::success('', 'Setting kurikulum unvalidate')->autoclose(3500);
+    return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
+      'id_kurikulum',
+      'id_prodi',
+      'idangkatan',
+      'idsemester',
+      'status',
+      'paket',
+      'kurikulum',
+      'prodi',
+      'angkatan',
+      'semester',
+      'krlm',
+      'prd',
+      'angk',
+      'smtr',
+      'mk',
+      'data'
+    ));
   }
 }
