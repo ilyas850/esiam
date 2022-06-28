@@ -55,7 +55,13 @@
                                 <center>Nilai Huruf</center>
                             </th>
                             <th>
-                                <center>Aksi</center>
+                                <center>Draft</center>
+                            </th>
+                            <th>
+                                <center>Laporan</center>
+                            </th>
+                            <th>
+                                <center>Penilaian</center>
                             </th>
                         </tr>
                     </thead>
@@ -89,6 +95,22 @@
                                     <center>{{ $key->nilai_huruf }}</center>
                                 </td>
                                 <td>
+                                    @if ($key->file_draft_laporan == null)
+                                        belum
+                                    @else
+                                        <a href="/File Draft Laporan/{{ $key->id_student }}/{{ $key->file_draft_laporan }}"
+                                            target="_blank"> File</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($key->file_laporan_revisi == null)
+                                        belum
+                                    @else
+                                        <a href="/File Laporan Revisi/{{ $key->id_student }}/{{ $key->file_laporan_revisi }}"
+                                            target="_blank"> File</a>
+                                    @endif
+                                </td>
+                                <td>
                                     <center>
 
                                         @if ($key->acc_seminar_sidang == null)
@@ -102,17 +124,17 @@
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dospem_kprd/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji1_kprd/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji2_kprd/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif ($key->id_dosen_pembimbing == $id && $key->nilai_1 != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"

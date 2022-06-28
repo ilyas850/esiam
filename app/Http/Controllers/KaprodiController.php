@@ -4713,7 +4713,10 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.judul_prausta',
         'prausta_setting_relasi.tempat_prausta',
         'prausta_setting_relasi.acc_seminar_sidang',
-        'prausta_trans_hasil.validasi'
+        'prausta_trans_hasil.validasi',
+        'prausta_setting_relasi.file_draft_laporan',
+        'prausta_setting_relasi.file_laporan_revisi',
+        'prausta_setting_relasi.id_student'
       )
       ->get();
 
@@ -5989,5 +5992,12 @@ class KaprodiController extends Controller
 
     Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
     return redirect()->back();
+  }
+
+  public function val_kurikulum_kprd()
+  {
+    $data = Kurikulum_transaction::all();
+
+    dd($data);
   }
 }

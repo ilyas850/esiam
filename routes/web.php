@@ -802,6 +802,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('upload_soal_dsn_kprd', 'KaprodiController@upload_soal_dsn_kprd');
     Route::post('simpan_soal_uts_dsn_kprd', 'KaprodiController@simpan_soal_uts_dsn_kprd');
     Route::post('simpan_soal_uas_dsn_kprd', 'KaprodiController@simpan_soal_uas_dsn_kprd');
+
+    //validasi kurikulum
+    Route::get('val_kurikulum_kprd', 'KaprodiController@val_kurikulum_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

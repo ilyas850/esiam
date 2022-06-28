@@ -2954,7 +2954,105 @@ class SadminController extends Controller
 
     public function lihat_kurikulum_standar(Request $request)
     {
-        # code...
+        $kurikulum = Kurikulum_master::all();
+        $prodi = Prodi::all();
+        $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+        $semester = Semester::all();
+
+        $idkurikulum = $request->id_kurikulum;
+        $idprodi = $request->id_prodi;
+        $idangkatan = $request->id_angkatan;
+        $idsemester = $request->id_semester;
+        $status = $request->status;
+        $paket = $request->pelaksanaan_paket;
+
+        $krlm = Kurikulum_master::where('id_kurikulum', $idkurikulum)->first();
+        $prd = Prodi::where('id_prodi', $idprodi)->first();
+        $angk = Angkatan::where('idangkatan', $idangkatan)->first();
+        $smtr = Semester::where('idsemester', $idsemester)->first();
+
+        if ($idsemester != null) {
+            $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+                ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+                ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+                ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+                ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+                ->where('kurikulum_transaction.id_prodi', $idprodi)
+                ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+                ->where('kurikulum_transaction.id_semester', $idsemester)
+                ->where('kurikulum_transaction.status', $status)
+                ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+                ->orderBy('semester.semester', 'ASC')
+                ->orderBy('matakuliah.kode', 'ASC')
+                ->select(
+                    'kurikulum_transaction.idkurtrans',
+                    'kurikulum_transaction.id_kurikulum',
+                    'kurikulum_transaction.id_prodi',
+                    'kurikulum_transaction.id_kurikulum',
+                    'kurikulum_transaction.id_semester',
+                    'kurikulum_transaction.id_angkatan',
+                    'kurikulum_transaction.id_makul',
+                    'kurikulum_transaction.pelaksanaan_paket',
+                    'kurikulum_transaction.validasi',
+                    'kurikulum_transaction.status',
+                    'kurikulum_master.nama_kurikulum',
+                    'prodi.prodi',
+                    'angkatan.angkatan',
+                    'semester.semester',
+                    'matakuliah.makul',
+                    'matakuliah.kode',
+                    'matakuliah.akt_sks_teori',
+                    'matakuliah.akt_sks_praktek'
+                )
+                ->get();
+
+            $sks = 0;
+            foreach ($data as $keysks) {
+                $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+            }
+        } elseif ($idsemester == null) {
+            $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+                ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+                ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+                ->leftjoin('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+                ->leftjoin('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                ->where('kurikulum_transaction.id_kurikulum', $idkurikulum)
+                ->where('kurikulum_transaction.id_prodi', $idprodi)
+                ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+                ->where('kurikulum_transaction.status', $status)
+                ->where('kurikulum_transaction.pelaksanaan_paket', $paket)
+                ->orderBy('semester.semester', 'ASC')
+                ->orderBy('matakuliah.kode', 'ASC')
+                ->select(
+                    'kurikulum_transaction.idkurtrans',
+                    'kurikulum_transaction.id_kurikulum',
+                    'kurikulum_transaction.id_prodi',
+                    'kurikulum_transaction.id_kurikulum',
+                    'kurikulum_transaction.id_semester',
+                    'kurikulum_transaction.id_angkatan',
+                    'kurikulum_transaction.id_makul',
+                    'kurikulum_transaction.pelaksanaan_paket',
+                    'kurikulum_transaction.validasi',
+                    'kurikulum_transaction.status',
+                    'kurikulum_master.nama_kurikulum',
+                    'prodi.prodi',
+                    'angkatan.angkatan',
+                    'semester.semester',
+                    'matakuliah.makul',
+                    'matakuliah.kode',
+                    'matakuliah.akt_sks_teori',
+                    'matakuliah.akt_sks_praktek'
+                )
+                ->get();
+                
+            $sks = 0;
+            foreach ($data as $keysks) {
+                $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+            }
+        }
+
+        return view('sadmin/kurikulum/lihat_standar_kurikulum', compact('sks', 'data', 'kurikulum', 'prodi', 'angkatan', 'semester', 'krlm', 'prd', 'angk', 'smtr', 'status', 'paket'));
     }
 
     public function master_yudisium()
