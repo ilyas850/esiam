@@ -1550,6 +1550,7 @@ class KaprodiController extends Controller
       ->where('bap.id_kurperiode', $id)
       ->where('bap.status', 'ACTIVE')
       ->select(DB::raw('DISTINCT(student_record.id_studentrecord)'), 'student.nama', 'student.nim')
+      ->orderBy('student.nim', 'asc')
       ->get();
 
     $abs2 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
