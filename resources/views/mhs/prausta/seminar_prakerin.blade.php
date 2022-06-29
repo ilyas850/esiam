@@ -39,7 +39,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Program Studi</label>
-                                            <input type="text" class="form-control" value="{{ $usta->prodi }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $usta->prodi }}"
+                                                readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -70,8 +71,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Judul Prakerin</label>
-                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta"
-                                                readonly>{{ $usta->judul_prausta }}</textarea>
+                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta" readonly>{{ $usta->judul_prausta }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -93,7 +93,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Validasi Keuangan</label>
-                                            <input type="text" class="form-control" value="{{ $validasi }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $validasi }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -162,8 +163,7 @@
                                                     @method('put')
                                                     <div class="form-group">
                                                         <label>Judul Seminar Prakerin</label>
-                                                        <textarea class="form-control" name="judul_prausta" rows="3" cols="60"
-                                                            required> {{ $usta->judul_prausta }}</textarea>
+                                                        <textarea class="form-control" name="judul_prausta" rows="3" cols="60" required> {{ $usta->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Tempat Prakerin</label>
@@ -198,8 +198,8 @@
                                             Form Bimbingan Prakerin
                                         </div>
                                         <div class="box-body">
-                                            <form class="" action="{{ url('simpan_bimbingan') }}"
-                                                method="post" enctype="multipart/form-data">
+                                            <form class="" action="{{ url('simpan_bimbingan') }}" method="post"
+                                                enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="row">
                                                     <div class="col-md-12">
@@ -216,8 +216,8 @@
 
                                                         <div class="form-group">
                                                             <label>File Bimbingan</label>
-                                                            <input type="file" name="file_bimbingan" class="form-control"
-                                                                required>
+                                                            <input type="file" name="file_bimbingan"
+                                                                class="form-control" required>
                                                             <span>max. size file 4mb format pdf</span>
                                                         </div>
                                                     </div>
@@ -239,7 +239,8 @@
                                                             <div class="col-md-2">
                                                                 <input type="hidden" name="id_settingrelasi_prausta"
                                                                     value="{{ $usta->id_settingrelasi_prausta }}">
-                                                                <button type="submit" class="btn btn-info">Simpan</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-info">Simpan</button>
                                                             </div>
                                                         </div>
                                                     @endif
@@ -359,13 +360,15 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label>File Bimbingan</label>
-                                                                                <input type="file" name="file_bimbingan"
+                                                                                <input type="file"
+                                                                                    name="file_bimbingan"
                                                                                     class="form-control"><a
                                                                                     href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                                     target="_blank">
                                                                                     {{ $key->file_bimbingan }}</a>
                                                                             </div>
-                                                                            <button type="button" class="btn btn-secondary"
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
                                                                                 data-dismiss="modal">Batal</button>
                                                                             <button type="submit"
                                                                                 class="btn btn-primary">Perbarui
@@ -461,7 +464,6 @@
                                                     <div class="info-box">
                                                         <span class="info-box-icon bg-red"><i
                                                                 class="fa fa-files-o"></i></span>
-
                                                         <div class="info-box-content">
                                                             <span class="info-box-text">Draft Laporan PRAKERIN</span>
                                                             <span class="info-box-number">
@@ -475,24 +477,29 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_pkl') }}" method="post"
-                                                            enctype="multipart/form-data">
-                                                            {{ csrf_field() }}
-                                                            <input type="hidden" name="id_settingrelasi_prausta"
-                                                                value="{{ $usta->id_settingrelasi_prausta }}">
-                                                            <div class="form-group">
-
-                                                                <input type="file" name="file_draft_laporan"
-                                                                    class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
-                                                                <button type="submit"
-                                                                    class="btn btn-info">Simpan</button>
-                                                            </div>
-                                                        </form>
+                                                @if ($usta->validasi_baak == 'BELUM')
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <form action="{{ url('ajukan_seminar_pkl') }}"
+                                                                method="post" enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                <div class="form-group">
+                                                                    <input type="file" name="file_draft_laporan"
+                                                                        class="form-control">
+                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @else
+                                                    <div class="col-md-4">
+                                                        <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -556,64 +563,74 @@
                                 @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
                                     <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
                                 @elseif ($usta->acc_seminar_sidang == 'TERIMA')
-                                    @if ($cekdata_nilai == null)
-                                        <span class="badge bg-red">Maaf nilai anda belum ada</span>
+                                    @if ($usta->tanggal_selesai == null)
+                                        <span class="badge bg-red">Menunggu Jadwal Seminar</span>
                                     @else
-                                        @if ($usta->file_laporan_revisi == null)
-                                            <div class="info-box">
-                                                <form action="{{ url('simpan_draft_prakerin') }}" method="post"
-                                                    enctype="multipart/form-data">
-                                                    {{ csrf_field() }}
-                                                    <input type="hidden" name="id_settingrelasi_prausta"
-                                                        value="{{ $usta->id_settingrelasi_prausta }}">
-                                                    <div class="form-group">
+                                        @if ($cekdata_nilai == null)
+                                            <span class="badge bg-red">Maaf nilai anda belum ada</span>
+                                        @else
+                                            @if ($usta->file_laporan_revisi == null)
+                                                <div class="info-box">
+                                                    <form action="{{ url('simpan_draft_prakerin') }}" method="post"
+                                                        enctype="multipart/form-data">
+                                                        {{ csrf_field() }}
+                                                        <input type="hidden" name="id_settingrelasi_prausta"
+                                                            value="{{ $usta->id_settingrelasi_prausta }}">
+                                                        <div class="form-group">
 
-                                                        <input type="file" name="file_laporan_revisi"
-                                                            class="form-control">
-                                                        <span>Format file pdf max. size 5mb</span> <br>
-                                                        <button type="submit" class="btn btn-info">Simpan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        @elseif ($usta->file_laporan_revisi != null)
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="info-box">
-                                                        <span class="info-box-icon bg-red"><i
-                                                                class="fa fa-files-o"></i></span>
-                                                        <div class="info-box-content">
-                                                            <span class="info-box-text">Laporan Seminar
-                                                                Prakerin</span>
-                                                            <span class="info-box-number">
-                                                                @if ($usta->file_laporan_revisi == null)
-                                                                    Belum ada
-                                                                @elseif ($usta->file_laporan_revisi != null)
-                                                                    <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $usta->file_laporan_revisi }}"
-                                                                        target="_blank"> File Laporan</a>
-                                                                @endif
-                                                            </span>
+                                                            <input type="file" name="file_laporan_revisi"
+                                                                class="form-control">
+                                                            <span>Format file pdf max. size 5mb</span> <br>
+                                                            <button type="submit" class="btn btn-info">Simpan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            @elseif ($usta->file_laporan_revisi != null)
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <span class="info-box-icon bg-red"><i
+                                                                    class="fa fa-files-o"></i></span>
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">Laporan Seminar
+                                                                    Prakerin</span>
+                                                                <span class="info-box-number">
+                                                                    @if ($usta->file_laporan_revisi == null)
+                                                                        Belum ada
+                                                                    @elseif ($usta->file_laporan_revisi != null)
+                                                                        <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $usta->file_laporan_revisi }}"
+                                                                            target="_blank"> File Laporan</a>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="info-box">
-                                                        <form action="{{ url('simpan_draft_prakerin') }}" method="post"
-                                                            enctype="multipart/form-data">
-                                                            {{ csrf_field() }}
-                                                            <input type="hidden" name="id_settingrelasi_prausta"
-                                                                value="{{ $usta->id_settingrelasi_prausta }}">
-                                                            <div class="form-group">
+                                                    @if ($usta->validasi_baak == 'BELUM')
+                                                        <div class="col-md-4">
+                                                            <div class="info-box">
+                                                                <form action="{{ url('simpan_draft_prakerin') }}"
+                                                                    method="post" enctype="multipart/form-data">
+                                                                    {{ csrf_field() }}
+                                                                    <input type="hidden" name="id_settingrelasi_prausta"
+                                                                        value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                    <div class="form-group">
 
-                                                                <input type="file" name="file_laporan_revisi"
-                                                                    class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
-                                                                <button type="submit"
-                                                                    class="btn btn-info">Simpan</button>
+                                                                        <input type="file" name="file_laporan_revisi"
+                                                                            class="form-control">
+                                                                        <span>Format file pdf max. size 5mb</span> <br>
+                                                                        <button type="submit"
+                                                                            class="btn btn-info">Simpan</button>
+                                                                    </div>
+                                                                </form>
                                                             </div>
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md-4">
+                                                            <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                            </div>
+                                            @endif
                                         @endif
                                     @endif
                                 @elseif ($usta->acc_seminar_sidang == 'TOLAK')

@@ -894,6 +894,7 @@ class KaprodiController extends Controller
       ->where('id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->orderBy('student.nim', 'asc')
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')

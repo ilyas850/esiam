@@ -644,7 +644,8 @@ class PraustaController extends Controller
                     'prausta_setting_relasi.acc_judul_kaprodi',
                     'prausta_setting_relasi.validasi_pembimbing',
                     'prausta_setting_relasi.validasi_penguji_1',
-                    'prausta_setting_relasi.validasi_penguji_2'
+                    'prausta_setting_relasi.validasi_penguji_2',
+                    'prausta_setting_relasi.validasi_baak'
                 )
                 ->first();
 
@@ -1070,7 +1071,7 @@ class PraustaController extends Controller
                 //             return redirect('home');
                 //         } elseif ($cekdata_nilai->validasi_pembimbing == 'SUDAH' or $cekdata_nilai->validasi_penguji_1 == 'SUDAH' or $cekdata_nilai->validasi_penguji_2 == 'SUDAH') {
 
-                //data seminar proposal
+                //data sidang tugas akhir
                 $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                     ->leftJoin('prodi', (function ($join) {
                         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -1103,7 +1104,8 @@ class PraustaController extends Controller
                         'prausta_setting_relasi.judul_prausta',
                         'prausta_setting_relasi.tempat_prausta',
                         'prausta_setting_relasi.acc_judul_dospem',
-                        'prausta_setting_relasi.acc_judul_kaprodi'
+                        'prausta_setting_relasi.acc_judul_kaprodi',
+                        'prausta_setting_relasi.validasi_baak'
                     )
                     ->first();
 

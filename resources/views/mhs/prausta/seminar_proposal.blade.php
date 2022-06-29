@@ -473,24 +473,30 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
-                                                            method="post" enctype="multipart/form-data">
-                                                            {{ csrf_field() }}
-                                                            <input type="hidden" name="id_settingrelasi_prausta"
-                                                                value="{{ $data->id_settingrelasi_prausta }}">
-                                                            <div class="form-group">
+                                                @if ($data->validasi_baak == 'BELUM')
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                                method="post" enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $data->id_settingrelasi_prausta }}">
+                                                                <div class="form-group">
 
-                                                                <input type="file" name="file_draft_laporan"
-                                                                    class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
-                                                                <button type="submit"
-                                                                    class="btn btn-info">Simpan</button>
-                                                            </div>
-                                                        </form>
+                                                                    <input type="file" name="file_draft_laporan"
+                                                                        class="form-control">
+                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @else
+                                                    <div class="col-md-4">
+                                                        <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -576,26 +582,30 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if ($data->validasi_baak == 'BELUM')
+                                                <div class="col-md-4">
+                                                    <div class="info-box">
+                                                        <form action="{{ url('simpan_draft_sempro') }}" method="post"
+                                                            enctype="multipart/form-data">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                                value="{{ $data->id_settingrelasi_prausta }}">
+                                                            <div class="form-group">
 
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <form action="{{ url('simpan_draft_sempro') }}" method="post"
-                                                        enctype="multipart/form-data">
-                                                        {{ csrf_field() }}
-                                                        <input type="hidden" name="id_settingrelasi_prausta"
-                                                            value="{{ $data->id_settingrelasi_prausta }}">
-                                                        <div class="form-group">
-
-                                                            <input type="file" name="file_laporan_revisi"
-                                                                class="form-control">
-                                                            <span>Format file pdf max. size 5mb</span> <br>
-                                                            <button type="submit" class="btn btn-info">Simpan</button>
-
-
-                                                        </div>
-                                                    </form>
+                                                                <input type="file" name="file_laporan_revisi"
+                                                                    class="form-control">
+                                                                <span>Format file pdf max. size 5mb</span> <br>
+                                                                <button type="submit"
+                                                                    class="btn btn-info">Simpan</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                <div class="col-md-4">
+                                                    <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4 col-sm-6 col-xs-12">
