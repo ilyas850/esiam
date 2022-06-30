@@ -27,6 +27,7 @@ use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Exports\DataPrakerinExport;
 use App\Exports\DataTaExport;
+use App\Kaprodi;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use Illuminate\Http\Request;
@@ -1942,19 +1943,19 @@ class AdminPraustaController extends Controller
                 'student.nama',
                 'student.nim',
                 'prodi.prodi',
+                'prodi.id_prodi',
                 'kelas.kelas',
                 'angkatan.angkatan',
                 'prausta_trans_hasil.id_settingrelasi_prausta',
                 'prausta_setting_relasi.judul_prausta',
                 'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_trans_hasil.nilai_1',
                 'prausta_trans_hasil.nilai_2',
                 'prausta_trans_hasil.nilai_3',
                 'prausta_trans_hasil.nilai_huruf',
                 'dosen.nama as nama_dsn',
+                'dosen.nik',
                 'dosen.akademik'
             )
             ->first();
@@ -1962,7 +1963,15 @@ class AdminPraustaController extends Controller
         $nama = $data->nama;
         $nim = $data->nim;
         $kelas = $data->kelas;
+        $idprodi = $data->id_prodi;
 
+        $kaprodi = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+            ->where('kaprodi.id_prodi', $idprodi)
+            ->select('dosen.nama', 'dosen.nik', 'dosen.akademik')
+            ->first();
+        $nama_kaprodi = $kaprodi->nama;
+        $akademik_kaprodi = $kaprodi->akademik;
+        $nik_kaprodi = $kaprodi->nik;
 
         $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
         $cekhari = date('l', strtotime($data->tanggal_selesai));
@@ -2013,7 +2022,7 @@ class AdminPraustaController extends Controller
 
         $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 
-        $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil'))->setPaper('a4');
+        $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
         return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
     }
 

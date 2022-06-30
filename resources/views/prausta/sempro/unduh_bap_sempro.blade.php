@@ -6,7 +6,6 @@
     tr.b {
         line-height: 80px;
     }
-
 </style>
 
 <body>
@@ -31,18 +30,7 @@
             </td>
         </tr>
     </table>
-    <table width="100%">
-        <tr>
-            <td width="18%">Hari</td>
-            <td width="2%">: </td>
-            <td width="80%">{{ $hari }}</td>
-        </tr>
-        <tr>
-            <td>Tanggal</td>
-            <td>: </td>
-            <td>{{ $tglhasil }}</td>
-        </tr>
-    </table>
+
     <table width="100%">
         <tr>
             <td>
@@ -99,7 +87,7 @@
 
         <tr>
             <td>Nilai Akhir Angka (rata-rata)</td>
-            <td align="center">{{ round (($data->nilai_1 + $data->nilai_2 + $data->nilai_3) / 3, 2) }}</td>
+            <td align="center">{{ round(($data->nilai_1 + $data->nilai_2 + $data->nilai_3) / 3, 2) }}</td>
         </tr>
         <tr>
             <td>Nilai Huruf</td>
@@ -158,14 +146,14 @@
                 <table width="100%">
                     <tr>
                         <td width="80%" align=left style="font-size:85%"><span>Cikarang,
-                                .................................</span>
+                                {{ $tglhasil }}</span>
                         </td>
                     </tr>
                 </table>
                 <table width="100%">
                     <tr>
 
-                        <td width="80%" align=left style="font-size:85%"><span>Ketua Sidang</span></td>
+                        <td width="80%" align=left style="font-size:85%"><span>Dosen Pembimbing</span></td>
                     </tr>
                 </table>
                 <br><br><br><br><br>

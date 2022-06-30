@@ -232,14 +232,14 @@
                 <table width="100%">
                     <tr>
                         <td width="80%" align=left style="font-size:85%"><span>Cikarang,
-                                .................................</span>
+                                {{ $tglhasil }}</span>
                         </td>
                     </tr>
                 </table>
                 <table width="100%">
                     <tr>
 
-                        <td width="80%" align=left style="font-size:85%"><span>Ketua Sidang</span></td>
+                        <td width="80%" align=left style="font-size:85%"><span>Dosen Pembimbing</span></td>
                     </tr>
                 </table>
                 <br><br><br><br><br>
