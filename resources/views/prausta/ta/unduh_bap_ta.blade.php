@@ -6,7 +6,6 @@
     tr.b {
         line-height: 80px;
     }
-
 </style>
 
 <body>
@@ -199,7 +198,7 @@
                     </tr>
                     <tr>
                         <td align=center style="font-size:70%">B+</td>
-                        <td align=center style="font-size:70%">70 - 79</td>
+                        <td align=center style="font-size:70%">75 - 79</td>
                         <td align=center style="font-size:70%">Lulus</td>
                     </tr>
                     <tr>
