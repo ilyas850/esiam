@@ -957,6 +957,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('bap_ta', 'AdminPraustaController@bap_ta');
 
     //download BAP prausta
+    Route::post('download_bap_prakerin', 'AdminPraustaController@download_bap_prakerin');
     Route::post('download_bap_sempro', 'AdminPraustaController@download_bap_sempro');
     Route::post('download_bap_ta', 'AdminPraustaController@download_bap_ta');
 
@@ -998,6 +999,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('filter_nilai_sempro_use_prodi', 'AdminPraustaController@filter_nilai_sempro_use_prodi');
     Route::post('filter_nilai_ta_use_prodi', 'AdminPraustaController@filter_nilai_ta_use_prodi');
 
+    Route::post('filter_bap_prakerin_use_prodi', 'AdminPraustaController@filter_bap_prakerin_use_prodi');
     Route::post('filter_bap_sempro_use_prodi', 'AdminPraustaController@filter_bap_sempro_use_prodi');
     Route::post('filter_bap_ta_use_prodi', 'AdminPraustaController@filter_bap_ta_use_prodi');
 

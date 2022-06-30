@@ -26,7 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h4><b>BERITA ACARA SEMINAR PROPOSAL PENELITIAN MAHASISWA</b></h4>
+                    <h4><b>BERITA ACARA SEMINAR PRAKERIN PENELITIAN MAHASISWA</b></h4>
                 </center>
             </td>
         </tr>
@@ -124,7 +124,7 @@
                     </tr>
                     <tr>
                         <td align=center style="font-size:70%">B+</td>
-                        <td align=center style="font-size:70%">75 - 79</td>
+                        <td align=center style="font-size:70%">70 - 79</td>
                         <td align=center style="font-size:70%">Lulus</td>
                     </tr>
                     <tr>
