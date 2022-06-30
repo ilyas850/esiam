@@ -35,12 +35,6 @@
                 </table>
             </div>
             <div class="box-body">
-                <form action="{{ url('download_bimbingan_sempro') }}" method="post">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="id_settingrelasi_prausta" value="{{ $mhs->id_settingrelasi_prausta }}">
-                    <button class="btn btn-danger">Download PDF</button>
-                </form>
-                <br>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>

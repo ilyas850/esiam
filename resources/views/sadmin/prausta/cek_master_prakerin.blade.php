@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Bimbingan Sempro Mahasiswa</h3>
+                <h3 class="box-title">Data Bimbingan Prakerin Mahasiswa</h3>
                 <br><br>
                 <table width="100%">
                     <tr>
@@ -35,12 +35,7 @@
                 </table>
             </div>
             <div class="box-body">
-                <form action="{{ url('download_bimbingan_sempro') }}" method="post">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="id_settingrelasi_prausta" value="{{ $mhs->id_settingrelasi_prausta }}">
-                    <button class="btn btn-danger">Download PDF</button>
-                </form>
-                <br>
+                
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -91,7 +86,7 @@
                                 <td>
                                     @if ($key->file_bimbingan == null)
                                     @elseif ($key->file_bimbingan != null)
-                                        <a href="/File Bimbingan SEMPRO/{{ $key->idstudent }}/{{ $key->file_bimbingan }}"
+                                        <a href="/File Bimbingan PKL/{{ $key->idstudent }}/{{ $key->file_bimbingan }}"
                                             target="_blank"> File bimbingan</a>
                                     @endif
                                 </td>
@@ -122,7 +117,7 @@
 
         <div class="box box-success">
             <div class="box-header">
-                <h3 class="box-title">Draft & Laporan Akhir Sempro Mahasiswa</h3>
+                <h3 class="box-title">Draft & Laporan Akhir Prakerin Mahasiswa</h3>
             </div>
         </div>
         <div class="row">
@@ -131,7 +126,7 @@
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Draft Laporan Sempro</span>
+                        <span class="info-box-text">Draft Laporan Prakerin</span>
                         <span class="info-box-number">
                             @if ($mhs->file_draft_laporan == null)
                                 Belum ada
@@ -151,7 +146,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Laporan Akhir Sempro</span>
+                        <span class="info-box-text">Laporan Akhir Prakerin</span>
                         <span class="info-box-number">
                             @if ($mhs->file_laporan_revisi == null)
                                 Belum ada
@@ -169,5 +164,6 @@
                 </div>
             </div>
         </div>
+
     </section>
 @endsection

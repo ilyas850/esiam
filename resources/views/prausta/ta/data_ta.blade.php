@@ -44,7 +44,7 @@
                                 <center>Jam</center>
                             </th>
                             <th rowspan="2" style="font-size:85%">
-                                <center>Acc. Sempro</center>
+                                <center>Acc. Sidang</center>
                             </th>
                             <th rowspan="2" style="font-size:85%">Aksi</th>
                             <th rowspan="2" style="font-size:85%">Status</th>

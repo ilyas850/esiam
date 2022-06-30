@@ -57,6 +57,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('bap_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
+                        Prakerin</span></a></li>
             <li><a href="{{ url('bap_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('bap_ta') }}"><i class="fa fa-circle-o"></i> <span>

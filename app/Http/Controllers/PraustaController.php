@@ -1422,4 +1422,121 @@ class PraustaController extends Controller
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect('sidang_ta');
     }
+
+    public function download_bimbingan_prakerin_mhs($id)
+    {
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'dosen.akademik'
+            )
+            ->first();
+
+        $nama = $mhs->nama;
+        $nim = $mhs->nim;
+        $kelas = $mhs->kelas;
+
+        $data = Prausta_trans_bimbingan::where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)->get();
+
+        $pdf = PDF::loadView('prausta/prakerin/unduh_bim_prakerin', compact('mhs', 'data'))->setPaper('a4');
+        return $pdf->download('Kartu Bimbingan Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+
+    public function download_bimbingan_sempro_mhs($id)
+    {
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.id_dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2'
+            )
+            ->first();
+
+        $nama = $mhs->nama;
+        $nim = $mhs->nim;
+        $kelas = $mhs->kelas;
+
+        $dospem = Dosen::where('iddosen', $mhs->id_dosen_pembimbing)->first();
+
+        $dospeng1 = Dosen::where('iddosen', $mhs->id_dosen_penguji_1)->first();
+
+        $dospeng2 = Dosen::where('iddosen', $mhs->id_dosen_penguji_2)->first();
+
+        $data = Prausta_trans_bimbingan::where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)->get();
+
+        $pdf = PDF::loadView('prausta/sempro/unduh_bim_sempro', compact('mhs', 'data', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
+        return $pdf->download('Kartu Bimbingan Sempro' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+
+    public function download_bimbingan_ta_mhs($id)
+    {
+        $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.id_dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2'
+            )
+            ->first();
+
+        $nama = $mhs->nama;
+        $nim = $mhs->nim;
+        $kelas = $mhs->kelas;
+
+        $dospem = Dosen::where('iddosen', $mhs->id_dosen_pembimbing)->first();
+
+        $dospeng1 = Dosen::where('iddosen', $mhs->id_dosen_penguji_1)->first();
+
+        $dospeng2 = Dosen::where('iddosen', $mhs->id_dosen_penguji_2)->first();
+
+        $data = Prausta_trans_bimbingan::where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)->get();
+
+        $pdf = PDF::loadView('prausta/ta/unduh_bim_ta', compact('mhs', 'data', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
+        return $pdf->download('Kartu Bimbingan TA' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
 }

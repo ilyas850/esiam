@@ -44,21 +44,43 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Bimbingan</th>
-                            <th>Uraian Bimbingan</th>
-                            <th>Validasi</th>
-                            <th>File</th>
+                            <th>
+                                <center> No</center>
+                            </th>
+                            <th>
+                                <center>Tanggal Bimbingan </center>
+                            </th>
+                            <th>
+                                <center>Uraian Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Komentar</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                            <th>
+                                <center>File</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($data as $key)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $key->tanggal_bimbingan }}</td>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
-                                <td>
+                                <td align="center">
+                                    @if ($key->komentar_bimbingan == null)
+                                        <span class="badge bg-yellow">BELUM</span>
+                                    @else
+                                        <a class="btn btn-success btn-xs" data-toggle="modal"
+                                            data-target="#modalKomentar{{ $key->id_transbimb_prausta }}">
+                                            <i class="fa fa-eye "></i> Lihat</a>
+                                    @endif
+                                </td>
+                                <td align="center">
                                     @if ($key->validasi == 'BELUM')
                                         <span class="badge bg-warning">Belum</span>
                                     @elseif ($key->validasi == 'SUDAH')
@@ -74,6 +96,24 @@
                                     @endif
                                 </td>
                             </tr>
+                            <div class="modal fade" id="modalKomentar{{ $key->id_transbimb_prausta }}" tabindex="-1"
+                                aria-labelledby="modalKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar Bimbingan</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" cols="20" rows="10" readonly> {{ $key->komentar_bimbingan }} </textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Tutup</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

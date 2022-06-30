@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">Data Mahasiswa PraUSTA Politeknik META Industri</h3>
+                <h3 class="box-title">PRAUSTA Master Kode</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -21,16 +21,25 @@
                                 <center>Prodi</center>
                             </th>
                             <th>
-                                <center>Kelas</center>
+                                <center>Kode Prausta</center>
                             </th>
                             <th>
-                                <center>NIM</center>
+                                <center>Nama Prausta</center>
                             </th>
                             <th>
-                                <center>Nama</center>
+                                <center>Tipe Prausta</center>
                             </th>
                             <th>
-                                <center>Kode Matkul</center>
+                                <center>SKS Prausta</center>
+                            </th>
+                            <th>
+                                <center>Min. Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Transkrip Nilai</center>
+                            </th>
+                            <th>
+                                <center>Batas Waktu</center>
                             </th>
                         </tr>
                     </thead>
@@ -42,15 +51,18 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>{{ $key->prodi }}</td>
-                                <td>{{ $key->kelas }}</td>
-                                <td>{{ $key->nim }}</td>
-                                <td>{{ $key->nama }}</td>
-                                <td>{{ $key->makul }}</td>
+                                <td align="center">{{ $key->kode_prausta }}</td>
+                                <td>{{ $key->nama_prausta }}</td>
+                                <td align="center">{{ $key->tipe_prausta }}</td>
+                                <td align="center">{{ $key->sks_prausta }} sks</td>
+                                <td align="center">{{ $key->min_bimbingan }} kali</td>
+                                <td align="center">{{ $key->transkrip_nilai }}</td>
+                                <td align="center">{{ $key->batas_waktu }} hari</td>
                             </tr>
                         @endforeach
-
                     </tbody>
                 </table>
+
             </div>
         </div>
     </section>

@@ -50,7 +50,7 @@
     </li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-th"></i> <span>Master Dosen</span>
+            <i class="fa fa-th"></i> <span>Master Struktural</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -155,6 +155,9 @@
             <li><a href="/master_penilaianprausta"><i class="fa fa-circle-o"></i> Penilaian PraUSTA</a></li>
             <li><a href="{{ url('data_prausta') }}"><i class="fa fa-circle-o"></i> Mahasiswa PraUSTA</a>
             </li>
+            <li><a href="/master_prakerin"><i class="fa fa-circle-o"></i> Data PKL</a></li>
+            <li><a href="/master_sempro"><i class="fa fa-circle-o"></i> Data SEMPRO</a></li>
+            <li><a href="/master_ta"><i class="fa fa-circle-o"></i> Data TA</a></li>
         </ul>
     </li>
     <li class="treeview">

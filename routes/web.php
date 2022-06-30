@@ -28,6 +28,24 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::put('put_penilaian_prausta/{id}', 'SadminController@put_penilaian_prausta');
     Route::post('hapus_penilaian_prausta', 'SadminController@hapus_penilaian_prausta');
 
+    //master kode prausta
+    Route::get('master_kodeprausta', 'SadminController@master_kodeprausta');
+
+    //master kategori prausta
+    Route::get('master_kategoriprausta', 'SadminController@master_kategoriprausta');
+
+    //master pkl
+    Route::get('master_prakerin', 'SadminController@master_prakerin');
+    Route::get('cek_master_prakerin/{id}', 'SadminController@cek_master_prakerin');
+
+    //master sempro
+    Route::get('master_sempro', 'SadminController@master_sempro');
+    Route::get('cek_master_sempro/{id}', 'SadminController@cek_master_sempro');
+
+    //master ta
+    Route::get('master_ta', 'SadminController@master_ta');
+    Route::get('cek_master_ta/{id}', 'SadminController@cek_master_ta');
+
     //master kategori kuisioner
     Route::get('master_kategorikuisioner', 'SadminController@master_kategorikuisioner');
     Route::post('simpan_kategori_kuisioner', 'SadminController@simpan_kategori_kuisioner');
@@ -487,6 +505,11 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('wisuda', 'MhsController@wisuda');
     Route::post('save_wisuda', 'MhsController@save_wisuda');
     Route::put('put_wisuda/{id}', 'MhsController@put_wisuda');
+
+    //download record bimbingan
+    Route::get('download_bimbingan_prakerin_mhs/{id}', 'PraustaController@download_bimbingan_prakerin_mhs');
+    Route::get('download_bimbingan_sempro_mhs/{id}', 'PraustaController@download_bimbingan_sempro_mhs');
+    Route::get('download_bimbingan_ta_mhs/{id}', 'PraustaController@download_bimbingan_ta_mhs');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -929,6 +952,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('download_bimbingan_ta', 'AdminPraustaController@download_bimbingan_ta');
 
     //berita acara prausta
+    Route::get('bap_prakerin', 'AdminPraustaController@bap_prakerin');
     Route::get('bap_sempro', 'AdminPraustaController@bap_sempro');
     Route::get('bap_ta', 'AdminPraustaController@bap_ta');
 

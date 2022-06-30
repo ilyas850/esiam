@@ -524,10 +524,12 @@ class AdminPraustaController extends Controller
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
             ->select(
+                'prausta_trans_bimbingan.id_transbimb_prausta',
                 'prausta_trans_bimbingan.tanggal_bimbingan',
                 'prausta_trans_bimbingan.file_bimbingan',
                 'prausta_trans_bimbingan.remark_bimbingan',
                 'prausta_trans_bimbingan.validasi',
+                'prausta_trans_bimbingan.komentar_bimbingan',
                 'student.idstudent'
             )
             ->get();
@@ -642,10 +644,12 @@ class AdminPraustaController extends Controller
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
             ->select(
+                'prausta_trans_bimbingan.id_transbimb_prausta',
                 'prausta_trans_bimbingan.tanggal_bimbingan',
                 'prausta_trans_bimbingan.file_bimbingan',
                 'prausta_trans_bimbingan.remark_bimbingan',
                 'prausta_trans_bimbingan.validasi',
+                'prausta_trans_bimbingan.komentar_bimbingan',
                 'student.idstudent'
             )
             ->get();
@@ -760,10 +764,12 @@ class AdminPraustaController extends Controller
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $id)
             ->select(
+                'prausta_trans_bimbingan.id_transbimb_prausta',
                 'prausta_trans_bimbingan.tanggal_bimbingan',
                 'prausta_trans_bimbingan.file_bimbingan',
                 'prausta_trans_bimbingan.remark_bimbingan',
                 'prausta_trans_bimbingan.validasi',
+                'prausta_trans_bimbingan.komentar_bimbingan',
                 'student.idstudent'
             )
             ->get();
@@ -1856,6 +1862,11 @@ class AdminPraustaController extends Controller
 
         $pdf = PDF::loadView('prausta/ta/unduh_bim_ta', compact('mhs', 'data', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
         return $pdf->download('Kartu Bimbingan TA' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+
+    public function bap_prakerin()
+    {
+        # code...
     }
 
     public function bap_sempro()

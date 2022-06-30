@@ -253,6 +253,9 @@
                                         </div>
                                         <div class="box-body">
                                             <table id="example1" class="table table-bordered table-striped">
+                                                <a href="/download_bimbingan_ta_mhs/{{ $data->id_settingrelasi_prausta }}"
+                                                    class="btn btn-danger">Download PDF</a>
+                                                <br><br>
                                                 <thead>
                                                     <tr>
                                                         <th>No</th>

@@ -255,14 +255,36 @@
                                         <div class="box-body">
 
                                             <table id="example1" class="table table-bordered table-striped">
+                                                <a href="/download_bimbingan_prakerin_mhs/{{ $usta->id_settingrelasi_prausta }}"
+                                                    class="btn btn-danger">Download PDF</a>
+                                                {{-- <form action="{{ url('download_bimbingan_prakerin_mhs') }}"
+                                                    method="post">
+                                                    {{ csrf_field() }}
+                                                    <input type="hidden" name="id_settingrelasi_prausta"
+                                                        value="{{ $usta->id_settingrelasi_prausta }}">
+                                                    <button class="btn btn-danger">Download PDF</button>
+                                                </form> --}}
+                                                <br><br>
                                                 <thead>
                                                     <tr>
-                                                        <th>No</th>
-                                                        <th>Tanggal Bimbingan</th>
-                                                        <th>Uraian Bimbingan</th>
-                                                        <th>Komentar Bimbingan</th>
-                                                        <th>Validasi</th>
-                                                        <th>File</th>
+                                                        <th>
+                                                            <center>No</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Tanggal Bimbingan</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Uraian Bimbingan</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Komentar Bimbingan</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Validasi</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>File</center>
+                                                        </th>
                                                         <th>
                                                             <center>Aksi</center>
                                                         </th>
@@ -272,8 +294,8 @@
                                                     <?php $no = 1; ?>
                                                     @foreach ($bim as $key)
                                                         <tr>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $key->tanggal_bimbingan }}</td>
+                                                            <td align="center">{{ $no++ }}</td>
+                                                            <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                                             <td>{{ $key->remark_bimbingan }}</td>
                                                             <td>
                                                                 <center>
@@ -287,14 +309,14 @@
                                                                     @endif
                                                                 </center>
                                                             </td>
-                                                            <td>
+                                                            <td align="center">
                                                                 @if ($key->validasi == 'BELUM')
                                                                     <span class="badge bg-yellow">BELUM</span>
                                                                 @elseif($key->validasi == 'SUDAH')
                                                                     <span class="badge bg-blue">Sudah</span>
                                                                 @endif
                                                             </td>
-                                                            <td>
+                                                            <td align="center">
                                                                 @if ($key->file_bimbingan == null)
                                                                 @elseif ($key->file_bimbingan != null)
                                                                     <a href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
