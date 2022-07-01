@@ -238,7 +238,6 @@
                 </table>
                 <table width="100%">
                     <tr>
-
                         <td width="80%" align=left style="font-size:85%"><span>Dosen Pembimbing</span></td>
                     </tr>
                 </table>
