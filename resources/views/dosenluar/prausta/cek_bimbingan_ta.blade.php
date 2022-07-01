@@ -228,7 +228,7 @@
                                 Belum ada
                             @elseif ($jdl->file_plagiarisme != null)
                                 <a href="/File Plagiarisme/{{ $jdl->idstudent }}/{{ $jdl->file_plagiarisme }}"
-                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                                    target="_blank" style="font: white"> File Plagiarisme</a>
                             @endif
                         </span>
                         <div class="progress">
