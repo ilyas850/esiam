@@ -177,11 +177,11 @@
     <br><br><br><br><br>
     <table width="100%">
         <tr>
-            <td width="60%" align=left style="font-size:85%"><span>({{ $nama_kaprodi }},
-                    {{ $akademik_kaprodi }})</span>
+            <td width="60%" align=left style="font-size:85%"><span>{{ $nama_kaprodi }},
+                    {{ $akademik_kaprodi }}</span>
             </td>
-            <td width="40%" align=left style="font-size:85%"><span>({{ $data->nama_dsn }},
-                    {{ $data->akademik }})</span>
+            <td width="40%" align=left style="font-size:85%"><span>{{ $data->nama_dsn }},
+                    {{ $data->akademik }}</span>
             </td>
         </tr>
         <tr>
