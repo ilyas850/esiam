@@ -46,7 +46,7 @@
         <tr>
             <td width="18%">Dosen Pembimbing</td>
             <td width="2%">: </td>
-            <td width="80%">{{ $data->dosen_pembimbing }}</td>
+            <td width="80%">{{ $data->dosen_pembimbing }}, {{ $data->akademik }}</td>
         </tr>
 
         <tr>
