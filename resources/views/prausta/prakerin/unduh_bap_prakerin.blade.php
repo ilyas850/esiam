@@ -67,7 +67,7 @@
                 <p align="justify">
                     Pada tanggal {{ $tglhasil }}, telah diselenggarakan Seminar PKL terhadap mahasiswa Politeknik
                     META Industri
-                    Cikarang. Berdasarkan kebutuhan penilaian terhadap mahasiswa, maka dilakukan seminar laporan PKL.
+                    Cikarang. Berdasarkan kebutuhan penilaian terhadap mahasiswa, maka dilakukan Seminar PKL.
                     Adapun keterangan hasil penilaian seminar PKL, sebagai berikut:
                 </p>
             </td>
@@ -80,7 +80,7 @@
     </table>
     <table width="100%" border="1">
         <tr>
-            <td rowspan="2">Parameter Penilaian</td>
+            <td rowspan="2" align="center">Parameter Penilaian</td>
             <td colspan="3" align="center">Nilai</td>
         </tr>
         <tr>
@@ -95,7 +95,7 @@
             <td align="center">{{ $data->nilai_3 }}</td>
         </tr>
         <tr height="10px">
-            <td align="center">Nilai Akhir Angka (rata-rata)</td>
+            <td align="center">Nilai Akhir Angka <br> (rata-rata)</td>
             <td colspan="3" align="center">{{ round(($data->nilai_1 + $data->nilai_2 + $data->nilai_3) / 3, 2) }}
             </td>
 
@@ -175,7 +175,7 @@
             <td width="40%" align=left style="font-size:85%"><span>Dosen Pembimbing</span></td>
         </tr>
     </table>
-    <br><br><br><br><br>
+    <br><br><br><br>
     <table width="100%">
         <tr>
             <td width="60%" align=left style="font-size:85%"><span>{{ $nama_kaprodi }},
@@ -186,9 +186,9 @@
             </td>
         </tr>
         <tr>
-            <td width="60%" align=left style="font-size:85%"><span>NIP : {{ $nik_kaprodi }}</span>
+            <td width="60%" align=left style="font-size:85%"><span>NIK : {{ $nik_kaprodi }}</span>
             </td>
-            <td width="40%" align=left style="font-size:85%"><span>NIP : {{ $data->nik }}</span>
+            <td width="40%" align=left style="font-size:85%"><span>NIK : {{ $data->nik }}</span>
             </td>
         </tr>
     </table>
