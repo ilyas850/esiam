@@ -48,15 +48,16 @@
             <td width="2%">: </td>
             <td width="80%">{{ $data->dosen_pembimbing }}</td>
         </tr>
-        <tr>
-            <td width="18%">Pembimbing Lapangan</td>
-            <td width="2%">: </td>
-            <td width="80%"></td>
-        </tr>
+
         <tr>
             <td>Judul Laporan PKL </td>
             <td> : </td>
             <td>{{ $data->judul_prausta }}</td>
+        </tr>
+        <tr>
+            <td width="18%">Tempat PKL</td>
+            <td width="2%">: </td>
+            <td width="80%">{{ $data->tempat_prausta }}</td>
         </tr>
     </table>
     <br>

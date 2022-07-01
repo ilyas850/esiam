@@ -1948,6 +1948,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_trans_hasil.id_settingrelasi_prausta',
                 'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_trans_hasil.nilai_1',
