@@ -3737,7 +3737,8 @@ class DosenluarController extends Controller
                 'prausta_setting_relasi.judul_prausta',
                 'prausta_setting_relasi.tempat_prausta',
                 'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.file_plagiarisme'
             )
             ->first();
 

@@ -217,6 +217,25 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">File Plagiarisme</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_plagiarisme == null)
+                                Belum ada
+                            @elseif ($jdl->file_plagiarisme != null)
+                                <a href="/File Plagiarisme/{{ $jdl->idstudent }}/{{ $jdl->file_plagiarisme }}"
+                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                            @endif
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 @endsection

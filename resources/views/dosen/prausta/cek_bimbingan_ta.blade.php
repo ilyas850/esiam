@@ -44,7 +44,8 @@
                 <div class="row">
                     <form class="" action="{{ url('status_judul') }}" method="post">
                         {{ csrf_field() }}
-                        <input type="hidden" name="id_settingrelasi_prausta" value="{{ $jdl->id_settingrelasi_prausta }}">
+                        <input type="hidden" name="id_settingrelasi_prausta"
+                            value="{{ $jdl->id_settingrelasi_prausta }}">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Judul Tugas Akhir</label>
@@ -137,8 +138,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
-                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20" rows="10"> {{ $key->komentar_bimbingan }} </textarea>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>
@@ -209,6 +209,25 @@
                                 Belum ada
                             @elseif ($jdl->file_laporan_revisi != null)
                                 <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
+                                    target="_blank" style="font: white"> File Laporan Akhir</a>
+                            @endif
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box">
+                    <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">File Plagiarisme</span>
+                        <span class="info-box-number">
+                            @if ($jdl->file_plagiarisme == null)
+                                Belum ada
+                            @elseif ($jdl->file_plagiarisme != null)
+                                <a href="/File Plagiarisme/{{ $jdl->idstudent }}/{{ $jdl->file_plagiarisme }}"
                                     target="_blank" style="font: white"> File Laporan Akhir</a>
                             @endif
                         </span>
