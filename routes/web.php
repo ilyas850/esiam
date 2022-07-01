@@ -358,6 +358,9 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('upload_soal_dsn_dlm', 'DosenController@upload_soal_dsn_dlm');
     Route::post('simpan_soal_uts_dsn_dlm', 'DosenController@simpan_soal_uts_dsn_dlm');
     Route::post('simpan_soal_uas_dsn_dlm', 'DosenController@simpan_soal_uas_dsn_dlm');
+
+    //record pembayaran
+    Route::get('record_pembayaran_mhs/{id}', 'DosenController@record_pembayaran_mhs');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -454,6 +457,9 @@ Route::group(['middleware' => 'mhs'], function () {
 
     //upload draft prakerin
     Route::post('simpan_draft_ta', 'PraustaController@simpan_draft_ta');
+
+    //upload file plagiarisme
+    Route::post('simpan_file_plagiarisme', 'PraustaController@simpan_file_plagiarisme');
 
     //update nisn
     Route::put('put_nisn/{id}', 'MhsController@put_nisn');

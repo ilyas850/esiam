@@ -4887,4 +4887,9 @@ class DosenController extends Controller
         Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
         return redirect()->back();
     }
+
+    public function record_pembayaran_mhs($id)
+    {
+        dd($id);
+    }
 }

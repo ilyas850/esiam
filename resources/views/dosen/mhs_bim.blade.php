@@ -85,8 +85,11 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a class="btn btn-info btn-xs" href="/record_nilai/{{ $key->idstudent }}">Cek
-                                            Nilai</a>
+                                        <a class="btn btn-info btn-xs" href="/record_nilai/{{ $key->idstudent }}"> <i
+                                                class="fa fa-list" title="Klik untuk cek nilai"></i></a>
+                                        <a class="btn btn-success btn-xs"
+                                            href="/record_pembayaran_mhs/{{ $key->idstudent }}"><i
+                                            class="fa fa-money" title="Klik untuk cek pembayaran"></i></a>
                                     </center>
                                 </td>
                             </tr>

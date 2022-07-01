@@ -1105,7 +1105,8 @@ class PraustaController extends Controller
                         'prausta_setting_relasi.tempat_prausta',
                         'prausta_setting_relasi.acc_judul_dospem',
                         'prausta_setting_relasi.acc_judul_kaprodi',
-                        'prausta_setting_relasi.validasi_baak'
+                        'prausta_setting_relasi.validasi_baak',
+                        'prausta_setting_relasi.file_plagiarisme'
                     )
                     ->first();
 
@@ -1414,6 +1415,41 @@ class PraustaController extends Controller
                 $tujuan_upload = 'File Laporan Revisi/' . Auth::user()->id_user;
                 $file->move($tujuan_upload, $nama_file);
                 $bap->file_laporan_revisi = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect('sidang_ta');
+    }
+
+    public function simpan_file_plagiarisme(Request $request)
+    {
+        $this->validate($request, [
+            'file_plagiarisme' => 'mimes:pdf|max:5000',
+        ]);
+
+        $id = $request->id_settingrelasi_prausta;
+
+        $bap = Prausta_setting_relasi::find($id);
+
+        if ($bap->file_plagiarisme) {
+            if ($request->hasFile('file_plagiarisme')) {
+                File::delete('File Plagiarisme/' . Auth::user()->id_user . '/' . $bap->file_plagiarisme);
+                $file = $request->file('file_plagiarisme');
+                $nama_file = 'File Plagiarisme' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Plagiarisme/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_plagiarisme = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_plagiarisme')) {
+                $file = $request->file('file_plagiarisme');
+                $nama_file = 'File Plagiarisme' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Plagiarisme/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_plagiarisme = $nama_file;
             }
         }
 
