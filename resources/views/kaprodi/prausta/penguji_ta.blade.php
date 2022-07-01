@@ -61,6 +61,9 @@
                                 <center>Laporan</center>
                             </th>
                             <th>
+                                <center>Plagiarisme</center>
+                            </th>
+                            <th>
                                 <center>Penilaian</center>
                             </th>
                         </tr>
@@ -107,6 +110,14 @@
                                         belum
                                     @else
                                         <a href="/File Laporan Revisi/{{ $key->id_student }}/{{ $key->file_laporan_revisi }}"
+                                            target="_blank"> File</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($key->file_plagiarisme == null)
+                                        belum
+                                    @else
+                                        <a href="/File Plagiarisme/{{ $key->id_student }}/{{ $key->file_plagiarisme }}"
                                             target="_blank"> File</a>
                                     @endif
                                 </td>

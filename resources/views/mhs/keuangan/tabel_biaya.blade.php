@@ -140,7 +140,6 @@
                                         @endif
                                     </center>
                                 </td>
-
                                 <td align="right">
                                     @if ($item->item == 'Pendaftaran')
                                         @currency ($biaya->daftar - ($biaya->daftar * $cb->daftar) / 100)

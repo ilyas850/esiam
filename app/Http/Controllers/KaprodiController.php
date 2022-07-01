@@ -4718,7 +4718,8 @@ class KaprodiController extends Controller
         'prausta_trans_hasil.validasi',
         'prausta_setting_relasi.file_draft_laporan',
         'prausta_setting_relasi.file_laporan_revisi',
-        'prausta_setting_relasi.id_student'
+        'prausta_setting_relasi.id_student',
+        'prausta_setting_relasi.file_plagiarisme'
       )
       ->get();
 

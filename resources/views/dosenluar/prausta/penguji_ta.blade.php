@@ -55,7 +55,16 @@
                                 <center>Nilai Huruf</center>
                             </th>
                             <th>
-                                <center>Aksi</center>
+                                <center>Draft</center>
+                            </th>
+                            <th>
+                                <center>Laporan</center>
+                            </th>
+                            <th>
+                                <center>Plagiarisme</center>
+                            </th>
+                            <th>
+                                <center>Penilaian</center>
                             </th>
                         </tr>
                     </thead>
@@ -87,6 +96,30 @@
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>
+                                </td>
+                                <td>
+                                    @if ($key->file_draft_laporan == null)
+                                        belum
+                                    @else
+                                        <a href="/File Draft Laporan/{{ $key->id_student }}/{{ $key->file_draft_laporan }}"
+                                            target="_blank"> File</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($key->file_laporan_revisi == null)
+                                        belum
+                                    @else
+                                        <a href="/File Laporan Revisi/{{ $key->id_student }}/{{ $key->file_laporan_revisi }}"
+                                            target="_blank"> File</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($key->file_plagiarisme == null)
+                                        belum
+                                    @else
+                                        <a href="/File Plagiarisme/{{ $key->id_student }}/{{ $key->file_plagiarisme }}"
+                                            target="_blank"> File</a>
+                                    @endif
                                 </td>
                                 <td>
                                     <center>
