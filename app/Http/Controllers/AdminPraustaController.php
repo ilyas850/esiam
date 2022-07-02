@@ -2113,6 +2113,9 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.dosen_penguji_1',
                 'prausta_setting_relasi.dosen_penguji_2',
                 'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.id_dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2',
                 'prausta_trans_hasil.nilai_1',
                 'prausta_trans_hasil.nilai_2',
                 'prausta_trans_hasil.nilai_3',
@@ -2176,7 +2179,13 @@ class AdminPraustaController extends Controller
 
         $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 
-        $pdf = PDF::loadView('prausta/sempro/unduh_bap_sempro', compact('data', 'hari', 'tglhasil'))->setPaper('a4');
+        $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
+
+        $dospeng1 = Dosen::where('iddosen', $data->id_dosen_penguji_1)->first();
+
+        $dospeng2 = Dosen::where('iddosen', $data->id_dosen_penguji_2)->first();
+
+        $pdf = PDF::loadView('prausta/sempro/unduh_bap_sempro', compact('data', 'hari', 'tglhasil', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
         return $pdf->download('BAP Sempro' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
     }
 

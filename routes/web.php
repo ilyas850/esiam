@@ -361,6 +361,11 @@ Route::group(['middleware' => 'dosen'], function () {
 
     //record pembayaran
     Route::get('record_pembayaran_mhs/{id}', 'DosenController@record_pembayaran_mhs');
+
+    //download BAP prausta
+    Route::get('download_bap_pkl_dsn_dlm/{id}', 'DosenController@download_bap_pkl_dsn_dlm');
+    Route::get('download_bap_sempro_dsn_dlm/{id}', 'DosenController@download_bap_sempro_dsn_dlm');
+    Route::get('download_bap_ta_dsn_dlm/{id}', 'DosenController@download_bap_ta_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -639,6 +644,11 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('upload_soal_dsn_luar', 'DosenluarController@upload_soal_dsn_luar');
     Route::post('simpan_soal_uts_dsn_luar', 'DosenluarController@simpan_soal_uts_dsn_luar');
     Route::post('simpan_soal_uas_dsn_luar', 'DosenluarController@simpan_soal_uas_dsn_luar');
+
+    //download BAP prausta
+    Route::get('download_bap_pkl_dsn_luar/{id}', 'DosenluarController@download_bap_pkl_dsn_luar');
+    Route::get('download_bap_sempro_dsn_luar/{id}', 'DosenluarController@download_bap_sempro_dsn_luar');
+    Route::get('download_bap_ta_dsn_luar/{id}', 'DosenluarController@download_bap_ta_dsn_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -845,6 +855,14 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('open_setting_kurikulum_kprd/{id}', 'KaprodiController@open_setting_kurikulum_kprd');
     Route::get('validate_setting_kurikulum_kprd/{id}', 'KaprodiController@validate_setting_kurikulum_kprd');
     Route::get('unvalidate_setting_kurikulum_kprd/{id}', 'KaprodiController@unvalidate_setting_kurikulum_kprd');
+
+    //record pembayaran
+    Route::get('record_pembayaran_mhs_kprd/{id}', 'KaprodiController@record_pembayaran_mhs_kprd');
+
+    //download BAP prausta
+    Route::get('download_bap_pkl_kprd/{id}', 'KaprodiController@download_bap_pkl_kprd');
+    Route::get('download_bap_sempro_kprd/{id}', 'KaprodiController@download_bap_sempro_kprd');
+    Route::get('download_bap_ta_kprd/{id}', 'KaprodiController@download_bap_ta_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

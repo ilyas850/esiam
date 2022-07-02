@@ -25,18 +25,12 @@
         <tr>
             <td>
                 <center>
-                    <h4><b>BERITA ACARA SIDANG TUGAS AKHIR</b></h4>
+                    <h3><b>BERITA ACARA SIDANG TUGAS AKHIR</b></h3>
                 </center>
             </td>
         </tr>
     </table>
-    <table width="100%">
-        <tr>
-            <td width="18%">Hari / Tanggal</td>
-            <td width="2%">: </td>
-            <td width="80%">{{ $hari }} / {{ $tglhasil }}</td>
-        </tr>
-    </table>
+    
 
     <table width="100%">
         <tr>
@@ -55,12 +49,12 @@
             <td>{{ $data->prodi }}</td>
         </tr>
         <tr>
-            <td>Judul Proposal </td>
+            <td>Laporan TA </td>
             <td> : </td>
             <td>{{ $data->judul_prausta }}</td>
         </tr>
     </table>
-    <br><br>
+    <br>
     <table width="100%">
         <tr>
             <td>
@@ -120,7 +114,7 @@
             </td>
         </tr>
     </table>
-    <br>
+   
     <table width="100%" border="1">
         <tr>
             <td align="center">
@@ -141,10 +135,10 @@
             </td>
         </tr>
     </table>
-    <br>
-    <table width="100%" border="1">
-        <tr>
-            <td align="center" width="3%">NO</td>
+    
+    <table width="100%" height="100%" border="1">
+        <tr height="90px">
+            <td align="center" width="3%">NO <br></td>
             <td align="center" width="10%">KOMPONEN</td>
             <td align="center" width="20%">NAMA</td>
             <td align="center" width="10%">TANDA TANGAN</td>
@@ -184,7 +178,7 @@
     <table width="100%">
         <tr>
             <td width="60%">
-                <span style="font-size: 100%">Panduan Penilaian</span>
+                <span style="font-size: 80%">Kriteria Penilaian</span>
                 <table border="1" width="60%">
                     <tr>
                         <td align=center style="font-size:70%">Rentang Nilai</td>
@@ -241,11 +235,11 @@
                         <td width="80%" align=left style="font-size:85%"><span>Dosen Pembimbing</span></td>
                     </tr>
                 </table>
-                <br><br><br><br><br>
+                <br><br><br><br>
                 <table width="100%">
                     <tr>
-                        <td width="100%" align=left style="font-size:85%"><span>({{ $data->nama_dsn }},
-                                {{ $data->akademik }})</span>
+                        <td width="100%" align=left style="font-size:85%"><span>{{ $data->nama_dsn }},
+                                {{ $data->akademik }}</span>
                         </td>
                     </tr>
                 </table>

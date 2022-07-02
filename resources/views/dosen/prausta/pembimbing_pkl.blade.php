@@ -46,6 +46,9 @@
                                 <center>Aksi</center>
                             </th>
                             <th>
+                                <center>BAP</center>
+                            </th>
+                            <th>
                                 <center>Validasi BAAK</center>
                             </th>
                         </tr>
@@ -71,6 +74,12 @@
                                     <center>
                                         <a class="btn btn-info btn-xs"
                                             href="/record_bim_pkl/{{ $key->id_settingrelasi_prausta }}">Cek Bimbingan</a>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <a href="/download_bap_pkl_dsn_dlm/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-danger btn-xs">Download</a>
                                     </center>
                                 </td>
                                 <td>

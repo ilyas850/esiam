@@ -14,6 +14,7 @@ use App\Biaya;
 use App\Kaprodi;
 use App\Ruangan;
 use App\Semester;
+use App\Itembayar;
 use App\Beasiswa;
 use App\Kuitansi;
 use App\Student;
@@ -3511,7 +3512,8 @@ class KaprodiController extends Controller
         'kelas.kelas',
         'prausta_setting_relasi.id_settingrelasi_prausta',
         'prausta_setting_relasi.judul_prausta',
-        'prausta_setting_relasi.tempat_prausta'
+        'prausta_setting_relasi.tempat_prausta',
+        'prausta_setting_relasi.validasi_baak'
       )
       ->get();
 
@@ -3900,7 +3902,8 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.judul_prausta',
         'prausta_setting_relasi.tempat_prausta',
         'prausta_setting_relasi.acc_judul_dospem',
-        'prausta_setting_relasi.acc_judul_kaprodi'
+        'prausta_setting_relasi.acc_judul_kaprodi',
+        'prausta_setting_relasi.validasi_baak'
       )
       ->get();
 
@@ -4633,7 +4636,8 @@ class KaprodiController extends Controller
         'prausta_setting_relasi.judul_prausta',
         'prausta_setting_relasi.tempat_prausta',
         'prausta_setting_relasi.acc_judul_dospem',
-        'prausta_setting_relasi.acc_judul_kaprodi'
+        'prausta_setting_relasi.acc_judul_kaprodi',
+        'prausta_setting_relasi.validasi_baak'
       )
       ->get();
 
@@ -6907,5 +6911,554 @@ class KaprodiController extends Controller
       'mk',
       'data'
     ));
+  }
+
+  public function record_pembayaran_mhs_kprd($id)
+  {
+    $maha = Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->select('student.idstudent', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.prodi', 'kelas.kelas', 'student.nama', 'student.nim')
+      ->where('idstudent', $id)
+      ->first();
+
+    $cek_study = Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
+      ->where('student.idstudent', $id)
+      ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+      ->first();
+
+    $cb = Beasiswa::where('idstudent', $id)->first();
+
+    $biaya = Biaya::where('idangkatan', $maha->idangkatan)
+      ->where('idstatus', $maha->idstatus)
+      ->where('kodeprodi', $maha->kodeprodi)
+      ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14', 'prakerin', 'seminar', 'sidang', 'wisuda')
+      ->first();
+
+    if ($cek_study->study_year == '3') {
+      $itembayar = Itembayar::where('study_year', '3')
+        ->orderBy('iditem', 'ASC')
+        ->get();
+
+      $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 1)
+        ->sum('bayar.bayar');
+
+      $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 2)
+        ->sum('bayar.bayar');
+
+      $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 3)
+        ->sum('bayar.bayar');
+
+      $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 4)
+        ->sum('bayar.bayar');
+
+      $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 5)
+        ->sum('bayar.bayar');
+
+      $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 6)
+        ->sum('bayar.bayar');
+
+      $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 7)
+        ->sum('bayar.bayar');
+
+      $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 8)
+        ->sum('bayar.bayar');
+
+      $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 9)
+        ->sum('bayar.bayar');
+
+      $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 10)
+        ->sum('bayar.bayar');
+
+      $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 11)
+        ->sum('bayar.bayar');
+
+      $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 12)
+        ->sum('bayar.bayar');
+
+      $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 13)
+        ->sum('bayar.bayar');
+
+      $sisaprakerin = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 36)
+        ->sum('bayar.bayar');
+
+      $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 14)
+        ->sum('bayar.bayar');
+
+      $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 15)
+        ->sum('bayar.bayar');
+
+      $sisawisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 16)
+        ->sum('bayar.bayar');
+
+      return view('kaprodi/master/data_biaya', compact('maha', 'itembayar', 'cb', 'biaya', 'sisadaftar', 'sisaawal', 'sisadsp', 'sisaspp1', 'sisaspp2', 'sisaspp3', 'sisaspp4', 'sisaspp5', 'sisaspp6', 'sisaspp7', 'sisaspp8', 'sisaspp9', 'sisaspp10', 'sisaprakerin', 'sisaseminar', 'sisasidang', 'sisawisuda'));
+    } elseif ($cek_study->study_year == '4') {
+      $itembayar = Itembayar::where('study_year', '4')
+        ->orderBy('iditem', 'ASC')
+        ->get();
+
+      $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 18)
+        ->sum('bayar.bayar');
+
+      $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 19)
+        ->sum('bayar.bayar');
+
+      $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 20)
+        ->sum('bayar.bayar');
+
+      $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 21)
+        ->sum('bayar.bayar');
+
+      $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 22)
+        ->sum('bayar.bayar');
+
+      $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 23)
+        ->sum('bayar.bayar');
+
+      $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 24)
+        ->sum('bayar.bayar');
+
+      $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 25)
+        ->sum('bayar.bayar');
+
+      $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 26)
+        ->sum('bayar.bayar');
+
+      $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 27)
+        ->sum('bayar.bayar');
+
+      $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 28)
+        ->sum('bayar.bayar');
+
+      $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 29)
+        ->sum('bayar.bayar');
+
+      $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 30)
+        ->sum('bayar.bayar');
+
+      $sisaspp11 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 31)
+        ->sum('bayar.bayar');
+
+      $sisaspp12 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 32)
+        ->sum('bayar.bayar');
+
+      $sisaspp13 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 33)
+        ->sum('bayar.bayar');
+
+      $sisaspp14 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 34)
+        ->sum('bayar.bayar');
+
+      $sisaprakerin = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 35)
+        ->sum('bayar.bayar');
+
+      $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 37)
+        ->sum('bayar.bayar');
+
+      $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 38)
+        ->sum('bayar.bayar');
+
+      $sisawisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+        ->where('kuitansi.idstudent', $id)
+        ->where('bayar.iditem', 39)
+        ->sum('bayar.bayar');
+
+      return view('kaprodi/master/data_biaya', compact('maha', 'itembayar', 'cb', 'biaya', 'sisadaftar', 'sisaawal', 'sisadsp', 'sisaspp1', 'sisaspp2', 'sisaspp3', 'sisaspp4', 'sisaspp5', 'sisaspp6', 'sisaspp7', 'sisaspp8', 'sisaspp9', 'sisaspp10', 'sisaspp11', 'sisaspp12', 'sisaspp13', 'sisaspp14', 'sisaprakerin', 'sisaseminar', 'sisasidang', 'sisawisuda'));
+    }
+  }
+
+  public function download_bap_pkl_kprd($id)
+  {
+    $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'prodi.id_prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.id_settingrelasi_prausta',
+        'prausta_setting_relasi.judul_prausta',
+        'prausta_setting_relasi.tempat_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'prausta_setting_relasi.tanggal_selesai',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'dosen.nama as nama_dsn',
+        'dosen.nik',
+        'dosen.akademik'
+      )
+      ->first();
+    if ($data == null) {
+      Alert::warning('', 'Data PKL Belum ada')->autoclose(3500);
+      return redirect('pembimbing_pkl_kprd');
+    } else {
+      $nama = $data->nama;
+      $nim = $data->nim;
+      $kelas = $data->kelas;
+      $idprodi = $data->id_prodi;
+
+      $kaprodi = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+        ->where('kaprodi.id_prodi', $idprodi)
+        ->select('dosen.nama', 'dosen.nik', 'dosen.akademik')
+        ->first();
+      $nama_kaprodi = $kaprodi->nama;
+      $akademik_kaprodi = $kaprodi->akademik;
+      $nik_kaprodi = $kaprodi->nik;
+
+      $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
+      $cekhari = date('l', strtotime($data->tanggal_selesai));
+
+      switch ($cekhari) {
+        case 'Sunday':
+          $hari = 'Minggu';
+          break;
+        case 'Monday':
+          $hari = 'Senin';
+          break;
+        case 'Tuesday':
+          $hari = 'Selasa';
+          break;
+        case 'Wednesday':
+          $hari = 'Rabu';
+          break;
+        case 'Thursday':
+          $hari = 'Kamis';
+          break;
+        case 'Friday':
+          $hari = 'Jum\'at';
+          break;
+        case 'Saturday':
+          $hari = 'Sabtu';
+          break;
+        default:
+          $hari = 'Tidak ada';
+          break;
+      }
+
+      $bulan = array(
+        1 =>   'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+      );
+
+      $pecahkan = explode('-', $data->tanggal_selesai);
+
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+
+      $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
+      return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+  }
+
+  public function download_bap_sempro_kprd($id)
+  {
+    $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.id_settingrelasi_prausta',
+        'prausta_setting_relasi.judul_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'prausta_setting_relasi.dosen_penguji_1',
+        'prausta_setting_relasi.dosen_penguji_2',
+        'prausta_setting_relasi.tanggal_selesai',
+        'prausta_setting_relasi.id_dosen_pembimbing',
+        'prausta_setting_relasi.id_dosen_penguji_1',
+        'prausta_setting_relasi.id_dosen_penguji_2',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'dosen.nama as nama_dsn',
+        'dosen.akademik'
+      )
+      ->first();
+
+    if ($data == null) {
+      Alert::warning('', 'Data SEMPRO Belum ada')->autoclose(3500);
+      return redirect('pembimbing_sempro_kprd');
+    } else {
+      $nama = $data->nama;
+      $nim = $data->nim;
+      $kelas = $data->kelas;
+
+
+      $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
+      $cekhari = date('l', strtotime($data->tanggal_selesai));
+
+      switch ($cekhari) {
+        case 'Sunday':
+          $hari = 'Minggu';
+          break;
+        case 'Monday':
+          $hari = 'Senin';
+          break;
+        case 'Tuesday':
+          $hari = 'Selasa';
+          break;
+        case 'Wednesday':
+          $hari = 'Rabu';
+          break;
+        case 'Thursday':
+          $hari = 'Kamis';
+          break;
+        case 'Friday':
+          $hari = 'Jum\'at';
+          break;
+        case 'Saturday':
+          $hari = 'Sabtu';
+          break;
+        default:
+          $hari = 'Tidak ada';
+          break;
+      }
+
+      $bulan = array(
+        1 =>   'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+      );
+
+      $pecahkan = explode('-', $data->tanggal_selesai);
+
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+
+      $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
+
+      $dospeng1 = Dosen::where('iddosen', $data->id_dosen_penguji_1)->first();
+
+      $dospeng2 = Dosen::where('iddosen', $data->id_dosen_penguji_2)->first();
+
+      $pdf = PDF::loadView('prausta/sempro/unduh_bap_sempro', compact('data', 'hari', 'tglhasil', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
+      return $pdf->download('BAP Sempro' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+  }
+
+  public function download_bap_ta_kprd($id)
+  {
+    $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_trans_hasil.id_settingrelasi_prausta',
+        'prausta_setting_relasi.judul_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'prausta_setting_relasi.dosen_penguji_1',
+        'prausta_setting_relasi.dosen_penguji_2',
+        'prausta_setting_relasi.id_dosen_pembimbing',
+        'prausta_setting_relasi.id_dosen_penguji_1',
+        'prausta_setting_relasi.id_dosen_penguji_2',
+        'prausta_setting_relasi.tanggal_selesai',
+        'prausta_trans_hasil.nilai_1',
+        'prausta_trans_hasil.nilai_2',
+        'prausta_trans_hasil.nilai_3',
+        'prausta_trans_hasil.nilai_huruf',
+        'dosen.nama as nama_dsn',
+        'dosen.akademik'
+      )
+      ->first();
+
+    if ($data == null) {
+      Alert::warning('', 'Data TA Belum ada')->autoclose(3500);
+      return redirect('pembimbing_ta_kprd');
+    } else {
+      $nama = $data->nama;
+      $nim = $data->nim;
+      $kelas = $data->kelas;
+
+
+      $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
+      $cekhari = date('l', strtotime($data->tanggal_selesai));
+
+      switch ($cekhari) {
+        case 'Sunday':
+          $hari = 'Minggu';
+          break;
+        case 'Monday':
+          $hari = 'Senin';
+          break;
+        case 'Tuesday':
+          $hari = 'Selasa';
+          break;
+        case 'Wednesday':
+          $hari = 'Rabu';
+          break;
+        case 'Thursday':
+          $hari = 'Kamis';
+          break;
+        case 'Friday':
+          $hari = 'Jum\'at';
+          break;
+        case 'Saturday':
+          $hari = 'Sabtu';
+          break;
+        default:
+          $hari = 'Tidak ada';
+          break;
+      }
+
+      $bulan = array(
+        1 =>   'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+      );
+
+      $pecahkan = explode('-', $data->tanggal_selesai);
+
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+
+      $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
+
+      $dospeng1 = Dosen::where('iddosen', $data->id_dosen_penguji_1)->first();
+
+      $dospeng2 = Dosen::where('iddosen', $data->id_dosen_penguji_2)->first();
+
+      $pdf = PDF::loadView('prausta/ta/unduh_bap_ta', compact('data', 'hari', 'tglhasil', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
+      return $pdf->download('BAP TA' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
   }
 }
