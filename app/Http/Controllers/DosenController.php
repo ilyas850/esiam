@@ -725,6 +725,7 @@ class DosenController extends Controller
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT')
+            ->orderBy('student.nim', 'ASC')
             ->get();
         $kurrr = $id;
         return view('dosen/input_kat_dsn', ['kuri' => $kurrr, 'ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'id' => $id]);
@@ -816,6 +817,7 @@ class DosenController extends Controller
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_UTS')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $mkl = Kurikulum_periode::where('id_kurperiode', $id)->get();
@@ -935,6 +937,7 @@ class DosenController extends Controller
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_UAS')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $mkl = Kurikulum_periode::where('id_kurperiode', $id)->get();
