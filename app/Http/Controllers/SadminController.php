@@ -2890,11 +2890,17 @@ class SadminController extends Controller
             ->where('kuisioner_master_kategori.id_kategori_kuisioner', $id)
             ->where('kuisioner_transaction.id_periodetahun', $idperiodetahun)
             ->where('kuisioner_transaction.id_periodetipe', $idperiodetipe)
-            ->groupBy('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama')
-            ->select('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama')
+            ->where()
+            ->groupBy('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama', 'dosen.iddosen')
+            ->select('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama', 'dosen.iddosen')
             ->get();
 
         return view('sadmin/kuisioner/report_dospem_aka', compact('data'));
+    }
+
+    public function report_kuisioner_kategori_akademik($id)
+    {
+        dd($id);
     }
 
     public function report_dospem_pkl($id)

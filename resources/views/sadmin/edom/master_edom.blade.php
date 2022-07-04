@@ -12,7 +12,7 @@
             <form class="form" role="form" action="{{ url('report_edom') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                         <label>Periode tahun</label>
                         <select class="form-control" name="id_periodetahun" required>
                             <option></option>
@@ -23,7 +23,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                         <label>Periode tipe</label>
                         <select class="form-control" name="id_periodetipe" required>
                             <option></option>
@@ -32,16 +32,17 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-6">
                         <label>Prodi</label>
                         <select class="form-control" name="id_prodi" required>
                             <option></option>
                             @foreach ($prodi as $prd)
-                                <option value="{{ $prd->id_prodi }}">{{ $prd->prodi }}</option>
+                                <option value="{{ $prd->id_prodi }}">{{ $prd->prodi }} - {{ $prd->konsentrasi }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                         <label>Tipe Laporan</label>
                         <select class="form-control" name="tipe_laporan" required>
                             <option></option>

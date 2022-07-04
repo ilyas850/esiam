@@ -1805,6 +1805,7 @@ class MhsController extends Controller
                         ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                 }))
                 ->where('student.idstudent', $ids)
+                ->where('dosen_pembimbing.status', 'ACTIVE')
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
                 ->first();
 

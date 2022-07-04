@@ -17,10 +17,21 @@
                             <th width="1%">
                                 <center>No</center>
                             </th>
-                            <th width="50%">
+                            <th width="30%">
                                 <center>Dosen</center>
                             </th>
-
+                            <th width="10%">
+                                <center>Mhs Qty</center>
+                            </th>
+                            <th width="10%">
+                                <center>Kuisioner Qty</center>
+                            </th>
+                            <th width="10%">
+                                <center>Nilai Angka</center>
+                            </th>
+                            <th width="10%">
+                                <center>Nilai Huruf</center>
+                            </th>
                             <th width="5%">
                                 <center>Aksi</center>
                             </th>
@@ -36,9 +47,13 @@
                                 <td>
                                     {{ $item->nama }}
                                 </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td>
                                     <center>
-                                        <a href="/report_kuisioner_kategori/{{ $item->iddosen }}"
+                                        <a href="/report_kuisioner_kategori_akademik/{{ $item->iddosen }}"
                                             class="btn btn-info btn-xs">Report</a>
                                     </center>
                                 </td>
