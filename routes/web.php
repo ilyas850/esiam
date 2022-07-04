@@ -216,6 +216,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('report_kuisioner', 'SadminController@report_kuisioner');
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
     Route::get('report_kuisioner_kategori_akademik/{id}', 'SadminController@report_kuisioner_kategori_akademik');
+    Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
 
     //soal UTS dan UAS
     Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');

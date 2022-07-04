@@ -2883,24 +2883,28 @@ class SadminController extends Controller
 
         $idperiodetahun = $periodetahun->id_periodetahun;
         $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
 
-        $data = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
-            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
-            ->join('dosen', 'kuisioner_transaction.id_dosen_pembimbing', '=', 'dosen.iddosen')
-            ->where('kuisioner_master_kategori.id_kategori_kuisioner', $id)
-            ->where('kuisioner_transaction.id_periodetahun', $idperiodetahun)
-            ->where('kuisioner_transaction.id_periodetipe', $idperiodetipe)
-            ->where()
-            ->groupBy('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama', 'dosen.iddosen')
-            ->select('kuisioner_transaction.id_dosen_pembimbing', 'dosen.nama', 'dosen.iddosen')
-            ->get();
+        $data = DB::select('CALL kuisioner_dsn_pa(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospem_aka', compact('data'));
+        return view('sadmin/kuisioner/report_dospem_aka', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
-    public function report_kuisioner_kategori_akademik($id)
+    public function detail_kuisioner_dsn_pa(Request $request)
     {
-        dd($id);
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_pa(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+        return view('sadmin/kuisioner/detail_kuisioner_dsn_pa', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
     }
 
     public function report_dospem_pkl($id)

@@ -1197,6 +1197,7 @@ class DosenController extends Controller
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+            ->orderBy('student.nim', 'ASC')
             ->get();
         $kurrr = $id;
 

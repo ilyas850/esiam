@@ -7,7 +7,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title"> <b> Detail Rekapitulasi EDOM (Per Dosen)</b></h3>
+                <h3 class="box-title"> <b> Detail Rekapitulasi Kuisioner Dosen Pembimbing Akademik</b></h3>
                 <table width="100%">
                     <tr>
                         <td width="20%">Tahun Akademik / Semester</td>
@@ -17,7 +17,7 @@
                     <tr>
                         <td width="20%">Dosen</td>
                         <td>:</td>
-                        <td>{{ $nama }} </td>
+                        <td>{{ $nama_dosen }} </td>
                     </tr>
                 </table>
             </div>
@@ -29,7 +29,7 @@
                                 <center>No</center>
                             </th>
                             <th>
-                                <center>Deskripsi</center>
+                                <center>Komponen Kuisioner</center>
                             </th>
                             <th>
                                 <center>Nilai 1</center>
@@ -54,7 +54,7 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>
-                                    {{ $item->description }}
+                                    {{ $item->komponen_kuisioner }}
                                 </td>
                                 <td>
                                     <center>
@@ -76,7 +76,7 @@
                                         {{ $item->nilai_4 }}
                                     </center>
                                 </td>
-                                
+
                             </tr>
                         @endforeach
                     </tbody>
