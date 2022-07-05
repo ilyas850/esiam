@@ -1658,7 +1658,7 @@ class SadminController extends Controller
             ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->where('kurikulum_periode.id_periodetipe', $tipe)
+            // ->where('kurikulum_periode.id_periodetipe', $tipe)
             ->where('kurikulum_periode.id_periodetahun', $tahun)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
