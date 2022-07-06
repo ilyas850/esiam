@@ -618,53 +618,47 @@
                                 @elseif ($data->acc_seminar_sidang == 'PENGAJUAN')
                                     <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
                                 @elseif ($data->acc_seminar_sidang == 'TERIMA')
-                                    @if ($data->tanggal_selesai == null)
-                                        <span class="badge bg-red">Menunggu Jadwal Seminar</span>
-                                    @else
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <span class="info-box-icon bg-red"><i
-                                                            class="fa fa-files-o"></i></span>
-                                                    <div class="info-box-content">
-                                                        <span class="info-box-text">File Plagiarisme</span>
-                                                        <span class="info-box-number">
-                                                            @if ($data->file_plagiarisme == null)
-                                                                Belum ada
-                                                            @elseif ($data->file_plagiarisme != null)
-                                                                <a href="/File Plagiarisme/{{ Auth::user()->id_user }}/{{ $data->file_plagiarisme }}"
-                                                                    target="_blank"> File</a>
-                                                            @endif
-                                                        </span>
-                                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-red"><i class="fa fa-files-o"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">File Plagiarisme</span>
+                                                    <span class="info-box-number">
+                                                        @if ($data->file_plagiarisme == null)
+                                                            Belum ada
+                                                        @elseif ($data->file_plagiarisme != null)
+                                                            <a href="/File Plagiarisme/{{ Auth::user()->id_user }}/{{ $data->file_plagiarisme }}"
+                                                                target="_blank"> File</a>
+                                                        @endif
+                                                    </span>
                                                 </div>
                                             </div>
-                                            @if ($data->validasi_baak == 'BELUM')
-                                                <div class="col-md-4">
-                                                    <div class="info-box">
-                                                        <form action="{{ url('simpan_file_plagiarisme') }}"
-                                                            method="post" enctype="multipart/form-data">
-                                                            {{ csrf_field() }}
-                                                            <input type="hidden" name="id_settingrelasi_prausta"
-                                                                value="{{ $data->id_settingrelasi_prausta }}">
-                                                            <div class="form-group">
-
-                                                                <input type="file" name="file_plagiarisme"
-                                                                    class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
-                                                                <button type="submit"
-                                                                    class="btn btn-info">Simpan</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div class="col-md-4">
-                                                    <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
-                                                </div>
-                                            @endif
                                         </div>
-                                    @endif
+                                        @if ($data->validasi_baak == 'BELUM')
+                                            <div class="col-md-4">
+                                                <div class="info-box">
+                                                    <form action="{{ url('simpan_file_plagiarisme') }}" method="post"
+                                                        enctype="multipart/form-data">
+                                                        {{ csrf_field() }}
+                                                        <input type="hidden" name="id_settingrelasi_prausta"
+                                                            value="{{ $data->id_settingrelasi_prausta }}">
+                                                        <div class="form-group">
+
+                                                            <input type="file" name="file_plagiarisme"
+                                                                class="form-control">
+                                                            <span>Format file pdf max. size 5mb</span> <br>
+                                                            <button type="submit" class="btn btn-info">Simpan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="col-md-4">
+                                                <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @elseif ($data->acc_seminar_sidang == 'TOLAK')
                                     <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
                                 @endif

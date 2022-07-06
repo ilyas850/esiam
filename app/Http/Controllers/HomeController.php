@@ -16,6 +16,7 @@ use App\Kaprodi;
 use App\Informasi;
 use App\Update_Mahasiswa;
 use App\Periode_tahun;
+use App\Kurikulum_transaction;
 use App\Periode_tipe;
 use App\Waktu_krs;
 use App\Waktu_edom;
@@ -34,12 +35,14 @@ class HomeController extends Controller
 
   public function index()
   {
-
     $id = Auth::user()->id_user;
     $akses = Auth::user()->role;
     $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
       ->leftjoin('microsoft_user', 'student.idstudent', '=', 'microsoft_user.id_student')
-      ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('student.idstudent', $id)
@@ -60,7 +63,9 @@ class HomeController extends Controller
         'update_mahasiswas.id',
         'update_mahasiswas.nim_mhs',
         'microsoft_user.username',
-        'microsoft_user.password'
+        'microsoft_user.password',
+        'prodi.id_prodi',
+        'student.idangkatan'
       )
       ->first();
 
@@ -116,7 +121,24 @@ class HomeController extends Controller
 
       $foto = $mhs->foto;
 
-      return view('home', ['angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+      $idprodi = $mhs->id_prodi;
+      $idangkatan = $mhs->idangkatan;
+
+      $kurikulum_makul = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->join('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
+        ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->join('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
+        ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->leftjoin('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
+        ->where('prodi.id_prodi', $idprodi)
+        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+        ->where('student_record.id_student', $id)
+        ->where('kurikulum_transaction.status', 'ACTIVE')
+        ->where('student_record.status', 'TAKEN')
+        ->select('kurikulum_transaction.idkurtrans', 'kurikulum_master.nama_kurikulum', 'prodi.prodi', 'semester.semester', 'angkatan.angkatan', 'matakuliah.makul')
+        ->get();
+     
+      return view('home', ['kurikulum_makul' => $kurikulum_makul, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);

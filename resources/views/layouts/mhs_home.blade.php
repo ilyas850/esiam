@@ -264,7 +264,6 @@
                 .judul {
                     color: white
                 }
-
             </style>
         </div>
 
@@ -328,13 +327,13 @@
             .judul {
                 color: white
             }
-
         </style>
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Informasi Terbaru</h3>
                 <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                            class="fa fa-minus"></i>
                     </button>
                     <button type="button" class="btn btn-box-tool" data-widget="remove"><i
                             class="fa fa-times"></i></button>
@@ -367,6 +366,45 @@
             </div>
             <div class="box-footer text-center">
                 <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Paket Matakuliah</h3>
+            </div>
+            <div class="box-body ">
+                <table id="example8" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kurikulum</th>
+                            <th>Prodi</th>
+                            <th>Semester</th>
+                            <th>Angkatan</th>
+                            <th>Matakuliah</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($kurikulum_makul as $item)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $item->nama_kurikulum }}</td>
+                                <td>{{ $item->prodi }}</td>
+                                <td>{{ $item->semester }}</td>
+                                <td>{{ $item->angkatan }}</td>
+                                <td>{{ $item->makul }}</td>
+                                <td><span class="label label-success">diambil</span></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
