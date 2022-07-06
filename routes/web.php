@@ -215,8 +215,14 @@ Route::group(['middleware' => 'sadmin'], function () {
     //report kuisioner
     Route::get('report_kuisioner', 'SadminController@report_kuisioner');
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
-    Route::get('report_kuisioner_kategori_akademik/{id}', 'SadminController@report_kuisioner_kategori_akademik');
     Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
+    Route::post('detail_kuisioner_dsn_pkl', 'SadminController@detail_kuisioner_dsn_pkl');
+    Route::post('detail_kuisioner_dsn_ta', 'SadminController@detail_kuisioner_dsn_ta');
+    Route::post('detail_kuisioner_dsn_peng1_ta', 'SadminController@detail_kuisioner_dsn_peng1_ta');
+    Route::post('detail_kuisioner_dsn_peng2_ta', 'SadminController@detail_kuisioner_dsn_peng2_ta');
+    Route::post('detail_kuisioner_baak', 'SadminController@detail_kuisioner_baak');
+    Route::post('detail_kuisioner_bauk', 'SadminController@detail_kuisioner_bauk');
+    Route::post('detail_kuisioner_perpus', 'SadminController@detail_kuisioner_perpus');
 
     //soal UTS dan UAS
     Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');

@@ -2872,7 +2872,17 @@ class SadminController extends Controller
         } elseif ($id == 2) {
             return $this->report_dospem_pkl($id);
         } elseif ($id == 3) {
-            # code...
+            return $this->report_dospem_ta($id);
+        } elseif ($id == 4) {
+            return $this->report_dospeng1_ta($id);
+        } elseif ($id == 5) {
+            return $this->report_dospeng2_ta($id);
+        } elseif ($id == 6) {
+            return $this->report_kuis_baak($id);
+        } elseif ($id == 7) {
+            return $this->report_kuis_bauk($id);
+        } elseif ($id == 8) {
+            return $this->report_kuis_perpus($id);
         }
     }
 
@@ -2909,7 +2919,219 @@ class SadminController extends Controller
 
     public function report_dospem_pkl($id)
     {
-        dd($id);
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_pkl(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospem_pkl', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_dsn_pkl(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_pkl(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+        return view('sadmin/kuisioner/detail_kuisioner_dsn_pkl', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_dospem_ta($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospem_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_dsn_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_ta(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+        return view('sadmin/kuisioner/detail_kuisioner_dsn_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_dospeng1_ta($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji1_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospeng1_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_dsn_peng1_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_penguji1_ta(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+        return view('sadmin/kuisioner/detail_kuisioner_dsn_peng1_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_dospeng2_ta($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji2_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospeng2_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_dsn_peng2_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_penguji2_ta(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+
+        return view('sadmin/kuisioner/detail_kuisioner_dsn_peng2_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_kuis_baak($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_baak(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_baak', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_baak(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_baak(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+
+        return view('sadmin/kuisioner/detail_kuisioner_baak', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_kuis_bauk($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_bauk(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_bauk', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_bauk(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_bauk(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+
+        return view('sadmin/kuisioner/detail_kuisioner_bauk', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
+    }
+
+    public function report_kuis_perpus($id)
+    {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_perpus(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_perpus', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_perpus(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_perpus(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+
+        return view('sadmin/kuisioner/detail_kuisioner_perpus', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
     }
 
     public function soal_uts_uas()
