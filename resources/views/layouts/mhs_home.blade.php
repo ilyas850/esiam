@@ -413,7 +413,7 @@
                                 <td align="center">{{ $item->prodi }}</td>
                                 <td align="center">{{ $item->semester }}</td>
                                 <td align="center">{{ $item->angkatan }}</td>
-                                <td>{{ $item->makul }}</td>
+                                <td>{{ $item->kode }} / {{ $item->makul }}</td>
                                 <td align="center">
                                     @if ($item->id_studentrecord != null)
                                         <span class="label label-success">diambil</span>
