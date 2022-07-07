@@ -137,8 +137,10 @@ class HomeController extends Controller
         ->where('student_record.status', 'TAKEN')
         ->select('kurikulum_transaction.idkurtrans', 'kurikulum_master.nama_kurikulum', 'prodi.prodi', 'semester.semester', 'angkatan.angkatan', 'matakuliah.makul')
         ->get();
-     
-      return view('home', ['kurikulum_makul' => $kurikulum_makul, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+   
+      $data = DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id));
+
+      return view('home', ['data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);

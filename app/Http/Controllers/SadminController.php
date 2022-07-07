@@ -2895,7 +2895,7 @@ class SadminController extends Controller
         $idperiodetipe = $periodetipe->id_periodetipe;
         $namaperiodetahun = $periodetahun->periode_tahun;
         $namaperiodetipe = $periodetipe->periode_tipe;
-
+        
         $data = DB::select('CALL kuisioner_dsn_pa(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
         return view('sadmin/kuisioner/report_dospem_aka', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));

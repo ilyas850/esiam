@@ -381,26 +381,46 @@
                 <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Kurikulum</th>
-                            <th>Prodi</th>
-                            <th>Semester</th>
-                            <th>Angkatan</th>
-                            <th>Matakuliah</th>
-                            <th>Status</th>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Kurikulum</center>
+                            </th>
+                            <th>
+                                <center>Prodi</center>
+                            </th>
+                            <th>
+                                <center>Semester</center>
+                            </th>
+                            <th>
+                                <center>Angkatan</center>
+                            </th>
+                            <th>
+                                <center>Matakuliah</center>
+                            </th>
+                            <th>
+                                <center>Status</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($kurikulum_makul as $item)
+                        @foreach ($data as $item)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $item->nama_kurikulum }}</td>
-                                <td>{{ $item->prodi }}</td>
-                                <td>{{ $item->semester }}</td>
-                                <td>{{ $item->angkatan }}</td>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $item->nama_kurikulum }}</td>
+                                <td align="center">{{ $item->prodi }}</td>
+                                <td align="center">{{ $item->semester }}</td>
+                                <td align="center">{{ $item->angkatan }}</td>
                                 <td>{{ $item->makul }}</td>
-                                <td><span class="label label-success">diambil</span></td>
+                                <td align="center">
+                                    @if ($item->id_studentrecord != null)
+                                        <span class="label label-success">diambil</span>
+                                    @else
+                                        <span class="label label-warning">belum</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
