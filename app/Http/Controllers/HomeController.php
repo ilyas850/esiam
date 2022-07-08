@@ -124,20 +124,6 @@ class HomeController extends Controller
       $idprodi = $mhs->id_prodi;
       $idangkatan = $mhs->idangkatan;
 
-      $kurikulum_makul = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
-        ->join('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
-        ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
-        ->join('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
-        ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-        ->leftjoin('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
-        ->where('prodi.id_prodi', $idprodi)
-        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('student_record.id_student', $id)
-        ->where('kurikulum_transaction.status', 'ACTIVE')
-        ->where('student_record.status', 'TAKEN')
-        ->select('kurikulum_transaction.idkurtrans', 'kurikulum_master.nama_kurikulum', 'prodi.prodi', 'semester.semester', 'angkatan.angkatan', 'matakuliah.makul')
-        ->get();
-   
       $data = DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id));
 
       return view('home', ['data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);

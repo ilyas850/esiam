@@ -2862,11 +2862,16 @@ class SadminController extends Controller
     {
         $data = Kuisioner_kategori::all();
 
-        return view('sadmin/kuisioner/report_kuisioner', compact('data'));
+        $thn = Periode_tahun::all();
+
+        $tp = Periode_tipe::all();
+
+        return view('sadmin/kuisioner/report_kuisioner', compact('data', 'thn', 'tp'));
     }
 
     public function report_kuisioner_kategori($id)
     {
+
         if ($id == 1) {
             return $this->report_dospem_aka($id);
         } elseif ($id == 2) {
@@ -2888,6 +2893,9 @@ class SadminController extends Controller
 
     public function report_dospem_aka($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -2895,10 +2903,10 @@ class SadminController extends Controller
         $idperiodetipe = $periodetipe->id_periodetipe;
         $namaperiodetahun = $periodetahun->periode_tahun;
         $namaperiodetipe = $periodetipe->periode_tipe;
-        
+
         $data = DB::select('CALL kuisioner_dsn_pa(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospem_aka', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_dospem_aka', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_dsn_pa(Request $request)
