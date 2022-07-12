@@ -249,7 +249,7 @@
                         @endforeach
                     </center></td>
                     <td><center>
-                        @foreach ($abs14 as $item1)
+                        @foreach ($abs16 as $item1)
                             @if ($itembs->id_studentrecord == $item1->id_studentrecord)
                                 @if ($item1->absensi == 'ABSEN')
                                     (&#10003;)
