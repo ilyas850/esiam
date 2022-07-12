@@ -10,7 +10,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Filter Report Kuisioner Pembimbing Akademik</h3>
             </div>
-            <form class="form" role="form" action="{{ url('post_report_kuisioner_dsn_pa') }}" method="POST">
+            <form class="form" action="{{ url('post_report_kuisioner_dsn_pa') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="col-xs-3">

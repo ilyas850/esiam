@@ -215,7 +215,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     //report kuisioner
     Route::get('report_kuisioner', 'SadminController@report_kuisioner');
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
+
+    //report dosen pembimbing akademik
     Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
+
     Route::post('detail_kuisioner_dsn_pkl', 'SadminController@detail_kuisioner_dsn_pkl');
     Route::post('detail_kuisioner_dsn_ta', 'SadminController@detail_kuisioner_dsn_ta');
     Route::post('detail_kuisioner_dsn_peng1_ta', 'SadminController@detail_kuisioner_dsn_peng1_ta');

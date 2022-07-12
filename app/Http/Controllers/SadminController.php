@@ -994,7 +994,7 @@ class SadminController extends Controller
     public function data_krs()
     {
         $tahun = Periode_tahun::orderBy('periode_tahun', 'ASC')->get();
-        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2, 3])->get();
         $prodi = Prodi::all();
 
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
