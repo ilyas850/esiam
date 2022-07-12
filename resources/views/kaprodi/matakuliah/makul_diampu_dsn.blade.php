@@ -78,15 +78,24 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs">Cek
-                                            Mahasiswa</a>
+                                        <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}"
+                                            class="btn btn-info btn-xs">Entri
+                                            Nilai</a>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <a href="entri_bap_kprd/{{ $item->id_kurperiode }}"
+                                            class="btn btn-warning btn-xs">
+                                            Entri BAP</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
                                         <form action="{{ url('export_xlsnilai_kprd') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode"
+                                                value="{{ $item->id_kurperiode }}">
                                             <input class="btn btn-success btn-xs" type="submit" name="submit"
                                                 value="Export Excel">
                                         </form>
@@ -96,17 +105,13 @@
                                     <center>
                                         <form class="" action="{{ url('unduh_pdf_nilai_kprd') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode"
+                                                value="{{ $item->id_kurperiode }}">
                                             <button type="submit" class="btn btn-danger btn-xs">Unduh Nilai</button>
                                         </form>
                                     </center>
                                 </td>
-                                <td>
-                                    <center>
-                                        <a href="entri_bap_kprd/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs">
-                                            Entri Absen</a>
-                                    </center>
-                                </td>
+
                             </tr>
                         @endforeach
                     </tbody>
