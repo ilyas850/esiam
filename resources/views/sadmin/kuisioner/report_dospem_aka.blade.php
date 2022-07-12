@@ -50,6 +50,17 @@
                 </h3>
             </div>
             <div class="box-body">
+                <form action="{{ url('download_kuisioner_dsn_pa') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id_kategori_kuisioner" value="{{ $id }}">
+                    <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
+                    <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
+                    <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
+                    <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
+                    <button type="submit" class="btn btn-danger">Download PDF</button>
+                </form>
+
+                <br>
                 <table id="example1" class="table table-bordered table-striped">
 
                     <thead>
@@ -74,6 +85,9 @@
                             </th>
                             <th width="5%">
                                 <center>Aksi</center>
+                            </th>
+                            <th width="5%">
+                                <center>Download</center>
                             </th>
                         </tr>
                     </thead>
@@ -118,6 +132,21 @@
                                             <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
 
                                             <button type="submit" class="btn btn-success btn-xs">Detail</button>
+                                        </form>
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <form action="{{ url('download_detail_kuisioner_dsn_pa') }}" method="POST">
+                                            {{ csrf_field() }}
+                                            <input type="hidden" name="id_dosen" value="{{ $item->iddosen }}">
+                                            <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
+                                            <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
+                                            <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
+                                            <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
+
+                                            <button type="submit" class="btn btn-danger btn-xs">PDF</button>
                                         </form>
                                     </center>
                                 </td>

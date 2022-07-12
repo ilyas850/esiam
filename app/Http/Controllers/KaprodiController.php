@@ -845,56 +845,58 @@ class KaprodiController extends Controller
 
   public function makul_diampu_dsn()
   {
-    $id = Auth::user()->username;
-    $dsn = Dosen::where('nik', $id)->get();
-    foreach ($dsn as $keydsn) {
-      # code...
-    }
-    $iddsn = $keydsn->iddosen;
-    $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-    foreach ($tp as $tipe) {
-      // code...
-    }
+    $iddsn = Auth::user()->id_user;
+
+    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
     $tp = $tipe->id_periodetipe;
 
-    $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-    foreach ($thn as $tahun) {
-      // code...
-    }
+    $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
     $thn = $tahun->id_periodetahun;
 
-    $kur = Kurikulum_master::where('status', 'ACTIVE')->get();
-    foreach ($kur as $krlm) {
-      // code...
-    }
     $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      // ->join('kurikulum_transaction', 'kurikulum_periode.id_makul', '=', 'kurikulum_transaction.id_makul')
       ->where('kurikulum_periode.id_dosen', $iddsn)
       ->where('periode_tahun.id_periodetahun', $thn)
       // ->where('periode_tipe.id_periodetipe', $tp)
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
       ->orderBy('semester.semester', 'ASC')
+      ->orderBy('kelas.kelas', 'ASC')
       ->get();
-
+    // dd($mkul);
     return view('kaprodi/matakuliah/makul_diampu_dsn', ['makul' => $mkul]);
   }
 
   public function cekmhs_dsn($id)
   {
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $id)
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student_record.id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT',
+        'student_record.nilai_UTS',
+        'student_record.nilai_UAS',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->orderBy('student.nim', 'asc')
       ->get();
 
@@ -902,13 +904,11 @@ class KaprodiController extends Controller
       ->where('id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans')
-      ->get();
-    foreach ($ckstr as $str) {
-      # code...
-    }
-    $kur = $str->id_kurtrans;
+      ->first();
 
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $id, 'kur' => $kur]);
+    $kur = $ckstr->id_kurtrans;
+
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
   }
 
   public function export_xlsnilai(Request $request)
@@ -1027,8 +1027,6 @@ class KaprodiController extends Controller
     $jam = Kurikulum_jam::all();
     return view('kaprodi/bap/form_bap', ['id' => $id, 'jam' => $jam]);
   }
-
-
 
   function fetch(Request $request)
   {
@@ -2391,18 +2389,32 @@ class KaprodiController extends Controller
 
   public function input_kat_kprd($id)
   {
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $id)
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student_record.id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT'
+      )
+      ->orderBy('student.nim', 'ASC')
       ->get();
+
     $kurrr = $id;
-    return view('kaprodi/matakuliah/input_kat_dsn', ['kuri' => $kurrr, 'ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'id' => $id]);
+
+    return view('kaprodi/matakuliah/input_kat_dsn', ['kuri' => $kurrr, 'ck' => $cks, 'id' => $id]);
   }
 
   public function save_nilai_KAT_kprd(Request $request)
@@ -2459,54 +2471,76 @@ class KaprodiController extends Controller
 
 
     //ke halaman list mahasiswa
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
+
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT',
+        'student_record.nilai_UTS',
+        'student_record.nilai_UAS',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans')
-      ->get();
-    foreach ($ckstr as $str) {
-      # code...
-    }
-    $kur = $str->id_kurtrans;
+      ->first();
+
+    $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $idkur, 'kur' => $kur]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
   }
 
   public function input_uts_kprd($id)
   {
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_UTS')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_UTS'
+      )
       ->get();
 
-    $mkl = Kurikulum_periode::where('id_kurperiode', $id)->get();
+    $mkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
-    foreach ($mkl as $keymkl) {
-      # code...
-    }
-    $kmkl = $keymkl->id_makul;
-    $kprd = $keymkl->id_prodi;
-    $kkls = $keymkl->id_kelas;
+    $kmkl = $mkl->id_makul;
+    $kprd = $mkl->id_prodi;
+    $kkls = $mkl->id_kelas;
     $kurrr = $id;
 
-    return view('kaprodi/matakuliah/input_uts_dsn', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'id' => $id]);
+    return view('kaprodi/matakuliah/input_uts_dsn', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks, 'id' => $id]);
   }
 
   public function save_nilai_UTS_kprd(Request $request)
@@ -2580,54 +2614,77 @@ class KaprodiController extends Controller
       ->update(['aktual_pengoreksi' => Auth::user()->name]);
 
     //ke halaman list mahasiswa
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
+
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT',
+        'student_record.nilai_UTS',
+        'student_record.nilai_UAS',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans')
-      ->get();
-    foreach ($ckstr as $str) {
-      # code...
-    }
-    $kur = $str->id_kurtrans;
+      ->first();
+
+    $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $idkur, 'kur' => $kur]);
+
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
   }
 
   public function input_uas_kprd($id)
   {
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_UAS')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_UAS'
+      )
       ->get();
 
-    $mkl = Kurikulum_periode::where('id_kurperiode', $id)->get();
+    $mkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
-    foreach ($mkl as $keymkl) {
-      # code...
-    }
-    $kmkl = $keymkl->id_makul;
-    $kprd = $keymkl->id_prodi;
-    $kkls = $keymkl->id_kelas;
+    $kmkl = $mkl->id_makul;
+    $kprd = $mkl->id_prodi;
+    $kkls = $mkl->id_kelas;
     $kurrr = $id;
 
-    return view('kaprodi/matakuliah/input_uas_dsn', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'id' => $id]);
+    return view('kaprodi/matakuliah/input_uas_dsn', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks, 'id' => $id]);
   }
 
   public function save_nilai_UAS_kprd(Request $request)
@@ -2699,47 +2756,75 @@ class KaprodiController extends Controller
       ->where('id_makul', $request->id_makul)
       ->update(['aktual_pengoreksi' => Auth::user()->name]);
 
-
     //ke halaman list mahasiswa
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
+
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $request->id_kurperiode)
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student_record.id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT',
+        'student_record.nilai_UTS',
+        'student_record.nilai_UAS',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans')
-      ->get();
-    foreach ($ckstr as $str) {
-      # code...
-    }
-    $kur = $str->id_kurtrans;
+      ->first();
+
+    $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $idkur, 'kur' => $kur]);
+
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
   }
 
   public function input_akhir_kprd($id)
   {
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
+
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $id)
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student_record.id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->get();
+
     $kurrr = $id;
 
-    return view('kaprodi/matakuliah/input_akhir_dsn', ['kuri' => $kurrr, 'ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'id' => $id]);
+    return view('kaprodi/matakuliah/input_akhir_dsn', ['kuri' => $kurrr, 'ck' => $cks, 'id' => $id]);
   }
 
   public function save_nilai_AKHIR_kprd(Request $request)
@@ -2893,28 +2978,42 @@ class KaprodiController extends Controller
     }
 
     //ke halaman list mahasiswa
-    $mhs = Student::all();
-    $prd = Prodi::all();
-    $kls = Kelas::all();
-    $angk = Angkatan::all();
+
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->select(
+        'student_record.id_kurtrans',
+        'student_record.id_student',
+        'student_record.id_studentrecord',
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'student_record.nilai_KAT',
+        'student_record.nilai_UTS',
+        'student_record.nilai_UAS',
+        'student_record.nilai_AKHIR',
+        'student_record.nilai_AKHIR_angka'
+      )
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('student_record.status', 'TAKEN')
       ->select('student_record.id_kurtrans')
-      ->get();
-    foreach ($ckstr as $str) {
-      # code...
-    }
-    $kur = $str->id_kurtrans;
+      ->first();
+
+    $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $idkur, 'kur' => $kur]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
   }
 
   public function rekap_perkuliahan()

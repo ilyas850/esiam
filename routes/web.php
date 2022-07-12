@@ -219,6 +219,8 @@ Route::group(['middleware' => 'sadmin'], function () {
     //report dosen pembimbing akademik
     Route::post('post_report_kuisioner_dsn_pa', 'SadminController@post_report_kuisioner_dsn_pa');
     Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
+    Route::post('download_kuisioner_dsn_pa', 'SadminController@download_kuisioner_dsn_pa');
+    Route::post('download_detail_kuisioner_dsn_pa', 'SadminController@download_detail_kuisioner_dsn_pa');
 
     //report dosen pembimbing pkl
     Route::post('post_report_kuisioner_dsn_pkl', 'SadminController@post_report_kuisioner_dsn_pkl');
