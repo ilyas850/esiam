@@ -54,7 +54,6 @@
                       <th ><center>Materi</center></th>
                       <th ><center>Paraf Dosen</center></th>
                       <th ><center>Validasi</center></th>
-                      <th ><center>Honor</center></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,7 +73,6 @@
                                       <span class="badge bg-danger">Belum</span>
                               @endif
                           </center></td>
-                          <td><center>{{$item->payroll_check}}</center></td>
                         </tr>
                     @endforeach
                 </tbody>
