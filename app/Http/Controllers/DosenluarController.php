@@ -2171,7 +2171,21 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'kuliah_transaction.payroll_check',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir',
+                'kuliah_transaction.tanggal_validasi'
+            )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
@@ -2207,7 +2221,21 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'kuliah_transaction.payroll_check',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir',
+                'kuliah_transaction.tanggal_validasi'
+            )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
@@ -2245,7 +2273,24 @@ class DosenluarController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
+            ->select(
+                'kurikulum_periode.akt_sks_praktek',
+                'kurikulum_periode.akt_sks_teori',
+                'kurikulum_periode.id_kelas',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'dosen.akademik',
+                'dosen.nama',
+                'ruangan.nama_ruangan',
+                'kurikulum_jam.jam',
+                'kurikulum_hari.hari',
+                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester'
+            )
             ->get();
         foreach ($bap as $key) {
             # code...
@@ -2266,7 +2311,21 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'kuliah_transaction.payroll_check',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir',
+                'kuliah_transaction.tanggal_validasi'
+            )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
