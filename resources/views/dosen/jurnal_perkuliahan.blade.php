@@ -108,9 +108,9 @@
                                 <td>
                                     <center>
                                         @if ($item->tanggal_validasi == '2001-01-01')
-                                            <span class="badge bg-info">Sudah</span>
+                                            <span class="badge bg-red">BELUM</span>
                                         @else
-                                            <span class="badge bg-danger">Belum</span>
+                                            <span class="badge bg-blue">SUDAH</span>
                                         @endif
                                     </center>
                                 </td>
