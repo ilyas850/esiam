@@ -14,7 +14,8 @@
             </td>
             <td>
                 <center>
-                    <img src="{{ asset('images/kop.png') }}" width="200" height="70" alt="" align="right" />
+                    <img src="{{ asset('images/kop.png') }}" width="200" height="70" alt=""
+                        align="right" />
                 </center>
             </td>
         </tr>
