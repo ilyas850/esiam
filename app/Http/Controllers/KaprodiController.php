@@ -859,15 +859,16 @@ class KaprodiController extends Controller
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-      // ->join('kurikulum_transaction', 'kurikulum_periode.id_makul', '=', 'kurikulum_transaction.id_makul')
       ->where('kurikulum_periode.id_dosen', $iddsn)
       ->where('periode_tahun.id_periodetahun', $thn)
       // ->where('periode_tipe.id_periodetipe', $tp)
+      ->where('kurikulum_periode.status', 'ACTIVE')
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
       ->orderBy('semester.semester', 'ASC')
       ->orderBy('kelas.kelas', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
       ->get();
-    // dd($mkul);
+
     return view('kaprodi/matakuliah/makul_diampu_dsn', ['makul' => $mkul]);
   }
 
