@@ -6,9 +6,47 @@
 
 @section('content')
     <section class="content">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Filter Report Kuisioner PERPUS</h3>
+            </div>
+            <form class="form" action="{{ url('post_report_kuisioner_perpus') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" name="id_kategori_kuisioner" value="{{ $id }}">
+                <div class="box-body">
+                    <div class="col-xs-3">
+                        <label>Periode tahun</label>
+                        <select class="form-control" name="id_periodetahun" required>
+                            <option></option>
+                            @foreach ($data_prd_thn as $key)
+                                <option value="{{ $key->id_periodetahun }}">
+                                    {{ $key->periode_tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Periode tipe</label>
+                        <select class="form-control" name="id_periodetipe" required>
+                            <option></option>
+                            @foreach ($data_prd_tp as $tipee)
+                                <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                </div>
+                <div class="box-footer">
+                    <div class="col-xs-3">
+                        <button type="submit" class="btn btn-info ">Tampilkan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Report Kuisioner Perpustakaan</h3>
+                <h3 class="box-title">Report Kuisioner Perpustakaan <b> {{ $namaperiodetahun }} -
+                        {{ $namaperiodetipe }} </b></h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">

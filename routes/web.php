@@ -217,14 +217,35 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
 
     //report dosen pembimbing akademik
+    Route::post('post_report_kuisioner_dsn_pa', 'SadminController@post_report_kuisioner_dsn_pa');
     Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
 
+    //report dosen pembimbing pkl
+    Route::post('post_report_kuisioner_dsn_pkl', 'SadminController@post_report_kuisioner_dsn_pkl');
     Route::post('detail_kuisioner_dsn_pkl', 'SadminController@detail_kuisioner_dsn_pkl');
+
+    //report dosen pembimbing ta
+    Route::post('post_report_kuisioner_dsn_ta', 'SadminController@post_report_kuisioner_dsn_ta');
     Route::post('detail_kuisioner_dsn_ta', 'SadminController@detail_kuisioner_dsn_ta');
+
+    //report dosen penguji ta 1
+    Route::post('post_report_kuisioner_dsn_peng1_ta', 'SadminController@post_report_kuisioner_dsn_peng1_ta');
     Route::post('detail_kuisioner_dsn_peng1_ta', 'SadminController@detail_kuisioner_dsn_peng1_ta');
+
+    //report dosen penguji ta 2
+    Route::post('post_report_kuisioner_dsn_peng2_ta', 'SadminController@post_report_kuisioner_dsn_peng2_ta');
     Route::post('detail_kuisioner_dsn_peng2_ta', 'SadminController@detail_kuisioner_dsn_peng2_ta');
+
+    //report kuisioner baak
+    Route::post('post_report_kuisioner_baak', 'SadminController@post_report_kuisioner_baak');
     Route::post('detail_kuisioner_baak', 'SadminController@detail_kuisioner_baak');
+    
+    //report kuisioner bauk
+    Route::post('post_report_kuisioner_bauk', 'SadminController@post_report_kuisioner_bauk');
     Route::post('detail_kuisioner_bauk', 'SadminController@detail_kuisioner_bauk');
+
+    //report kuisioner perpus
+    Route::post('post_report_kuisioner_perpus', 'SadminController@post_report_kuisioner_perpus');
     Route::post('detail_kuisioner_perpus', 'SadminController@detail_kuisioner_perpus');
 
     //soal UTS dan UAS

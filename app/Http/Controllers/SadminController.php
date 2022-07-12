@@ -2909,6 +2909,25 @@ class SadminController extends Controller
         return view('sadmin/kuisioner/report_dospem_aka', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
+    public function post_report_kuisioner_dsn_pa(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_pa(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospem_aka', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
     public function detail_kuisioner_dsn_pa(Request $request)
     {
         $idperiodetahun = $request->id_periodetahun;
@@ -2927,6 +2946,9 @@ class SadminController extends Controller
 
     public function report_dospem_pkl($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -2937,7 +2959,26 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_dsn_pkl(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospem_pkl', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_dospem_pkl', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_dsn_pkl(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_pkl(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospem_pkl', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_dsn_pkl(Request $request)
@@ -2958,6 +2999,9 @@ class SadminController extends Controller
 
     public function report_dospem_ta($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -2968,7 +3012,26 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_dsn_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospem_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_dospem_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_dsn_ta(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospem_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_dsn_ta(Request $request)
@@ -2989,6 +3052,9 @@ class SadminController extends Controller
 
     public function report_dospeng1_ta($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -2999,7 +3065,26 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_dsn_penguji1_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospeng1_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_dospeng1_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_dsn_peng1_ta(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji1_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospeng1_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_dsn_peng1_ta(Request $request)
@@ -3020,6 +3105,9 @@ class SadminController extends Controller
 
     public function report_dospeng2_ta($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -3030,7 +3118,27 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_dsn_penguji2_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_dospeng2_ta', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_dospeng2_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_dsn_peng2_ta(Request $request)
+    {
+
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji2_ta(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_dospeng2_ta', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_dsn_peng2_ta(Request $request)
@@ -3051,6 +3159,9 @@ class SadminController extends Controller
 
     public function report_kuis_baak($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -3061,7 +3172,27 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_baak(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_kuisioner_baak', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_kuisioner_baak', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_baak(Request $request)
+    {
+
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_baak(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_baak', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_baak(Request $request)
@@ -3082,6 +3213,9 @@ class SadminController extends Controller
 
     public function report_kuis_bauk($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -3092,7 +3226,26 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_bauk(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_kuisioner_bauk', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_kuisioner_bauk', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_bauk(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_bauk(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_bauk', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_bauk(Request $request)
@@ -3113,6 +3266,9 @@ class SadminController extends Controller
 
     public function report_kuis_perpus($id)
     {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
         $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
@@ -3123,7 +3279,26 @@ class SadminController extends Controller
 
         $data = DB::select('CALL kuisioner_perpus(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
 
-        return view('sadmin/kuisioner/report_kuisioner_perpus', compact('data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+        return view('sadmin/kuisioner/report_kuisioner_perpus', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_perpus(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_perpus(?,?,?)', array($idperiodetahun, $idperiodetipe, $id));
+
+        return view('sadmin/kuisioner/report_kuisioner_perpus', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function detail_kuisioner_perpus(Request $request)

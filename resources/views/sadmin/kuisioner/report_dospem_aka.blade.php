@@ -8,10 +8,11 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Report Kuisioner Pembimbing Akademik</h3>
+                <h3 class="box-title">Filter Report Kuisioner Dosen Pembimbing Akademik</h3>
             </div>
             <form class="form" action="{{ url('post_report_kuisioner_dsn_pa') }}" method="POST">
                 {{ csrf_field() }}
+                <input type="hidden" name="id_kategori_kuisioner" value="{{ $id }}">
                 <div class="box-body">
                     <div class="col-xs-3">
                         <label>Periode tahun</label>
@@ -44,7 +45,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Report Kuisioner Pembimbing Akademik <b> {{ $namaperiodetahun }} -
+                <h3 class="box-title">Report Kuisioner Dosen Pembimbing Akademik <b> {{ $namaperiodetahun }} -
                         {{ $namaperiodetipe }} </b>
                 </h3>
             </div>
