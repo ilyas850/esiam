@@ -859,17 +859,23 @@ class KaprodiController extends Controller
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
       ->where('kurikulum_periode.id_dosen', $iddsn)
       ->where('periode_tahun.id_periodetahun', $thn)
       // ->where('periode_tipe.id_periodetipe', $tp)
       ->where('kurikulum_periode.status', 'ACTIVE')
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
+      ->groupBy('kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
       ->orderBy('semester.semester', 'ASC')
       ->orderBy('kelas.kelas', 'ASC')
       ->orderBy('matakuliah.kode', 'ASC')
       ->get();
 
-    return view('kaprodi/matakuliah/makul_diampu_dsn', ['makul' => $mkul]);
+    $data = DB::select('CALL makul_diampu_dsn(?,?)', [$iddsn, $thn]);
+
+    return view('kaprodi/matakuliah/makul_diampu_dsn', ['makul' => $data]);
   }
 
   public function cekmhs_dsn($id)
@@ -2497,6 +2503,7 @@ class KaprodiController extends Controller
         'student_record.nilai_AKHIR',
         'student_record.nilai_AKHIR_angka'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -2532,6 +2539,7 @@ class KaprodiController extends Controller
         'angkatan.angkatan',
         'student_record.nilai_UTS'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $mkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
@@ -2640,6 +2648,7 @@ class KaprodiController extends Controller
         'student_record.nilai_AKHIR',
         'student_record.nilai_AKHIR_angka'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -2676,6 +2685,7 @@ class KaprodiController extends Controller
         'angkatan.angkatan',
         'student_record.nilai_UAS'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $mkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
@@ -2783,6 +2793,7 @@ class KaprodiController extends Controller
         'student_record.nilai_AKHIR',
         'student_record.nilai_AKHIR_angka'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -2821,6 +2832,7 @@ class KaprodiController extends Controller
         'student_record.nilai_AKHIR',
         'student_record.nilai_AKHIR_angka'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $kurrr = $id;
@@ -3004,6 +3016,7 @@ class KaprodiController extends Controller
         'student_record.nilai_AKHIR',
         'student_record.nilai_AKHIR_angka'
       )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
