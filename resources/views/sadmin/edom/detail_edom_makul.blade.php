@@ -62,40 +62,16 @@
                                     {{ $item->description }}
                                 </td>
                                 <td>
-                                    <center>
-                                        @foreach ($data1 as $item1)
-                                            @if ($item->id_edom == $item1->id_edom)
-                                                {{ $item1->nilai_1 }}
-                                            @endif
-                                        @endforeach
-                                    </center>
+                                    <center> {{ $item->nilai_1 }}</center>
                                 </td>
                                 <td>
-                                    <center>
-                                        @foreach ($data2 as $item2)
-                                            @if ($item->id_edom == $item2->id_edom)
-                                                {{ $item2->nilai_2 }}
-                                            @endif
-                                        @endforeach
-                                    </center>
+                                    <center>{{ $item->nilai_2 }} </center>
                                 </td>
                                 <td>
-                                    <center>
-                                        @foreach ($data3 as $item3)
-                                            @if ($item->id_edom == $item3->id_edom)
-                                                {{ $item3->nilai_3 }}
-                                            @endif
-                                        @endforeach
-                                    </center>
+                                    <center> {{ $item->nilai_3 }} </center>
                                 </td>
                                 <td>
-                                    <center>
-                                        @foreach ($data4 as $item4)
-                                            @if ($item->id_edom == $item4->id_edom)
-                                                {{ $item4->nilai_4 }}
-                                            @endif
-                                        @endforeach
-                                    </center>
+                                    <center> {{ $item->nilai_4 }}</center>
                                 </td>
                             </tr>
                         @endforeach

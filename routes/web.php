@@ -105,6 +105,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('detail_edom_dosen', 'EdomController@detail_edom_dosen');
     Route::post('detail_edom_makul', 'EdomController@detail_edom_makul');
 
+    //download pdf report edom
+    Route::post('download_report_edom_by_makul', 'EdomController@download_report_edom_by_makul');
+    Route::post('download_report_edom_by_dosen', 'EdomController@download_report_edom_by_dosen');
+    Route::post('download_detail_edom_makul', 'EdomController@download_detail_edom_makul');
+    Route::post('download_detail_edom_dosen', 'EdomController@download_detail_edom_dosen');
+
     Route::get('data_foto', 'SadminController@data_foto');
     Route::get('lihat_foto_ti', 'SadminController@lihat_foto_ti');
     Route::get('lihat_foto_tk', 'SadminController@lihat_foto_tk');
