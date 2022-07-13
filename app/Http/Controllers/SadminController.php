@@ -2878,7 +2878,7 @@ class SadminController extends Controller
         $data = DB::select('CALL detail_kuisioner_dsn_pa(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
 
         $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_dsn_pa', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
-        return $pdf->download('Report Kuisioner Dosen Pembimbing Akademik' . ' ' .$nama_dosen.' '.$periodetahun . ' ' . $periodetipe . '.pdf');
+        return $pdf->download('Report Kuisioner Dosen Pembimbing Akademik' . ' ' . $nama_dosen . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
     public function report_dospem_pkl($id)
@@ -2934,6 +2934,40 @@ class SadminController extends Controller
         return view('sadmin/kuisioner/detail_kuisioner_dsn_pkl', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
     }
 
+    public function download_kuisioner_dsn_pkl(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_pkl(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_dospem_pkl', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Pembimbing PKL' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_dsn_pkl(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_pkl(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_dsn_pkl', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Pembimbing PKL' . ' ' . $nama_dosen . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+    }
+
     public function report_dospem_ta($id)
     {
         $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -2985,6 +3019,40 @@ class SadminController extends Controller
         $data = DB::select('CALL detail_kuisioner_dsn_ta(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
 
         return view('sadmin/kuisioner/detail_kuisioner_dsn_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function download_kuisioner_dsn_ta(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_ta(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_dospem_ta', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Pembimbing TA' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_dsn_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_ta(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_dsn_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Pembimbing TA' . ' ' . $nama_dosen . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
     public function report_dospeng1_ta($id)
@@ -3040,6 +3108,40 @@ class SadminController extends Controller
         return view('sadmin/kuisioner/detail_kuisioner_dsn_peng1_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
     }
 
+    public function download_kuisioner_dsn_peng1_ta(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji1_ta(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_dospeng1_ta', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Penguji 1 TA' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_dsn_peng1_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_penguji1_ta(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_dsn_peng1_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Penguji 1 TA' . ' ' . $nama_dosen . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+    }
+
     public function report_dospeng2_ta($id)
     {
         $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -3091,6 +3193,40 @@ class SadminController extends Controller
         $data = DB::select('CALL detail_kuisioner_dsn_penguji2_ta(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
 
         return view('sadmin/kuisioner/detail_kuisioner_dsn_peng2_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'));
+    }
+
+    public function download_kuisioner_dsn_peng2_ta(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_dsn_penguji2_ta(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_dospeng2_ta', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Penguji 2 TA' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_dsn_peng2_ta(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Dosen::where('iddosen', $iddosen)->first();
+        $nama_dosen = $dosen->nama;
+
+        $data = DB::select('CALL detail_kuisioner_dsn_penguji2_ta(?,?,?)', [$iddosen, $idperiodetahun, $idperiodetipe]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_dsn_peng2_ta', compact('data', 'nama_dosen', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner Dosen Penguji 2 TA' . ' ' . $nama_dosen . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
     public function report_kuis_baak($id)
@@ -3146,6 +3282,40 @@ class SadminController extends Controller
         return view('sadmin/kuisioner/detail_kuisioner_baak', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
     }
 
+    public function download_kuisioner_baak(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_baak(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_kuisioner_baak', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BAAK' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_baak(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_baak(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_baak', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BAAK' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+    }
+
     public function report_kuis_bauk($id)
     {
         $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -3199,6 +3369,40 @@ class SadminController extends Controller
         return view('sadmin/kuisioner/detail_kuisioner_bauk', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
     }
 
+    public function download_kuisioner_bauk(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_bauk(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_kuisioner_bauk', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BAUK' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_bauk(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_bauk(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_bauk', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BAUK' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+    }
+
     public function report_kuis_perpus($id)
     {
         $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -3250,6 +3454,40 @@ class SadminController extends Controller
         $data = DB::select('CALL detail_kuisioner_perpus(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
 
         return view('sadmin/kuisioner/detail_kuisioner_perpus', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
+    }
+
+    public function download_kuisioner_perpus(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_perpus(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_kuisioner_perpus', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner PERPUS' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_perpus(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_perpus(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_perpus', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner PERPUS' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
     public function soal_uts_uas()

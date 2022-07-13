@@ -59,7 +59,6 @@
                     <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
                     <button type="submit" class="btn btn-danger">Download PDF</button>
                 </form>
-
                 <br>
                 <table id="example1" class="table table-bordered table-striped">
 

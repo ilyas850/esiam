@@ -26,7 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h4><b>REPORT KUISIONER DOSEN PEMBIMBING AKADEMIK </b></h4>
+                    <h4><b>REPORT KUISIONER DOSEN PEMBIMBING TA </b></h4>
                 </center>
             </td>
         </tr>

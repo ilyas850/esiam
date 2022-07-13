@@ -26,7 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h4><b>REPORT KUISIONER DOSEN PEMBIMBING AKADEMIK </b></h4>
+                    <h4><b>REPORT KUISIONER BAAK </b></h4>
                 </center>
             </td>
         </tr>
@@ -38,9 +38,9 @@
             <td width="40%"><span style="font-size:85%">{{ $periodetahun }} - {{ $periodetipe }}</span></td>
         </tr>
         <tr>
-            <td width="15%"><span style="font-size:85%">Dosen</span></td>
+            <td width="15%"><span style="font-size:85%">Prodi</span></td>
             <td><span style="font-size:85%">:</span></td>
-            <td><span style="font-size:85%">{{ $nama_dosen }}</span> </td>
+            <td><span style="font-size:85%">{{ $nama_prodi }}</span> </td>
         </tr>
     </table>
     <br>
