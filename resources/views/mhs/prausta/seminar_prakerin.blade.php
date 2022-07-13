@@ -675,7 +675,8 @@
                                             @endif
 
                                             <div class="inner">
-                                                <h3>{{ $cekdata_nilai->nilai_huruf }}</h3>
+                                                <h3>
+                                                    {{ $cekdata_nilai->nilai_huruf }}</h3>
                                                 <p>Nilai Akhir Prakerin</p>
                                             </div>
                                             <div class="icon">

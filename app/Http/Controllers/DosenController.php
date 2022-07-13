@@ -555,34 +555,7 @@ class DosenController extends Controller
 
     public function history_makul_dsn()
     {
-        $id = Auth::user()->username;
-        $dsn = Dosen::where('nik', $id)->get();
-        foreach ($dsn as $keydsn) {
-            # code...
-        }
-        $iddsn = $keydsn->iddosen;
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
-        $tp = $tipe->id_periodetipe;
-
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-        foreach ($thn as $tahun) {
-            // code...
-        }
-        $thn = $tahun->id_periodetahun;
-        $mk = Matakuliah::all();
-        $prd = Prodi::all();
-        $kls = Kelas::all();
-        $smt = Semester::all();
-        $prd_tahun = Periode_tahun::all();
-        $prd_tipe = Periode_tipe::all();
-        $kur = Kurikulum_master::where('status', 'ACTIVE')->get();
-        foreach ($kur as $krlm) {
-            // code...
-        }
+        $iddsn = Auth::user()->id_user;
 
         $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -596,17 +569,16 @@ class DosenController extends Controller
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
             ->orderBy('kurikulum_periode.id_periodetahun', 'DESC')
+            ->orderBy('semester.semester', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        return view('dosen/history_makul_dsn', ['prd_tipe' => $prd_tipe, 'prd_tahun' => $prd_tahun, 'makul' => $mkul, 'mk' => $mk, 'prd' => $prd, 'kls' => $kls, 'smt' => $smt]);
+        return view('dosen/history_makul_dsn', ['makul' => $mkul]);
     }
 
     public function cekmhs_dsn($id)
     {
-        $mhs = Student::all();
-        $prd = Prodi::all();
-        $kls = Kelas::all();
-        $angk = Angkatan::all();
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -616,52 +588,76 @@ class DosenController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $id]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $id]);
     }
 
     public function cekmhs_dsn_his($id)
     {
-        $mhs = Student::all();
-        $prd = Prodi::all();
-        $kls = Kelas::all();
-        $angk = Angkatan::all();
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('id_kurperiode', $id)
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'student.kodeprodi', 'student.idstatus', 'student.idangkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('student_record.id_kurtrans')
-            ->get();
-        foreach ($ckstr as $str) {
-            # code...
-        }
-        $kur = $str->id_kurtrans;
+            ->first();
 
-        return view('dosen/list_mhs_dsn_his', ['ck' => $cks, 'mhs' => $mhs, 'prd' => $prd, 'kls' => $kls, 'angk' => $angk, 'ids' => $id, 'kur' => $kur]);
+        $kur = $ckstr->id_kurtrans;
+
+        return view('dosen/list_mhs_dsn_his', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
     }
 
     public function export_xlsnilai(Request $request)
     {
         $id = $request->id_kurperiode;
 
-        $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $keymk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('matakuliah.makul', 'prodi.prodi', 'kelas.kelas')
-            ->get();
-        foreach ($mk as $keymk) {
-            # code...
-        }
+            ->first();
 
         $mkul = $keymk->makul;
         $prdi = $keymk->prodi;
@@ -2803,6 +2799,7 @@ class DosenController extends Controller
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->orderBy('bap.id_bap', 'ASC')
             ->get();
 
         return view('dosen/view_bap_his', ['bap' => $key, 'data' => $data]);

@@ -37,7 +37,8 @@
             <td><b><span style="font-size:85%"><u>{{ $data->kode }}</u></span></b></td>
             <td><b><span style="font-size:85%">Tahun Akademik </span></b></td>
             <td> : </td>
-            <td><b><span style="font-size:85%"><u>{{ $data->periode_tahun }} {{ $data->periode_tipe }}</u></span></b>
+            <td><b><span style="font-size:85%"><u>{{ $data->periode_tahun }}
+                            {{ $data->periode_tipe }}</u></span></b>
             </td>
         </tr>
         <tr>
@@ -70,7 +71,6 @@
                 <th><span style="font-size:85%">Nilai AKHIR</span></th>
                 <th><span style="font-size:85%">Nilai HURUF</span></th>
             </tr>
-
         </thead>
         <tbody>
             @php $i=1 @endphp

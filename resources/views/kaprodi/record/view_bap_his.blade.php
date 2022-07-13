@@ -44,7 +44,7 @@
                 <a href="/sum_absen_his_kprd/{{$bap->id_kurperiode}}" class="btn btn-info">Absensi Perkuliahan</a>
                 <a href="/jurnal_bap_his_kprd/{{$bap->id_kurperiode}}" class="btn btn-warning">Jurnal Perkuliahan</a>
                 <br><br>
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example6" class="table table-bordered table-striped">
                     <thead>
                         <tr>
 
