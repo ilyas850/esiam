@@ -142,6 +142,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     //WADIR
     Route::get('wadir', 'SadminController@wadir');
     Route::post('post_wadir', 'SadminController@post_wadir');
+    Route::put('put_wadir/{id}', 'SadminController@put_wadir');
 
     //master khs
     Route::get('nilai_khs', 'SadminController@nilai_khs');

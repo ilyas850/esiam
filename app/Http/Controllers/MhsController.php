@@ -3743,11 +3743,12 @@ class MhsController extends Controller
 
         //hasil
         $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
+        $data = Wisuda::where('id_student', $id)->first();
+        $prodi = Prodi::all();
+
+        return view('mhs/pendaftaran/wisuda', compact('id', 'data', 'prodi'));
 
         if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
-            $data = Wisuda::where('id_student', $id)->first();
-
-            return view('mhs/pendaftaran/wisuda', compact('id', 'data'));
         } else {
             alert()->warning('Anda tidak dapat melakukan Pendaftaran Wisuda karena keuangan Anda belum memenuhi syarat')->autoclose(5000);
             return redirect('home');

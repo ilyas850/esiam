@@ -97,24 +97,24 @@
                                 <td>
                                     <center>
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
-                                            data-target="#modalUpdateKaprodi{{ $key->id_kaprodi }}"
-                                            title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                            data-target="#modalUpdateWadir{{ $key->id_wadir }}" title="klik untuk edit"><i
+                                                class="fa fa-edit"></i></button>
                                         <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                            data-target="#modalHapusKaprodi{{ $key->id_kaprodi }}"
+                                            data-target="#modalHapusWadir{{ $key->id_wadir }}"
                                             title="klik untuk hapus"><i class="fa fa-trash"></i></button>
                                     </center>
                                 </td>
                             </tr>
 
-                            <div class="modal fade" id="modalUpdateKaprodi{{ $key->id_kaprodi }}" tabindex="-1"
-                                aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
+                            <div class="modal fade" id="modalUpdateWadir{{ $key->id_wadir }}" tabindex="-1"
+                                aria-labelledby="modalUpdateWadir" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Kaprodi</h5>
+                                            <h5 class="modal-title">Update Wadir</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/put_kaprodi/{{ $key->id_kaprodi }}" method="post">
+                                            <form action="/put_wadir/{{ $key->id_wadir }}" method="post">
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
@@ -146,20 +146,19 @@
                                 </div>
                             </div>
 
-                            <div class="modal fade" id="modalHapusKaprodi{{ $key->id_kaprodi }}" tabindex="-1"
-                                aria-labelledby="modalHapusKaprodi" aria-hidden="true">
+                            <div class="modal fade" id="modalHapusWadir{{ $key->id_wadir }}" tabindex="-1"
+                                aria-labelledby="modalHapusWadir" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-body">
                                             <h4 class="text-center">Apakah anda yakin menghapus data kaprodi ini ?</h4>
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{{ url('hapuskaprodi') }}" method="post">
+                                            <form action="{{ url('hapuswadir') }}" method="post">
                                                 {{ csrf_field() }}
                                                 {{-- @csrf
                               @method('delete') --}}
-                                                <input type="hidden" name="id_kaprodi"
-                                                    value="{{ $key->id_kaprodi }}" />
+                                                <input type="hidden" name="id_wadir" value="{{ $key->id_wadir }}" />
                                                 <button type="submit" class="btn btn-primary">Hapus data!</button>
                                             </form>
                                             <button type="button" class="btn btn-secondary"

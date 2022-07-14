@@ -2353,6 +2353,24 @@ class SadminController extends Controller
         return redirect('wadir');
     }
 
+    public function put_wadir(Request $request, $id)
+    {
+        $data_dsn = Dosen::where('iddosen', $request->id_dosen)->first();
+        $nama_dsn = $data_dsn->nama;
+
+        User::where('username', 'wadir1')->update([
+            'id_user' => $request->id_dosen,
+            'name' => $nama_dsn
+        ]);
+
+        $prd = Wadir::find($id);
+        $prd->id_dosen = $request->id_dosen;
+        $prd->updated_by = Auth::user()->name;
+        $prd->save();
+
+        return redirect('wadir');
+    }
+
     public function data_admin_prodi()
     {
         $data = User::join('wrkpersonalia', 'users.id_user', '=', 'wrkpersonalia.idstaff')

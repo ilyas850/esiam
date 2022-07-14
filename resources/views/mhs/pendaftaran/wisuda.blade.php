@@ -26,6 +26,73 @@
                     </div>
                     <div class="box-body">
                         <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>NIM</label>
+                                    <input type="number" class="form-control" name="nim" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Nama</label>
+                                    <input type="text" class="form-control" name="nama_lengkap" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Prodi</label>
+                                    <select name="prodi" class="form-control" required>
+                                        <option></option>
+                                        @foreach ($prodi as $item)
+                                            <option value="{{ $item->id_prodi }}">{{ $item->prodi }} -
+                                                {{ $item->konsentrasi }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>No. HP</label>
+                                    <input type="number" class="form-control" name="no_hp" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>NIK</label>
+                                    <input name="nik" class="form-control" type="number" required>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>NPWP</label>
+                                    <input name="npwp" class="form-control" type="number" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Alamat KTP</label>
+                                    <textarea type="text" class="form-control" name="alamat_ktp" required> </textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Alamat Domisili</label>
+                                    <textarea type="text" class="form-control" name="alamat_domisili" required> </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Ukuran Toga</label>
