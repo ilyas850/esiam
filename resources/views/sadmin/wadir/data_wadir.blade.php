@@ -99,9 +99,8 @@
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateWadir{{ $key->id_wadir }}" title="klik untuk edit"><i
                                                 class="fa fa-edit"></i></button>
-                                        <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                            data-target="#modalHapusWadir{{ $key->id_wadir }}"
-                                            title="klik untuk hapus"><i class="fa fa-trash"></i></button>
+                                        <a href="hapus_wadir/{{ $key->id_wadir }}" class="btn btn-danger btn-xs"
+                                            title="klik untuk hapus"><i class="fa fa-trash"></i></a>
                                     </center>
                                 </td>
                             </tr>
@@ -141,28 +140,6 @@
                                                 <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
                                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                             </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="modalHapusWadir{{ $key->id_wadir }}" tabindex="-1"
-                                aria-labelledby="modalHapusWadir" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-body">
-                                            <h4 class="text-center">Apakah anda yakin menghapus data kaprodi ini ?</h4>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form action="{{ url('hapuswadir') }}" method="post">
-                                                {{ csrf_field() }}
-                                                {{-- @csrf
-                              @method('delete') --}}
-                                                <input type="hidden" name="id_wadir" value="{{ $key->id_wadir }}" />
-                                                <button type="submit" class="btn btn-primary">Hapus data!</button>
-                                            </form>
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Batal</button>
                                         </div>
                                     </div>
                                 </div>

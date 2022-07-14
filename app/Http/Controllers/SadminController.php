@@ -2371,6 +2371,15 @@ class SadminController extends Controller
         return redirect('wadir');
     }
 
+    public function hapus_wadir($id)
+    {
+        Wadir::where('id_wadir', $id)->delete();
+
+        User::where('username', 'wadir1')->delete();
+
+        return redirect('wadir');
+    }
+
     public function data_admin_prodi()
     {
         $data = User::join('wrkpersonalia', 'users.id_user', '=', 'wrkpersonalia.idstaff')
