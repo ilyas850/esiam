@@ -41,7 +41,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Prodi</label>
-                                    <select name="prodi" class="form-control" required>
+                                    <select name="id_prodi" class="form-control" required>
                                         <option></option>
                                         @foreach ($prodi as $item)
                                             <option value="{{ $item->id_prodi }}">{{ $item->prodi }} -
@@ -199,9 +199,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Prodi</label>
-                                <select name="prodi" class="form-control" readonly>
-                                    <option>{{ $data->prodi }}</option>
-
+                                <select name="id_prodi" class="form-control" readonly>
+                                    <option>{{ $data->prodi }} - {{ $data->konsentrasi }}</option>
                                 </select>
                             </div>
                         </div>
@@ -223,7 +222,6 @@
                             <div class="form-group">
                                 <label>NIK</label>
                                 <input value="{{ $data->nik }}" class="form-control" type="number" readonly>
-
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -237,13 +235,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Alamat KTP</label>
-                                <textarea type="text" class="form-control" name="alamat_ktp" rows="3" readonly> </textarea>
+                                <textarea type="text" class="form-control" rows="3" readonly> {{ $data->alamat_ktp }} </textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Alamat Domisili</label>
-                                <textarea type="text" class="form-control" name="alamat_domisili" rows="3" readonly> </textarea>
+                                <textarea type="text" class="form-control" rows="3" readonly> {{ $data->alamat_domisili }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -251,26 +249,26 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Nama Ayah</label>
-                                <input type="text" class="form-control" name="nama_ayah" readonly>
+                                <input type="text" class="form-control" value="{{ $data->nama_ayah }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Nama Ibu</label>
-                                <input type="text" class="form-control" name="nama_ibu" readonly>
+                                <input type="text" class="form-control" value="{{ $data->nama_ibu }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>No. HP Ayah</label>
-                                <input name="no_hp_ayah" class="form-control" type="number" readonly>
+                                <input value="{{ $data->no_hp_ayah }}" class="form-control" type="number" readonly>
 
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>No. HP Ibu</label>
-                                <input name="{{$data->no_hp_ibu}}" class="form-control" type="number" readonly>
+                                <input value="{{ $data->no_hp_ibu }}" class="form-control" type="number" readonly>
                             </div>
                         </div>
                     </div>
@@ -281,10 +279,9 @@
                                 <textarea type="text" class="form-control" rows="3" readonly>{{ $data->alamat_ortu }} </textarea>
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Ukuran Toga</label>
                                 <select name="ukuran_toga" class="form-control" readonly>
@@ -292,12 +289,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Status Vaksin</label>
                                 <select name="status_vaksin" class="form-control" readonly>
                                     <option value="{{ $data->status_vaksin }}">{{ $data->status_vaksin }}</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Tahun Lulus</label>
+                                <input type="text" value="{{ $data->tahun_lulus }}" class="form-control" readonly>
                             </div>
                         </div>
                     </div>
@@ -340,7 +343,125 @@
                                 @csrf
                                 @method('put')
                                 <div class="row">
-                                    <div class="col-xs-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>NIM</label>
+                                            <input type="number" class="form-control" value="{{ $data->nim }}"
+                                                name="nim" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Lengkap</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $data->nama_lengkap }}" name="nama_lengkap" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Prodi</label>
+                                            <select name="id_prodi" class="form-control" required>
+                                                <option value="{{ $data->id_prodi }}">{{ $data->prodi }} -
+                                                    {{ $data->konsentrasi }}</option>
+                                                @foreach ($prodi as $item)
+                                                    <option value="{{ $item->id_prodi }}">{{ $item->prodi }} -
+                                                        {{ $item->konsentrasi }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>No. HP</label>
+                                            <input type="number" class="form-control" value="{{ $data->no_hp }}"
+                                                name="no_hp" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" value="{{ $data->email }}"
+                                                name="email" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>NIK</label>
+                                            <input value="{{ $data->nik }}" class="form-control" type="number"
+                                                name="nik" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>NPWP</label>
+                                            <input value="{{ $data->npwp }}" class="form-control" type="number"
+                                                name="npwp" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Alamat KTP</label>
+                                            <textarea type="text" class="form-control" rows="4" name="alamat_ktp" required> {{ $data->alamat_ktp }} </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Alamat Domisili</label>
+                                            <textarea type="text" class="form-control" rows="4" name="alamat_domisili" required> {{ $data->alamat_domisili }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Ayah</label>
+                                            <input type="text" class="form-control" value="{{ $data->nama_ayah }}"
+                                                name="nama_ayah" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Ibu</label>
+                                            <input type="text" class="form-control" value="{{ $data->nama_ibu }}"
+                                                name="nama_ibu" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>No. HP Ayah</label>
+                                            <input value="{{ $data->no_hp_ayah }}" class="form-control" type="number"
+                                                name="no_hp_ayah" required>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>No. HP Ibu</label>
+                                            <input value="{{ $data->no_hp_ibu }}" class="form-control"
+                                                name="no_hp_ibu" type="number">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Alamat Orang tua</label>
+                                            <textarea type="text" class="form-control" rows="3" name="alamat_ortu" required>{{ $data->alamat_ortu }} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Ukuran Toga</label>
                                             <select name="ukuran_toga" class="form-control" required>
@@ -354,7 +475,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Status Vaksin</label>
                                             <select name="status_vaksin" class="form-control" required>
@@ -366,12 +487,19 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Tahun Lulus</label>
+                                            <input type="number" value="{{ $data->tahun_lulus }}" name="tahun_lulus"
+                                                class="form-control" required>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>File Vaksin</label>
                                     <input type="file" class="form-control" name="file_vaksin"
-                                        value="{{ $data->file_vaksin }}" required>
+                                        value="{{ $data->file_vaksin }}">
                                     {{ $data->file_vaksin }} <br>
                                     <span>File size max. 4mb dan format file .jpg </span>
                                 </div>
@@ -385,15 +513,5 @@
         @endif
     </section>
 
-    <script>
-        function validate() {
-            var num = document.myForm.num.value;
-            if (isNaN(num)) {
-                document.getElementById("numloc").innerHTML = "Harap masukan angka";
-                return false;
-            } else {
-                return true;
-            }
-        }
-    </script>
+
 @endsection

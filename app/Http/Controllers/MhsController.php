@@ -3743,13 +3743,16 @@ class MhsController extends Controller
 
         //hasil
         $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
-        $data = Wisuda::join('prodi', 'wisuda.prodi', '=', 'prodi.id_prodi')
-            ->where('wisuda.id_student', $id)->first();
-        $prodi = Prodi::all();
 
-        return view('mhs/pendaftaran/wisuda', compact('id', 'data', 'prodi'));
 
         if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
+            $data = Wisuda::join('prodi', 'wisuda.id_prodi', '=', 'prodi.id_prodi')
+                ->where('wisuda.id_student', $id)
+
+                ->first();
+            $prodi = Prodi::all();
+
+            return view('mhs/pendaftaran/wisuda', compact('id', 'data', 'prodi'));
         } else {
             alert()->warning('Anda tidak dapat melakukan Pendaftaran Wisuda karena keuangan Anda belum memenuhi syarat')->autoclose(5000);
             return redirect('home');
@@ -3770,7 +3773,7 @@ class MhsController extends Controller
                 'tahun_lulus'       => 'required',
                 'nim'               => 'required',
                 'nama_lengkap'      => 'required',
-                'prodi'             => 'required',
+                'id_prodi'             => 'required',
                 'no_hp'             => 'required',
                 'email'             => 'required',
                 'nik'               => 'required',
@@ -3793,7 +3796,7 @@ class MhsController extends Controller
         $bap->tahun_lulus       = $request->tahun_lulus;
         $bap->nim               = $request->nim;
         $bap->nama_lengkap      = $request->nama_lengkap;
-        $bap->prodi             = $request->prodi;
+        $bap->id_prodi          = $request->id_prodi;
         $bap->no_hp             = $request->no_hp;
         $bap->email             = $request->email;
         $bap->nik               = $request->nik;
@@ -3829,7 +3832,7 @@ class MhsController extends Controller
         $bap->tahun_lulus       = $request->tahun_lulus;
         $bap->nim               = $request->nim;
         $bap->nama_lengkap      = $request->nama_lengkap;
-        $bap->prodi             = $request->prodi;
+        $bap->id_prodi          = $request->id_prodi;
         $bap->no_hp             = $request->no_hp;
         $bap->email             = $request->email;
         $bap->nik               = $request->nik;
