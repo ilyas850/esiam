@@ -6,18 +6,19 @@
     tr.b {
         line-height: 50px;
     }
-
 </style>
 
 <body>
     <table width="100%">
         <tr>
             <td>
-                <img src="{{ asset('images/logo meta png.png') }}" width="250" height="90" alt="" align="left" />
+                <img src="{{ asset('images/logo meta png.png') }}" width="250" height="90" alt=""
+                    align="left" />
             </td>
             <td>
                 <center>
-                    <img src="{{ asset('images/kop.png') }}" width="275" height="70" alt="" align="right" />
+                    <img src="{{ asset('images/kop.png') }}" width="275" height="70" alt=""
+                        align="right" />
                 </center>
             </td>
         </tr>
@@ -187,13 +188,13 @@
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">Fransisca Debora, S.Si., M.T.</span></td>
+            <td width="33%"><span style="font-size:65%">Tisa Amalia, S.Si.T., M.H(Kes).</span></td>
         </tr>
     </table>
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">NIDN. 0414029402</span></td>
+            <td width="33%"><span style="font-size:65%">NIDN. 625048701</span></td>
         </tr>
     </table>
     <script>
