@@ -3743,7 +3743,8 @@ class MhsController extends Controller
 
         //hasil
         $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
-        $data = Wisuda::where('id_student', $id)->first();
+        $data = Wisuda::join('prodi', 'wisuda.prodi', '=', 'prodi.id_prodi')
+            ->where('wisuda.id_student', $id)->first();
         $prodi = Prodi::all();
 
         return view('mhs/pendaftaran/wisuda', compact('id', 'data', 'prodi'));
@@ -3764,17 +3765,46 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'ukuran_toga' => 'required',
-                'status_vaksin' => 'required',
-                'file_vaksin'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+                'ukuran_toga'       => 'required',
+                'status_vaksin'     => 'required',
+                'tahun_lulus'       => 'required',
+                'nim'               => 'required',
+                'nama_lengkap'      => 'required',
+                'prodi'             => 'required',
+                'no_hp'             => 'required',
+                'email'             => 'required',
+                'nik'               => 'required',
+                'npwp'              => 'required',
+                'alamat_ktp'        => 'required',
+                'alamat_domisili'   => 'required',
+                'nama_ayah'         => 'required',
+                'nama_ibu'          => 'required',
+                'no_hp_ayah'        => 'required',
+                'alamat_ortu'       => 'required',
+                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
             ],
             $message,
         );
 
         $bap = new Wisuda();
-        $bap->id_student = $request->id_student;
-        $bap->ukuran_toga = $request->ukuran_toga;
-        $bap->status_vaksin = $request->status_vaksin;
+        $bap->id_student        = $request->id_student;
+        $bap->ukuran_toga       = $request->ukuran_toga;
+        $bap->status_vaksin     = $request->status_vaksin;
+        $bap->tahun_lulus       = $request->tahun_lulus;
+        $bap->nim               = $request->nim;
+        $bap->nama_lengkap      = $request->nama_lengkap;
+        $bap->prodi             = $request->prodi;
+        $bap->no_hp             = $request->no_hp;
+        $bap->email             = $request->email;
+        $bap->nik               = $request->nik;
+        $bap->npwp              = $request->npwp;
+        $bap->alamat_ktp        = $request->alamat_ktp;
+        $bap->alamat_domisili   = $request->alamat_domisili;
+        $bap->nama_ayah         = $request->nama_ayah;
+        $bap->nama_ibu          = $request->nama_ibu;
+        $bap->no_hp_ayah        = $request->no_hp_ayah;
+        $bap->no_hp_ibu         = $request->no_hp_ibu;
+        $bap->alamat_ortu       = $request->alamat_ortu;
 
         if ($request->hasFile('file_vaksin')) {
             $file = $request->file('file_vaksin');
@@ -3796,6 +3826,21 @@ class MhsController extends Controller
         $bap->id_student = Auth::user()->id_user;
         $bap->ukuran_toga = $request->ukuran_toga;
         $bap->status_vaksin = $request->status_vaksin;
+        $bap->tahun_lulus       = $request->tahun_lulus;
+        $bap->nim               = $request->nim;
+        $bap->nama_lengkap      = $request->nama_lengkap;
+        $bap->prodi             = $request->prodi;
+        $bap->no_hp             = $request->no_hp;
+        $bap->email             = $request->email;
+        $bap->nik               = $request->nik;
+        $bap->npwp              = $request->npwp;
+        $bap->alamat_ktp        = $request->alamat_ktp;
+        $bap->alamat_domisili   = $request->alamat_domisili;
+        $bap->nama_ayah         = $request->nama_ayah;
+        $bap->nama_ibu          = $request->nama_ibu;
+        $bap->no_hp_ayah        = $request->no_hp_ayah;
+        $bap->no_hp_ibu         = $request->no_hp_ibu;
+        $bap->alamat_ortu       = $request->alamat_ortu;
 
         if ($bap->file_vaksin) {
             if ($request->hasFile('file_vaksin')) {

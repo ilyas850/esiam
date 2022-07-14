@@ -188,13 +188,13 @@
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">Tisa Amalia, S.Si.T., M.H(Kes).</span></td>
+            <td width="33%"><span style="font-size:65%">Tisa Amalia, S.Si.T., M.H.</span></td>
         </tr>
     </table>
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">NIDN. 625048701</span></td>
+            <td width="33%"><span style="font-size:65%">NIDN. 0625048701</span></td>
         </tr>
     </table>
     <script>

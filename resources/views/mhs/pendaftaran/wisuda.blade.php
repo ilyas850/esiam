@@ -29,12 +29,12 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>NIM</label>
-                                    <input type="number" class="form-control" name="nim" required>
+                                    <input type="number" class="form-control" value="nim" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Nama</label>
+                                    <label>Nama Lengkap</label>
                                     <input type="text" class="form-control" name="nama_lengkap" required>
                                 </div>
                             </div>
@@ -82,39 +82,82 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Alamat KTP</label>
-                                    <textarea type="text" class="form-control" name="alamat_ktp" required> </textarea>
+                                    <textarea type="text" class="form-control" name="alamat_ktp" rows="3" required> </textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Alamat Domisili</label>
-                                    <textarea type="text" class="form-control" name="alamat_domisili" required> </textarea>
+                                    <textarea type="text" class="form-control" name="alamat_domisili" rows="3" required> </textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Nama Ayah</label>
+                                    <input type="text" class="form-control" name="nama_ayah" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Nama Ibu</label>
+                                    <input type="text" class="form-control" name="nama_ibu" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>No. HP Ayah</label>
+                                    <input name="no_hp_ayah" class="form-control" type="number" required>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>No. HP Ibu</label>
+                                    <input name="no_hp_ibu" class="form-control" type="number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Alamat Orang tua</label>
+                                    <textarea type="text" class="form-control" name="alamat_ortu" rows="3" required> </textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Ukuran Toga</label>
-                                    <select name="ukuran_toga" class="form-control">
+                                    <select name="ukuran_toga" class="form-control" required>
                                         <option></option>
                                         <option value="S">S</option>
                                         <option value="M">M</option>
                                         <option value="L">L</option>
                                         <option value="XL">XL</option>
                                         <option value="XXL">XXL</option>
+                                        <option value="XXXL">XXXL</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Status Vaksin</label>
-                                    <select name="status_vaksin" class="form-control">
+                                    <select name="status_vaksin" class="form-control" required>
                                         <option></option>
                                         <option value="Pertama">Pertama</option>
                                         <option value="Kedua">Kedua</option>
                                         <option value="Booster">Booster</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Tahun Lulus</label>
+                                    <input type="number" class="form-control" name="tahun_lulus" required>
                                 </div>
                             </div>
                         </div>
@@ -140,6 +183,106 @@
                     <h3 class="box-title">Data Diri (Wisuda)</h3>
                 </div>
                 <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>NIM</label>
+                                <input type="number" class="form-control" value="{{ $data->nim }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Nama Lengkap</label>
+                                <input type="text" class="form-control" value="{{ $data->nama_lengkap }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prodi</label>
+                                <select name="prodi" class="form-control" readonly>
+                                    <option>{{ $data->prodi }}</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>No. HP</label>
+                                <input type="number" class="form-control" value="{{ $data->no_hp }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" value="{{ $data->email }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>NIK</label>
+                                <input value="{{ $data->nik }}" class="form-control" type="number" readonly>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>NPWP</label>
+                                <input value="{{ $data->npwp }}" class="form-control" type="number" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat KTP</label>
+                                <textarea type="text" class="form-control" name="alamat_ktp" rows="3" readonly> </textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat Domisili</label>
+                                <textarea type="text" class="form-control" name="alamat_domisili" rows="3" readonly> </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Nama Ayah</label>
+                                <input type="text" class="form-control" name="nama_ayah" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Nama Ibu</label>
+                                <input type="text" class="form-control" name="nama_ibu" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>No. HP Ayah</label>
+                                <input name="no_hp_ayah" class="form-control" type="number" readonly>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>No. HP Ibu</label>
+                                <input name="{{$data->no_hp_ibu}}" class="form-control" type="number" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat Orang tua</label>
+                                <textarea type="text" class="form-control" rows="3" readonly>{{ $data->alamat_ortu }} </textarea>
+                            </div>
+                        </div>
+
+                    </div>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -241,4 +384,16 @@
             </div>
         @endif
     </section>
+
+    <script>
+        function validate() {
+            var num = document.myForm.num.value;
+            if (isNaN(num)) {
+                document.getElementById("numloc").innerHTML = "Harap masukan angka";
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
 @endsection
