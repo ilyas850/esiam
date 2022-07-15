@@ -554,7 +554,6 @@
                                         <span class="badge bg-red">Maaf syarat keuangan anda belum memenuhi untuk
                                             pengajuan seminar proposal</span>
                                     @endif
-
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_4">

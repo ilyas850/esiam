@@ -3773,7 +3773,7 @@ class MhsController extends Controller
                 'tahun_lulus'       => 'required',
                 'nim'               => 'required',
                 'nama_lengkap'      => 'required',
-                'id_prodi'             => 'required',
+                'id_prodi'          => 'required',
                 'no_hp'             => 'required',
                 'email'             => 'required',
                 'nik'               => 'required',
@@ -3825,6 +3825,34 @@ class MhsController extends Controller
 
     public function put_wisuda(Request $request, $id)
     {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'ukuran_toga'       => 'required',
+                'status_vaksin'     => 'required',
+                'tahun_lulus'       => 'required',
+                'nim'               => 'required',
+                'nama_lengkap'      => 'required',
+                'id_prodi'          => 'required',
+                'no_hp'             => 'required',
+                'email'             => 'required',
+                'nik'               => 'required',
+                'npwp'              => 'required',
+                'alamat_ktp'        => 'required',
+                'alamat_domisili'   => 'required',
+                'nama_ayah'         => 'required',
+                'nama_ibu'          => 'required',
+                'no_hp_ayah'        => 'required',
+                'alamat_ortu'       => 'required',
+                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+            ],
+            $message,
+        );
+
         $bap = Wisuda::find($id);
         $bap->id_student = Auth::user()->id_user;
         $bap->ukuran_toga = $request->ukuran_toga;
