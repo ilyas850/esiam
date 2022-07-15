@@ -20,7 +20,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Matakuliah</h3>
+                <h3 class="box-title">Data Matakuliah <b> {{ $nama_periodetahun }} - {{ $nama_periodetipe }} </b></h3>
             </div>
             <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">
@@ -94,7 +94,8 @@
                                     <center>
                                         <form action="{{ url('export_xlsnilai') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode"
+                                                value="{{ $item->id_kurperiode }}">
                                             <input class="btn btn-success btn-xs" type="submit" name="submit"
                                                 value="Export Excel">
                                         </form>
@@ -104,7 +105,8 @@
                                     <center>
                                         <form class="" action="{{ url('unduh_pdf_nilai') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode"
+                                                value="{{ $item->id_kurperiode }}">
                                             <button type="submit" class="btn btn-danger btn-xs">Unduh Nilai</button>
                                         </form>
                                     </center>

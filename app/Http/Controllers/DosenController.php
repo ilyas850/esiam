@@ -524,9 +524,14 @@ class DosenController extends Controller
 
     public function makul_diampu_dsn()
     {
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $nama_periodetahun = $periodetahun->periode_tahun;
+        $nama_periodetipe = $periodetipe->periode_tipe;
+
         $id = Auth::user()->id_user;
 
-        $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+        $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -536,7 +541,7 @@ class DosenController extends Controller
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
             ->where('kurikulum_periode.id_dosen', $id)
             ->where('periode_tahun.status', 'ACTIVE')
-            // ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select(
                 'kurikulum_hari.hari',
@@ -550,7 +555,7 @@ class DosenController extends Controller
             )
             ->get();
 
-        return view('dosen/makul_diampu_dsn', ['makul' => $mkul]);
+        return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe'));
     }
 
     public function history_makul_dsn()
@@ -1424,7 +1429,7 @@ class DosenController extends Controller
             return redirect()->back();
         } elseif ($jml_bap == 0) {
             $jml_id = count($sama);
-
+            dd($jml_id);
             for ($i = 0; $i < $jml_id; $i++) {
                 $tes = $sama[$i];
                 $d = $tes['id_kurperiode'];
