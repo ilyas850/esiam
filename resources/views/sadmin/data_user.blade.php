@@ -25,7 +25,10 @@
                                     <th width="15%">
                                         <center>Program Studi</center>
                                     </th>
-                                    <th width="15%">
+                                    <th width="10%">
+                                        <center>Kelas</center>
+                                    </th>
+                                    <th width="10%">
                                         <center>Kelas</center>
                                     </th>
                                     <th>
@@ -54,6 +57,9 @@
                                             <center>{{ $item->kelas }}</center>
                                         </td>
                                         <td>
+                                            <center>{{ $item->angkatan }}</center>
+                                        </td>
+                                        <td>
                                             <center>
                                                 @if ($item->role == 3)
                                                     Mahasiswa Aktif
@@ -65,12 +71,24 @@
                                         <td>
                                             <center>
                                                 @if ($item->username == null)
-                                                    <a class="btn btn-info btn-xs"
-                                                        href="/usermhs/{{ $item->nim }}">Generate</a>
+                                                    {{-- <a class="btn btn-info btn-xs"
+                                                        href="/usermhs/{{ $item->nim }}">Generate</a> --}}
+
+                                                    <form action="{{ url('saveuser_mhs') }}" method="post">
+                                                        <input type="hidden" name="role" value="4">
+                                                        <input type="hidden" name="id_user"
+                                                            value="{{ $item->idstudent }}">
+                                                        <input type="hidden" name="username" value="{{ $item->nim }}">
+                                                        <input type="hidden" name="name" value="{{ $item->nama }}">
+                                                        {{ csrf_field() }}
+                                                        <button type="submit" class="btn btn-success btn-xs"
+                                                            data-toggle="tooltip" data-placement="right">Generate</button>
+                                                    </form>
                                                 @elseif($item->username != null)
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-warning btn-xs">Pilih</button>
-                                                        <button type="button" class="btn btn-warning btn-xs dropdown-toggle"
+                                                        <button type="button"
+                                                            class="btn btn-warning btn-xs dropdown-toggle"
                                                             data-toggle="dropdown">
                                                             <span class="caret"></span>
                                                             <span class="sr-only">Toggle Dropdown</span>
@@ -94,7 +112,8 @@
                                                                 <form action="/hapususer/{{ $item->id_user }}"
                                                                     method="post">
                                                                     <button class="btn btn-danger btn-block btn-xs"
-                                                                        title="klik untuk hapus" type="submit" name="submit"
+                                                                        title="klik untuk hapus" type="submit"
+                                                                        name="submit"
                                                                         onclick="return confirm('apakah anda yakin akan menghapus user ini?')">Hapus</button>
                                                                     {{ csrf_field() }}
                                                                     <input type="hidden" name="_method" value="DELETE">

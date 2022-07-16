@@ -161,18 +161,48 @@ class SadminController extends Controller
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->select('users.id', 'users.id_user', 'users.username', 'users.deleted_at', 'passwords.pwd', 'student.nim', 'student.nama', 'kelas.kelas', 'prodi.prodi', 'student.idstudent', 'users.role')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->select(
+                'users.id',
+                'users.id_user',
+                'users.username',
+                'users.deleted_at',
+                'passwords.pwd',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idstudent',
+                'users.role',
+                'angkatan.angkatan'
+            )
             ->where('student.active', 1)
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        $dsn = Dosen::leftJoin('passwords', 'user', '=', 'dosen.nik')
-            ->leftJoin('users', 'username', '=', 'passwords.user')
-            ->select('users.id', 'users.id_user', 'users.username', 'dosen.nik', 'dosen.nama', 'dosen.iddosen', 'dosen.akademik', 'users.role')
-            ->get();
 
-        return view('sadmin/data_user', ['users' => $usermhs, 'dsn' => $dsn]);
+        return view('sadmin/data_user', ['users' => $usermhs]);
+    }
+
+    public function saveuser_mhs(Request $request)
+    {
+        $users = new User();
+        $users->id_user = $request->id_user;
+        $users->name = $request->name;
+        $users->password = bcrypt($request->username);
+        $users->role = $request->role;
+        $users->username = $request->username;
+        $users->save();
+
+        $sadmin = new Password();
+        $sadmin->id_user = $request->id_user;
+        $sadmin->user = $request->username;
+        $sadmin->pwd = $request->username;
+        $sadmin->save();
+
+        Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
+        return redirect('show_user');
     }
 
     public function resetuser(Request $request)

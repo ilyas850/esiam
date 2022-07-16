@@ -69,7 +69,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('show_mhs', 'SadminController@show_mhs');
     Route::get('show_user', 'SadminController@show_user');
     Route::get('usermhs/{id}', 'SadminController@add_user_mhs');
-    Route::post('save_usermhs', 'SadminController@store_user_mhs');
+    Route::post('saveuser_mhs', 'SadminController@saveuser_mhs');
     Route::get('show_ta', 'SadminController@show_ta');
     Route::post('save_krs_time', 'SadminController@save_krs_time');
     Route::post('delete_time_krs', 'SadminController@delete_time_krs');
