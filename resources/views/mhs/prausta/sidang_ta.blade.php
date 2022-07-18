@@ -391,9 +391,9 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_3">
-                                @if ($jml_bim < 4)
-                                    <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 4</span>
-                                @elseif ($jml_bim >= 4)
+                                @if ($jml_bim < 6)
+                                    <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
+                                @elseif ($jml_bim >= 6)
                                     @if ($data->acc_seminar_sidang == null)
                                         <form class="" action="{{ url('ajukan_sidang_ta') }}" method="post"
                                             enctype="multipart/form-data">
