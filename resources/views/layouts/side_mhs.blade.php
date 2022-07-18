@@ -87,7 +87,7 @@
     <li><a href="{{ url('dosbing') }}"><i class="fa fa-user"></i> <span>Dosen Pembimbing</span></a></li>
     <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner</span></a>
     </li>
-    <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li>
+    {{-- <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li> --}}
     <li><a href="{{ url('upload_sertifikat') }}"><i class="fa fa-file"></i> <span>Upload Sertifikat</span></a>
     </li>
 
