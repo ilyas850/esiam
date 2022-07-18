@@ -1423,7 +1423,7 @@ class DosenController extends Controller
             return redirect()->back();
         } elseif ($jml_bap == 0) {
             $jml_id = count($sama);
-         
+
             for ($i = 0; $i < $jml_id; $i++) {
                 $tes = $sama[$i];
                 $d = $tes['id_kurperiode'];
