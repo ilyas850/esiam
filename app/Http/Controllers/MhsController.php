@@ -3433,7 +3433,9 @@ class MhsController extends Controller
         //hasil
         $hasil_semua = $cekbyr - $total_semua_dibayar;
 
+        $data = Yudisium::where('id_student', $id)->first();
 
+        return view('mhs/pendaftaran/yudisium', compact('id', 'data'));
 
         if ($hasil_semua < 0 or $hasil_semua == 0) {
             $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -3463,6 +3465,8 @@ class MhsController extends Controller
                     })
                     ->select('kurikulum_transaction.id_makul', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                     ->get();
+
+
 
                 $hitjml_kur = count($cek_kur);
 
@@ -3505,9 +3509,6 @@ class MhsController extends Controller
                                         ->count();
 
                                     if (($cek_kuis_dospeng_ta_2) > 0) {
-                                        $data = Yudisium::where('id_student', $id)->first();
-
-                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data'));
                                     } else {
                                         alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
                                         return redirect('home');

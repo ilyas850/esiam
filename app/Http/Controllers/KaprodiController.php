@@ -847,15 +847,19 @@ class KaprodiController extends Controller
   {
     $iddsn = Auth::user()->id_user;
 
-    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
-    $tp = $tipe->id_periodetipe;
+    $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+    $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+    $nama_periodetahun = $periodetahun->periode_tahun;
+    $nama_periodetipe = $periodetipe->periode_tipe;
+    $idperiodetahun = $periodetahun->id_periodetahun;
+    $idperiodetipe = $periodetipe->id_periodetipe;
 
-    $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
-    $thn = $tahun->id_periodetahun;
+    $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tp = Periode_tipe::all();
 
-    $data = DB::select('CALL makul_diampu_dsn(?,?)', [$iddsn, $thn]);
+    $makul = DB::select('CALL makul_diampu_dsn(?,?,?)', [$iddsn, $idperiodetahun, $idperiodetipe]);
 
-    return view('kaprodi/matakuliah/makul_diampu_dsn', ['makul' => $data]);
+    return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
   }
 
   public function cekmhs_dsn($id)
@@ -1004,6 +1008,7 @@ class KaprodiController extends Controller
         'bap.hadir',
         'bap.tidak_hadir'
       )
+      ->orderBy('bap.id_bap', 'ASC')
       ->get();
 
     return view('kaprodi/bap/bap', ['bap' => $key, 'data' => $data]);
@@ -1065,6 +1070,7 @@ class KaprodiController extends Controller
       ->where('pertemuan', $request->pertemuan)
       ->where('status', 'ACTIVE')
       ->get();
+
     $jml_bap = count($cek_bap);
     if ($jml_bap > 0) {
 

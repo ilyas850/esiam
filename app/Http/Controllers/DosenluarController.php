@@ -49,20 +49,17 @@ class DosenluarController extends Controller
     {
         $iddsn = Auth::user()->id_user;
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
-        $tp = $tipe->id_periodetipe;
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $nama_periodetahun = $periodetahun->periode_tahun;
+        $nama_periodetipe = $periodetipe->periode_tipe;
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
 
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tp = Periode_tipe::all();
 
-        foreach ($thn as $tahun) {
-            // code...
-        }
-        $thn = $tahun->id_periodetahun;
-
-        $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+        $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -71,9 +68,9 @@ class DosenluarController extends Controller
             ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
             ->where('kurikulum_periode.id_dosen', $iddsn)
-            ->where('periode_tahun.id_periodetahun', $thn)
+            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
+            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
             ->select(
                 'kurikulum_hari.hari',
                 'kurikulum_jam.jam',
@@ -89,7 +86,48 @@ class DosenluarController extends Controller
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        return view('dosenluar/makul_diampu', ['makul' => $mkul]);
+        return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+    }
+
+    public function filter_makul_diampu_dsn_luar(Request $request)
+    {
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $nama_periodetahun = $periodetahun->periode_tahun;
+        $nama_periodetipe = $periodetipe->periode_tipe;
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tp = Periode_tipe::all();
+
+        $id = Auth::user()->id_user;
+
+        $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+            ->where('kurikulum_periode.id_dosen', $id)
+            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
+            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select(
+                'kurikulum_hari.hari',
+                'kurikulum_jam.jam',
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester'
+            )
+            ->get();
+
+        return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 
     public function cekmhs($id)
@@ -1044,8 +1082,8 @@ class DosenluarController extends Controller
 
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
@@ -1482,8 +1520,8 @@ class DosenluarController extends Controller
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
@@ -1737,8 +1775,8 @@ class DosenluarController extends Controller
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)

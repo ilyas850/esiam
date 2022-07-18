@@ -311,6 +311,9 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('input_akhir_dsn/{id}', 'DosenController@input_akhir_dsn');
     Route::post('save_nilai_AKHIR_dsn', 'DosenController@save_nilai_AKHIR_dsn');
 
+    //filter matakuliah diampu dosen
+    Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
+
     //histori matakuliah
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
     Route::get('cekmhs_dsn/{id}', 'DosenController@cekmhs_dsn');
@@ -601,6 +604,10 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('change_pass_dsn_luar/{id}', 'DosenluarController@change_dsnluar');
     Route::put('pwd_dsn_luar/{id}', 'DosenluarController@store_pwd_dsn_luar');
     Route::post('export_xlsnilai_dsn', 'DosenluarController@export_xlsnilai');
+
+    //filter matakuliah diampu dosen
+    Route::post('filter_makul_diampu_dsn_luar', 'DosenluarController@filter_makul_diampu_dsn_luar');
+
     //BAP
     Route::get('entri_bap_dsn/{id}', 'DosenluarController@entri_bap');
     Route::get('input_bap_dsn/{id}', 'DosenluarController@input_bap');

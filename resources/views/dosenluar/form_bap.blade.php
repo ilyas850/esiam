@@ -173,7 +173,7 @@
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
                             </div>
                             <div class="col-md-3">
-                                <label>Upload File Materi Kuliah/Ujian</label>
+                                <label>Upload File Materi Kuliah</label>
                                 <input type="file" name="file_materi_kuliah">
                                 @if ($errors->has('file_materi_kuliah'))
                                     <span class="help-block">
@@ -183,7 +183,7 @@
                                 <p class="help-block">Max. size 4 mb dengan format .jpg .jpeg .pdf .png .doc</p>
                             </div>
                             <div class="col-md-3">
-                                <label>Upload File Materi Tugas/Ujian</label>
+                                <label>Upload File Materi Tugas</label>
                                 <input type="file" name="file_materi_tugas">
                                 @if ($errors->has('file_materi_tugas'))
                                     <span class="help-block">

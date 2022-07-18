@@ -155,13 +155,6 @@
                                         @else
                                             <span class="badge bg-yellow">Valid</span>
                                         @endif
-                                        {{-- @if ($item->payroll_check == 'SUDAH')
-                                        <span class="badge bg-yellow">Valid</span>
-                                    @elseif($item->payroll_check == 'BELUM')
-                                        <a href="/edit_bap/{{$item->id_bap}}" class="btn btn-success btn-xs" title="klik untuk edit"> <i class="fa fa-edit"></i></a>
-                                        <a href="/delete_bap/{{$item->id_bap}}" class="btn btn-danger btn-xs" title="klik untuk hapus"> <i class="fa fa-trash"></i></a>
-                                    @endif --}}
-
                                     </center>
                                 </td>
                             </tr>

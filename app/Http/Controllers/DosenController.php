@@ -528,6 +528,11 @@ class DosenController extends Controller
         $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
         $nama_periodetahun = $periodetahun->periode_tahun;
         $nama_periodetipe = $periodetipe->periode_tipe;
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tp = Periode_tipe::all();
 
         $id = Auth::user()->id_user;
 
@@ -540,8 +545,8 @@ class DosenController extends Controller
             ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
             ->where('kurikulum_periode.id_dosen', $id)
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
+            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select(
                 'kurikulum_hari.hari',
@@ -555,14 +560,24 @@ class DosenController extends Controller
             )
             ->get();
 
-        return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe'));
+        return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 
-    public function history_makul_dsn()
+    public function filter_makul_diampu_dsn_dlm(Request $request)
     {
-        $iddsn = Auth::user()->id_user;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $nama_periodetahun = $periodetahun->periode_tahun;
+        $nama_periodetipe = $periodetipe->periode_tipe;
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
 
-        $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tp = Periode_tipe::all();
+
+        $id = Auth::user()->id_user;
+
+        $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -570,87 +585,23 @@ class DosenController extends Controller
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->where('kurikulum_periode.id_dosen', $iddsn)
+            ->where('kurikulum_periode.id_dosen', $id)
+            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
+            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-            ->orderBy('kurikulum_periode.id_periodetahun', 'DESC')
-            ->orderBy('semester.semester', 'ASC')
-            ->orderBy('kelas.kelas', 'ASC')
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
-
-        return view('dosen/history_makul_dsn', ['makul' => $mkul]);
-    }
-
-    public function cekmhs_dsn($id)
-    {
-        //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
             ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
+                'kurikulum_hari.hari',
+                'kurikulum_jam.jam',
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.kode',
+                'matakuliah.makul',
                 'prodi.prodi',
                 'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
-
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $id]);
-    }
-
-    public function cekmhs_dsn_his($id)
-    {
-        //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
+                'semester.semester'
             )
             ->get();
 
-        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans')
-            ->first();
-
-        $kur = $ckstr->id_kurtrans;
-
-        return view('dosen/list_mhs_dsn_his', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
+        return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 
     public function export_xlsnilai(Request $request)
@@ -722,6 +673,38 @@ class DosenController extends Controller
         // return view('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data'=>$key,'tb'=>$cks]);
         $pdf = PDF::loadView('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $cks]);
         return $pdf->download('Nilai Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
+    }
+
+    public function cekmhs_dsn($id)
+    {
+        //cek mahasiswa
+        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('id_kurperiode', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $id]);
     }
 
     public function input_kat_dsn($id)
@@ -1356,20 +1339,31 @@ class DosenController extends Controller
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-            ->get();
-        foreach ($bap as $key) {
-            # code...
-        }
+            ->first();
 
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('kuliah_transaction.kurang_jam', 'kuliah_transaction.tanggal_validasi', 'kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'kuliah_transaction.kurang_jam',
+                'kuliah_transaction.tanggal_validasi',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir'
+            )
             ->orderBy('bap.id_bap', 'ASC')
             ->get();
 
-        return view('dosen/bap', ['bap' => $key, 'data' => $data]);
+        return view('dosen/bap', compact('data', 'bap'));
     }
 
     public function input_bap($id)
@@ -1409,8 +1403,8 @@ class DosenController extends Controller
 
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
@@ -1429,7 +1423,7 @@ class DosenController extends Controller
             return redirect()->back();
         } elseif ($jml_bap == 0) {
             $jml_id = count($sama);
-            dd($jml_id);
+         
             for ($i = 0; $i < $jml_id; $i++) {
                 $tes = $sama[$i];
                 $d = $tes['id_kurperiode'];
@@ -1840,12 +1834,14 @@ class DosenController extends Controller
         ]);
 
         $data_bap = Bap::where('id_bap', $id)->first();
+
         $data = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
+
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
@@ -2094,13 +2090,16 @@ class DosenController extends Controller
 
     public function delete_bap($id)
     {
+
         $data_bap = Bap::where('id_bap', $id)->first();
+
         $data = Kurikulum_periode::where('id_kurperiode', $data_bap->id_kurperiode)->first();
+
         $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
             ->where('kurikulum_periode.id_dosen', $data->id_dosen)
             ->where('kurikulum_periode.id_jam', $data->id_jam)
             ->where('kurikulum_periode.id_hari', $data->id_hari)
@@ -2124,14 +2123,10 @@ class DosenController extends Controller
 
         $idk = Bap::where('id_bap', $id)
             ->select('id_kurperiode')
-            ->get();
-
-        foreach ($idk as $key) {
-            # code...
-        }
+            ->first();
 
         Alert::success('', 'BAP berhasil dihapus')->autoclose(3500);
-        return redirect('entri_bap/' . $key->id_kurperiode);
+        return redirect('entri_bap/' . $idk->id_kurperiode);
     }
 
     public function sum_absen($id)
@@ -2784,6 +2779,69 @@ class DosenController extends Controller
 
         $pdf = PDF::loadView('dosen/download/jurnal_perkuliahan_pdf', ['cekkprd' => $cekkprd, 'bap' => $key, 'data' => $data])->setPaper('a4', 'landscape');
         return $pdf->download('Jurnal Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
+    }
+
+    public function history_makul_dsn()
+    {
+        $iddsn = Auth::user()->id_user;
+
+        $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+            ->where('kurikulum_periode.id_dosen', $iddsn)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select('periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+            ->orderBy('kurikulum_periode.id_periodetahun', 'DESC')
+            ->orderBy('semester.semester', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
+            ->get();
+
+        return view('dosen/history_makul_dsn', ['makul' => $mkul]);
+    }
+
+    public function cekmhs_dsn_his($id)
+    {
+        //cek mahasiswa
+        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
+            ->get();
+
+        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->where('id_kurperiode', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_kurtrans')
+            ->first();
+
+        $kur = $ckstr->id_kurtrans;
+
+        return view('dosen/list_mhs_dsn_his', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
     }
 
     public function view_bap_his($id)
