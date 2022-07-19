@@ -2558,11 +2558,13 @@ class KaprodiController extends Controller
           $id                 = $id_kur;
           $entry              = Student_record::find($id);
           $entry->nilai_UTS   = 0;
+          $entry->data_origin = 'eSIAM';
           $entry->save();
         } elseif ($ceknl != null) {
           $id                 = $id_kur;
           $entry              = Student_record::find($id);
           $entry->nilai_UTS   = $nilai;
+          $entry->data_origin = 'eSIAM';
           $entry->save();
         }
       } elseif ($banyak > 1) {
@@ -2570,32 +2572,24 @@ class KaprodiController extends Controller
         if ($ceknl == null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_UTS' => 0]);
+            ->update(['nilai_UTS' => 0, 'data_origin' => 'eSIAM']);
         } elseif ($ceknl != null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_UTS' => $nilai]);
+            ->update(['nilai_UTS' => $nilai, 'data_origin' => 'eSIAM']);
         }
       }
     }
 
-    $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-    foreach ($thn as $tahun) {
-      // code...
-    }
+    $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-    $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-    foreach ($tp as $tipe) {
-      // code...
-    }
-
-    Ujian_transaction::where('id_periodetahun', $tahun->id_periodetahun)
-      ->where('id_periodetipe', $tipe->id_periodetipe)
+    Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+      ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
       ->where('jenis_ujian', 'UTS')
       ->where('id_prodi', $request->id_prodi)
       ->where('id_kelas', $request->id_kelas)
       ->where('id_makul', $request->id_makul)
-      ->update(['aktual_pengoreksi' => Auth::user()->name]);
+      ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
     //ke halaman list mahasiswa
 
@@ -2704,11 +2698,13 @@ class KaprodiController extends Controller
           $id                 = $id_kur;
           $entry              = Student_record::find($id);
           $entry->nilai_UAS   = 0;
+          $entry->data_origin = 'eSIAM';
           $entry->save();
         } elseif ($ceknl != null) {
           $id                 = $id_kur;
           $entry              = Student_record::find($id);
           $entry->nilai_UAS   = $nilai;
+          $entry->data_origin = 'eSIAM';
           $entry->save();
         }
       } elseif ($banyak > 1) {
@@ -2716,31 +2712,24 @@ class KaprodiController extends Controller
         if ($ceknl == null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_UAS' => 0]);
+            ->update(['nilai_UAS' => 0, 'data_origin' => 'eSIAM']);
         } elseif ($ceknl != null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_UAS' => $nilai]);
+            ->update(['nilai_UAS' => $nilai, 'data_origin' => 'eSIAM']);
         }
       }
     }
-    $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-    foreach ($thn as $tahun) {
-      // code...
-    }
 
-    $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-    foreach ($tp as $tipe) {
-      // code...
-    }
+    $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-    Ujian_transaction::where('id_periodetahun', $tahun->id_periodetahun)
-      ->where('id_periodetipe', $tipe->id_periodetipe)
+    Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+      ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
       ->where('jenis_ujian', 'UAS')
       ->where('id_prodi', $request->id_prodi)
       ->where('id_kelas', $request->id_kelas)
       ->where('id_makul', $request->id_makul)
-      ->update(['aktual_pengoreksi' => Auth::user()->name]);
+      ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
     //ke halaman list mahasiswa
 
@@ -2785,7 +2774,6 @@ class KaprodiController extends Controller
 
   public function input_akhir_kprd($id)
   {
-
     //cek mahasiswa
     $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', function ($join) {
@@ -2843,11 +2831,13 @@ class KaprodiController extends Controller
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR_angka = 0;
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl != null) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR_angka = $nilai;
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         }
 
@@ -2856,111 +2846,118 @@ class KaprodiController extends Controller
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'E';
           $ceknilai->nilai_ANGKA = '0';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl < 60) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'D';
           $ceknilai->nilai_ANGKA = '1';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl < 65) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'C';
           $ceknilai->nilai_ANGKA = '2';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl < 70) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'C+';
           $ceknilai->nilai_ANGKA = '2.5';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl < 75) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'B';
           $ceknilai->nilai_ANGKA = '3';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl < 80) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'B+';
           $ceknilai->nilai_ANGKA = '3.5';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         } elseif ($ceknl <= 100) {
           $id = $id_kur;
           $ceknilai = Student_record::find($id);
           $ceknilai->nilai_AKHIR = 'A';
           $ceknilai->nilai_ANGKA = '4';
+          $ceknilai->data_origin = 'eSIAM';
           $ceknilai->save();
         }
       } elseif ($banyak > 1) {
         if ($ceknl == null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR_angka' => 0]);
+            ->update(['nilai_AKHIR_angka' => 0, 'data_origin' => 'eSIAM']);
         } elseif ($ceknl != null) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR_angka' => $nilai]);
+            ->update(['nilai_AKHIR_angka' => $nilai, 'data_origin' => 'eSIAM']);
         }
 
         if ($ceknl < 50) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'E']);
+            ->update(['nilai_AKHIR' => 'E', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '0']);
+            ->update(['nilai_ANGKA' => '0', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl < 60) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'D']);
+            ->update(['nilai_AKHIR' => 'D', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '1']);
+            ->update(['nilai_ANGKA' => '1', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl < 65) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'C']);
+            ->update(['nilai_AKHIR' => 'C', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '2']);
+            ->update(['nilai_ANGKA' => '2', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl < 70) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'C+']);
+            ->update(['nilai_AKHIR' => 'C+', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '2.5']);
+            ->update(['nilai_ANGKA' => '2.5', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl < 75) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'B']);
+            ->update(['nilai_AKHIR' => 'B', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '3']);
+            ->update(['nilai_ANGKA' => '3', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl < 80) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'B+']);
+            ->update(['nilai_AKHIR' => 'B+', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '3.5']);
+            ->update(['nilai_ANGKA' => '3.5', 'data_origin' => 'eSIAM']);
         } elseif ($ceknl <= 100) {
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_AKHIR' => 'A']);
+            ->update(['nilai_AKHIR' => 'A', 'data_origin' => 'eSIAM']);
 
           Student_record::where('id_student', $stu)
             ->where('id_kurtrans', $kur)
-            ->update(['nilai_ANGKA' => '4']);
+            ->update(['nilai_ANGKA' => '4', 'data_origin' => 'eSIAM']);
         }
       }
     }

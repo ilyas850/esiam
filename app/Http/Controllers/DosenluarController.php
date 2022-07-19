@@ -496,18 +496,10 @@ class DosenluarController extends Controller
             }
         }
 
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
-
-        Ujian_transaction::where('id_periodetahun', $tahun->id_periodetahun)
-            ->where('id_periodetipe', $tipe->id_periodetipe)
+        Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+            ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
             ->where('jenis_ujian', 'UTS')
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
@@ -653,18 +645,10 @@ class DosenluarController extends Controller
             }
         }
 
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
-
-        Ujian_transaction::where('id_periodetahun', $tahun->id_periodetahun)
-            ->where('id_periodetipe', $tipe->id_periodetipe)
+        Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+            ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
             ->where('jenis_ujian', 'UAS')
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
