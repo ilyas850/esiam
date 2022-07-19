@@ -749,6 +749,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('export_xlsnilai_kprd', 'KaprodiController@export_xlsnilai');
     Route::post('unduh_pdf_nilai_kprd', 'KaprodiController@unduh_pdf_nilai');
 
+     //filter matakuliah diampu dosen
+     Route::post('filter_makul_diampu_kprd', 'KaprodiController@filter_makul_diampu_kprd');
+
     //input nilai
     Route::get('input_kat_kprd/{id}', 'KaprodiController@input_kat_kprd');
     Route::post('save_nilai_KAT_kprd', 'KaprodiController@save_nilai_KAT_kprd');

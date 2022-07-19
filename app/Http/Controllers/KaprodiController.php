@@ -862,6 +862,47 @@ class KaprodiController extends Controller
     return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
   }
 
+  public function filter_makul_diampu_dsn_luar(Request $request)
+  {
+    $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+    $nama_periodetahun = $periodetahun->periode_tahun;
+    $nama_periodetipe = $periodetipe->periode_tipe;
+    $idperiodetahun = $periodetahun->id_periodetahun;
+    $idperiodetipe = $periodetipe->id_periodetipe;
+
+    $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tp = Periode_tipe::all();
+
+    $id = Auth::user()->id_user;
+
+    $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+      ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+      ->where('kurikulum_periode.id_dosen', $id)
+      ->where('periode_tahun.id_periodetahun', $idperiodetahun)
+      ->where('periode_tipe.id_periodetipe', $idperiodetipe)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->select(
+        'kurikulum_hari.hari',
+        'kurikulum_jam.jam',
+        'kurikulum_periode.id_kurperiode',
+        'matakuliah.kode',
+        'matakuliah.makul',
+        'prodi.prodi',
+        'kelas.kelas',
+        'semester.semester'
+      )
+      ->get();
+
+    return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+  }
+
   public function cekmhs_dsn($id)
   {
     //cek mahasiswa
