@@ -1060,18 +1060,21 @@ class DosenController extends Controller
                 }
             }
         }
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        foreach ($thn as $tahun) {
-            // code...
-        }
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
+        $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
 
-        Ujian_transaction::where('id_periodetahun', $tahun->id_periodetahun)
-            ->where('id_periodetipe', $tipe->id_periodetipe)
+        // $thn = Periode_tahun::where('status', 'ACTIVE')->get();
+        // foreach ($thn as $tahun) {
+
+        // }
+
+        // $tp = Periode_tipe::where('status', 'ACTIVE')->get();
+        // foreach ($tp as $tipe) {
+
+        // }
+
+        Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+            ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
             ->where('jenis_ujian', 'UAS')
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
