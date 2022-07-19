@@ -932,7 +932,7 @@ class DosenController extends Controller
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
             ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name]);
+            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
 
@@ -1039,11 +1039,13 @@ class DosenController extends Controller
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_UAS = 0;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 } elseif ($ceknl != null) {
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_UAS = $nilai;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 }
             } elseif ($banyak > 1) {
@@ -1074,7 +1076,7 @@ class DosenController extends Controller
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
             ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name]);
+            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
 
