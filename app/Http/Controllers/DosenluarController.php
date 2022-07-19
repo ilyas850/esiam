@@ -512,7 +512,7 @@ class DosenluarController extends Controller
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
             ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name]);
+            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
         $mhs = Student::all();
@@ -636,19 +636,19 @@ class DosenluarController extends Controller
                 if ($ceknl == null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UAS' => 0]);
+                        ->update(['nilai_UAS' => 0, 'data_origin' => 'eSIAM']);
 
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['data_origin' => 'eSIAM']);
+                        ->update(['data_origin' => 'eSIAM', 'data_origin' => 'eSIAM']);
                 } elseif ($ceknl != null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UAS' => $nilai]);
+                        ->update(['nilai_UAS' => $nilai, 'data_origin' => 'eSIAM']);
 
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['data_origin' => 'eSIAM']);
+                        ->update(['data_origin' => 'eSIAM', 'data_origin' => 'eSIAM']);
                 }
             }
         }
@@ -669,7 +669,7 @@ class DosenluarController extends Controller
             ->where('id_prodi', $request->id_prodi)
             ->where('id_kelas', $request->id_kelas)
             ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name]);
+            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
         $mhs = Student::all();

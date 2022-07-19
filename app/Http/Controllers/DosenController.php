@@ -767,22 +767,24 @@ class DosenController extends Controller
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_KAT = 0;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 } elseif ($ceknl != null) {
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_KAT = $nilai;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 }
             } elseif ($banyak > 1) {
                 if ($ceknl == null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_KAT' => 0]);
+                        ->update(['nilai_KAT' => 0, 'data_origin' => 'eSIAM']);
                 } elseif ($ceknl != null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_KAT' => $nilai]);
+                        ->update(['nilai_KAT' => $nilai, 'data_origin' => 'eSIAM']);
                 }
             }
         }
@@ -892,22 +894,24 @@ class DosenController extends Controller
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_UTS = 0;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 } elseif ($ceknl != null) {
                     $id = $id_kur;
                     $entry = Student_record::find($id);
                     $entry->nilai_UTS = $nilai;
+                    $entry->data_origin = 'eSIAM';
                     $entry->save();
                 }
             } elseif ($banyak > 1) {
                 if ($ceknl == null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UTS' => 0]);
+                        ->update(['nilai_UTS' => 0, 'data_origin' => 'eSIAM']);
                 } elseif ($ceknl != null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UTS' => $nilai]);
+                        ->update(['nilai_UTS' => $nilai, 'data_origin' => 'eSIAM']);
                 }
             }
         }
@@ -1046,11 +1050,11 @@ class DosenController extends Controller
                 if ($ceknl == null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UAS' => 0]);
+                        ->update(['nilai_UAS' => 0, 'data_origin' => 'eSIAM']);
                 } elseif ($ceknl != null) {
                     Student_record::where('id_student', $stu)
                         ->where('id_kurtrans', $kur)
-                        ->update(['nilai_UAS' => $nilai]);
+                        ->update(['nilai_UAS' => $nilai, 'data_origin' => 'eSIAM']);
                 }
             }
         }
