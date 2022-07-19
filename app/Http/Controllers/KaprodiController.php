@@ -862,7 +862,7 @@ class KaprodiController extends Controller
     return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
   }
 
-  public function filter_makul_diampu_dsn_luar(Request $request)
+  public function filter_makul_diampu_kprd(Request $request)
   {
     $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
     $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
