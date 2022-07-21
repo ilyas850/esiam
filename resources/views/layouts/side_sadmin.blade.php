@@ -86,6 +86,7 @@
         <ul class="treeview-menu">
             <li><a href="{{ url('approve_krs') }}"><i class="fa fa-circle-o"></i> Data Approve KRS</a></li>
             <li><a href="{{ url('data_krs') }}"><i class="fa fa-circle-o"></i> Data KRS</a></li>
+            <li><a href="{{ url('summary_krs') }}"><i class="fa fa-circle-o"></i> Data Rekap KRS</a></li>
             <li><a href="{{ url('nilai_khs') }}"><i class="fa fa-circle-o"></i> Data Nilai KHS</a></li>
         </ul>
     </li>

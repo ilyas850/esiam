@@ -154,6 +154,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('export_krs_mhs', 'SadminController@export_krs_mhs');
     Route::get('cek_krs_mhs/{id}', 'SadminController@cek_krs_mhs');
     Route::get('batalkrs/{id}', 'SadminController@batalkrs');
+    Route::get('summary_krs', 'SadminController@summary_krs');
 
     //master nilai
     Route::get('transkrip_nilai', 'SadminController@transkrip_nilai');

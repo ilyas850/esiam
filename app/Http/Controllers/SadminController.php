@@ -3895,4 +3895,11 @@ class SadminController extends Controller
 
         return Excel::download(new DataAkmMhsExport($idprodi, $idperiodetahun, $idperiodetipe), $nama_file);
     }
+
+    public function summary_krs()
+    {
+        $data = DB::select('CALL summary_krs()');
+
+        return view('sadmin/master_krs/data_rekap_krs', compact('data'));
+    }
 }
