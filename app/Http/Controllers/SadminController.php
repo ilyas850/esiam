@@ -58,6 +58,8 @@ use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
 use App\Exports\DataPrakerinExport;
+use App\Exports\DataAkmMhsExport;
+
 use App\Imports\ImportMicrosoftUser;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -3843,5 +3845,54 @@ class SadminController extends Controller
             ->first();
 
         return view('sadmin/prausta/cek_master_ta', compact('data', 'mhs'));
+    }
+
+    public function export_data_akm()
+    {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2, 3])->get();
+        $prodi = Prodi::all();
+
+        return view('sadmin/export/data_akm', compact('tahun', 'tipe', 'prodi'));
+    }
+
+    public function filter_export_akm(Request $request)
+    {
+        $idprodi = $request->id_prodi;
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+
+        $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+        $prodi = Prodi::where('id_prodi', $idprodi)->first();
+
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+        $namaprodi = $prodi->prodi;
+
+        $data_akm = DB::select('CALL data_akm(?,?,?)', [$idprodi, $idperiodetahun, $idperiodetipe]);
+
+        return view('sadmin/export/hasil_akm', compact('data_akm', 'idprodi', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe', 'namaprodi'));
+    }
+
+    public function export_data_akm_xls(Request $request)
+    {
+        $idprodi = $request->id_prodi;
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+
+        $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+        $prodi = Prodi::where('id_prodi', $idprodi)->first();
+
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $ganti_tahun = str_replace('/', '_', $namaperiodetahun);
+        $namaprodi = $prodi->prodi;
+
+        $nama_file = 'Data AKM Mahasiswa' . ' ' . $ganti_tahun . ' ' . $namaperiodetipe . ' ' . $namaprodi . '.xlsx';
+
+        return Excel::download(new DataAkmMhsExport($idprodi, $idperiodetahun, $idperiodetipe), $nama_file);
     }
 }

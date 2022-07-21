@@ -287,6 +287,11 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //master wisuda
     Route::get('master_wisuda', 'SadminController@master_wisuda');
+
+    //export data feeder
+    Route::get('export_data_akm', 'SadminController@export_data_akm');
+    Route::post('filter_export_akm', 'SadminController@filter_export_akm');
+    Route::post('export_data_akm_xls', 'SadminController@export_data_akm_xls');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
