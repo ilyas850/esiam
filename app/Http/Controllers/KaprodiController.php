@@ -6195,8 +6195,12 @@ class KaprodiController extends Controller
 
   public function val_kurikulum_kprd()
   {
+    $id = Auth::user()->id_user;
+    $kprd = Kaprodi::where('id_dosen', $id)->first();
+    $prd = Prodi::where('id_prodi', $kprd->id_prodi)->first();
+
     $kurikulum = Kurikulum_master::all();
-    $prodi = Prodi::all();
+    $prodi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
     $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
     $semester = Semester::all();
 
@@ -6428,7 +6432,7 @@ class KaprodiController extends Controller
         ->get();
     }
 
-    Alert::success('', 'Kurikulum berhasil ditambahkan')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6573,7 +6577,7 @@ class KaprodiController extends Controller
         ->get();
     }
 
-    Alert::success('', 'Setting kurikulum berhasil diedit')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6621,7 +6625,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['status' => 'NOT ACTIVE']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -6658,7 +6661,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6706,7 +6709,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['status' => 'ACTIVE']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -6743,7 +6745,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6791,7 +6793,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['pelaksanaan_paket' => 'CLOSED']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -6828,7 +6829,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6876,7 +6877,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['pelaksanaan_paket' => 'OPEN']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -6913,7 +6913,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum berhasil dihapus')->autoclose(3500);
+    Alert::success('', 'Bberhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -6961,7 +6961,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['validasi' => 'SUDAH']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -6998,7 +6997,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum berhasil divalidasi')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
@@ -7046,7 +7045,6 @@ class KaprodiController extends Controller
 
     Kurikulum_transaction::where('idkurtrans', $id)->update(['validasi' => 'BELUM']);
 
-
     $data = Kurikulum_transaction::leftjoin('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
       ->leftjoin('prodi', 'kurikulum_transaction.id_prodi', '=', 'prodi.id_prodi')
       ->leftjoin('angkatan', 'kurikulum_transaction.id_angkatan', '=', 'angkatan.idangkatan')
@@ -7083,7 +7081,7 @@ class KaprodiController extends Controller
       ->get();
 
 
-    Alert::success('', 'Setting kurikulum unvalidate')->autoclose(3500);
+    Alert::success('', 'Berhasil')->autoclose(3500);
     return view('kaprodi/kurikulum/cek_standar_kurikulum', compact(
       'id_kurikulum',
       'id_prodi',
