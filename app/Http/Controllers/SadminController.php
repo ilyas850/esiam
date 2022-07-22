@@ -640,7 +640,7 @@ class SadminController extends Controller
         $appr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->leftjoin('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
+            ->join('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
             ->leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
@@ -652,6 +652,7 @@ class SadminController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'prodi.prodi', 'angkatan.angkatan', 'dosen.nama as nama_dsn', 'kelas.kelas', 'student_record.remark')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('sadmin/approv', ['appr' => $appr]);
@@ -745,6 +746,7 @@ class SadminController extends Controller
 
     public function view_krs(Request $request)
     {
+        
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -759,14 +761,14 @@ class SadminController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
-            ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
             ->where('student_record.remark', $request->remark)
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'prodi.prodi', 'angkatan.angkatan', 'dosen.nama as nama_dsn', 'kelas.kelas', 'student_record.remark')
             ->get();
-
+           
         return view('sadmin/approv', ['appr' => $appr]);
     }
 
