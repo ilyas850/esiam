@@ -296,8 +296,14 @@ Route::group(['middleware' => 'sadmin'], function () {
 });
 
 Route::group(['middleware' => 'dosen'], function () {
+    //mahasiswa bimbingan
     Route::get('mhs_bim', 'DosenController@mhs_bim');
     Route::get('record_nilai/{id}', 'DosenController@record_nilai');
+
+    //cek matakuliah mengulang
+    Route::get('cek_makul_mengulang/{id}', 'DosenController@cek_makul_mengulang');
+
+    //validasi KRS
     Route::get('val_krs', 'DosenController@val_krs');
     Route::get('cek_krs/{id}', 'DosenController@cek_krs');
     Route::post('hapuskrsmhs', 'DosenController@hapuskrsmhs');
@@ -320,8 +326,7 @@ Route::group(['middleware' => 'dosen'], function () {
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
 
-    //matakuliah mengulang mahasiswa bimbingan
-    Route::get('makul_ulang', 'DosenController@makul_ulang');
+
 
     //histori matakuliah
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
