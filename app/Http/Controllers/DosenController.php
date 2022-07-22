@@ -472,6 +472,20 @@ class DosenController extends Controller
 
         $totalsks = $jumlahskst + $jumlahsksp;
 
+        $id_dsn = Auth::user()->id_user;
+
+        $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+            ->where('dosen_pembimbing.id_dosen', $id_dsn)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('student.active', [1, 5])
+            ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->get();
+        dd($data);
         if ($totalsks > 24) {
             Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
             return redirect('val_krs');

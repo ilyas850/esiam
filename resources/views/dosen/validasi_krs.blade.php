@@ -96,8 +96,7 @@
                                                 @if ($item->remark == 1)
                                                     <span class="badge bg-yellow">Sudah divalidasi</span>
                                                 @elseif ($item->remark == 0)
-                                                    <form class="" action="{{ url('krs_validasi') }}"
-                                                        method="post">
+                                                    <form action="{{ url('krs_validasi') }}" method="post">
                                                         <input type="hidden" name="id_student"
                                                             value="{{ $item->id_student }}">
                                                         <input type="hidden" name="remark" value="1">
@@ -108,7 +107,6 @@
                                                 @endif
                                             @endif
                                         @endforeach
-
                                     </center>
                                 </td>
                                 <td>
