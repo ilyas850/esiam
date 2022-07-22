@@ -24,6 +24,7 @@
         </ul>
     </li>
     <li><a href="{{ url('val_krs_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a>
+    <li><a href="{{ url('makul_ulang_kprd') }}"><i class="fa fa-repeat"></i> <span>Matakuliah Mengulang</span></a></li>
     <li><a href="{{ url('val_kurikulum_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
                 Kurikulum</span></a>
     </li>

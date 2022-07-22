@@ -7619,4 +7619,29 @@ class KaprodiController extends Controller
       return $pdf->download('BAP TA' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
     }
   }
+
+  public function makul_ulang_kprd()
+  {
+    $id = Auth::user()->id_user;
+
+    $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+            ->where('dosen_pembimbing.id_dosen', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('student.active', [1, 5])
+            ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->get();
+        
+            return view('kaprodi/perkuliahan/makul_mengulang', compact('data'));
+  }
 }

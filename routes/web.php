@@ -320,6 +320,9 @@ Route::group(['middleware' => 'dosen'], function () {
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
 
+    //matakuliah mengulang mahasiswa bimbingan
+    Route::get('makul_ulang', 'DosenController@makul_ulang');
+
     //histori matakuliah
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
     Route::get('cekmhs_dsn/{id}', 'DosenController@cekmhs_dsn');
@@ -748,6 +751,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('cek_krs_kprd/{id}', 'KaprodiController@cek_krs');
     Route::post('savekrs_new_kprd', 'KaprodiController@savekrs_new');
     Route::post('hapuskrsmhs_kprd', 'KaprodiController@hapuskrsmhs');
+
+    //matakuliah mengulang kaprodi
+    Route::get('makul_ulang_kprd', 'KaprodiController@makul_ulang_kprd');
 
     //matakuliah diampu dosen
     Route::get('makul_diampu_kprd', 'KaprodiController@makul_diampu_dsn');

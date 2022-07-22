@@ -7,6 +7,7 @@
     </li>
     <li><a href="{{ url('mhs_bim') }}"><i class="fa  fa-users"></i> <span>Mahasiswa Bimbingan</span></a></li>
     <li><a href="{{ url('val_krs') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a></li>
+    <li><a href="{{ url('makul_ulang') }}"><i class="fa fa-repeat"></i> <span>Matakuliah Mengulang</span></a></li>
     <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa  fa-users"></i> <span>Matakuliah diampu</span></a>
     </li>
     <li><a href="{{ url('history_makul_dsn') }}"><i class="fa  fa-list"></i> <span>History Matakuliah
