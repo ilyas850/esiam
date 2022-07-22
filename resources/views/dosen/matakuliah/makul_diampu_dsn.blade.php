@@ -61,37 +61,48 @@
                 <h3 class="box-title">Data Matakuliah <b> {{ $nama_periodetahun }} - {{ $nama_periodetipe }} </b></h3>
             </div>
             <div class="box-body">
-                <table id="example4" class="table table-bordered table-striped">
+                <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="8%">
+                            <th>
                                 <center>Kode </center>
                             </th>
-                            <th width="20%">
+                            <th>
                                 <center>Matakuliah</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Kelas</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Semester</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Jadwal</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Id Absen</center>
                             </th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
+                            <th>
+                                <center>Soal</center>
+                            </th>
+                            <th>
+                                <center>Nilai</center>
+                            </th>
+                            <th>
+                                <center>BAP</center>
+                            </th>
+                            <th>
+                                <center>Excel</center>
+                            </th>
+                            <th>
+                                <center>PDF</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,17 +126,21 @@
                                     <center>{{ $item->semester }}</center>
                                 </td>
                                 <td>{{ $item->hari }}, {{ $item->jam }}</td>
-                                <td>{{ $item->id_kurperiode }}</td>
+                                <td>
+                                    <center>{{ $item->id_kurperiode }}</center>
+                                </td>
+                                <td></td>
                                 <td>
                                     <center>
-                                        <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs">Entri
-                                            Nilai</a>
+                                        <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"><i
+                                                class="fa fa-pencil" title="Klik untuk entri nilai"> Entri</i>
+                                        </a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
                                         <a href="entri_bap/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs">
-                                            Entri BAP</a>
+                                            <i class="fa fa-pencil" title="Klik untuk entri BAP"> Entri</i> </a>
                                     </center>
                                 </td>
                                 <td>
@@ -134,8 +149,9 @@
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode"
                                                 value="{{ $item->id_kurperiode }}">
-                                            <input class="btn btn-success btn-xs" type="submit" name="submit"
-                                                value="Export Excel">
+                                            <button type="submit" class="btn btn-success btn-xs"><i
+                                                    class="fa fa-file-excel-o" title="Klik untuk export nilai">
+                                                    Export</i></button>
                                         </form>
                                     </center>
                                 </td>
@@ -145,7 +161,9 @@
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode"
                                                 value="{{ $item->id_kurperiode }}">
-                                            <button type="submit" class="btn btn-danger btn-xs">Unduh Nilai</button>
+                                            <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
+                                                    title="Klik untuk export nilai">
+                                                    Export</i></button>
                                         </form>
                                     </center>
                                 </td>
