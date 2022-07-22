@@ -558,6 +558,7 @@ class DosenController extends Controller
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
             ->where('kurikulum_periode.id_dosen', $id)
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
@@ -570,9 +571,13 @@ class DosenController extends Controller
                 'matakuliah.makul',
                 'prodi.prodi',
                 'kelas.kelas',
-                'semester.semester'
+                'semester.semester',
+                'soal_ujian.soal_uts',
+                'soal_ujian.soal_uas'
             )
             ->get();
+
+        
 
         return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
@@ -5567,8 +5572,6 @@ class DosenController extends Controller
             return $pdf->download('BAP TA' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
         }
     }
-
-    
 
     public function cek_makul_mengulang($id)
     {

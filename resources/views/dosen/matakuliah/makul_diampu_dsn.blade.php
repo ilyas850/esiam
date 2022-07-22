@@ -129,7 +129,35 @@
                                 <td>
                                     <center>{{ $item->id_kurperiode }}</center>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <center>
+                                        @if ($item->soal_uts == null)
+                                            <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}">
+                                                <i class="fa fa-cloud-upload" title="Klik untuk upload soal uts"></i>
+                                                UTS</button>
+                                        @else
+                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
+                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                            <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                                target="_blank" style="font: white"> Soal UTS</a>
+                                        @endif
+                                        |
+                                        @if ($item->soal_uas == null)
+                                            <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
+                                                    class="fa fa-cloud-upload" title="Klik untuk upload soal uas"></i>
+                                                UAS</button>
+                                        @else
+                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
+                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                            <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                                target="_blank" style="font: white"> Soal UAS</a>
+                                        @endif
+                                    </center>
+                                </td>
                                 <td>
                                     <center>
                                         <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"><i
@@ -168,6 +196,54 @@
                                     </center>
                                 </td>
                             </tr>
+                            <div class="modal fade" id="modalUploadSoalUts{{ $item->id_kurperiode }}" tabindex="-1"
+                                aria-labelledby="modalUploadSoalUts" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Upload Soal UTS {{ $item->makul }}</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url('simpan_soal_uts_dsn_dlm') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_kurperiode"
+                                                    value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>File Soal UTS</label>
+                                                    <input type="file" class="form-control" name="soal_uts">
+                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalUploadSoalUas{{ $item->id_kurperiode }}" tabindex="-1"
+                                aria-labelledby="modalUploadSoalUas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Upload Soal UAS {{ $item->makul }}</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url('simpan_soal_uas_dsn_dlm') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_kurperiode"
+                                                    value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>File Soal UAS</label>
+                                                    <input type="file" class="form-control" name="soal_uas">
+                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
