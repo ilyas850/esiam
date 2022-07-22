@@ -61,34 +61,45 @@
                 <h3 class="box-title">Data Matakuliah <b> {{ $nama_periodetahun }} - {{ $nama_periodetipe }} </b></h3>
             </div>
             <div class="box-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="8%">
+                            <th>
                                 <center>Kode </center>
                             </th>
-                            <th width="20%">
+                            <th>
                                 <center>Matakuliah</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Kelas</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Semester</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>Angkatan</center>
                             </th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
-                            <th width="8%"></th>
+                            <th>
+                                <center>Soal</center>
+                            </th>
+                            <th>
+                                <center>Nilai</center>
+                            </th>
+                            <th>
+                                <center>BAP</center>
+                            </th>
+                            <th>
+                                <center>Excel</center>
+                            </th>
+                            <th>
+                                <center>PDF</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,16 +127,45 @@
                                 </td>
                                 <td>
                                     <center>
+                                        @if ($item->soal_uts == null)
+                                            <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}">
+                                                <i class="fa fa-cloud-upload" title="Klik untuk upload soal uts"></i>
+                                                UTS</button>
+                                        @else
+                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
+                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                            <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                                target="_blank" style="font: white"> UTS</a>
+                                        @endif
+                                        |
+                                        @if ($item->soal_uas == null)
+                                            <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
+                                                    class="fa fa-cloud-upload" title="Klik untuk upload soal uas"></i>
+                                                UAS</button>
+                                        @else
+                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
+                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                            <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                                target="_blank" style="font: white"> UAS</a>
+                                        @endif
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
                                         <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}"
-                                            class="btn btn-info btn-xs">Entri
-                                            Nilai</a>
+                                            class="btn btn-info btn-xs"><i class="fa fa-pencil"
+                                                title="Klik untuk entri nilai"> Entri</i></a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
                                         <a href="entri_bap_kprd/{{ $item->id_kurperiode }}"
                                             class="btn btn-warning btn-xs">
-                                            Entri BAP</a>
+                                            <i class="fa fa-pencil" title="Klik untuk entri nilai"> Entri</i></a>
                                     </center>
                                 </td>
                                 <td>
@@ -134,8 +174,9 @@
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode"
                                                 value="{{ $item->id_kurperiode }}">
-                                            <input class="btn btn-success btn-xs" type="submit" name="submit"
-                                                value="Export Excel">
+                                            <button type="submit" class="btn btn-success btn-xs"><i
+                                                    class="fa fa-file-excel-o" title="Klik untuk export nilai">
+                                                    Export</i></button>
                                         </form>
                                     </center>
                                 </td>
@@ -145,12 +186,61 @@
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode"
                                                 value="{{ $item->id_kurperiode }}">
-                                            <button type="submit" class="btn btn-danger btn-xs">Unduh Nilai</button>
+                                            <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
+                                                    title="Klik untuk export nilai">
+                                                    Export</i></button>
                                         </form>
                                     </center>
                                 </td>
-
                             </tr>
+                            <div class="modal fade" id="modalUploadSoalUts{{ $item->id_kurperiode }}" tabindex="-1"
+                                aria-labelledby="modalUploadSoalUts" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Upload Soal UTS {{ $item->makul }}</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url('simpan_soal_uts_dsn_kprd') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_kurperiode"
+                                                    value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>File Soal UTS</label>
+                                                    <input type="file" class="form-control" name="soal_uts">
+                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalUploadSoalUas{{ $item->id_kurperiode }}" tabindex="-1"
+                                aria-labelledby="modalUploadSoalUas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Upload Soal UAS {{ $item->makul }}</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url('simpan_soal_uas_dsn_kprd') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_kurperiode"
+                                                    value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>File Soal UAS</label>
+                                                    <input type="file" class="form-control" name="soal_uas">
+                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

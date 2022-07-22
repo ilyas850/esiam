@@ -141,7 +141,7 @@
                                                 data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
                                                 title="klik untuk edit"><i class="fa fa-edit"></i></button>
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
-                                                target="_blank" style="font: white"> Soal UTS</a>
+                                                target="_blank" style="font: white"> UTS</a>
                                         @endif
                                         |
                                         @if ($item->soal_uas == null)
@@ -154,7 +154,7 @@
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
                                                 title="klik untuk edit"><i class="fa fa-edit"></i></button>
                                             <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
-                                                target="_blank" style="font: white"> Soal UAS</a>
+                                                target="_blank" style="font: white"> UAS</a>
                                         @endif
                                     </center>
                                 </td>

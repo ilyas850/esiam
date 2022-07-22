@@ -92,7 +92,7 @@
                                                 class="fa fa-money" title="Klik untuk cek pembayaran"></i></a>
                                         <a class="btn btn-warning btn-xs"
                                             href="/cek_makul_mengulang_kprd/{{ $key->idstudent }}"><i
-                                                class="fa fa-repeat" title="Klik untuk cek matakuliah mengulang"></i></>
+                                                class="fa fa-repeat" title="Klik untuk cek matakuliah mengulang"></i></a>
                                     </center>
                                 </td>
                             </tr>

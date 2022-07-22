@@ -24,7 +24,7 @@
         </ul>
     </li>
     <li><a href="{{ url('val_krs_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a>
-    
+
     <li><a href="{{ url('val_kurikulum_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
                 Kurikulum</span></a>
     </li>
@@ -82,7 +82,5 @@
             <li><a href="{{ url('nilai_ta_kaprodi') }}"><i class="fa fa-circle-o"></i> <span>
                         Nilai TA</span></a></li>
         </ul>
-    </li>
-    <li><a href="{{ url('upload_soal_dsn_kprd') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
     </li>
 </ul>
