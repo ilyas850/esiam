@@ -90,6 +90,9 @@
                                         <a class="btn btn-success btn-xs"
                                             href="/record_pembayaran_mhs_kprd/{{ $key->idstudent }}"><i
                                                 class="fa fa-money" title="Klik untuk cek pembayaran"></i></a>
+                                        <a class="btn btn-warning btn-xs"
+                                            href="/cek_makul_mengulang_kprd/{{ $key->idstudent }}"><i
+                                                class="fa fa-repeat" title="Klik untuk cek matakuliah mengulang"></i></>
                                     </center>
                                 </td>
                             </tr>

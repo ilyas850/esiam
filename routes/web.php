@@ -757,8 +757,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('savekrs_new_kprd', 'KaprodiController@savekrs_new');
     Route::post('hapuskrsmhs_kprd', 'KaprodiController@hapuskrsmhs');
 
-    //matakuliah mengulang kaprodi
-    Route::get('makul_ulang_kprd', 'KaprodiController@makul_ulang_kprd');
+    //cek matakuliah mengulang
+    Route::get('cek_makul_mengulang_kprd/{id}', 'KaprodiController@cek_makul_mengulang_kprd');
 
     //matakuliah diampu dosen
     Route::get('makul_diampu_kprd', 'KaprodiController@makul_diampu_dsn');
