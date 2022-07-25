@@ -474,6 +474,12 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('input_krs', 'KrsController@input_krs');
     Route::post('save_krs', 'KrsController@save_krs');
 
+    //cek KHS
+    Route::get('khs', 'NilaiController@khs');
+    Route::post('filter_khs', 'NilaiController@filter_khs');
+    Route::post('unduh_khs_mid_term', 'NilaiController@unduh_khs_mid_term');
+    Route::post('unduh_khs_final_term', 'NilaiController@unduh_khs_final_term');
+
     Route::post('batalkrs', 'KrsController@batalkrs');
     Route::get('isi_edom', 'EdomController@isi_edom');
     Route::post('form_edom', 'EdomController@form_edom');
