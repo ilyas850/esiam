@@ -320,6 +320,7 @@ class NilaiController extends Controller
     //total pembayaran kuliah
     $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
       ->where('kuitansi.idstudent', $id)
+      ->whereNotIn('bayar.iditem', [14, 15, 16, 35, 36, 37, 38, 39])
       ->sum('bayar.bayar');
 
     if ($tipe_khs == 'UTS') {
@@ -388,6 +389,7 @@ class NilaiController extends Controller
         return redirect('home');
       }
     } elseif ($tipe_khs == 'FINAL') {
+
       if ($c == 1) {
         $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
       } elseif ($c == 2) {
