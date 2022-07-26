@@ -691,6 +691,23 @@ class KaprodiController extends Controller
 
     $totalsks = $jumlahskst + $jumlahsksp;
 
+    $id_dsn = Auth::user()->id_user;
+
+    $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+      ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+      ->where('dosen_pembimbing.id_dosen', $id_dsn)
+      ->where('student.idstudent', $id)
+      ->where('student_record.status', 'TAKEN')
+      ->whereIn('student.active', [1, 5])
+      ->select('student_record.id_student', 'student.nama', 'student.nim', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+      ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+      ->get();
+
+    $hitungnilai_de = count($data);
+
     if ($totalsks > 24) {
       Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
       return redirect('val_krs_kprd');
@@ -706,8 +723,13 @@ class KaprodiController extends Controller
         ->where('student_record.id_student', $id)
         ->update(['student_record.remark' => $request->remark]);
 
-      Alert::success('', 'Berhasil ')->autoclose(3500);
-      return redirect()->back();
+      if ($hitungnilai_de > 0) {
+        Alert::warning('Mahasiswa ini ada ' . $hitungnilai_de . ' matakuliah mengulang', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+      } elseif ($hitungnilai_de == 0) {
+        Alert::success('', 'KRS Berhasil divalidasi')->autoclose(3500);
+        return redirect()->back();
+      }
     }
   }
 

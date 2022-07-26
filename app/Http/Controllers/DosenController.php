@@ -480,16 +480,20 @@ class DosenController extends Controller
             ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
             ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
             ->where('dosen_pembimbing.id_dosen', $id_dsn)
+            ->where('student.idstudent', $id)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('student.active', [1, 5])
-            ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
-            ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->select('student_record.id_student', 'student.nama', 'student.nim', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR')
             ->get();
-        dd($data);
+
+        $hitungnilai_de = count($data);
+
         if ($totalsks > 24) {
             Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
             return redirect('val_krs');
         } elseif ($totalsks < 24) {
+
             $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                 ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -501,8 +505,13 @@ class DosenController extends Controller
                 ->where('student_record.id_student', $id)
                 ->update(['student_record.remark' => $request->remark]);
 
-            Alert::success('', 'Berhasil ')->autoclose(3500);
-            return redirect()->back();
+            if ($hitungnilai_de > 0) {
+                Alert::warning('Mahasiswa ini ada ' . $hitungnilai_de . ' matakuliah mengulang', 'Berhasil')->autoclose(3500);
+                return redirect()->back();
+            } elseif ($hitungnilai_de == 0) {
+                Alert::success('', 'KRS Berhasil divalidasi')->autoclose(3500);
+                return redirect()->back();
+            }
         }
     }
 
