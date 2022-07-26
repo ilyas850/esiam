@@ -126,7 +126,26 @@ class HomeController extends Controller
 
       $data = DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id));
 
-      return view('home', ['data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+      $data_mengulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+        ->join('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+            ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+        ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        ->join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+        ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+        ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+        ->where('student.idstudent', $id)
+        ->where('student_record.status', 'TAKEN')
+        ->whereIn('student.active', [1, 5])
+        ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR', 'semester.semester', 'kurikulum_master.nama_kurikulum')
+        ->groupBy('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR', 'semester.semester', 'kurikulum_master.nama_kurikulum')
+        ->get();
+
+      return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);

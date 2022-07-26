@@ -1,16 +1,4 @@
-{{-- <div class="row">
-  <div class="col-md-12">
-    <div class="alert alert-info alert-dismissible">
-      <h4>Visi dan Misi Politeknik META Industri Cikarang</h4>
-      <h4> <b>Visi</b> </h4>
-      <h5>{{$visi}}</h5>
-      <h4> <b>Misi</b> </h4>
-      <h5>{{$misi}}</h5>
-      <h4> <b>Tujuan</b> </h4>
-      <h5>{{$tujuan}}</h5>
-    </div>
-  </div>
-</div> --}}
+
 <div class="row">
     <div class="col-md-6">
         @if (count($errors) > 0)
@@ -420,6 +408,61 @@
                                     @else
                                         <span class="label label-warning">belum</span>
                                     @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Matakuliah Wajib Ulang</h3>
+            </div>
+            <div class="box-body ">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Kurikulum</center>
+                            </th>
+                            <th>
+                                <center>Prodi</center>
+                            </th>
+                            <th>
+                                <center>Semester</center>
+                            </th>
+                            <th>
+                                <center>Angkatan</center>
+                            </th>
+                            <th>
+                                <center>Matakuliah</center>
+                            </th>
+                            <th>
+                                <center>Nilai</center>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($data_mengulang as $item)
+                            <tr>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $item->nama_kurikulum }}</td>
+                                <td align="center">{{ $item->prodi }}</td>
+                                <td align="center">{{ $item->semester }}</td>
+                                <td align="center">{{ $item->angkatan }}</td>
+                                <td>{{ $item->kode }} / {{ $item->makul }}</td>
+                                <td align="center">
+                                    {{ $item->nilai_AKHIR }}
                                 </td>
                             </tr>
                         @endforeach
