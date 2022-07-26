@@ -273,6 +273,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('download_kuisioner_perpus', 'SadminController@download_kuisioner_perpus');
     Route::post('download_detail_kuisioner_perpus', 'SadminController@download_detail_kuisioner_perpus');
 
+    //report kuisioner beasiswa
+    Route::post('post_report_kuisioner_beasiswa', 'SadminController@post_report_kuisioner_beasiswa');
+    Route::post('detail_kuisioner_beasiswa', 'SadminController@detail_kuisioner_beasiswa');
+    Route::post('download_kuisioner_beasiswa', 'SadminController@download_kuisioner_beasiswa');
+    Route::post('download_detail_kuisioner_beasiswa', 'SadminController@download_detail_kuisioner_beasiswa');
+
     //soal UTS dan UAS
     Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');
 
@@ -573,6 +579,8 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('save_kuisioner_bauk', 'MhsController@save_kuisioner_bauk');
     Route::get('isi_kuis_perpus/{id}', 'MhsController@isi_kuis_perpus');
     Route::post('save_kuisioner_perpus', 'MhsController@save_kuisioner_perpus');
+    Route::get('isi_kuis_beasiswa/{id}', 'MhsController@isi_kuis_beasiswa');
+    Route::post('save_kuisioner_beasiswa', 'MhsController@save_kuisioner_beasiswa');
 
     //kartu ujian
     Route::get('kartu_uts', 'MhsController@kartu_uts');

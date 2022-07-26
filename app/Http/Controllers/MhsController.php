@@ -1784,7 +1784,7 @@ class MhsController extends Controller
     public function kuisioner()
     {
         $data = Kuisioner_kategori::where('status', 'ACTIVE')->get();
-
+        
         return view('mhs/kuisioner/kuisioner_all', compact('data'));
     }
 
@@ -2686,6 +2686,103 @@ class MhsController extends Controller
             ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
             ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
             ->where('kuisioner_master_kategori.id_kategori_kuisioner', 8)
+            ->get();
+
+        if (count($cek_kuis) > 0) {
+            Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+            return redirect('kuisioner');
+        } elseif (count($cek_kuis) == 0) {
+            for ($i = 0; $i < $hitung; $i++) {
+                $nilai = $request->nilai[$i];
+                $kuis = explode(',', $nilai, 2);
+                $id1 = $kuis[0];
+                $id2 = $kuis[1];
+
+                $isi = new Kuisioner_transaction();
+                $isi->id_kuisioner = $id1;
+                $isi->id_student = $id_student;
+                $isi->id_periodetahun = $id_tahun;
+                $isi->id_periodetipe = $id_tipe;
+                $isi->nilai = $id2;
+                $isi->created_by = $nama_ok;
+                $isi->save();
+            }
+        }
+        Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
+        return redirect('kuisioner');
+    }
+
+    public function isi_kuis_beasiswa($id)
+    {
+        $waktu_edom = Waktu_edom::first();
+
+        if ($waktu_edom->status == 0) {
+            Alert::warning('', 'Maaf waktu pengisian kuisioner belum dibuka')->autoclose(3500);
+            return redirect('kuisioner');
+        } elseif ($waktu_edom->status == 1) {
+            $ids = Auth()->user()->id_user;
+
+            $mhs = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->where('student.idstudent', $ids)
+                ->select('prodi.prodi', 'kelas.kelas')
+                ->first();
+
+            $prodi = $mhs->prodi;
+            $kelas = $mhs->kelas;
+
+            $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+            $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+            //untuk ke database
+            $idthn = $thn->id_periodetahun;
+            $idtp = $tp->id_periodetipe;
+
+            $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                ->where('kuisioner_transaction.id_student', $ids)
+                ->where('kuisioner_transaction.id_periodetahun', $idthn)
+                ->where('kuisioner_transaction.id_periodetipe', $idtp)
+                ->where('kuisioner_master_kategori.id_kategori_kuisioner', 9)
+                ->get();
+
+            if (count($cek_kuis) > 0) {
+                Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
+                return redirect('kuisioner');
+            } elseif (count($cek_kuis) == 0) {
+                $data = Kuisioner_master::join('kuisioner_master_aspek', 'kuisioner_master.id_aspek_kuisioner', '=', 'kuisioner_master_aspek.id_aspek_kuisioner')
+                    ->where('kuisioner_master.id_kategori_kuisioner', $id)
+                    ->select('kuisioner_master.*', 'kuisioner_master_aspek.aspek_kuisioner', 'kuisioner_master.id_kuisioner')
+                    ->get();
+
+                return view('mhs/kuisioner/kuisioner_beasiswa', compact('data', 'prodi', 'kelas', 'ids', 'idthn', 'idtp'));
+            }
+        }
+    }
+
+    public function save_kuisioner_beasiswa(Request $request)
+    {
+        $id_student = $request->id_student;
+        $id_tahun = $request->id_periodetahun;
+        $id_tipe = $request->id_periodetipe;
+        $nilai = $request->nilai;
+        $hitung = count($nilai);
+
+        $mhs = Student::where('idstudent', $id_student)->first();
+
+        $nama = $mhs->nama;
+        $nama_ok = str_replace("'", '', $nama);
+
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 9)
             ->get();
 
         if (count($cek_kuis) > 0) {

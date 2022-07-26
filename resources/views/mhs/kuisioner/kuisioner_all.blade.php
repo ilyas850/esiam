@@ -57,6 +57,9 @@
                                         @elseif($item->id_kategori_kuisioner == 8)
                                             <a href="/isi_kuis_perpus/{{ $item->id_kategori_kuisioner }}"
                                                 class="btn btn-info btn-xs">Isi Kuisioner</a>
+                                        @elseif($item->id_kategori_kuisioner == 9)
+                                            <a href="/isi_kuis_beasiswa/{{ $item->id_kategori_kuisioner }}"
+                                                class="btn btn-info btn-xs">Isi Kuisioner</a>
                                         @endif
 
                                     </td>

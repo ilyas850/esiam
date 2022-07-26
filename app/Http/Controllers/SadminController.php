@@ -746,7 +746,7 @@ class SadminController extends Controller
 
     public function view_krs(Request $request)
     {
-        
+
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -768,7 +768,7 @@ class SadminController extends Controller
             ->where('student_record.remark', $request->remark)
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'prodi.prodi', 'angkatan.angkatan', 'dosen.nama as nama_dsn', 'kelas.kelas', 'student_record.remark')
             ->get();
-           
+
         return view('sadmin/approv', ['appr' => $appr]);
     }
 
@@ -2852,6 +2852,8 @@ class SadminController extends Controller
             return $this->report_kuis_bauk($id);
         } elseif ($id == 8) {
             return $this->report_kuis_perpus($id);
+        } elseif ($id == 9) {
+            return $this->report_kuis_beasiswa($id);
         }
     }
 
@@ -3549,6 +3551,93 @@ class SadminController extends Controller
 
         $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_perpus', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
         return $pdf->download('Report Kuisioner PERPUS' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+    }
+
+    public function report_kuis_beasiswa($id)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_beasiswa(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        return view('sadmin/kuisioner/report_kuisioner_beasiswa', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function post_report_kuisioner_beasiswa(Request $request)
+    {
+        $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $data_prd_tp = Periode_tipe::all();
+
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_beasiswa(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        return view('sadmin/kuisioner/report_kuisioner_beasiswa', compact('data_prd_tp', 'data_prd_thn', 'id', 'data', 'idperiodetahun', 'idperiodetipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function detail_kuisioner_beasiswa(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_beasiswa(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
+
+        return view('sadmin/kuisioner/detail_kuisioner_beasiswa', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'));
+    }
+    
+    public function download_kuisioner_beasiswa(Request $request)
+    {
+        $id = $request->id_kategori_kuisioner;
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $data = DB::select('CALL kuisioner_beasiswa(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_report_kuisioner_beasiswa', compact('data', 'namaperiodetahun', 'namaperiodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BEASISWA' . ' ' . $namaperiodetahun . ' ' . $namaperiodetipe . '.pdf');
+    }
+
+    public function download_detail_kuisioner_beasiswa(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->id_prodi;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+
+        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $nama_prodi = $dosen->prodi;
+
+        $data = DB::select('CALL detail_kuisioner_beasiswa(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
+
+        $pdf = PDF::loadView('sadmin/kuisioner/pdf_detail_kuisioner_beasiswa', compact('data', 'nama_prodi', 'periodetahun', 'periodetipe'))->setPaper('a4', 'potrait');
+        return $pdf->download('Report Kuisioner BEASISWA' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
     public function soal_uts_uas()

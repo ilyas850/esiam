@@ -43,8 +43,7 @@
                           <td><center>{{$item->nilai_UTS}}</center></td>
                           <td><center>{{$item->nilai_UAS}}</center></td>
                           <td><center>{{$item->nilai_AKHIR_angka}}</center></td>
-                          <td><center>{{$item->nilai_AKHIR}}</center></td>
-
+                               <td><center>{{$item->nilai_AKHIR}}</center></td>
                         </tr>
                     @endforeach
                 </tbody>
