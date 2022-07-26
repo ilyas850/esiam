@@ -12,6 +12,7 @@ use App\Kurikulum_transaction;
 use App\Prausta_setting_relasi;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
+use App\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -406,5 +407,88 @@ class Wadir1Controller extends Controller
       ->get();
 
     return view('wadir/prausta/nilai_ta', compact('data'));
+  }
+
+  public function rekap_nilai_mhs_wadir()
+  {
+    $periode_tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+    $periode_tipe = Periode_tipe::all();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+    $tipe = $tp->id_periodetipe;
+    $nama_tipe = $tp->periode_tipe;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tahun = $thn->id_periodetahun;
+    $nama_tahun = $thn->periode_tahun;
+
+    $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kurikulum_periode.id_periodetipe', $tipe)
+      ->where('kurikulum_periode.id_periodetahun', $tahun)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+      ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+      ->get();
+
+    return view('wadir/nilai/rekap_nilai_mhs', compact('periode_tahun', 'periode_tipe', 'data', 'nama_tipe', 'nama_tahun'));
+  }
+
+  public function filter_rekap_nilai_mhs_wadir(Request $request)
+  {
+    $periode_tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+    $periode_tipe = Periode_tipe::all();
+
+    $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+    $tipe = $tp->id_periodetipe;
+    $nama_tipe = $tp->periode_tipe;
+
+    $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+    $tahun = $thn->id_periodetahun;
+    $nama_tahun = $thn->periode_tahun;
+
+    $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kurikulum_periode.id_periodetipe', $tipe)
+      ->where('kurikulum_periode.id_periodetahun', $tahun)
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+      ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+      ->get();
+
+    return view('wadir/nilai/rekap_nilai_mhs', compact('periode_tahun', 'periode_tipe', 'data', 'nama_tipe', 'nama_tahun'));
+  }
+
+  public function cek_rekap_nilai_mhs_wadir($id)
+  {
+    $nama = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->where('kurikulum_periode.id_kurperiode', $id)
+      ->select('matakuliah.kode', 'matakuliah.makul', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+
+    $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student_record.id_kurperiode', $id)
+      ->where('student_record.status', 'TAKEN')
+      ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
+      ->get();
+
+    return view('wadir/nilai/cek_rekap_nilai_mhs', compact('data', 'nama'));
   }
 }

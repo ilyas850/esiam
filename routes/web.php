@@ -978,6 +978,11 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::get('aktif_setting_kurikulum/{id}', 'ProdiController@aktif_setting_kurikulum');
     Route::get('closed_setting_kurikulum/{id}', 'ProdiController@closed_setting_kurikulum');
     Route::get('open_setting_kurikulum/{id}', 'ProdiController@open_setting_kurikulum');
+
+    //master nilai
+    Route::get('rekap_nilai_mhs', 'ProdiController@rekap_nilai_mhs');
+    Route::post('filter_rekap_nilai_mhs', 'ProdiController@filter_rekap_nilai_mhs');
+    Route::get('cek_rekap_nilai_mhs/{id}', 'ProdiController@cek_rekap_nilai_mhs');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {
@@ -997,6 +1002,11 @@ Route::group(['middleware' => 'wadir1'], function () {
     Route::get('nilai_prakerin_wadir', 'Wadir1Controller@nilai_prakerin_wadir');
     Route::get('nilai_sempro_wadir', 'Wadir1Controller@nilai_sempro_wadir');
     Route::get('nilai_ta_wadir', 'Wadir1Controller@nilai_ta_wadir');
+
+    //master nilai
+    Route::get('rekap_nilai_mhs_wadir', 'Wadir1Controller@rekap_nilai_mhs_wadir');
+    Route::post('filter_rekap_nilai_mhs_wadir', 'Wadir1Controller@filter_rekap_nilai_mhs_wadir');
+    Route::get('cek_rekap_nilai_mhs_wadir/{id}', 'Wadir1Controller@cek_rekap_nilai_mhs_wadir');
 });
 
 Route::group(['middleware' => 'prausta'], function () {
