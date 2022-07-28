@@ -37,14 +37,17 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master pkl
     Route::get('master_prakerin', 'SadminController@master_prakerin');
     Route::get('cek_master_prakerin/{id}', 'SadminController@cek_master_prakerin');
+    Route::post('filter_master_prakerin', 'SadminController@filter_master_prakerin');
 
     //master sempro
     Route::get('master_sempro', 'SadminController@master_sempro');
     Route::get('cek_master_sempro/{id}', 'SadminController@cek_master_sempro');
+    Route::post('filter_master_sempro', 'SadminController@filter_master_sempro');
 
     //master ta
     Route::get('master_ta', 'SadminController@master_ta');
     Route::get('cek_master_ta/{id}', 'SadminController@cek_master_ta');
+    Route::post('filter_master_ta', 'SadminController@filter_master_ta');
 
     //master kategori kuisioner
     Route::get('master_kategorikuisioner', 'SadminController@master_kategorikuisioner');
