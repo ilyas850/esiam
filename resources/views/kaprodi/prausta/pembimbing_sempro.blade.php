@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content_header')
@@ -35,14 +33,20 @@
                             <th>
                                 <center>Nama Mahasiswa</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>NIM</center>
                             </th>
-                            <th width="20%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>Angkatan</center>
+                            </th>
+                            <th>
+                                <center>Jml Bimbingan</center>
                             </th>
                             <th>
                                 <center>Aksi</center>
@@ -71,6 +75,12 @@
                                 </td>
                                 <td>
                                     <center>{{ $key->kelas }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $key->angkatan }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $key->jml_bim }}</center>
                                 </td>
                                 <td>
                                     <center>

@@ -1015,6 +1015,10 @@ Route::group(['middleware' => 'wadir1'], function () {
     Route::get('rekap_nilai_mhs_wadir', 'Wadir1Controller@rekap_nilai_mhs_wadir');
     Route::post('filter_rekap_nilai_mhs_wadir', 'Wadir1Controller@filter_rekap_nilai_mhs_wadir');
     Route::get('cek_rekap_nilai_mhs_wadir/{id}', 'Wadir1Controller@cek_rekap_nilai_mhs_wadir');
+
+    //master pembayaran
+    Route::get('rekap_pembayaran_mhs', 'Wadir1Controller@rekap_pembayaran_mhs');
+    Route::get('detail_pembayaran_mhs/{id}', 'Wadir1Controller@detail_pembayaran_mhs');
 });
 
 Route::group(['middleware' => 'prausta'], function () {

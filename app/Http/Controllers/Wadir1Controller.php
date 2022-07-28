@@ -12,6 +12,7 @@ use App\Kurikulum_transaction;
 use App\Prausta_setting_relasi;
 use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
+use App\Student;
 use App\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -490,5 +491,38 @@ class Wadir1Controller extends Controller
       ->get();
 
     return view('wadir/nilai/cek_rekap_nilai_mhs', compact('data', 'nama'));
+  }
+
+  public function rekap_pembayaran_mhs()
+  {
+    $data1 = Student::leftJoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi')
+      ->whereIn('student.active', [1, 5])
+      ->orderBy('student.nim', 'ASC')
+      ->get();
+
+    $data = DB::select('CALL data_pembayaran_mhs()');
+
+    return view('wadir/pembayaran/data_pembayaran', compact('data'));
+  }
+
+  public function detail_pembayaran_mhs($id)
+  {
+    $mhs = Student::join('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student.idstudent', $id)
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+
+    $data = DB::select('CALL detail_pembayaran_mhs(?)', [$id]);
+
+    return view('wadir/pembayaran/detail_pembayaran', compact('data', 'mhs'));
   }
 }

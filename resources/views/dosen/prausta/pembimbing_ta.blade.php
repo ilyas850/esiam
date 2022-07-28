@@ -27,20 +27,26 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4px">
+                            <th>
                                 <center>No</center>
                             </th>
                             <th>
                                 <center>Nama Mahasiswa</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>NIM</center>
                             </th>
-                            <th width="20%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>Angkatan</center>
+                            </th>
+                            <th>
+                                <center>Jml Bimbingan</center>
                             </th>
                             <th>
                                 <center>Aksi</center>
@@ -69,6 +75,12 @@
                                 </td>
                                 <td>
                                     <center>{{ $key->kelas }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $key->angkatan }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $key->jml_bim }}</center>
                                 </td>
                                 <td>
                                     <center>

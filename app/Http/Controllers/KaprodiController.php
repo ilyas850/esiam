@@ -3674,29 +3674,37 @@ class KaprodiController extends Controller
   {
     $id = Auth::user()->id_user;
 
-    $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-      ->leftJoin('prodi', (function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      }))
+    $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
       ->where('prausta_setting_relasi.status', 'ACTIVE')
-      ->whereIn('prausta_master_kode.kode_prausta', ['FA-601', 'TI-601', 'TK-601'])
+      ->where('student.active', 1)
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
       ->select(
+        DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
         'student.nim',
         'student.nama',
-        'prausta_master_kode.kode_prausta',
-        'prausta_master_kode.nama_prausta',
         'prodi.prodi',
         'kelas.kelas',
+        'angkatan.angkatan',
         'prausta_setting_relasi.id_settingrelasi_prausta',
-        'prausta_setting_relasi.judul_prausta',
-        'prausta_setting_relasi.tempat_prausta',
         'prausta_setting_relasi.validasi_baak'
       )
+      ->groupBy(
+        'student.nama',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_setting_relasi.validasi_baak'
+      )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     return view('kaprodi/prausta/pembimbing_pkl', compact('data'));
@@ -4062,31 +4070,36 @@ class KaprodiController extends Controller
   {
     $id = Auth::user()->id_user;
 
-    $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-      ->leftJoin('prodi', (function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      }))
+    $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
       ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
       ->select(
+        DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
         'student.nim',
         'student.nama',
-        'prausta_master_kode.kode_prausta',
-        'prausta_master_kode.nama_prausta',
         'prodi.prodi',
         'kelas.kelas',
+        'angkatan.angkatan',
         'prausta_setting_relasi.id_settingrelasi_prausta',
-        'prausta_setting_relasi.judul_prausta',
-        'prausta_setting_relasi.tempat_prausta',
-        'prausta_setting_relasi.acc_judul_dospem',
-        'prausta_setting_relasi.acc_judul_kaprodi',
         'prausta_setting_relasi.validasi_baak'
       )
+      ->groupBy(
+        'student.nama',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_setting_relasi.validasi_baak'
+      )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     return view('kaprodi/prausta/pembimbing_sempro', compact('data'));
@@ -4796,31 +4809,36 @@ class KaprodiController extends Controller
   {
     $id = Auth::user()->id_user;
 
-    $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-      ->leftJoin('prodi', (function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      }))
+    $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
       ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
       ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
       ->select(
+        DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
         'student.nim',
         'student.nama',
-        'prausta_master_kode.kode_prausta',
-        'prausta_master_kode.nama_prausta',
         'prodi.prodi',
         'kelas.kelas',
+        'angkatan.angkatan',
         'prausta_setting_relasi.id_settingrelasi_prausta',
-        'prausta_setting_relasi.judul_prausta',
-        'prausta_setting_relasi.tempat_prausta',
-        'prausta_setting_relasi.acc_judul_dospem',
-        'prausta_setting_relasi.acc_judul_kaprodi',
         'prausta_setting_relasi.validasi_baak'
       )
+      ->groupBy(
+        'student.nama',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_setting_relasi.validasi_baak'
+      )
+      ->orderBy('student.nim', 'ASC')
       ->get();
 
     return view('kaprodi/prausta/pembimbing_ta', compact('data'));
