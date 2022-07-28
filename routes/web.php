@@ -299,6 +299,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('export_data_akm', 'SadminController@export_data_akm');
     Route::post('filter_export_akm', 'SadminController@filter_export_akm');
     Route::post('export_data_akm_xls', 'SadminController@export_data_akm_xls');
+
+    //master pembayaran mahasiswa
+    Route::get('record_pembayaran_mahasiswa', 'SadminController@record_pembayaran_mahasiswa');
+    Route::get('detail_pembayaran_mhs_admin/{id}', 'SadminController@detail_pembayaran_mhs_admin');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

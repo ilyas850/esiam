@@ -46,6 +46,8 @@
             <li><a href="/data_foto"><i class="fa fa-circle-o"></i> Foto Mahasiswa</a></li>
             <li><a href="{{ url('mhs_ta') }}"><i class="fa fa-circle-o"></i>Mahasiswa Tugas Akhir</a></li>
             <li><a href="{{ url('kartu_ujian_mhs') }}"><i class="fa fa-circle-o"></i>Kartu Ujian Mahasiswa</a></li>
+            <li><a href="{{ url('record_pembayaran_mahasiswa') }}"><i class="fa fa-circle-o"></i>Pembayaran
+                    Mahasiswa</a></li>
         </ul>
     </li>
     <li class="treeview">

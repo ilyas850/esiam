@@ -54,7 +54,7 @@
 
                                 <td align="right">@currency($item->total_sudah_bayar)</td>
                                 <td align="center">
-                                    <a href="detail_pembayaran_mhs/{{ $item->idstudent }}"
+                                    <a href="detail_pembayaran_mhs_admin/{{ $item->idstudent }}"
                                         class="btn btn-warning btn-xs">Detail</a>
                                 </td>
                             </tr>
