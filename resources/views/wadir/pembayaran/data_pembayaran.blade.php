@@ -32,9 +32,7 @@
                             <th>
                                 <center> Angkatan</center>
                             </th>
-                            <th>
-                                <center> Total Pembayaran</center>
-                            </th>
+                           
                             <th>
                                 <center> Total Telah Dibayar</center>
                             </th>
@@ -53,7 +51,7 @@
                                 <td align="center">{{ $item->prodi }}</td>
                                 <td align="center">{{ $item->kelas }}</td>
                                 <td align="center">{{ $item->angkatan }}</td>
-                                <td align="right">@currency($item->total_harus_bayar)</td>
+                                
                                 <td align="right">@currency($item->total_sudah_bayar)</td>
                                 <td align="center">
                                     <a href="detail_pembayaran_mhs/{{ $item->idstudent }}"

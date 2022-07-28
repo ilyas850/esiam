@@ -523,6 +523,18 @@ class Wadir1Controller extends Controller
 
     $data = DB::select('CALL detail_pembayaran_mhs(?)', [$id]);
 
-    return view('wadir/pembayaran/detail_pembayaran', compact('data', 'mhs'));
+    $detail_beasiswa = DB::select('CALL detail_beasiswa_mhs(?)', [$id]);
+
+    foreach ($detail_beasiswa as $key_beasiswa) {
+      # code...
+    }
+
+    $total_byr_mhs = DB::select('CALL detail_totalbayar_mhs(?)', [$id]);
+
+    foreach ($total_byr_mhs as $key_total) {
+      # code...
+    }
+    
+    return view('wadir/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
   }
 }
