@@ -964,6 +964,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('download_bap_pkl_kprd/{id}', 'KaprodiController@download_bap_pkl_kprd');
     Route::get('download_bap_sempro_kprd/{id}', 'KaprodiController@download_bap_sempro_kprd');
     Route::get('download_bap_ta_kprd/{id}', 'KaprodiController@download_bap_ta_kprd');
+
+    //master pembayaran
+    Route::get('record_pembayaran_mahasiswa_kprd', 'KaprodiController@record_pembayaran_mahasiswa_kprd');
+    Route::get('detail_pembayaran_mhs_kprd/{id}', 'KaprodiController@detail_pembayaran_mhs_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

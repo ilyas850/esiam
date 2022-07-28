@@ -7746,4 +7746,57 @@ class KaprodiController extends Controller
       return redirect('mhs_bim');
     }
   }
+
+  public function record_pembayaran_mahasiswa_kprd()
+  {
+    $id = Auth::user()->id_user;
+    $kode = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $id)
+      ->select('kaprodi.id_kaprodi', 'prodi.kodeprodi')
+      ->first();
+
+    $kdprd = $kode->kodeprodi;
+
+    $data1 = Student::leftJoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi')
+      ->whereIn('student.active', [1, 5])
+      ->orderBy('student.nim', 'ASC')
+      ->get();
+
+    $data = DB::select('CALL data_pembayaran_mhs_prodi(?)', [$kdprd]);
+
+    return view('kaprodi/pembayaran/data_pembayaran', compact('data'));
+  }
+
+  public function detail_pembayaran_mhs_kprd($id)
+  {
+    $mhs = Student::join('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student.idstudent', $id)
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+
+    $data = DB::select('CALL detail_pembayaran_mhs(?)', [$id]);
+
+    $detail_beasiswa = DB::select('CALL detail_beasiswa_mhs(?)', [$id]);
+
+    foreach ($detail_beasiswa as $key_beasiswa) {
+      # code...
+    }
+
+    $total_byr_mhs = DB::select('CALL detail_totalbayar_mhs(?)', [$id]);
+
+    foreach ($total_byr_mhs as $key_total) {
+      # code...
+    }
+    
+    return view('kaprodi/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
+  }
 }
