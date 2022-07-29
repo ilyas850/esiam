@@ -297,6 +297,9 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //master wisuda
     Route::get('master_wisuda', 'SadminController@master_wisuda');
+    Route::put('saveedit_wisuda/{id}', 'SadminController@saveedit_wisuda');
+    Route::get('validate_wisuda/{id}', 'SadminController@validate_wisuda');
+    Route::get('unvalidate_wisuda/{id}', 'SadminController@unvalidate_wisuda');
 
     //export data feeder
     Route::get('export_data_akm', 'SadminController@export_data_akm');

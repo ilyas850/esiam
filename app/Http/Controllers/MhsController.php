@@ -1784,7 +1784,7 @@ class MhsController extends Controller
     public function kuisioner()
     {
         $data = Kuisioner_kategori::where('status', 'ACTIVE')->get();
-        
+
         return view('mhs/kuisioner/kuisioner_all', compact('data'));
     }
 

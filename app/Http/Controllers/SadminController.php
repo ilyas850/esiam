@@ -61,6 +61,7 @@ use App\Exports\DataPrakerinExport;
 use App\Exports\DataAkmMhsExport;
 
 use App\Imports\ImportMicrosoftUser;
+use App\Wisuda;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -3785,6 +3786,137 @@ class SadminController extends Controller
         $prd->save();
 
         Alert::success('', 'Data Yudisium berhasil diedit')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function master_wisuda()
+    {
+        $prodi = Prodi::all();
+
+        $data  = Wisuda::join('student', 'wisuda.id_student', '=', 'student.idstudent')
+            ->leftjoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.active', 1)
+            ->select(
+                'wisuda.id_wisuda',
+                'wisuda.nama_lengkap',
+                'wisuda.nim',
+                'wisuda.tahun_lulus',
+                'wisuda.ukuran_toga',
+                'wisuda.no_hp',
+                'wisuda.email',
+                'wisuda.nik',
+                'wisuda.alamat_ktp',
+                'wisuda.alamat_domisili',
+                'wisuda.nama_ayah',
+                'wisuda.nama_ibu',
+                'wisuda.no_hp_ayah',
+                'wisuda.no_hp_ibu',
+                'wisuda.alamat_ortu',
+                'wisuda.status_vaksin',
+                'wisuda.file_vaksin',
+                'wisuda.npwp',
+                'wisuda.validasi',
+                'wisuda.id_student',
+                'wisuda.id_prodi',
+                'prodi.prodi',
+                'kelas.kelas'
+            )
+            ->get();
+
+        return view('sadmin/masterakademik/master_wisuda', compact('data', 'prodi'));
+    }
+
+    public function saveedit_wisuda(Request $request, $id)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'ukuran_toga'       => 'required',
+                'status_vaksin'     => 'required',
+                'tahun_lulus'       => 'required',
+                'nim'               => 'required',
+                'nama_lengkap'      => 'required',
+                'id_prodi'          => 'required',
+                'no_hp'             => 'required',
+                'email'             => 'required',
+                'nik'               => 'required',
+                'npwp'              => 'required',
+                'alamat_ktp'        => 'required',
+                'alamat_domisili'   => 'required',
+                'nama_ayah'         => 'required',
+                'nama_ibu'          => 'required',
+                'no_hp_ayah'        => 'required',
+                'alamat_ortu'       => 'required',
+                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+            ],
+            $message,
+        );
+
+        $bap = Wisuda::find($id);
+        $bap->id_student = $request->id_student;
+        $bap->ukuran_toga = $request->ukuran_toga;
+        $bap->status_vaksin = $request->status_vaksin;
+        $bap->tahun_lulus       = $request->tahun_lulus;
+        $bap->nim               = $request->nim;
+        $bap->nama_lengkap      = $request->nama_lengkap;
+        $bap->id_prodi          = $request->id_prodi;
+        $bap->no_hp             = $request->no_hp;
+        $bap->email             = $request->email;
+        $bap->nik               = $request->nik;
+        $bap->npwp              = $request->npwp;
+        $bap->alamat_ktp        = $request->alamat_ktp;
+        $bap->alamat_domisili   = $request->alamat_domisili;
+        $bap->nama_ayah         = $request->nama_ayah;
+        $bap->nama_ibu          = $request->nama_ibu;
+        $bap->no_hp_ayah        = $request->no_hp_ayah;
+        $bap->no_hp_ibu         = $request->no_hp_ibu;
+        $bap->alamat_ortu       = $request->alamat_ortu;
+
+        if ($bap->file_vaksin) {
+            if ($request->hasFile('file_vaksin')) {
+                File::delete('File Vaksin/' . $request->id_student . '/' . $bap->file_vaksin);
+                $file = $request->file('file_vaksin');
+                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Vaksin/' . $request->id_student;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_vaksin = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_vaksin')) {
+                $file = $request->file('file_vaksin');
+                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Vaksin/' . $request->id_student;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_vaksin = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Wisuda berhasil diedit')->autoclose(3500);
+        return redirect('master_wisuda');
+    }
+
+    public function validate_wisuda($id)
+    {
+        Wisuda::where('id_wisuda', $id)->update(['validasi' => 'SUDAH']);
+
+        Alert::success('', 'Data Wisuda berhasil divalidasi')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function unvalidate_wisuda($id)
+    {
+        Wisuda::where('id_wisuda', $id)->update(['validasi' => 'BELUM']);
+
+        Alert::success('', 'Data Wisuda batal divalidasi')->autoclose(3500);
         return redirect()->back();
     }
 

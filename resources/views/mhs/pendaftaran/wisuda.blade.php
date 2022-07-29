@@ -248,8 +248,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Nama Ayah</label>
-                                    <input type="text" class="form-control" value="{{ $data->nama_ayah }}"
-                                        readonly>
+                                    <input type="text" class="form-control" value="{{ $data->nama_ayah }}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -261,16 +260,14 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>No. HP Ayah</label>
-                                    <input value="{{ $data->no_hp_ayah }}" class="form-control" type="number"
-                                        readonly>
+                                    <input value="{{ $data->no_hp_ayah }}" class="form-control" type="number" readonly>
 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>No. HP Ibu</label>
-                                    <input value="{{ $data->no_hp_ibu }}" class="form-control" type="number"
-                                        readonly>
+                                    <input value="{{ $data->no_hp_ibu }}" class="form-control" type="number" readonly>
                                 </div>
                             </div>
                         </div>
@@ -329,9 +326,36 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <button class="btn btn-success" data-toggle="modal"
-                                    data-target="#modalUpdateWisuda{{ $data->id_wisuda }}" title="klik untuk edit"><i
-                                        class="fa fa-edit"></i> Edit</button>
+                                @if ($data->validasi == 'BELUM')
+                                    <button class="btn btn-success" data-toggle="modal"
+                                        data-target="#modalUpdateWisuda{{ $data->id_wisuda }}" title="klik untuk edit"><i
+                                            class="fa fa-edit"></i> Edit</button>
+                                @elseif($data->validasi == 'SUDAH')
+                                    <button type="button" class="btn btn-warning" data-toggle="modal"
+                                        data-target="#modal-warning">
+                                        Edit
+                                    </button>
+                                @endif
+
+                            </div>
+                        </div>
+
+                        <div class="modal modal-warning fade" id="modal-warning">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">Data Wisuda Telah divalidasi</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Terima Kasih&hellip;</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline pull-left"
+                                            data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
