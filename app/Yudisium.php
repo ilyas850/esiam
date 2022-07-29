@@ -9,4 +9,6 @@ class Yudisium extends Model
     protected $table = 'yudisium';
 
     protected $primaryKey = 'id_yudisium';
+
+    protected $dates = ['tgl_lahir'];
 }

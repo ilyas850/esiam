@@ -294,6 +294,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('validate_yudisium/{id}', 'SadminController@validate_yudisium');
     Route::get('unvalidate_yudisium/{id}', 'SadminController@unvalidate_yudisium');
     Route::put('saveedit_yudisium/{id}', 'SadminController@saveedit_yudisium');
+    Route::get('unduh_ijazah/{id}', 'SadminController@unduh_ijazah');
 
     //master wisuda
     Route::get('master_wisuda', 'SadminController@master_wisuda');

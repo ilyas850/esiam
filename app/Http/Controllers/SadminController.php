@@ -3789,6 +3789,126 @@ class SadminController extends Controller
         return redirect()->back();
     }
 
+    public function unduh_ijazah($id)
+    {
+        $data_mhs = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->leftjoin('transkrip_final', 'yudisium.id_student', '=', 'transkrip_final.id_student')
+            ->where('student.active', 1)
+            ->where('yudisium.id_yudisium', $id)
+            ->select(
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'yudisium.nik',
+                'prodi.prodi',
+                'prodi.study_year',
+                'prodi.kodeprodi',
+                'transkrip_final.no_ijazah',
+                'transkrip_final.tgl_yudisium',
+                'transkrip_final.tgl_wisuda'
+            )
+            ->first();
+
+        //no ijazah
+        $no_ijazah = $data_mhs->no_ijazah;
+        //nama mahasiswa
+        $nama = $data_mhs->nama_lengkap;
+        $ubah_nama = strtolower($nama);
+        $new_nama = ucwords($ubah_nama);
+        //tempat lahir
+        $tmptlahir = $data_mhs->tmpt_lahir;
+        //tanggal lahir
+        $tgllahir = $data_mhs->tgl_lahir->isoFormat('D MMMM Y');
+        //nik
+        $nik = $data_mhs->nik;
+        //nim
+        $nim = $data_mhs->nim;
+        //jenjang mahasiswa
+        if ($data_mhs->study_year == 3) {
+            $jenjang = 'Diploma III (D-III)';
+        } elseif ($data_mhs->study_year == 4) {
+            $jenjang = 'Diploma IV (D-IV)';
+        }
+        //prodi mhs
+        $prodi = $data_mhs->prodi;
+        //gelar mahasiswa
+        if ($data_mhs->kodeprodi == 22) {
+            $gelar = 'Ahli Madya Teknik (A.Md.T.)';
+        } elseif ($data_mhs->kodeprodi == 23) {
+            $gelar = 'Ahli Madya Teknik (A.Md.T.)';
+        } elseif ($data_mhs->kodeprodi == 24) {
+            $gelar = 'Ahli Madya Farmasi (A.Md.Farm.)';
+        } elseif ($data_mhs->kodeprodi == 25) {
+            $gelar = 'Sarjana Terapan Komputer (S.Tr.Kom.)';
+        }
+
+        if ($data_mhs->tgl_yudisium == null) {
+            $yudisium = '2001-01-01';
+        } elseif ($data_mhs->tgl_yudisium != null) {
+            $yudisium = $data_mhs->tgl_yudisium;
+        }
+
+        if ($data_mhs->tgl_wisuda == null) {
+            $wisuda = '2001-01-01';
+        } elseif ($data_mhs->tgl_wisuda != null) {
+            $wisuda = $data_mhs->tgl_wisuda;
+        }
+
+
+        $pisahyudi = explode('-', $yudisium);
+
+        $pisahwisu = explode('-', $wisuda);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $blnyudi = $bulan[$pisahyudi[1]];
+        $blnwisu = $bulan[$pisahwisu[1]];
+        //tanggal yudisium
+        $tglyudisium = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
+        //tanggal wisuda
+        $tglwisuda = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
+
+
+        $template = new TemplateProcessor('word-template/Template Ijazah 2022 New.docx');
+
+        $template->setValue('nama', $new_nama);
+        $template->setValue('no_ijazah', $no_ijazah);
+        $template->setValue('nim', $nim);
+        $template->setValue('nik', $nik);
+        $template->setValue('tgllahir', $tgllahir);
+        $template->setValue('tmptlahir', $tmptlahir);
+        $template->setValue('prodi', $prodi);
+        $template->setValue('yudisium', $tglyudisium);
+        $template->setValue('wisuda', $tglwisuda);
+        $template->setValue('jenjang', $jenjang);
+        $template->setValue('gelar', $gelar);
+
+
+        $fileName =  $new_nama . ' ' . $nim . ' ' . $prodi;
+
+        $template->saveAs($fileName . '.docx');
+        return response()
+            ->download($fileName . '.docx')
+            ->deleteFileAfterSend(true);
+    }
+
     public function master_wisuda()
     {
         $prodi = Prodi::all();

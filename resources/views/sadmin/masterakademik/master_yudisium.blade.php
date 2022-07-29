@@ -38,10 +38,10 @@
                                 <td>{{ Carbon\Carbon::parse($item->tgl_lahir)->formatLocalized('%d %B %Y') }}
                                 </td>
                                 <td>{{ $item->nik }}</td>
-                                <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ijazah }}"
-                                        target="_blank"> File </a></td>
-                                <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ktp }}"
-                                        target="_blank"> File </a></td>
+                                <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ijazah }}" target="_blank">
+                                        File </a></td>
+                                <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ktp }}" target="_blank">
+                                        File </a></td>
                                 <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_foto }}"
                                         target="_blank"> File </a></td>
                                 <td>
@@ -55,6 +55,8 @@
                                         <a href="/unvalidate_yudisium/{{ $item->id_yudisium }}"
                                             class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
                                                 class="fa fa-close"></i></a>
+                                        <a href="/unduh_ijazah/{{ $item->id_yudisium }}" class="btn btn-warning btn-xs"
+                                            title="klik untuk unduh ijazah"><i class="fa fa-download"></i></a>
                                     @endif
 
                                 </td>

@@ -336,7 +336,6 @@
                                         Edit
                                     </button>
                                 @endif
-
                             </div>
                         </div>
 
