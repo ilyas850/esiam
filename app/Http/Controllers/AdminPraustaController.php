@@ -1226,7 +1226,7 @@ class AdminPraustaController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_1 + $cek_nilai->nilai_3) / 3;
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -1320,7 +1320,7 @@ class AdminPraustaController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
+        $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_1) / 3;
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -2024,6 +2024,116 @@ class AdminPraustaController extends Controller
         $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 
         $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
+        return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+
+    public function download_bap_prakerin_all(Request $request)
+    {
+        $data_id = $request->id_settingrelasi_prausta;
+
+        $hitung_id = count($data_id);
+
+        for ($i = 0; $i < $hitung_id; $i++) {
+            $id_prausta = $data_id[$i];
+
+            $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+                ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                ->leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
+                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+                ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+                ->where('prausta_setting_relasi.status', 'ACTIVE')
+                ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id_prausta)
+                ->select(
+                    'student.nama',
+                    'student.nim',
+                    'prodi.prodi',
+                    'prodi.id_prodi',
+                    'kelas.kelas',
+                    'angkatan.angkatan',
+                    'prausta_trans_hasil.id_settingrelasi_prausta',
+                    'prausta_setting_relasi.judul_prausta',
+                    'prausta_setting_relasi.tempat_prausta',
+                    'prausta_setting_relasi.dosen_pembimbing',
+                    'prausta_setting_relasi.tanggal_selesai',
+                    'prausta_trans_hasil.nilai_1',
+                    'prausta_trans_hasil.nilai_2',
+                    'prausta_trans_hasil.nilai_3',
+                    'prausta_trans_hasil.nilai_huruf',
+                    'dosen.nama as nama_dsn',
+                    'dosen.nik',
+                    'dosen.akademik'
+                )
+                ->first();
+
+            $nama = $data->nama;
+            $nim = $data->nim;
+            $kelas = $data->kelas;
+            $idprodi = $data->id_prodi;
+
+            $kaprodi = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+                ->where('kaprodi.id_prodi', $idprodi)
+                ->select('dosen.nama', 'dosen.nik', 'dosen.akademik')
+                ->first();
+            $nama_kaprodi = $kaprodi->nama;
+            $akademik_kaprodi = $kaprodi->akademik;
+            $nik_kaprodi = $kaprodi->nik;
+
+            $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
+            $cekhari = date('l', strtotime($data->tanggal_selesai));
+
+            switch ($cekhari) {
+                case 'Sunday':
+                    $hari = 'Minggu';
+                    break;
+                case 'Monday':
+                    $hari = 'Senin';
+                    break;
+                case 'Tuesday':
+                    $hari = 'Selasa';
+                    break;
+                case 'Wednesday':
+                    $hari = 'Rabu';
+                    break;
+                case 'Thursday':
+                    $hari = 'Kamis';
+                    break;
+                case 'Friday':
+                    $hari = 'Jum\'at';
+                    break;
+                case 'Saturday':
+                    $hari = 'Sabtu';
+                    break;
+                default:
+                    $hari = 'Tidak ada';
+                    break;
+            }
+
+            $bulan = array(
+                1 =>   'Januari',
+                'Februari',
+                'Maret',
+                'April',
+                'Mei',
+                'Juni',
+                'Juli',
+                'Agustus',
+                'September',
+                'Oktober',
+                'November',
+                'Desember'
+            );
+
+            $pecahkan = explode('-', $data->tanggal_selesai);
+
+            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+        }
+
+        $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
+
         return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
     }
 

@@ -1110,6 +1110,8 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('download_bap_prakerin', 'AdminPraustaController@download_bap_prakerin');
     Route::post('download_bap_sempro', 'AdminPraustaController@download_bap_sempro');
     Route::post('download_bap_ta', 'AdminPraustaController@download_bap_ta');
+    Route::post('download_bap_prakerin_all', 'AdminPraustaController@download_bap_prakerin_all');
+
 
     //download nilai prausta
     Route::get('unduh_nilai_prakerin_b/{id}', 'AdminPraustaController@unduh_nilai_prakerin_b');

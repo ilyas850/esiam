@@ -28,67 +28,99 @@
                     </form>
                 </div>
                 <br>
-                <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th width="3%">
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>Nama Mahasiswa</center>
-                            </th>
-                            <th width="6%">
-                                <center>NIM</center>
-                            </th>
-                            <th width="11%">
-                                <center>Program Studi</center>
-                            </th>
-                            <th width="11%">
-                                <center>Kelas</center>
-                            </th>
-                            <th width="11%">
-                                <center>Angkatan</center>
-                            </th>
-                            <th>
-                                <center>Aksi</center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $key)
+                <form action="{{ url('download_bap_prakerin_all') }}" method="POST">
+                    {{ csrf_field() }}
+
+                    <table id="example8" class="table table-bordered table-striped">
+                        <thead>
                             <tr>
-                                <td>
-                                    <center>{{ $no++ }}</center>
-                                </td>
-                                <td>{{ $key->nama }}</td>
-                                <td>
-                                    <center>{{ $key->nim }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->prodi }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->kelas }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->angkatan }}</center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <form action="{{ url('download_bap_prakerin') }}" method="post">
-                                            {{ csrf_field() }}
-                                            <input type="hidden" name="id_settingrelasi_prausta"
-                                                value="{{ $key->id_settingrelasi_prausta }}">
-                                            <button class="btn btn-danger btn-xs"> Download BAP</button>
-                                        </form>
-                                    </center>
-                                </td>
+                                <th width="3%">
+                                    <center>No</center>
+                                </th>
+                                <th>
+                                    <center>Nama Mahasiswa</center>
+                                </th>
+                                <th width="6%">
+                                    <center>NIM</center>
+                                </th>
+                                <th width="11%">
+                                    <center>Program Studi</center>
+                                </th>
+                                <th width="11%">
+                                    <center>Kelas</center>
+                                </th>
+                                <th width="11%">
+                                    <center>Angkatan</center>
+                                </th>
+                                <th>
+                                    <center>Aksi</center>
+                                </th>
+                                {{-- <th width="8%">
+                                    <center>Pilih</center>
+                                </th> --}}
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($data as $key)
+                                <tr>
+                                    <td>
+                                        <center>{{ $no++ }}</center>
+                                    </td>
+                                    <td>{{ $key->nama }}</td>
+                                    <td>
+                                        <center>{{ $key->nim }}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{ $key->prodi }}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{ $key->kelas }}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{ $key->angkatan }}</center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <form action="{{ url('download_bap_prakerin') }}" method="post">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                    value="{{ $key->id_settingrelasi_prausta }}">
+                                                <button class="btn btn-danger btn-xs"> Download BAP</button>
+                                            </form>
+                                        </center>
+                                    </td>
+                                    {{-- <td>
+                                        <center><input type="checkbox" name="id_settingrelasi_prausta[]"
+                                                value="{{ $key->id_settingrelasi_prausta }}">
+
+                                        </center>
+                                    </td> --}}
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <br>
+                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
+                        class="btn btn-warning">
+                    <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
+                        class="btn btn-warning">
+                    <input class="btn btn-info full-right" type="submit" name="submit" value="Download"> --}}
+                </form>
             </div>
         </div>
     </section>
+    <script language="javascript">
+        function check_all() {
+            var chk = document.getElementsByName('id_settingrelasi_prausta[]');
+            for (i = 0; i < chk.length; i++)
+                chk[i].checked = true;
+        }
+
+        function uncheck_all() {
+            var chk = document.getElementsByName('id_settingrelasi_prausta[]');
+            for (i = 0; i < chk.length; i++)
+                chk[i].checked = false;
+        }
+    </script>
 @endsection
