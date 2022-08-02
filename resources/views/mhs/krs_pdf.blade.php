@@ -6,7 +6,6 @@
     tr.b {
         line-height: 80px;
     }
-
 </style>
 
 <body>
@@ -66,7 +65,8 @@
                 <th align=center width="8%"><span style="font-size:65%">Semester</span></th>
                 <th width="5%"><span style="font-size:65%">SKS Teori</span></th>
                 <th width="5%"><span style="font-size:65%">SKS Praktek</span></th>
-                <th width="12%"><span style="font-size:65%">Waktu</span></th>
+                <th width="7%"><span style="font-size:65%">Hari</span></th>
+                <th width="5%"><span style="font-size:65%">Jam</span></th>
                 <th width="12%"><span style="font-size:65%">Ruangan</span></th>
                 <th><span style="font-size:65%">Dosen</span></th>
             </tr>
@@ -85,8 +85,22 @@
                     <td align=center><span style="font-size:50%"><b>{{ $item->semester }}</b></span></td>
                     <td align=center><span style="font-size:50%"><b>{{ $item->akt_sks_teori }}</b></span></td>
                     <td align=center><span style="font-size:50%"><b>{{ $item->akt_sks_praktek }}</b></span></td>
-                    <td align=center><span style="font-size:50%"><b>{{ $item->hari }},
-                                {{ $item->jam }}</b></span></td>
+                    <td align=center><span style="font-size:50%"><b>
+                                @if ($item->hari == 'MONDAY')
+                                    SENIN
+                                @elseif($item->hari == 'TUESDAY')
+                                    SELASA
+                                @elseif($item->hari == 'WEDNESDAY')
+                                    RABU
+                                @elseif($item->hari == 'THURSDAY')
+                                    KAMIS
+                                @elseif($item->hari == 'FRIDAY')
+                                    JUMAT
+                                @elseif($item->hari == 'SATURDAY')
+                                    SABTU
+                                @endif
+                            </b></span></td>
+                    <td align=center><span style="font-size:50%"> <b> {{ $item->jam }}</b></td>
                     <td align=center><span style="font-size:50%"><b>{{ $item->nama_ruangan }}</b></span></td>
                     <td><span style="font-size:50%"><b>{{ $item->nama }}</b></span></td>
                 </tr>
@@ -101,20 +115,23 @@
                 <td></td>
                 <td></td>
                 <td></td>
-            </tr>
-            <tr>
-                <td><span style="font-size:50%">.</span></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><span style="font-size:50%">.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><span style="font-size:50%">.</span></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -129,7 +146,7 @@
             <tr>
                 <th colspan="4" align=right><span style="font-size:65%">Jumlah SKS</span></th>
                 <th colspan="2" align=center><span style="font-size:65%">{{ $sks }}</span></th>
-                <th colspan="3" align=center><span style="font-size:65%"></span></th>
+                <th colspan="4" align=center><span style="font-size:65%"></span></th>
             </tr>
         </tfoot>
     </table>
@@ -140,7 +157,8 @@
         <tr>
             <td width="33%" align=center><span style="font-size:65%"></span></td>
             <td width="34%" align=center><span style="font-size:65%"></span></td>
-            <td width="33%" align=center><span style="font-size:65%">Cikarang, {{ $d }} {{ $m }}
+            <td width="33%" align=center><span style="font-size:65%">Cikarang, {{ $d }}
+                    {{ $m }}
                     {{ $y }}</span></td>
         </tr>
     </table>

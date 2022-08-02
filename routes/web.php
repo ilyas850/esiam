@@ -343,8 +343,6 @@ Route::group(['middleware' => 'dosen'], function () {
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
 
-
-
     //histori matakuliah
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
     Route::get('cekmhs_dsn/{id}', 'DosenController@cekmhs_dsn');
@@ -465,11 +463,6 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('save_update', 'MhsController@store_update');
     Route::get('change/{id}', 'MhsController@change_update');
     Route::put('save_change/{id}', 'MhsController@store_change');
-    Route::get('krs', 'MhsController@krs');
-    Route::post('submitdata', 'MhsController@testfunction');
-    Route::post('add_krs', 'MhsController@add_krs');
-
-    Route::post('post_krs', 'MhsController@post_krs');
 
     Route::get('khs_mid', 'MhsController@khs_mid');
     Route::get('khs_final', 'MhsController@khs_final');
@@ -479,17 +472,24 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('view_bap_mhs/{id}', 'MhsController@view_bap');
     Route::get('view_abs/{id}', 'MhsController@view_abs');
     Route::get('keuangan', 'MhsController@uang');
-    Route::get('unduh_krs', 'MhsController@pdf_krs');
+    // Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
 
-    // Route::get('isi_krs', 'KrsController@isi_krs');
-    Route::post('simpan_krs', 'MhsController@simpan_krs');
-
+    
     //isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');
-    Route::get('input_krs', 'KrsController@input_krs');
+    // Route::get('input_krs', 'KrsController@input_krs');
+    
+    Route::post('unduh_krs', 'KrsController@unduh_krs');
+    
+
+    //KRS mahasiswa
+    Route::get('krs', 'KrsController@krs');
+    Route::post('filter_krs', 'KRsController@filter_krs');
+    Route::post('input_krs', 'KrsController@entri_krs');
     Route::post('save_krs', 'KrsController@save_krs');
+    Route::post('batalkrs', 'KrsController@batalkrs');
 
     //cek KHS
     Route::get('khs', 'NilaiController@khs');
@@ -497,7 +497,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('unduh_khs_mid_term', 'NilaiController@unduh_khs_mid_term');
     Route::post('unduh_khs_final_term', 'NilaiController@unduh_khs_final_term');
 
-    Route::post('batalkrs', 'KrsController@batalkrs');
+    
     Route::get('isi_edom', 'EdomController@isi_edom');
     Route::post('form_edom', 'EdomController@form_edom');
     Route::post('save_edom', 'EdomController@save_edom');
@@ -791,8 +791,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('export_xlsnilai_kprd', 'KaprodiController@export_xlsnilai');
     Route::post('unduh_pdf_nilai_kprd', 'KaprodiController@unduh_pdf_nilai');
 
-     //filter matakuliah diampu dosen
-     Route::post('filter_makul_diampu_kprd', 'KaprodiController@filter_makul_diampu_kprd');
+    //filter matakuliah diampu dosen
+    Route::post('filter_makul_diampu_kprd', 'KaprodiController@filter_makul_diampu_kprd');
 
     //input nilai
     Route::get('input_kat_kprd/{id}', 'KaprodiController@input_kat_kprd');
@@ -1111,7 +1111,6 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('download_bap_sempro', 'AdminPraustaController@download_bap_sempro');
     Route::post('download_bap_ta', 'AdminPraustaController@download_bap_ta');
     Route::post('download_bap_prakerin_all', 'AdminPraustaController@download_bap_prakerin_all');
-
 
     //download nilai prausta
     Route::get('unduh_nilai_prakerin_b/{id}', 'AdminPraustaController@unduh_nilai_prakerin_b');

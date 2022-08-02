@@ -8,23 +8,23 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header with-border">
-                Silahkan pilih matakuliah yang akan diambil
+                <h4 class="box-title">Silahkan pilih matakuliah yang akan diambil</h4>
             </div>
             <div class="box-body">
                 <form action="{{ url('save_krs') }}" method="post">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-striped" id="example7">
+                            <table class="table table-consended" id="example9">
                                 <thead>
                                     <tr>
-                                        <td>
+                                        <th>
                                             <center>Pilih</center>
-                                        </td>
-                                        <td>Semester</td>
-                                        <td>Kode</td>
-                                        <td>Matakuliah</td>
-                                        <td>Dosen</td>
+                                        </th>
+                                        <th>Semester</th>
+                                        <th>Kode</th>
+                                        <th>Matakuliah</th>
+                                        <th>Dosen</th>
                                     </tr>
                                 </thead>
                                 <tbody>

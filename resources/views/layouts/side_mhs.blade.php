@@ -18,8 +18,8 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ url('isi_krs') }}"><i class="fa fa-circle-o"></i> KRS</a></li>
-                    <li><a href="{{ url('khs') }}"><i class="fa fa-circle-o"></i> KHS</a></li>
+                    <li><a href="{{ url('krs') }}"><i class="fa fa-circle-o"></i>KRS</a></li>
+                    <li><a href="{{ url('khs') }}"><i class="fa fa-circle-o"></i>KHS</a></li>
                 </ul>
             </li>
             <li class="treeview">

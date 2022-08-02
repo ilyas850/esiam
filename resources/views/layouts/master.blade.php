@@ -411,9 +411,9 @@
 
             $('#example7').DataTable({
                 'paging': false,
-                'lengthChange': true,
+                'lengthChange': false,
                 'searching': false,
-                'ordering': true,
+                'ordering': false,
                 'info': false,
                 'autoWidth': true,
                 scrollX: true,
@@ -465,9 +465,9 @@
 
                 'paging': false,
                 'lengthChange': true,
-                'searching': true,
-                'ordering': false,
-                'info': true,
+                'searching': false,
+                'ordering': true,
+                'info': false,
                 'autoWidth': false
 
             });
