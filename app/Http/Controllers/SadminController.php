@@ -53,6 +53,7 @@ use App\Sertifikat;
 use App\Skpi;
 use App\Soal_ujian;
 use App\Yudisium;
+use App\Waktu;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -4375,8 +4376,6 @@ class SadminController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-
-
         return view('sadmin/prausta/master_ta', compact('data_krs', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
@@ -4609,5 +4608,12 @@ class SadminController extends Controller
         }
 
         return view('sadmin/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
+    }
+
+    public function setting_waktu()
+    {
+        $data = Waktu::all();
+
+        return view('sadmin/waktu/setting_waktu', compact('data'));
     }
 }

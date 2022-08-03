@@ -13,12 +13,7 @@
             <th>
                 <center>Program Studi </center>
             </th>
-            <th>
-                <center>Kelas </center>
-            </th>
-            <th>
-                <center>Tempat Prakerin</center>
-            </th>
+
             <th>
                 <center>Judul Prakerin</center>
             </th>
@@ -27,6 +22,12 @@
             </th>
             <th>
                 <center>Dosen Penguji I</center>
+            </th>
+            <th>
+                <center>Tempat Prakerin</center>
+            </th>
+            <th>
+                <center>Tanggal Mulai</center>
             </th>
             <th>
                 <center>Tanggal Seminar</center>
@@ -39,6 +40,9 @@
             </th>
             <th>
                 <center>Ruangan Seminar</center>
+            </th>
+            <th>
+                <center>Kategori PraUSTA</center>
             </th>
         </tr>
     </thead>
@@ -55,12 +59,6 @@
                 </td>
                 <td>{{ $item->prodi }}</td>
                 <td>
-                    <center>{{ $item->kelas }}</center>
-                </td>
-                <td>
-                    <center>{{ $item->tempat_prausta }}</center>
-                </td>
-                <td>
                     <center>{{ $item->judul_prausta }}</center>
                 </td>
                 <td>
@@ -68,6 +66,12 @@
                 </td>
                 <td>
                     <center>{{ $item->dosen_penguji_1 }}</center>
+                </td>
+                <td>
+                    <center>{{ $item->tempat_prausta }}</center>
+                </td>
+                <td>
+                    <center>{{ $item->tanggal_mulai }}</center>
                 </td>
                 <td>
                     <center>{{ $item->tanggal_selesai }}</center>
@@ -80,6 +84,9 @@
                 </td>
                 <td>
                     <center>{{ $item->ruangan }}</center>
+                </td>
+                <td>
+                    <center>{{ $item->kategori }}</center>
                 </td>
             </tr>
         @endforeach

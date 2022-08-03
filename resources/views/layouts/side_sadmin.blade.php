@@ -186,7 +186,17 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="/export_data_akm"><i class="fa fa-circle-o"></i>Data AKM</a></li>
-
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-th"></i> <span>Setting</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/setting_waktu"><i class="fa fa-circle-o"></i>Setting Waktu</a></li>
         </ul>
     </li>
 </ul>

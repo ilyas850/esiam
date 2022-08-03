@@ -13,11 +13,9 @@
             <th>
                 <center>Program Studi </center>
             </th>
+
             <th>
-                <center>Kelas </center>
-            </th>
-            <th>
-                <center>Tempat Peneliatian</center>
+                <center>Tempat Penelitian</center>
             </th>
             <th>
                 <center>Judul Tugas Akhir</center>
@@ -35,6 +33,9 @@
                 <center>Dosen Penguji II</center>
             </th>
             <th>
+                <center>Tanggal Mulai</center>
+            </th>
+            <th>
                 <center>Tanggal Sidang</center>
             </th>
             <th>
@@ -45,6 +46,9 @@
             </th>
             <th>
                 <center>Ruangan Sidang</center>
+            </th>
+            <th>
+                <center>Kategori PraUSTA</center>
             </th>
         </tr>
     </thead>
@@ -60,9 +64,6 @@
                     <center>{{ $item->nim }}</center>
                 </td>
                 <td>{{ $item->prodi }}</td>
-                <td>
-                    <center>{{ $item->kelas }}</center>
-                </td>
                 <td>
                     <center>{{ $item->tempat_prausta }}</center>
                 </td>
@@ -82,6 +83,9 @@
                     <center>{{ $item->dosen_penguji_2 }}</center>
                 </td>
                 <td>
+                    <center>{{ $item->tanggal_nulai }}</center>
+                </td>
+                <td>
                     <center>{{ $item->tanggal_selesai }}</center>
                 </td>
                 <td>
@@ -92,6 +96,9 @@
                 </td>
                 <td>
                     <center>{{ $item->ruangan }}</center>
+                </td>
+                <td>
+                    <center>{{ $item->kategori }}</center>
                 </td>
             </tr>
         @endforeach

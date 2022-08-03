@@ -188,7 +188,6 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 11) {
 

@@ -310,6 +310,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master pembayaran mahasiswa
     Route::get('record_pembayaran_mahasiswa', 'SadminController@record_pembayaran_mahasiswa');
     Route::get('detail_pembayaran_mhs_admin/{id}', 'SadminController@detail_pembayaran_mhs_admin');
+
+    //setting waktu 
+    Route::get('setting_waktu', 'SadminController@setting_waktu');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -339,6 +342,11 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('save_nilai_UAS_dsn', 'DosenController@save_nilai_UAS_dsn');
     Route::get('input_akhir_dsn/{id}', 'DosenController@input_akhir_dsn');
     Route::post('save_nilai_AKHIR_dsn', 'DosenController@save_nilai_AKHIR_dsn');
+
+    //setting nilai matakuliah
+    Route::post('post_settingnilai_dsn_dlm', 'DosenController@post_settingnilai_dsn_dlm');
+    Route::post('generate_nilai_akhir_dsn_dlm', 'DosenController@generate_nilai_akhir_dsn_dlm');
+    Route::put('put_settingnilai_dsn_dlm/{id}', 'DosenController@put_settingnilai_dsn_dlm');
 
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
@@ -647,6 +655,11 @@ Route::group(['middleware' => 'dosenluar'], function () {
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_luar', 'DosenluarController@filter_makul_diampu_dsn_luar');
 
+    //setting nilai matakuliah
+    Route::post('post_settingnilai_dsn_luar', 'DosenluarController@post_settingnilai_dsn_luar');
+    Route::post('generate_nilai_akhir_dsn_luar', 'DosenluarController@generate_nilai_akhir_dsn_luar');
+    Route::put('put_settingnilai_dsn_luar/{id}', 'DosenluarController@put_settingnilai_dsn_luar');
+
     //BAP
     Route::get('entri_bap_dsn/{id}', 'DosenluarController@entri_bap');
     Route::get('input_bap_dsn/{id}', 'DosenluarController@input_bap');
@@ -803,6 +816,11 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('save_nilai_UAS_kprd', 'KaprodiController@save_nilai_UAS_kprd');
     Route::get('input_akhir_kprd/{id}', 'KaprodiController@input_akhir_kprd');
     Route::post('save_nilai_AKHIR_kprd', 'KaprodiController@save_nilai_AKHIR_kprd');
+    
+    //setting nilai matakuliah
+    Route::post('post_settingnilai_dsn_kprd', 'KaprodiController@post_settingnilai_dsn_kprd');
+    Route::post('generate_nilai_akhir_dsn_kprd', 'KaprodiController@generate_nilai_akhir_dsn_kprd');
+    Route::put('put_settingnilai_dsn_kprd/{id}', 'KaprodiController@put_settingnilai_dsn_kprd');
 
     //BAP
     Route::get('entri_bap_kprd/{id}', 'KaprodiController@entri_bap');

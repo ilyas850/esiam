@@ -41,6 +41,7 @@ use App\Prausta_trans_bimbingan;
 use App\Prausta_trans_hasil;
 use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
+use App\Setting_nilai;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Soal_ujian;
@@ -708,6 +709,9 @@ class DosenController extends Controller
 
     public function cekmhs_dsn($id)
     {
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $id)->first();
+
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -715,7 +719,7 @@ class DosenController extends Controller
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('id_kurperiode', $id)
+            ->where('student_record.id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
             ->select(
                 'student_record.id_kurtrans',
@@ -735,7 +739,7 @@ class DosenController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $id]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $id, 'nilai' => $nilai]);
     }
 
     public function input_kat_dsn($id)
@@ -821,7 +825,8 @@ class DosenController extends Controller
         }
 
         //ke halaman list mahasiswa
-
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -846,6 +851,7 @@ class DosenController extends Controller
                 'student_record.nilai_AKHIR',
                 'student_record.nilai_AKHIR_angka'
             )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -857,7 +863,7 @@ class DosenController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_uts_dsn($id)
@@ -958,7 +964,8 @@ class DosenController extends Controller
             ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
-
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -983,6 +990,7 @@ class DosenController extends Controller
                 'student_record.nilai_AKHIR',
                 'student_record.nilai_AKHIR_angka'
             )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -994,7 +1002,7 @@ class DosenController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_uas_dsn($id)
@@ -1095,7 +1103,8 @@ class DosenController extends Controller
             ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
 
         //ke halaman list mahasiswa
-
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -1120,6 +1129,7 @@ class DosenController extends Controller
                 'student_record.nilai_AKHIR',
                 'student_record.nilai_AKHIR_angka'
             )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -1131,7 +1141,7 @@ class DosenController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_akhir_dsn($id)
@@ -1314,7 +1324,9 @@ class DosenController extends Controller
         }
 
         //ke halaman list mahasiswa
-
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
+        //cek mahasiswa
         //cek mahasiswa
         $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -1339,6 +1351,7 @@ class DosenController extends Controller
                 'student_record.nilai_AKHIR',
                 'student_record.nilai_AKHIR_angka'
             )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -1350,7 +1363,188 @@ class DosenController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    }
+
+    public function generate_nilai_akhir_dsn_dlm(Request $request)
+    {
+        $idkur = $request->id_kurperiode;
+
+        $set_nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
+        $kat = $set_nilai->kat;
+        $uts = $set_nilai->uts;
+        $uas = $set_nilai->uas;
+
+        $data = Student_record::where('id_kurperiode', $idkur)->get();
+        $jml_mhs = count($data);
+
+        for ($i = 0; $i < $jml_mhs; $i++) {
+            $nilai = $data[$i];
+
+            $id_record = $nilai['id_studentrecord'];
+            $id_student = $nilai['id_student'];
+            $n_kat = $nilai['nilai_KAT'];
+            $n_uts = $nilai['nilai_UTS'];
+            $n_uas = $nilai['nilai_UAS'];
+            $id_kurtrans = $nilai['id_kurtrans'];
+
+            $cek_id = Student_record::where('id_student', $id_student)
+                ->where('id_kurtrans', $id_kurtrans)
+                ->get();
+
+            $banyak_id = count($cek_id);
+
+            $hsl_kat = $n_kat * $kat / 100;
+            $hsl_uts = $n_uts * $uts / 100;
+            $hsl_uas = $n_uas * $uas / 100;
+
+            $n_total = $hsl_kat + $hsl_uts + $hsl_uas;
+
+            if ($banyak_id == 1) {
+                $id = $id_record;
+                $ceknilai = Student_record::find($id);
+                $ceknilai->nilai_AKHIR_angka = $n_total;
+                $ceknilai->save();
+
+                if ($n_total < 50) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'E';
+                    $ceknilai->nilai_ANGKA = '0';
+                    $ceknilai->save();
+                } elseif ($n_total < 60) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'D';
+                    $ceknilai->nilai_ANGKA = '1';
+                    $ceknilai->save();
+                } elseif ($n_total < 65) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'C';
+                    $ceknilai->nilai_ANGKA = '2';
+                    $ceknilai->save();
+                } elseif ($n_total < 70) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'C+';
+                    $ceknilai->nilai_ANGKA = '2.5';
+                    $ceknilai->save();
+                } elseif ($n_total < 75) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'B';
+                    $ceknilai->nilai_ANGKA = '3';
+                    $ceknilai->save();
+                } elseif ($n_total < 80) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'B+';
+                    $ceknilai->nilai_ANGKA = '3.5';
+                    $ceknilai->save();
+                } elseif ($n_total <= 100) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'A';
+                    $ceknilai->nilai_ANGKA = '4';
+                    $ceknilai->save();
+                }
+            } elseif ($banyak_id > 1) {
+                Student_record::where('id_student', $id_student)
+                    ->where('id_kurtrans', $id_kurtrans)
+                    ->update(['nilai_AKHIR_angka' => $n_total]);
+
+                if ($n_total < 50) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'E',
+                            'nilai_ANGKA' => '0'
+                        ]);
+                } elseif ($n_total < 60) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'D',
+                            'nilai_ANGKA' => '1'
+                        ]);
+                } elseif ($n_total < 65) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'C',
+                            'nilai_ANGKA' => '2'
+                        ]);
+                } elseif ($n_total < 70) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'C+',
+                            'nilai_ANGKA' => '2.5'
+                        ]);
+                } elseif ($n_total < 75) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'B',
+                            'nilai_ANGKA' => '3'
+                        ]);
+                } elseif ($n_total < 80) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'B+',
+                            'nilai_ANGKA' => '3.5'
+                        ]);
+                } elseif ($n_total <= 100) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'A',
+                            'nilai_ANGKA' => '4'
+                        ]);
+                }
+            }
+        }
+        //cek setting nilai
+        $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
+
+        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->where('id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_kurtrans')
+            ->first();
+
+        $kur = $ckstr->id_kurtrans;
+        $idkur = $idkur;
+
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function entri_bap($id)
@@ -5718,5 +5912,110 @@ class DosenController extends Controller
             Alert::warning('Mahasiswa ini tidak ada matakuliah mengulang');
             return redirect('mhs_bim');
         }
+    }
+
+    public function post_settingnilai_dsn_dlm(Request $request)
+    {
+        $kpr = new Setting_nilai();
+        $kpr->id_kurperiode = $request->id_kurperiode;
+        $kpr->kat = $request->kat;
+        $kpr->uts = $request->uts;
+        $kpr->uas = $request->uas;
+        $kpr->created_by = Auth::user()->name;
+        $kpr->save();
+
+        //cek setting nilai
+        $idkur = $request->id_kurperiode;
+        $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
+
+        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->where('id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_kurtrans')
+            ->first();
+
+        $kur = $ckstr->id_kurtrans;
+        $idkur = $idkur;
+
+        Alert::success('Berhasil');
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    }
+
+    public function put_settingnilai_dsn_dlm(Request $request, $id)
+    {
+        $prd = Setting_nilai::find($id);
+        $prd->kat = $request->kat;
+        $prd->uts = $request->uts;
+        $prd->uas = $request->uas;
+        $prd->updated_by = Auth::user()->name;
+        $prd->save();
+
+        //cek setting nilai
+        $idkur = $request->id_kurperiode;
+        $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
+
+        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student_record.id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'student_record.id_kurtrans',
+                'student_record.id_student',
+                'student_record.id_studentrecord',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.nilai_KAT',
+                'student_record.nilai_UTS',
+                'student_record.nilai_UAS',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_AKHIR_angka'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->where('id_kurperiode', $idkur)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_kurtrans')
+            ->first();
+
+        $kur = $ckstr->id_kurtrans;
+        $idkur = $idkur;
+
+        Alert::success('Berhasil');
+        return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 }

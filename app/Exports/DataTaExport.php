@@ -36,31 +36,29 @@ class DataTaExport implements FromView, ShouldAutoSize
     public function view(): View
     {
         return view('prausta/export_excel_ta', [
-            'cek' => Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            'cek' => Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
                 ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-                ->join('prodi', 'student.kodeprodi', '=', 'prodi.kodeprodi')
-                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-                ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+                ->leftJoin('prodi', function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                })
                 ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
                 ->join('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
-                ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602'])
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
                 ->where('student_record.status', 'TAKEN')
                 ->where('id_periodetahun', $this->id1)
                 ->where('id_periodetipe', $this->id2)
                 ->where('student.kodeprodi', $this->kodeprodi)
-                ->where('student.active', 1)
+                ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
+                ->whereNotNull('prausta_setting_relasi.tanggal_selesai')
                 ->select(
                     'student.nama',
                     'student.nim',
-                    'kelas.kelas',
                     'prodi.prodi',
-                    'angkatan.angkatan',
                     'prausta_setting_relasi.tempat_prausta',
                     'prausta_setting_relasi.judul_prausta',
+                    'prausta_setting_relasi.tanggal_mulai',
                     'prausta_setting_relasi.tanggal_selesai',
                     'prausta_setting_relasi.dosen_pembimbing',
                     'prausta_setting_relasi.dosen_penguji_1',
