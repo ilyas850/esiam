@@ -42,10 +42,10 @@
                 <center>Jam Mulai Sidang</center>
             </th>
             <th>
-                <center>Jam Selsai Sidang</center>
+                <center>Jam Selesai Sidang</center>
             </th>
             <th>
-                <center>Ruangan Sidang</center>
+                <center>Ruang</center>
             </th>
             <th>
                 <center>Kategori PraUSTA</center>

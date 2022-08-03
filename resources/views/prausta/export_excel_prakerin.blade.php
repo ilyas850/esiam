@@ -36,10 +36,10 @@
                 <center>Jam Mulai Seminar</center>
             </th>
             <th>
-                <center>Jam Selsai Seminar</center>
+                <center>Jam Selesai Seminar</center>
             </th>
             <th>
-                <center>Ruangan Seminar</center>
+                <center>Ruang</center>
             </th>
             <th>
                 <center>Kategori PraUSTA</center>
