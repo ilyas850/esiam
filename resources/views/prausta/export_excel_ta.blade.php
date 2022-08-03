@@ -83,7 +83,7 @@
                     <center>{{ $item->dosen_penguji_2 }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->tanggal_nulai }}</center>
+                    <center>{{ $item->tanggal_mulai }}</center>
                 </td>
                 <td>
                     <center>{{ $item->tanggal_selesai }}</center>
