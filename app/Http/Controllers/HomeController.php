@@ -65,7 +65,8 @@ class HomeController extends Controller
         'microsoft_user.username',
         'microsoft_user.password',
         'prodi.id_prodi',
-        'student.idangkatan'
+        'student.idangkatan',
+        'student.kodeprodi'
       )
       ->first();
 

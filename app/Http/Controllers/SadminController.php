@@ -4613,7 +4613,22 @@ class SadminController extends Controller
     public function setting_waktu()
     {
         $data = Waktu::all();
+        $date = date('Y-m-d');
+       
+        return view('sadmin/waktu/setting_waktu', compact('data', 'date'));
+    }
 
-        return view('sadmin/waktu/setting_waktu', compact('data'));
+    public function post_waktu(Request $request)
+    {
+        $kpr = new Waktu();
+        $kpr->tipe_waktu = $request->tipe_waktu;
+        $kpr->deskripsi = $request->deskripsi;
+        $kpr->waktu_awal = $request->waktu_awal;
+        $kpr->waktu_akhir = $request->waktu_akhir;
+        $kpr->created_by = Auth::user()->name;
+        $kpr->save();
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
     }
 }

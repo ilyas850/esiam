@@ -313,6 +313,7 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //setting waktu 
     Route::get('setting_waktu', 'SadminController@setting_waktu');
+    Route::post('post_waktu', 'SadminController@post_waktu');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

@@ -306,8 +306,8 @@
                 <div class="user-panel">
                     <div class="pull-left image">
                         @if (Auth::user()->role == 3)
-                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                class="img-circle" alt="User Image">
+                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}" class="img-circle"
+                                alt="User Image">
                         @else
                             <img src="/adminlte/img/default.jpg" class="img-circle" alt="User Image">
                         @endif
