@@ -21,7 +21,7 @@ use App\Periode_tipe;
 use App\Waktu_krs;
 use App\Waktu_edom;
 use App\Microsoft_user;
-use App\Waktu;
+// use App\Waktu;
 use App\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
