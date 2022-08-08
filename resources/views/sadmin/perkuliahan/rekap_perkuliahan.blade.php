@@ -7,7 +7,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Tahun Akadmeik - Semester</h3>
+                <h3 class="box-title">Filter Periode Tahun Akademik - Semester</h3>
             </div>
             <form class="form" role="form" action="{{ url('filter_rekap_perkuliahan') }}" method="POST">
                 {{ csrf_field() }}
