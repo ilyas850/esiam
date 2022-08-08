@@ -1716,32 +1716,72 @@ class SadminController extends Controller
 
     public function rekap_perkuliahan()
     {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tipe = Periode_tipe::all();
+
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-        $tipe = $tp->id_periodetipe;
+        $idtipe = $tp->id_periodetipe;
+        $namaperiodetipe = $tp->periode_tipe;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-        $tahun = $thn->id_periodetahun;
+        $idtahun = $thn->id_periodetahun;
+        $namaperiodetahun = $thn->periode_tahun;
 
         $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->where('kurikulum_periode.id_periodetipe', $tipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun)
+            ->where('kurikulum_periode.id_periodetipe', $idtipe)
+            ->where('kurikulum_periode.id_periodetahun', $idtahun)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'kurikulum_periode.id_kurperiode', 'prodi.prodi')
             ->get();
 
         $jml = Kurikulum_periode::join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->where('kurikulum_periode.id_periodetipe', $tipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun)
+            ->where('kurikulum_periode.id_periodetipe', $idtipe)
+            ->where('kurikulum_periode.id_periodetahun', $idtahun)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->where('bap.status', 'ACTIVE')
             ->select(DB::raw('COUNT(bap.id_kurperiode) as jml_per'), 'bap.id_kurperiode')
             ->groupBy('bap.id_kurperiode')
             ->get();
 
-        return view('sadmin/perkuliahan/rekap_perkuliahan', compact('data', 'jml'));
+        return view('sadmin/perkuliahan/rekap_perkuliahan', compact('data', 'jml', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function filter_rekap_perkuliahan(Request $request)
+    {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tipe = Periode_tipe::all();
+
+        $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $idtipe = $tp->id_periodetipe;
+        $namaperiodetipe = $tp->periode_tipe;
+
+        $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $idtahun = $thn->id_periodetahun;
+        $namaperiodetahun = $thn->periode_tahun;
+
+        $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->where('kurikulum_periode.id_periodetipe', $idtipe)
+            ->where('kurikulum_periode.id_periodetahun', $idtahun)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'kurikulum_periode.id_kurperiode', 'prodi.prodi')
+            ->get();
+
+        $jml = Kurikulum_periode::join('bap', 'kurikulum_periode.id_kurperiode', '=', 'bap.id_kurperiode')
+            ->where('kurikulum_periode.id_periodetipe', $idtipe)
+            ->where('kurikulum_periode.id_periodetahun', $idtahun)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('bap.status', 'ACTIVE')
+            ->select(DB::raw('COUNT(bap.id_kurperiode) as jml_per'), 'bap.id_kurperiode')
+            ->groupBy('bap.id_kurperiode')
+            ->get();
+
+        return view('sadmin/perkuliahan/rekap_perkuliahan', compact('data', 'jml', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
 
     public function cek_rekapan($id)
@@ -4614,7 +4654,7 @@ class SadminController extends Controller
     {
         $data = Waktu::all();
         $date = date('Y-m-d');
-       
+
         return view('sadmin/waktu/setting_waktu', compact('data', 'date'));
     }
 
@@ -4629,6 +4669,15 @@ class SadminController extends Controller
         $kpr->save();
 
         Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function tutup_yudisium($id)
+    {
+        Waktu::where('id_waktu', $id)->update([
+            'status' => '0'
+        ]);
+
         return redirect()->back();
     }
 }

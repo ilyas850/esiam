@@ -21,6 +21,7 @@ use App\Periode_tipe;
 use App\Waktu_krs;
 use App\Waktu_edom;
 use App\Microsoft_user;
+use App\Waktu;
 use App\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -146,7 +147,9 @@ class HomeController extends Controller
         ->groupBy('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR', 'semester.semester', 'kurikulum_master.nama_kurikulum')
         ->get();
 
-      return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+      $waktu_mundur = Waktu::where('tipe_waktu', 1)->first();
+
+      return view('home', ['waktu_mundur' => $waktu_mundur, 'data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);

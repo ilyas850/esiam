@@ -261,6 +261,98 @@
                     </style>
                 </div>
             </div>
+
+            {{-- <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <h3 class="box-title">Waktu Pendaftaran Yudisum</h3>
+                        </div>
+                        <div class="box-body">
+                            <form role="form">
+                                <div id="waktumunduryudisium">
+                                    @if ($waktu_mundur->status != 0)
+                                        <span id="countdownyudisium"></span>
+                                    @else
+                                        Belum ada info pendaftaran Yudisium
+                                    @endif
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <html>
+
+                    <div id="msg"></div>
+
+                    <script>
+                        var url = "/tutup_yudisium/{{ $waktu_mundur->id_waktu }}"; // membuat url tujuan
+                        var count = 10; // membuat hitungan kedalam detik
+                        function countDown() {
+                            if (count > 0) {
+                                count--;
+                                var waktu = count + 1;
+                                $('#msg').html('Anda akan menuju ke ' + '<i>' + url + ' dalam hitungan: ' + waktu + ' detik.' + '<i>');
+                                setTimeout("countDown()", 1000);
+                            } else {
+                                window.location.href = url;
+                            }
+                        }
+                        countDown();
+                    </script>
+
+                    <script>
+                        function tutupWaktu() {
+
+                        }
+                    </script>
+
+                    <script type='text/javascript'>
+                        var target_date_yudisium = new Date("{{ $waktu_mundur->waktu_akhir }}").getTime();
+                        var days_yudisium, hours_yudisium, minutes_yudisium, seconds_yudisium;
+                        var countdownyudisium = document.getElementById("countdownyudisium");
+                        setInterval(function() {
+                            var current_date_yudisium = new Date().getTime();
+                            var seconds_left_yudisium = (target_date_yudisium - current_date_yudisium) / 1000;
+                            days_yudisium = parseInt(seconds_left_yudisium / 86400);
+                            seconds_left_yudisium = seconds_left_yudisium % 86400;
+                            hours_yudisium = parseInt(seconds_left_yudisium / 3600);
+                            seconds_left_yudisium = seconds_left_yudisium % 3600;
+                            minutes_yudisium = parseInt(seconds_left_yudisium / 60);
+                            seconds_yudisium = parseInt(seconds_left_yudisium % 60);
+                            countdownyudisium.innerHTML = days_yudisium + " <span class=\'digit\'>hari</span> " + hours_yudisium +
+                                " <span class=\'digit\'>jam</span> " + minutes_yudisium + " <span class=\'digit\'>menit</span> " +
+                                seconds_yudisium +
+                                " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pendaftaran Yudisium</span>";
+                        }, 1000);
+                    </script>
+                    <style scoped="" type="text/css">
+                        #waktumunduryudisium {
+
+                            background: #31266b;
+                            color: #fec503;
+                            font-size: 100%;
+                            text-transform: uppercase;
+                            text-align: center;
+                            padding: 20px 0;
+                            font-weight: bold;
+                            border-radius: 5px;
+                            line-height: 1.8em;
+                            font-family: Arial, sans-serif;
+                        }
+
+                        .digit {
+                            color: white
+                        }
+
+                        .judul {
+                            color: white
+                        }
+                    </style>
+
+                </div>
+
+            </div> --}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-primary">
@@ -305,7 +397,6 @@
                     </div>
                 </div>
             </div>
-
 
         </div>
         <div class="tab-pane" id="timeline">

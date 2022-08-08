@@ -195,6 +195,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('cek_jurnal_bap/{id}', 'SadminController@jurnal_bap');
     Route::get('print_jurnal_cek/{id}', 'SadminController@print_jurnal');
 
+    //filter rekap perkuliahan
+    Route::post('filter_rekap_perkuliahan', 'SAdminController@filter_rekap_perkuliahan');
+
     //visi misi
     Route::get('visimisi', 'SadminController@visimisi');
     Route::get('add_visimisi', 'SadminController@add_visimisi');
@@ -314,6 +317,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     //setting waktu 
     Route::get('setting_waktu', 'SadminController@setting_waktu');
     Route::post('post_waktu', 'SadminController@post_waktu');
+    
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -1183,3 +1187,5 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
     Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
 });
+
+Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
