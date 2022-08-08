@@ -147,9 +147,9 @@ class HomeController extends Controller
         ->groupBy('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR', 'semester.semester', 'kurikulum_master.nama_kurikulum')
         ->get();
 
-      $waktu_mundur = Waktu::where('tipe_waktu', 1)->first();
+      // $waktu_mundur = Waktu::where('tipe_waktu', 1)->first();
 
-      return view('home', ['waktu_mundur' => $waktu_mundur, 'data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+      return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
     } elseif ($akses == 4) {
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);
