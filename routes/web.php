@@ -196,7 +196,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('print_jurnal_cek/{id}', 'SadminController@print_jurnal');
 
     //filter rekap perkuliahan
-    Route::post('filter_rekap_perkuliahan', 'SAdminController@filter_rekap_perkuliahan');
+    Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');
 
     //visi misi
     Route::get('visimisi', 'SadminController@visimisi');
