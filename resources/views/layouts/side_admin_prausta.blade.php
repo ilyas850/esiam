@@ -93,4 +93,20 @@
                         Tugas Akhir</span></a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Waktu PraUSTA</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('waktu_pkl') }}"><i class="fa fa-circle-o"></i> <span>
+                        Prakerin</span></a></li>
+            <li><a href="{{ url('waktu_sempro') }}"><i class="fa fa-circle-o"></i> <span>
+                        Seminar Proposal</span></a></li>
+            <li><a href="{{ url('waktu_ta') }}"><i class="fa fa-circle-o"></i> <span>
+                        Tugas Akhir</span></a></li>
+        </ul>
+    </li>
 </ul>

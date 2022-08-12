@@ -698,8 +698,8 @@ class PraustaController extends Controller
             }
 
             $hasil_seminar = $sisaseminar - $seminar;
-
-            if ($hasil_seminar == 0) {
+          
+            if ($hasil_seminar == 0 or $hasil_seminar > 0) {
                 $validasi = 'Sudah Lunas';
             } else {
                 $validasi = 'Belum Lunas';

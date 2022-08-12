@@ -30,6 +30,7 @@ use App\Exports\DataTaExport;
 use App\Kaprodi;
 use App\Periode_tahun;
 use App\Periode_tipe;
+use App\Prausta_master_waktu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -3656,5 +3657,12 @@ class AdminPraustaController extends Controller
 
         Alert::success('', 'Berhasil Batal Validasi Akhir')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function waktu_pkl()
+    {
+        $data = Prausta_master_waktu::all();
+
+        return view('prausta/pkl/waktu_pkl', compact('data'));
     }
 }

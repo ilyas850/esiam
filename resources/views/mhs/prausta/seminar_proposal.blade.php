@@ -389,7 +389,7 @@
                                 @if ($jml_bim < 6)
                                     <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
                                 @elseif ($jml_bim >= 6)
-                                    @if ($hasil_seminar == 0)
+                                    @if ($hasil_seminar == 0 or $hasil_seminar > 0)
                                         @if ($data->acc_seminar_sidang == null)
                                             <form class="" action="{{ url('ajukan_seminar_proposal') }}"
                                                 method="post" enctype="multipart/form-data">

@@ -1186,6 +1186,9 @@ Route::group(['middleware' => 'prausta'], function () {
 
     Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
     Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
+
+    //waktu prausta
+    Route::get('waktu_pkl', 'AdminPraustaController@waktu_pkl');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
