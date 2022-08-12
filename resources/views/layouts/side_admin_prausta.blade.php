@@ -102,7 +102,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('waktu_pkl') }}"><i class="fa fa-circle-o"></i> <span>
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('waktu_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('waktu_ta') }}"><i class="fa fa-circle-o"></i> <span>

@@ -3430,7 +3430,7 @@ class AdminPraustaController extends Controller
             )
             ->orderBy('student.nim', 'ASC')
             ->get();
-        
+
         $nama_file = 'Data Tugas Akhir' . ' ' . $pro . ' ' . $ganti . ' ' . $tp . '.xlsx';
         return Excel::download(new DataTaExport($id1, $id2, $kodeprodi), $nama_file);
     }
@@ -3661,8 +3661,58 @@ class AdminPraustaController extends Controller
 
     public function waktu_pkl()
     {
-        $data = Prausta_master_waktu::all();
+        $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
 
-        return view('prausta/pkl/waktu_pkl', compact('data'));
+        $periodetipe = Periode_tipe::all();
+
+        $prodi = Prodi::all();
+
+        $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'prausta_master_waktu.id_prodi', '=', 'prodi.id_prodi')
+            ->where('prausta_master_waktu.tipe_prausta', 'PKL')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->select(
+                'prausta_master_waktu.id_masterwaktu_prausta',
+                'periode_tahun.id_periodetahun',
+                'periode_tipe.id_periodetipe',
+                'prodi.id_prodi',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'prodi.prodi',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
+                'prausta_master_waktu.tipe_prausta',
+                'prausta_master_waktu.status'
+            )
+            ->get();
+
+        return view('prausta/prakerin/waktu_pkl', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
+    }
+
+    public function post_waktu_prausta(Request $request)
+    {
+        $kpr = new Prausta_master_waktu();
+        $kpr->id_periodetahun = $request->id_periodetahun;
+        $kpr->id_periodetipe = $request->id_periodetipe;
+        $kpr->id_prodi = $request->id_prodi;
+        $kpr->set_waktu_awal = $request->set_waktu_awal;
+        $kpr->set_waktu_akhir = $request->set_waktu_akhir;
+        $kpr->tipe_prausta = $request->tipe_prausta;
+        $kpr->created_by = Auth::user()->name;
+        $kpr->save();
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function hapus_waktu_prausta($id)
+    {
+        Prausta_master_waktu::where('id_masterwaktu_prausta', $id)->update([
+            'status' => 'NOT ACTIVE'
+        ]);
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
     }
 }
