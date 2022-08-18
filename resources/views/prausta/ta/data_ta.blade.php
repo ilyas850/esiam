@@ -68,7 +68,7 @@
                                 <center>Tanggal PraUSTA</center>
                             </th>
                             <th colspan="2">
-                                <center>Tanggal Seminar</center>
+                                <center>Tanggal Sidang</center>
                             </th>
                             <th rowspan="2">Due Date</th>
                             <th rowspan="2">Durasi</th>
