@@ -72,7 +72,8 @@
                                 <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Due Date</th>
-                            <th colspan="2">
+                            <th rowspan="2">Durasi</th>
+                            <th rowspan="2">
                                 <center>Jam Seminar</center>
                             </th>
                             <th rowspan="2">
@@ -99,12 +100,7 @@
                             <th>
                                 <center>Selesai</center>
                             </th>
-                            <th>
-                                <center>Mulai</center>
-                            </th>
-                            <th>
-                                <center>Selesai</center>
-                            </th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -143,10 +139,15 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <center>{{ $key->jam_mulai_sidang }}</center>
+                                    @if ($key->tanggal_selesai == null)
+                                        0
+                                    @else
+                                        {{ floor((strtotime($key->tanggal_selesai) - strtotime($key->tanggal_mulai)) / (60 * 60 * 24)) }}
+                                    @endif
+                                    hari
                                 </td>
                                 <td>
-                                    <center>{{ $key->jam_selesai_sidang }}</center>
+                                    <center>{{ $key->jam_mulai_sidang }} - {{ $key->jam_selesai_sidang }}</center>
                                 </td>
                                 <td>
                                     <center>

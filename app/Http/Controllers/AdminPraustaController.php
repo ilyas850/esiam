@@ -74,6 +74,7 @@ class AdminPraustaController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
+            ->where('prausta_master_waktu.tipe_prausta', 'PKL')
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
@@ -134,6 +135,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('prausta_master_waktu.tipe_prausta', 'PKL')
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
@@ -228,6 +230,7 @@ class AdminPraustaController extends Controller
         $namaperiodetipe = $periodetipe->periode_tipe;
 
         $akhir = time(); // Waktu sekarang
+       
 
         $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
@@ -439,7 +442,6 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
             ->where('prausta_master_waktu.tipe_prausta', 'TA')
-
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
