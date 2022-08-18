@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Waktu Pelaksanaan PKL</h3>
+                <h3 class="box-title">Waktu Pelaksanaan SEMPRO</h3>
             </div>
             <div class="box-body">
                 <div class="row">
@@ -24,10 +24,10 @@
                     <div class="modal-dialog">
                         <form method="post" action="{{ url('post_waktu_prausta') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            <input type="hidden" name="tipe_prausta" value="PKL">
+                            <input type="hidden" name="tipe_prausta" value="SEMPRO">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan PKL</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan SEMPRO</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -153,7 +153,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Waktu PKL</h5>
+                                            <h5 class="modal-title">Update Waktu SEMPRO</h5>
                                         </div>
                                         <div class="modal-body">
                                             <form action="/put_waktu_prausta/{{ $item->id_masterwaktu_prausta }}"
@@ -222,7 +222,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" name="tipe_prausta" value="PKL">
+                                                <input type="hidden" name="tipe_prausta" value="SEMPRO">
                                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                             </form>
                                         </div>

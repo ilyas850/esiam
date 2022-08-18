@@ -11,7 +11,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>Prakerin</span></a></li>
+            <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>PKL</span></a></li>
             <li><a href="{{ url('data_sempro') }}"><i class="fa fa-circle-o"></i> <span>Seminar Proposal</span></a>
             </li>
             <li><a href="{{ url('data_ta') }}"><i class="fa fa-circle-o"></i> <span>Tugas Akhir</span></a></li>
@@ -26,7 +26,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('bim_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('bim_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('bim_ta') }}"><i class="fa fa-circle-o"></i> <span>
@@ -42,7 +42,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('nilai_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('nilai_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('nilai_ta') }}"><i class="fa fa-circle-o"></i> <span>
@@ -58,7 +58,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('bap_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('bap_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('bap_ta') }}"><i class="fa fa-circle-o"></i> <span>
@@ -86,7 +86,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('validasi_prakerin') }}"><i class="fa fa-circle-o"></i> <span>
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('validasi_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('validasi_ta') }}"><i class="fa fa-circle-o"></i> <span>

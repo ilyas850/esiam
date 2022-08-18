@@ -31,6 +31,8 @@ use App\Kaprodi;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Prausta_master_waktu;
+use DateTime;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -40,77 +42,122 @@ class AdminPraustaController extends Controller
 {
     public function data_prakerin()
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/prakerin/data_prakerin', compact('data', 'prodi'));
+        return view('prausta/prakerin/data_prakerin', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function filter_prakerin_use_prodi(Request $request)
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->where('prodi.id_prodi', $request->id_prodi)
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status',
+                'prausta_master_waktu.id_masterwaktu_prausta'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/prakerin/data_prakerin', compact('data', 'prodi'));
+        return view('prausta/prakerin/data_prakerin', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function atur_prakerin($id)
@@ -168,73 +215,126 @@ class AdminPraustaController extends Controller
 
     public function data_sempro()
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
+            ->where('prausta_master_waktu.tipe_prausta', 'SEMPRO')
+
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
                 'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/sempro/data_sempro', compact('data', 'prodi'));
+        return view('prausta/sempro/data_sempro', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function filter_sempro_use_prodi(Request $request)
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
+            ->where('prausta_master_waktu.tipe_prausta', 'SEMPRO')
             ->where('prodi.id_prodi', $request->id_prodi)
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
                 'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/sempro/data_sempro', compact('data', 'prodi'));
+        return view('prausta/sempro/data_sempro', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function atur_sempro($id)
@@ -306,73 +406,126 @@ class AdminPraustaController extends Controller
 
     public function data_ta()
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
+            ->where('prausta_master_waktu.tipe_prausta', 'TA')
+
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
                 'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/ta/data_ta', compact('data', 'prodi'));
+        return view('prausta/ta/data_ta', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function filter_ta_use_prodi(Request $request)
     {
+        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $prd_tp = Periode_tipe::all();
         $prodi = Prodi::all();
 
-        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+
+        $idperiodetahun = $periodetahun->id_periodetahun;
+        $idperiodetipe = $periodetipe->id_periodetipe;
+        $namaperiodetahun = $periodetahun->periode_tahun;
+        $namaperiodetipe = $periodetipe->periode_tipe;
+
+        $akhir = time(); // Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftjoin('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student.active', 1)
+            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
+            ->where('prausta_master_waktu.tipe_prausta', 'TA')
             ->where('prodi.id_prodi', $request->id_prodi)
             ->select(
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
                 'prausta_setting_relasi.dosen_pembimbing',
                 'prausta_setting_relasi.dosen_penguji_1',
                 'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.judul_prausta',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
                 'prausta_setting_relasi.tanggal_mulai',
                 'prausta_setting_relasi.tanggal_selesai',
                 'prausta_setting_relasi.jam_mulai_sidang',
                 'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.file_laporan_revisi'
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status'
             )
-            ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/ta/data_ta', compact('data', 'prodi'));
+        return view('prausta/ta/data_ta', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
     }
 
     public function atur_ta($id)
@@ -3714,5 +3867,83 @@ class AdminPraustaController extends Controller
 
         Alert::success('Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function put_waktu_prausta(Request $request, $id)
+    {
+        $kpr = Prausta_master_waktu::find($id);
+        $kpr->id_periodetahun = $request->id_periodetahun;
+        $kpr->id_periodetipe = $request->id_periodetipe;
+        $kpr->id_prodi = $request->id_prodi;
+        $kpr->set_waktu_awal = $request->set_waktu_awal;
+        $kpr->set_waktu_akhir = $request->set_waktu_akhir;
+        $kpr->tipe_prausta = $request->tipe_prausta;
+        $kpr->updated_by = Auth::user()->name;
+        $kpr->save();
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function waktu_sempro()
+    {
+        $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        $periodetipe = Periode_tipe::all();
+
+        $prodi = Prodi::all();
+
+        $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'prausta_master_waktu.id_prodi', '=', 'prodi.id_prodi')
+            ->where('prausta_master_waktu.tipe_prausta', 'SEMPRO')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->select(
+                'prausta_master_waktu.id_masterwaktu_prausta',
+                'periode_tahun.id_periodetahun',
+                'periode_tipe.id_periodetipe',
+                'prodi.id_prodi',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'prodi.prodi',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
+                'prausta_master_waktu.tipe_prausta',
+                'prausta_master_waktu.status'
+            )
+            ->get();
+
+        return view('prausta/sempro/waktu_sempro', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
+    }
+
+    public function waktu_ta()
+    {
+        $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        $periodetipe = Periode_tipe::all();
+
+        $prodi = Prodi::all();
+
+        $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'prausta_master_waktu.id_prodi', '=', 'prodi.id_prodi')
+            ->where('prausta_master_waktu.tipe_prausta', 'TA')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->select(
+                'prausta_master_waktu.id_masterwaktu_prausta',
+                'periode_tahun.id_periodetahun',
+                'periode_tipe.id_periodetipe',
+                'prodi.id_prodi',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'prodi.prodi',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
+                'prausta_master_waktu.tipe_prausta',
+                'prausta_master_waktu.status'
+            )
+            ->get();
+
+        return view('prausta/ta/waktu_ta', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
     }
 }

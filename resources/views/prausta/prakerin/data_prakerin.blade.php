@@ -6,66 +6,103 @@
 
 @section('content')
     <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Data Prakerin</h3>
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Filter Data Prakerin Mahasiswa</h3>
             </div>
-            <div class="box-body">
-                <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_prakerin_use_prodi') }}" method="POST">
-                        {{ csrf_field() }}
+            <form class="form" role="form" action="{{ url('filter_prakerin_use_prodi') }}" method="POST">
+                {{ csrf_field() }}
+                <div class="box-body">
+                    <div class="row">
                         <div class="col-xs-3">
+                            <label for="">Periode Tahun</label>
+                            <select class="form-control" name="id_periodetahun" required>
+                                <option></option>
+                                @foreach ($prd_thn as $thn)
+                                    <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-xs-3">
+                            <label for="">Periode Tipe</label>
+                            <select class="form-control" name="id_periodetipe" required>
+                                <option></option>
+                                @foreach ($prd_tp as $tipee)
+                                    <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-xs-6">
+                            <label for="">Prodi</label>
                             <select class="form-control" name="id_prodi" required>
                                 <option></option>
                                 @foreach ($prodi as $key)
                                     <option value="{{ $key->id_prodi }}">
-                                        {{ $key->prodi }}
+                                        {{ $key->prodi }} - {{ $key->konsentrasi }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success">Filter Prodi</button>
-                    </form>
+                    </div>
                 </div>
-                <br>
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="box box-info">
+            <div class="box-header">
+                <h3 class="box-title">Data Prakerin <b> {{ $namaperiodetahun }} - {{ $namaperiodetipe }} </b></h3>
+            </div>
+            <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th rowspan="2" style="font-size:85%">No</th>
-                            <th rowspan="2" style="font-size:85%">Jenis PraUSTA</th>
-                            <th rowspan="2" style="font-size:85%">Mahasiswa/NIM</th>
-                            <th colspan="2" style="font-size:85%">
+                            <th rowspan="2">No</th>
+
+                            <th rowspan="2">Mahasiswa/NIM</th>
+                            <th colspan="2">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="2" style="font-size:85%">
-                                <center>Tanggal</center>
+                            <th colspan="2">
+                                <center>Tanggal PraUSTA</center>
                             </th>
-                            <th colspan="2" style="font-size:85%">
-                                <center>Jam</center>
+                            <th colspan="2">
+                                <center>Tanggal Aktual</center>
                             </th>
-                            <th rowspan="2" style="font-size:85%">
+                            <th rowspan="2">Due Date</th>
+                            <th colspan="2">
+                                <center>Jam Seminar</center>
+                            </th>
+                            <th rowspan="2">
                                 <center>Acc. PraUSTA</center>
                             </th>
-                            <th rowspan="2" style="font-size:85%">Aksi</th>
-                            <th rowspan="2" style="font-size:85%">Status</th>
+                            <th rowspan="2" width="6%">Aksi</th>
                         </tr>
                         <tr>
-                            <th style="font-size:85%">
+                            <th>
                                 <center>Pembimbing</center>
                             </th>
-                            <th style="font-size:85%">
+                            <th>
                                 <center>Penguji</center>
                             </th>
-                            <th style="font-size:85%">
+                            <th>
                                 <center>Mulai</center>
                             </th>
-                            <th style="font-size:85%">
+                            <th>
                                 <center>Selesai</center>
                             </th>
-                            <th style="font-size:85%">
+                            <th>
                                 <center>Mulai</center>
                             </th>
-                            <th style="font-size:85%">
+                            <th>
+                                <center>Selesai</center>
+                            </th>
+                            <th>
+                                <center>Mulai</center>
+                            </th>
+                            <th>
                                 <center>Selesai</center>
                             </th>
                         </tr>
@@ -74,24 +111,44 @@
                         <?php $no = 1; ?>
                         @foreach ($data as $key)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td style="font-size:85%">{{ $key->kode_prausta }}/{{ $key->nama_prausta }}</td>
-                                <td style="font-size:85%">{{ $key->nama }}/{{ $key->nim }}</td>
-                                <td style="font-size:85%">{{ $key->dosen_pembimbing }}</td>
-                                <td style="font-size:85%">{{ $key->dosen_penguji_1 }}</td>
-                                <td style="font-size:85%">
+                                <td align="center">{{ $no++ }}</td>
+
+                                <td>{{ $key->nama }}/{{ $key->nim }}</td>
+                                <td>{{ $key->dosen_pembimbing }}</td>
+                                <td>{{ $key->dosen_penguji_1 }}</td>
+                                <td>{{ $key->set_waktu_awal }}</td>
+                                <td>{{ $key->set_waktu_akhir }}</td>
+                                <td>
                                     <center>{{ $key->tanggal_mulai }}</center>
                                 </td>
-                                <td style="font-size:85%">
+                                <td>
                                     <center>{{ $key->tanggal_selesai }}</center>
                                 </td>
-                                <td style="font-size:85%">
+                                <td>
+                                    @if ($key->tanggal_selesai == null)
+                                        @if (floor((strtotime($key->set_waktu_akhir) - $akhir) / (60 * 60 * 24)) > 0)
+                                            <span
+                                                class="label label-info">{{ floor((strtotime($key->set_waktu_akhir) - $akhir) / (60 * 60 * 24)) }}
+                                                hari lagi</span>
+                                        @else
+                                            <span class="label label-danger">Expired (
+                                                {{ floor(($akhir - strtotime($key->set_waktu_akhir)) / (60 * 60 * 24)) }}
+                                                hari
+                                                )</span>
+                                        @endif
+                                    @elseif(strtotime($key->tanggal_selesai) > strtotime($key->set_waktu_akhir))
+                                        <span class="label label-warning">Terlambat</span>
+                                    @elseif(strtotime($key->tanggal_selesai) < strtotime($key->set_waktu_akhir))
+                                        <span class="label label-success">Tepat waktu</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <center>{{ $key->jam_mulai_sidang }}</center>
                                 </td>
-                                <td style="font-size:85%">
+                                <td>
                                     <center>{{ $key->jam_selesai_sidang }}</center>
                                 </td>
-                                <td style="font-size:85%">
+                                <td>
                                     <center>
                                         @if ($key->file_laporan_revisi == null)
                                             {{ $key->acc_seminar_sidang }}
@@ -101,20 +158,30 @@
                                     </center>
                                 </td>
                                 <td>
-                                    <center><a href="atur_prakerin/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs"> Setting </a></center>
-                                </td>
-                                <td>
                                     <center>
-                                        @if ($key->status == 'ACTIVE')
-                                            <a href="nonatifkan_prausta_prakerin/{{ $key->id_settingrelasi_prausta }}"
-                                                class="btn btn-danger btn-xs"
-                                                onclick="return confirm('anda yakin akan menonaktifkan?')">Nonaktifkan</a>
-                                        @endif
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-xs">Pilih</button>
+                                            <button type="button" class="btn btn-info btn-xs dropdown-toggle"
+                                                data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a
+                                                        href="/atur_prakerin/{{ $key->id_settingrelasi_prausta }}">Setting</a>
+                                                </li>
+                                                @if ($key->status == 'ACTIVE')
+                                                    <li><a href="/nonatifkan_prausta_prakerin/{{ $key->id_settingrelasi_prausta }}"
+                                                            onclick="return confirm('anda yakin akan menonaktifkan?')">Nonaktifkan</a>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </center>
                                 </td>
                             </tr>
                         @endforeach
+
 
                     </tbody>
                 </table>

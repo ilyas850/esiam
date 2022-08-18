@@ -1191,6 +1191,10 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('waktu_pkl', 'AdminPraustaController@waktu_pkl');
     Route::post('post_waktu_prausta', 'AdminPraustaController@post_waktu_prausta');
     Route::get('hapus_waktu_prausta/{id}', 'AdminPraustaController@hapus_waktu_prausta');
+    Route::put('put_waktu_prausta/{id}', 'AdminPraustaController@put_waktu_prausta');
+
+    Route::get('waktu_sempro', 'AdminPraustaController@waktu_sempro');
+    Route::get('waktu_ta', 'AdminPraustaController@waktu_ta');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
