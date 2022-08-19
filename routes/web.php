@@ -1195,6 +1195,14 @@ Route::group(['middleware' => 'prausta'], function () {
 
     Route::get('waktu_sempro', 'AdminPraustaController@waktu_sempro');
     Route::get('waktu_ta', 'AdminPraustaController@waktu_ta');
+
+    //honor prausta
+    Route::get('honor_pkl', 'AdminPraustaController@honor_pkl');
+    Route::post('filter_honor_pkl', 'AdminPraustaController@filter_honor_pkl');
+    Route::get('honor_sempro', 'AdminPraustaController@honor_sempro');
+    Route::post('filter_honor_sempro', 'AdminPraustaController@filter_honor_sempro');
+    Route::get('honor_ta', 'AdminPraustaController@honor_ta');
+    Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

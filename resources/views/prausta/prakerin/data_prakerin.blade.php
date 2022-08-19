@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Data Prakerin Mahasiswa</h3>
+                <h3 class="box-title">Filter Data PKL Mahasiswa</h3>
             </div>
             <form class="form" role="form" action="{{ url('filter_prakerin_use_prodi') }}" method="POST">
                 {{ csrf_field() }}
@@ -53,7 +53,7 @@
 
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Prakerin <b> {{ $namaperiodetahun }} - {{ $namaperiodetipe }} </b></h3>
+                <h3 class="box-title">Data PKL <b> {{ $namaperiodetahun }} - {{ $namaperiodetipe }} </b></h3>
             </div>
             <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">
@@ -62,6 +62,7 @@
                             <th rowspan="2">No</th>
 
                             <th rowspan="2">Mahasiswa/NIM</th>
+                            
                             <th colspan="2">
                                 <center>Dosen</center>
                             </th>
@@ -110,6 +111,7 @@
                                 <td align="center">{{ $no++ }}</td>
 
                                 <td>{{ $key->nama }}/{{ $key->nim }}</td>
+                                
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->set_waktu_awal }}</td>
