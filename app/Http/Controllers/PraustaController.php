@@ -698,7 +698,7 @@ class PraustaController extends Controller
             }
 
             $hasil_seminar = $sisaseminar - $seminar;
-          
+
             if ($hasil_seminar == 0 or $hasil_seminar > 0) {
                 $validasi = 'Sudah Lunas';
             } else {
@@ -771,6 +771,16 @@ class PraustaController extends Controller
 
     public function pengajuan_seminar_proposal($id)
     {
+        $idstudent = Auth::user()->id_user;
+        $tgl_seminar_pkl = Prausta_setting_relasi::where('id_student', $idstudent)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->select('prausta_setting_relasi.tanggal_selesai')
+            ->first();
+
+        $tgl1 = $tgl_seminar_pkl->tanggal_selesai; // pendefinisian tanggal awal
+        $tgl_awal_sempro = date('Y-m-d', strtotime('+1 days', strtotime($tgl1))); //operasi penjumlahan tanggal sebanyak 1 hari
+
+     
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->leftJoin('prodi', (function ($join) {

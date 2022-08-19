@@ -10,17 +10,17 @@
             <div class="col-md-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Data Prakerin</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">Data Bimbingan Prakerin</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar Prakerin</a></li>
-                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan Prakerin</a></li>
-                        <li><a href="#tab_5" data-toggle="tab">Nilai Prakerin</a></li>
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Data PKL</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">Data Bimbingan PKL</a></li>
+                        <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar PKL</a></li>
+                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan PKL</a></li>
+                        <li><a href="#tab_5" data-toggle="tab">Nilai PKL</a></li>
                     </ul>
                     <div class="tab-content">
                         @if ($usta->judul_prausta == null)
                             <a class="btn btn-danger"
                                 href="pengajuan_seminar_prakerin/{{ $usta->id_settingrelasi_prausta }}">Masukan Data
-                                Prakerin</a>
+                                PKL</a>
                         @elseif ($cekdata != null)
                             <div class="tab-pane active" id="tab_1">
                                 <div class="row">
@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Tanggal Mulai Prakerin</label>
+                                            <label>Tanggal Mulai PKL</label>
                                             <input type="text" class="form-control" value="{{ $usta->tanggal_mulai }}"
                                                 readonly>
                                         </div>
@@ -70,13 +70,13 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Judul Prakerin</label>
+                                            <label>Judul PKL</label>
                                             <textarea class="form-control" rows="2" cols="60" name="judul_prausta" readonly>{{ $usta->judul_prausta }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Tempat Prakerin</label>
+                                            <label>Tempat PKL</label>
                                             <input type="text" class="form-control" value="{{ $usta->tempat_prausta }}"
                                                 name="tempat_prausta" readonly>
                                         </div>
@@ -115,14 +115,14 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Tanggal Seminar Prakerin</label>
+                                            <label>Tanggal Seminar PKL</label>
                                             <input type="text" class="form-control"
                                                 value="{{ $usta->tanggal_selesai }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Ruangan Seminar Prakerin</label>
+                                            <label>Ruangan Seminar PKL</label>
                                             <input type="text" class="form-control" value="{{ $usta->ruangan }}"
                                                 readonly>
                                         </div>
@@ -154,7 +154,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Update Prakerin</h5>
+                                                <h5 class="modal-title">Update Data PKL</h5>
                                             </div>
                                             <div class="modal-body">
                                                 <form action="/put_prakerin/{{ $usta->id_settingrelasi_prausta }}"
@@ -162,11 +162,11 @@
                                                     @csrf
                                                     @method('put')
                                                     <div class="form-group">
-                                                        <label>Judul Seminar Prakerin</label>
+                                                        <label>Judul Seminar PKL</label>
                                                         <textarea class="form-control" name="judul_prausta" rows="3" cols="60" required> {{ $usta->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>Tempat Prakerin</label>
+                                                        <label>Tempat PKL</label>
                                                         <input type="text" class="form-control" name="tempat_prausta"
                                                             value="{{ $usta->tempat_prausta }}" required>
                                                     </div>
@@ -195,7 +195,7 @@
                                     @endif
                                     <div class="box box-info">
                                         <div class="box-header with-border">
-                                            Form Bimbingan Prakerin
+                                            Form Bimbingan PKL
                                         </div>
                                         <div class="box-body">
                                             <form class="" action="{{ url('simpan_bimbingan') }}" method="post"
@@ -322,14 +322,12 @@
                                                                     <a href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                         target="_blank"> File bimbingan</a>
                                                                 @endif
-
                                                             </td>
                                                             <td>
                                                                 <center>
                                                                     <button class="btn btn-primary btn-xs"
                                                                         data-toggle="modal"
                                                                         data-target="#modalUpdatebimbingan{{ $key->id_transbimb_prausta }}">Update</button>
-
                                                                 </center>
                                                             </td>
                                                         </tr>
@@ -432,7 +430,7 @@
                                                         <input type="hidden" name="id_settingrelasi_prausta"
                                                             value="{{ $usta->id_settingrelasi_prausta }}">
                                                         <button type="submit" class="btn btn-info">Ajukan Seminar
-                                                            Prakerin</button>
+                                                            PKL</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -444,7 +442,7 @@
                                                                 class="fa fa-files-o"></i></span>
 
                                                         <div class="info-box-content">
-                                                            <span class="info-box-text">Draft Laporan PRAKERIN</span>
+                                                            <span class="info-box-text">Draft Laporan PKL</span>
                                                             <span class="info-box-number">
                                                                 @if ($usta->file_draft_laporan == null)
                                                                     Belum ada
@@ -487,7 +485,7 @@
                                                         <span class="info-box-icon bg-red"><i
                                                                 class="fa fa-files-o"></i></span>
                                                         <div class="info-box-content">
-                                                            <span class="info-box-text">Draft Laporan PRAKERIN</span>
+                                                            <span class="info-box-text">Draft Laporan PKL</span>
                                                             <span class="info-box-number">
                                                                 @if ($usta->file_draft_laporan == null)
                                                                     Belum ada
@@ -536,7 +534,7 @@
                                                                 class="fa fa-files-o"></i></span>
 
                                                         <div class="info-box-content">
-                                                            <span class="info-box-text">Draft Laporan PRAKERIN</span>
+                                                            <span class="info-box-text">Draft Laporan PKL</span>
                                                             <span class="info-box-number">
                                                                 @if ($usta->file_draft_laporan == null)
                                                                     Belum ada
@@ -581,7 +579,7 @@
                             </div>
                             <div class="tab-pane" id="tab_4">
                                 @if ($usta->acc_seminar_sidang == null)
-                                    <span class="badge bg-red">Belum Mengajukan Seminar Prakerin</span>
+                                    <span class="badge bg-red">Belum Mengajukan Seminar PKL</span>
                                 @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
                                     <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
                                 @elseif ($usta->acc_seminar_sidang == 'TERIMA')
@@ -615,7 +613,7 @@
                                                                     class="fa fa-files-o"></i></span>
                                                             <div class="info-box-content">
                                                                 <span class="info-box-text">Laporan Seminar
-                                                                    Prakerin</span>
+                                                                    PKL</span>
                                                                 <span class="info-box-number">
                                                                     @if ($usta->file_laporan_revisi == null)
                                                                         Belum ada
@@ -677,7 +675,7 @@
                                             <div class="inner">
                                                 <h3>
                                                     {{ $cekdata_nilai->nilai_huruf }}</h3>
-                                                <p>Nilai Akhir Prakerin</p>
+                                                <p>Nilai Akhir PKL</p>
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-list"></i>

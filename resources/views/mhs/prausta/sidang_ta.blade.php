@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Tanggal Mulai Bimbingan</label>
+                                            <label>Tanggal Mulai Tugas Akhir</label>
                                             <input type="text" class="form-control" value="{{ $data->tanggal_mulai }}"
                                                 readonly>
                                         </div>

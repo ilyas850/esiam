@@ -14,7 +14,7 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id_settingrelasi_prausta" value="{{ $data->id_settingrelasi_prausta }}">
                 <div class="box-header with-border">
-                    Form Seminar Prakerin
+                    Form Seminar Proposal
                 </div>
                 <div class="box-body">
 
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label>Tanggal Mulai Bimbingan<font color="red-text">*</font></label>
+                            <label>Tanggal Mulai SEMPRO<font color="red-text">*</font></label>
                             <input type="date" class="form-control" name="tanggal_mulai" required>
                         </div>
                     </div>
@@ -76,14 +76,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Tempat Proposal<font color="red-text">*</font></label>
+                                <label>Tempat<font color="red-text">*</font></label>
                                 <input type="text" class="form-control" name="tempat_prausta" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

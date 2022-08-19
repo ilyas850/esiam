@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label>Tanggal Mulai Bimbingan<font color="red-text">*</font></label>
+                            <label>Tanggal Mulai Tugas Akhir<font color="red-text">*</font></label>
                             <input type="date" class="form-control" name="tanggal_mulai" required>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

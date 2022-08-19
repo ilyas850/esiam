@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label>Tanggal Mulai Bimbingan<font color="red-text">*</font></label>
+                            <label>Tanggal Mulai PKL<font color="red-text">*</font></label>
                             <input type="date" class="form-control" name="tanggal_mulai" required>
                         </div>
                     </div>
@@ -70,20 +70,20 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Judul Seminar Prakerin<font color="red-text">*</font></label>
+                                <label>Judul Seminar PKL<font color="red-text">*</font></label>
                                 <textarea class="form-control" name="judul_prausta" rows="3" cols="60"
                                     required></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label>Tempat Prakerin<font color="red-text">*</font></label>
+                                <label>Tempat PKL<font color="red-text">*</font></label>
                                 <input type="text" class="form-control" name="tempat_prausta" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
