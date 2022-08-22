@@ -322,6 +322,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('setting_waktu', 'SadminController@setting_waktu');
     Route::post('post_waktu', 'SadminController@post_waktu');
     
+    //master standar pendidikan nasional
+    Route::get('standar_pendidikan_nasional', 'SadminController@standar_pendidikan_nasional');
+    Route::post('save_standar_pendidikan_nasional', 'SadminController@save_standar_pendidikan_nasional');
+    Route::put('put_standar_pendidikan_nasional/{id}', 'SadminController@put_standar_pendidikan_nasional');
+    Route::get('hapus_standar_pendidikan_nasional/{id}', 'SadminController@hapus_standar_pendidikan_nasional');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

@@ -54,6 +54,7 @@ use App\Skpi;
 use App\Soal_ujian;
 use App\Yudisium;
 use App\Waktu;
+use App\Standar;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -839,7 +840,7 @@ class SadminController extends Controller
             'file_pedoman' => 'mimes:jpg|max:10000',
             'id_periodetahun' => 'required',
         ]);
-        dd($request);
+
         $info = new Pedoman();
         $info->nama_file = $request->nama_file;
         $info->id_periodetahun = $request->id_periodetahun;
@@ -4710,6 +4711,86 @@ class SadminController extends Controller
             'status' => '0'
         ]);
 
+        return redirect()->back();
+    }
+
+    public function standar_pendidikan_nasional()
+    {
+        $data = Standar::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_standar', compact('data'));
+    }
+
+    public function save_standar_pendidikan_nasional(Request $request)
+    {
+        $this->validate($request, [
+            'nama_standar' => 'required',
+            'file_sop' => 'mimes:pdf,docx,PDF,DOCX|max:10000',
+            'nama_sop' => 'required'
+        ]);
+
+        $info = new Standar();
+        $info->nama_standar = $request->nama_standar;
+        $info->nama_sop = $request->nama_sop;
+
+        if ($request->hasFile('file_sop')) {
+            $file = $request->file('file_sop');
+            $nama_file = time() . '_' . $file->getClientOriginalName();
+            $tujuan_upload = 'Standar' . '/' . $request->nama_standar;
+            $file->move($tujuan_upload, $nama_file);
+            $info->file_sop = $nama_file;
+        }
+
+        $info->save();
+        Alert::success('', 'Standar berhasil ditambahkan')->autoclose(3500);
+        return redirect('standar_pendidikan_nasional');
+    }
+
+    public function put_standar_pendidikan_nasional(Request $request, $id)
+    {
+        $this->validate($request, [
+            'nama_standar' => 'required',
+            'file_sop' => 'mimes:pdf,docx,PDF,DOCX|max:10000',
+            'nama_sop' => 'required'
+        ]);
+      
+        $info = Standar::find($id);
+        $info->nama_standar = $request->nama_standar;
+        $info->nama_sop = $request->nama_sop;
+
+        if ($info->file_sop) {
+            if ($request->hasFile('file_sop')) {
+                File::delete('Standar/' . $request->nama_standar . '/' . $info->file_sop);
+
+                $file = $request->file('file_sop');
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Standar' . '/' . $request->nama_standar;
+                $file->move($tujuan_upload, $nama_file);
+                $info->file_sop = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_sop')) {
+                $file = $request->file('file_sop');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Standar' . '/' . $request->nama_standar;
+                $file->move($tujuan_upload, $nama_file);
+                $info->file_sop = $nama_file;
+            }
+        }
+
+        $info->save();
+
+        Alert::success('', 'Standar berhasil diedit')->autoclose(3500);
+        return redirect('standar_pendidikan_nasional');
+    }
+
+    public function hapus_standar_pendidikan_nasional($id)
+    {
+        // hapus data
+        Standar::where('id_standar', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Standar berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
 }
