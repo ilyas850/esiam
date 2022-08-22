@@ -4666,6 +4666,22 @@ class SadminController extends Controller
         return view('sadmin/datamahasiswa/data_sertifikat', compact('data'));
     }
 
+    public function cek_sertifikat($id)
+    {
+        $mhs = Student::leftjoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.idstudent', $id)
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
+            ->first();
+
+        $data = Sertifikat::where('id_student', $id)->get();
+
+        return view('sadmin/datamahasiswa/cek_sertifikat', compact('mhs', 'data'));
+    }
+
     public function setting_waktu()
     {
         $data = Waktu::all();

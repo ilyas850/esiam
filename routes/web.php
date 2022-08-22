@@ -316,6 +316,7 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //master sertifikat mahasiswa
     Route::get('record_sertifikat_mahasiswa', 'SadminController@record_sertifikat_mahasiswa');
+    Route::get('cek_sertifikat/{id}', 'SadminController@cek_sertifikat');
 
     //setting waktu 
     Route::get('setting_waktu', 'SadminController@setting_waktu');
