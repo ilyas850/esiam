@@ -1598,6 +1598,7 @@ class MhsController extends Controller
 
     public function put_nisn(Request $request, $id)
     {
+   
         $nisn = $request->nisn;
         $ceknisn = Student::where('nisn', $nisn)->get();
 
@@ -1611,7 +1612,7 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'nisn' => 'required|max:10|min:10|unique:student',
+                'nisn' => 'required|max:10|min:5|unique:student',
             ],
             $message,
         );

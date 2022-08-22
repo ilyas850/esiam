@@ -2,8 +2,10 @@
     <div class="col-md-3">
         <div class="box box-primary">
             <div class="box-body box-profile">
+
                 @if ($foto == null)
-                    <img class="img-circle" src="/adminlte/img/default.jpg" alt="User Avatar">
+                    <img class="profile-user-img img-responsive img-circle" src="/adminlte/img/default.jpg"
+                        alt="User profile picture">
                 @else
                     <img class="profile-user-img img-responsive img-circle" src="{{ asset('/foto_mhs/' . $foto) }}"
                         alt="User profile picture">
@@ -55,6 +57,29 @@
                         data-target="#modalUpdateNisn{{ $mhs->idstudent }}" title="klik untuk edit"><i
                             class="fa fa-edit"> </i></a>
                 </p>
+                <div class="modal fade" id="modalUpdateNisn{{ $mhs->idstudent }}" tabindex="-1"
+                    aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update NISN</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/put_nisn/{{ $mhs->idstudent }}" method="post">
+                                    @csrf
+                                    @method('put')
+                                    <div class="form-group">
+                                        <label>NISN Mahasiswa</label>
+                                        <input class="form-control" type="number" name="nisn"
+                                            value="{{ $mhs->nisn }}">
+                                    </div>
+                                    <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
+                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <hr>
                 <strong><i class="fa fa-phone margin-r-5"></i> No. HP</strong>
                 <p class="text-muted">
@@ -73,7 +98,8 @@
                     <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
                             class="fa fa-edit"></i> Edit No HP dan E-mail</a>
                 @elseif ($mhs->id_mhs != null)
-                    <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i class="fa fa-edit"></i>
+                    <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i
+                            class="fa fa-edit"></i>
                         Edit data No HP dan E-mail</a>
                 @endif
             </div>
@@ -194,6 +220,7 @@
                             .judul {
                                 color: white
                             }
+
                         </style>
                     </div>
                 </div>
@@ -258,6 +285,7 @@
                         .judul {
                             color: white
                         }
+
                     </style>
                 </div>
             </div>
