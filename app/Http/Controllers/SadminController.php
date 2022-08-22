@@ -4793,4 +4793,6 @@ class SadminController extends Controller
         Alert::success('', 'Standar berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
+
+    
 }
