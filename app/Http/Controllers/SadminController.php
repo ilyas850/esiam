@@ -4650,6 +4650,22 @@ class SadminController extends Controller
         return view('sadmin/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
     }
 
+    public function record_sertifikat_mahasiswa()
+    {
+        $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
+            ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('sadmin/datamahasiswa/data_sertifikat', compact('data'));
+    }
+
     public function setting_waktu()
     {
         $data = Waktu::all();

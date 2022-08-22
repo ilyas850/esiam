@@ -48,6 +48,8 @@
             <li><a href="{{ url('kartu_ujian_mhs') }}"><i class="fa fa-circle-o"></i>Kartu Ujian Mahasiswa</a></li>
             <li><a href="{{ url('record_pembayaran_mahasiswa') }}"><i class="fa fa-circle-o"></i>Pembayaran
                     Mahasiswa</a></li>
+            <li><a href="{{ url('record_sertifikat_mahasiswa') }}"><i class="fa fa-circle-o"></i>Sertifikat
+                    Mahasiswa</a></li>
         </ul>
     </li>
     <li class="treeview">
