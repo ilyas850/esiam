@@ -497,7 +497,6 @@ Route::group(['middleware' => 'mhs'], function () {
     // Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
-
     
     //isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');
@@ -505,7 +504,6 @@ Route::group(['middleware' => 'mhs'], function () {
     
     Route::post('unduh_krs', 'KrsController@unduh_krs');
     
-
     //KRS mahasiswa
     Route::get('krs', 'KrsController@krs');
     Route::post('filter_krs', 'KRsController@filter_krs');
@@ -641,6 +639,9 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('download_bimbingan_prakerin_mhs/{id}', 'PraustaController@download_bimbingan_prakerin_mhs');
     Route::get('download_bimbingan_sempro_mhs/{id}', 'PraustaController@download_bimbingan_sempro_mhs');
     Route::get('download_bimbingan_ta_mhs/{id}', 'PraustaController@download_bimbingan_ta_mhs');
+
+    //standar operasional prosedur
+    Route::get('sop', 'MhsController@sop');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

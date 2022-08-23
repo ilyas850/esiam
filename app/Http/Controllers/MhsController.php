@@ -49,6 +49,7 @@ use App\Sertifikat;
 use App\Skpi;
 use App\Yudisium;
 use App\Wisuda;
+use App\Standar;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -3874,5 +3875,12 @@ class MhsController extends Controller
 
         Alert::success('', 'Data Wisuda berhasil diedit')->autoclose(3500);
         return redirect('wisuda');
+    }
+
+    public function sop()
+    {
+        $data = Standar::where('status', 'ACTIVE')->get();
+
+        return view('mhs/sop', compact('data'));
     }
 }

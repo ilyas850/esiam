@@ -2,6 +2,7 @@
     <li class="header">MENU MAHASISWA</li>
     <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
     <li><a href="{{ url('pedoman_akademik') }}"><i class="fa fa-book"></i> <span>Pedoman</span></a></li>
+    <li><a href="{{ url('sop') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
     <li><a href="{{ url('dosbing') }}"><i class="fa fa-user"></i> <span>Dosen Pembimbing</span></a></li>
     <li class="treeview">
         <a href="#">
