@@ -476,6 +476,9 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('download_bap_pkl_dsn_dlm/{id}', 'DosenController@download_bap_pkl_dsn_dlm');
     Route::get('download_bap_sempro_dsn_dlm/{id}', 'DosenController@download_bap_sempro_dsn_dlm');
     Route::get('download_bap_ta_dsn_dlm/{id}', 'DosenController@download_bap_ta_dsn_dlm');
+
+    //standar operasional prosedur
+    Route::get('sop_dsn_dlm', 'DosenController@sop_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -779,6 +782,9 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('download_bap_pkl_dsn_luar/{id}', 'DosenluarController@download_bap_pkl_dsn_luar');
     Route::get('download_bap_sempro_dsn_luar/{id}', 'DosenluarController@download_bap_sempro_dsn_luar');
     Route::get('download_bap_ta_dsn_luar/{id}', 'DosenluarController@download_bap_ta_dsn_luar');
+
+    //standar operasional prosedur
+    Route::get('sop_dsn_luar', 'DosenluarController@sop_dsn_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -1008,6 +1014,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //master pembayaran
     Route::get('record_pembayaran_mahasiswa_kprd', 'KaprodiController@record_pembayaran_mahasiswa_kprd');
     Route::get('detail_pembayaran_mhs_kprd/{id}', 'KaprodiController@detail_pembayaran_mhs_kprd');
+
+    //standar operasional prosedur
+    Route::get('sop_dsn_kprd', 'KaprodiController@sop_dsn_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

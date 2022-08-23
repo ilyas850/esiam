@@ -42,6 +42,7 @@ use App\Prausta_trans_hasil;
 use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Setting_nilai;
+use App\Standar;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Soal_ujian;
@@ -6017,5 +6018,12 @@ class DosenController extends Controller
 
         Alert::success('Berhasil');
         return view('dosen/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    }
+
+    public function sop_dsn_dlm()
+    {
+        $data = Standar::where('status', 'ACTIVE')->get();
+
+        return view('dosen/sop', compact('data'));
     }
 }

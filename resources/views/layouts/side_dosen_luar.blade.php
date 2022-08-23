@@ -5,6 +5,7 @@
             <i class="fa fa-dashboard"></i> <span>Halaman Utama</span>
         </a>
     </li>
+    <li><a href="{{ url('sop_dsn_luar') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
     <li><a href="{{ url('makul_diampu') }}"><i class="fa  fa-users"></i> <span>Matakuliah diampu</span></a>
     </li>
     <li><a href="{{ url('history_makul_dsnlr') }}"><i class="fa  fa-list"></i> <span>History Matakuliah

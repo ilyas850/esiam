@@ -37,6 +37,7 @@ use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Soal_ujian;
 use App\Setting_nilai;
+use App\Standar;
 use App\Exports\DataNilaiExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -5562,5 +5563,12 @@ class DosenluarController extends Controller
 
         Alert::success('Berhasil');
         return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    }
+
+    public function sop_dsn_luar()
+    {
+        $data = Standar::where('status', 'ACTIVE')->get();
+
+        return view('dosenluar/sop', compact('data'));
     }
 }

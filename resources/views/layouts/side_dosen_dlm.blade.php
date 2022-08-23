@@ -5,7 +5,8 @@
             <i class="fa fa-dashboard"></i> <span>Halaman Utama</span>
         </a>
     </li>
-    <li><a href="{{ url('mhs_bim') }}"><i class="fa  fa-users"></i> <span>Mahasiswa Bimbingan</span></a></li>
+    <li><a href="{{ url('sop_dsn_dlm') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
+    <li><a href="{{ url('mhs_bim') }}"><i class="fa fa-users"></i> <span>Mahasiswa Bimbingan</span></a></li>
     <li><a href="{{ url('val_krs') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a></li>
 
     <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa  fa-users"></i> <span>Matakuliah diampu</span></a>

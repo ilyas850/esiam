@@ -41,6 +41,7 @@ use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Soal_ujian;
 use App\Setting_nilai;
+use App\Standar;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -8092,5 +8093,12 @@ class KaprodiController extends Controller
 
     Alert::success('Berhasil');
     return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+  }
+
+  public function sop_dsn_kprd()
+  {
+    $data = Standar::where('status', 'ACTIVE')->get();
+
+    return view('kaprodi/sop', compact('data'));
   }
 }

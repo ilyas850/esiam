@@ -1,6 +1,7 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">Menu Kaprodi</li>
     <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
+    <li><a href="{{ url('sop_dsn_kprd') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-database"></i> <span>Master Data</span>
