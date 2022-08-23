@@ -1569,7 +1569,7 @@ class AdminPraustaController extends Controller
                 'prausta_trans_hasil.id_settingrelasi_prausta',
                 'prausta_trans_hasil.validasi'
             )
-            ->orderBy('student.nim', 'DESC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('prausta/ta/nilai_ta', compact('data', 'prodi'));
