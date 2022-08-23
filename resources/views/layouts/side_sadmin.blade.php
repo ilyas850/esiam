@@ -25,7 +25,8 @@
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
-            <li><a href="/standar_pendidikan_nasional"><i class="fa fa-circle-o"></i> Standar Pendidikan Nasional</a></li>
+            <li><a href="/standar_pendidikan_nasional"><i class="fa fa-circle-o"></i> Standar Operasional Prosedur
+                </a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>
             <li><a href="/skpi"><i class="fa fa-circle-o"></i> SKPI</a></li>
             <li><a href="/master_yudisium"><i class="fa fa-circle-o"></i> Yudisium</a></li>
