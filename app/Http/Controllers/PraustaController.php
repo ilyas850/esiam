@@ -67,6 +67,7 @@ class PraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
             ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_studentrecord', 'student_record.nilai_AKHIR')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $cekdata = count($data);
