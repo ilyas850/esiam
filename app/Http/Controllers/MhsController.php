@@ -3411,8 +3411,6 @@ class MhsController extends Controller
         //hasil
         $hasil_semua = $cekbyr - $total_semua_dibayar;
 
-
-
         if ($hasil_semua < 0 or $hasil_semua == 0) {
             $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
@@ -3421,10 +3419,11 @@ class MhsController extends Controller
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select(
                     'prausta_setting_relasi.id_settingrelasi_prausta',
-                    'validasi_baak'
+                    'prausta_setting_relasi.validasi_baak'
                 )
                 ->first();
-            if ($cekdata_prausta == 'SUDAH') {
+               
+            if ($cekdata_prausta->validasi_baak == 'SUDAH') {
                 //cek nilai kosong atau tidak lulus
                 $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
                     ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
@@ -3441,8 +3440,6 @@ class MhsController extends Controller
                     })
                     ->select('kurikulum_transaction.id_makul', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                     ->get();
-
-
 
                 $hitjml_kur = count($cek_kur);
 

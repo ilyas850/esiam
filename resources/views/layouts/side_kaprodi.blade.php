@@ -31,6 +31,9 @@
     <li><a href="{{ url('val_kurikulum_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
                 Kurikulum</span></a>
     </li>
+    <li><a href="{{ url('val_sertifikat_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
+                Sertifikat</span></a>
+    </li>
     <li><a href="{{ url('makul_diampu_kprd') }}"><i class="fa  fa-users"></i> <span>Matakuliah
                 diampu</span></a></li>
     <li><a href="{{ url('history_makul_kprd') }}"><i class="fa  fa-list"></i> <span>History Matakuliah

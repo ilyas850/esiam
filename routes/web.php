@@ -1017,6 +1017,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     //standar operasional prosedur
     Route::get('sop_dsn_kprd', 'KaprodiController@sop_dsn_kprd');
+
+    //validasi sertifikat skpi
+    Route::get('val_sertifikat_kprd', 'KaprodiController@val_sertifikat_kprd');
+    Route::get('cek_sertifikat_kprd/{id}', 'KaprodiController@cek_sertifikat_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

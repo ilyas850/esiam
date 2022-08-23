@@ -42,6 +42,7 @@ use App\Prausta_trans_penilaian;
 use App\Soal_ujian;
 use App\Setting_nilai;
 use App\Standar;
+use App\Sertifikat;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -8100,5 +8101,45 @@ class KaprodiController extends Controller
     $data = Standar::where('status', 'ACTIVE')->get();
 
     return view('kaprodi/sop', compact('data'));
+  }
+
+  public function val_sertifikat_kprd()
+  {
+    $iddosen = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iddosen)
+      ->select('prodi.kodeprodi')
+      ->first();
+
+    $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+      ->leftjoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('prodi.kodeprodi', $prodi->kodeprodi)
+      ->where('student.active', 1)
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
+      ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi')
+      ->get();
+
+    return view('kaprodi/skpi/validasi_sertifikat', compact('data'));
+  }
+
+  public function cek_sertifikat_kprd($id)
+  {
+    $mhs = Student::leftjoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student.idstudent', $id)
+      ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+
+    $data = Sertifikat::where('id_student', $id)->get();
+
+    return view('kaprodi/skpi/cek_sertifikat', compact('mhs', 'data'));
   }
 }
