@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -16,26 +14,38 @@
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-xs-3">
-                            <label for="">Kode PraUSTA</label>
+                        <div class="col-xs-6">
+                            <label>Kode PraUSTA - Prodi</label>
+                            <select name="id_masterkode_prausta" class="form-control">
+                                <option></option>
+                                @foreach ($list as $ls)
+                                    <option value="{{ $ls->id_masterkode_prausta }}">{{ $ls->kode_prausta }} /
+                                        {{ $ls->nama_prausta }} ( {{ $ls->prodi }} - {{ $ls->konsentrasi }} )</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        {{-- <div class="col-xs-3">
+                            <label>Kode PraUSTA</label>
                             <select class="form-control" name="id_masterkode_prausta">
                                 <option></option>
                                 @foreach ($listprausta as $makul)
-                                    <option value="{{ $makul->id_masterkode_prausta }}">{{ $makul->kode_prausta }} - {{ $makul->nama_prausta }}</option>
+                                    <option value="{{ $makul->id_masterkode_prausta }}">{{ $makul->kode_prausta }} -
+                                        {{ $makul->nama_prausta }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-3">
-                            <label for="">Program Studi</label>
-                            <select class="form-control" name="kodeprodi" required>
+                        <div class="col-xs-6">
+                            <label>Program Studi</label>
+                            <select class="form-control" name="id_prodi" required>
                                 <option></option>
                                 @foreach ($prodi as $prd)
-                                    <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}</option>
+                                    <option value="{{ $prd->id_prodi }}">{{ $prd->prodi }} - {{ $prd->konsentrasi }}
+                                    </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-xs-3">
-                            <label for="">Angkatan</label>
+                            <label>Angkatan</label>
                             <select class="form-control" name="idangkatan" required>
                                 <option></option>
                                 @foreach ($angkatan as $tipee)

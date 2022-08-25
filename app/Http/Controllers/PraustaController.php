@@ -15,6 +15,7 @@ use App\Beasiswa;
 use App\Kuitansi;
 use App\Bayar;
 use App\Dosen;
+use App\Kuliah_nilaihuruf;
 use App\Ruangan;
 use App\Student_record;
 use App\Kurikulum_jam;
@@ -31,7 +32,13 @@ class PraustaController extends Controller
 {
     public function nilai_prausta()
     {
-        $listprausta = Prausta_master_kode::whereIn('id_masterkode_prausta', [1, 2, 3, 7, 8, 9])
+        $list = Prausta_master_kode::join('prodi', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
+            ->whereNotIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+            ->select('prodi.id_prodi', 'prodi.prodi', 'prodi.konsentrasi', 'prausta_master_kode.id_masterkode_prausta', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta')
+            ->orderBy('prodi.id_prodi', 'ASC')
+            ->get();
+
+        $listprausta = Prausta_master_kode::whereNotIn('id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->orderBy('kode_prausta', 'ASC')
             ->get();
 
@@ -39,41 +46,61 @@ class PraustaController extends Controller
 
         $angkatan = Angkatan::whereIn('idangkatan', [16, 17, 18, 19, 20, 21, 22])->get();
 
-        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan'));
+        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan', 'list'));
     }
 
     public function kode_prausta(Request $request)
     {
-        $idmakul = $request->id_masterkode_prausta;
-        $idprodi = $request->kodeprodi;
-        $idangkatan = $request->idangkatan;
+        $kd_prausta = $request->id_masterkode_prausta;
+        $id_angkatan = $request->idangkatan;
 
-        $data_kode = Prausta_master_kode::where('id_masterkode_prausta', $idmakul)->first();
-
-        $mk = Matakuliah::where('kode', $data_kode->kode_prausta)->first();
-
+        $data_kode = Prausta_master_kode::join('prodi', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
+            ->where('prausta_master_kode.id_masterkode_prausta', $kd_prausta)
+            ->select('prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prodi.kodeprodi', 'prodi.kodekonsentrasi', 'matakuliah.idmakul', 'matakuliah.kode', 'prausta_master_kode.id_masterkode_prausta')
+            ->first();
+    
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prodi', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('matakuliah', 'prausta_master_kode.kode_prausta', '=', 'matakuliah.kode')
+            ->leftJoin('prodi', (function ($leftjoin) {
+                $leftjoin->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('student_record', 'student.idstudent', '=', 'student_record.id_student')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->where('kurikulum_periode.id_makul', $mk->idmakul)
-            ->where('prausta_setting_relasi.id_masterkode_prausta', $idmakul)
-            ->where('student.idangkatan', $idangkatan)
-            ->where('student.kodeprodi', $idprodi)
+            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_masterkode_prausta', $data_kode->id_masterkode_prausta)
+            ->where('student.idangkatan', $id_angkatan)
+            ->where('kurikulum_periode.id_makul', $data_kode->idmakul)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
-            ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_studentrecord', 'student_record.nilai_AKHIR')
-            ->orderBy('student.nim', 'ASC')
+            ->select(
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'student_record.id_studentrecord',
+                'student_record.nilai_AKHIR',
+                'prausta_trans_hasil.nilai_huruf'
+            )
             ->get();
+
+        $kode_prausta = $data_kode->kode_prausta;
+        $nama_prausta = $data_kode->nama_prausta;
+        $prodi = $data_kode->prodi;
+        $angkatan = Angkatan::where('idangkatan', $id_angkatan)->first();
+        $nama_angkatan = $angkatan->angkatan;
+
 
         $cekdata = count($data);
 
         if ($cekdata > 0) {
-            return view('prausta/form_nilai_prausta', compact('data'));
+            return view('prausta/form_nilai_prausta', compact('data', 'kode_prausta', 'nama_prausta', 'prodi', 'nama_angkatan'));
         } elseif ($cekdata == 0) {
             Alert::error('maaf mahasiswa tersebut belum ada', 'MAAF !!');
             return redirect()->back();
@@ -90,7 +117,15 @@ class PraustaController extends Controller
             $ids = $nilaiusta[0];
             $nsta = $nilaiusta[1];
 
-            $akun = Student_record::where('id_studentrecord', $ids)->update(['nilai_AKHIR' => $nsta]);
+            $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
+                ->where('status', 'ACTIVE')
+                ->select('nilai_indeks')
+                ->first();
+
+            Student_record::where('id_studentrecord', $ids)->update([
+                'nilai_AKHIR' => $nsta,
+                'nilai_ANGKA' => $angka->nilai_indeks
+            ]);
         }
         Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
         return redirect('nilai_prausta');
@@ -106,7 +141,7 @@ class PraustaController extends Controller
         if ($angkatan <= 19) {
             $kodemk = 'FA-601';
         } elseif ($angkatan > 19) {
-            $kodemk = 'FA-501';
+            $kodemk = 'FA-5001';
         }
 
         //cek KRS prakerin mahasiswa
@@ -781,7 +816,7 @@ class PraustaController extends Controller
         $tgl1 = $tgl_seminar_pkl->tanggal_selesai; // pendefinisian tanggal awal
         $tgl_awal_sempro = date('Y-m-d', strtotime('+1 days', strtotime($tgl1))); //operasi penjumlahan tanggal sebanyak 1 hari
 
-     
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->leftJoin('prodi', (function ($join) {
