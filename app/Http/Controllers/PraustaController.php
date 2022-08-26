@@ -59,7 +59,7 @@ class PraustaController extends Controller
             ->where('prausta_master_kode.id_masterkode_prausta', $kd_prausta)
             ->select('prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prodi.kodeprodi', 'prodi.kodekonsentrasi', 'matakuliah.idmakul', 'matakuliah.kode', 'prausta_master_kode.id_masterkode_prausta')
             ->first();
-    
+
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($leftjoin) {
@@ -95,7 +95,6 @@ class PraustaController extends Controller
         $prodi = $data_kode->prodi;
         $angkatan = Angkatan::where('idangkatan', $id_angkatan)->first();
         $nama_angkatan = $angkatan->angkatan;
-
 
         $cekdata = count($data);
 

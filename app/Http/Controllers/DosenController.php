@@ -4801,7 +4801,7 @@ class DosenController extends Controller
             ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
-        return view('dosen/prausta/edit_nilai_ta', compact('nilai_pem', 'datadiri', 'id'));
+        return view('dosen/prausta/edit_nilai_ta_dospem', compact('nilai_pem', 'datadiri', 'id'));
     }
 
     public function put_nilai_ta_dospem_dlm(Request $request)
