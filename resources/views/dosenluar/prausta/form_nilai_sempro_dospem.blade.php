@@ -21,7 +21,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h4 class="box-title"><b>Data Mahasiswa</b> </h4>
+                <h4 class="box-title" ><b>Data Mahasiswa</b> </h4>
             </div>
             <div class="box-body">
                 <table width="100%">
@@ -146,7 +146,7 @@
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
+                    <h3 class="box-title" id="example8"><b>Form Penilaian Pembimbing</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">

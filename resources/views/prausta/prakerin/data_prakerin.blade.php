@@ -62,7 +62,7 @@
                             <th rowspan="2">No</th>
 
                             <th rowspan="2">Mahasiswa/NIM</th>
-                            
+
                             <th colspan="2">
                                 <center>Dosen</center>
                             </th>
@@ -72,6 +72,7 @@
                             <th colspan="2">
                                 <center>Tanggal Aktual</center>
                             </th>
+                            <th rowspan="2">Batas Waktu</th>
                             <th rowspan="2">Due Date</th>
                             <th rowspan="2">Durasi</th>
                             <th rowspan="2">
@@ -111,7 +112,7 @@
                                 <td align="center">{{ $no++ }}</td>
 
                                 <td>{{ $key->nama }}/{{ $key->nim }}</td>
-                                
+
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->set_waktu_awal }}</td>
@@ -121,6 +122,9 @@
                                 </td>
                                 <td>
                                     <center>{{ $key->tanggal_selesai }}</center>
+                                </td>
+                                <td align="center">
+                                    {{ $key->batas_waktu }} hari
                                 </td>
                                 <td>
                                     @if ($key->tanggal_selesai == null)

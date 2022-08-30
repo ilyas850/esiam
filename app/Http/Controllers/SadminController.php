@@ -828,7 +828,8 @@ class SadminController extends Controller
     public function pedoman()
     {
         $tahun = Periode_tahun::all();
-        $pedoman = Pedoman_akademik::all();
+        $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+        ->where;
 
         return view('sadmin/pedoman', ['tahun' => $tahun, 'pedoman' => $pedoman]);
     }

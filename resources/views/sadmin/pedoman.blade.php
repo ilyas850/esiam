@@ -25,7 +25,7 @@
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <input type="file" name="file">
+                            <input type="file" name="file" class="form-control">
                         </div>
                         <div class="col-xs-3">
                             <button type="submit" class="btn btn-info ">Simpan</button>
@@ -54,6 +54,9 @@
                             <th>
                                 <center>Tahun Akademik</center>
                             </th>
+                            <th>
+                                <center>Aksi</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,7 +78,65 @@
                                         @endforeach
                                     </center>
                                 </td>
+                                <td align="center">
+                                    <button class="btn btn-success btn-xs" data-toggle="modal"
+                                        data-target="#modalUpdateStandar{{ $keypdm->id_pedomanakademik }}"
+                                        title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                    <a href="hapus_standar_pendidikan_nasional/{{ $keypdm->id_pedomanakademik }}"
+                                        class="btn btn-danger btn-xs" title="klik untuk hapus"
+                                        onclick="return confirm('anda yakin akan menghapus ini?')"><i
+                                            class="fa fa-trash"></i></a>
+                                </td>
                             </tr>
+                            <div class="modal fade" id="modalUpdateStandar{{ $keypdm->id_pedomanakademik }}" tabindex="-1"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Update Pedoman</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/put_pedoman_akademik/{{ $keypdm->id_pedomanakademik }}"
+                                                method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Nama File</label>
+                                                            <input type="text" class="form-control" name="nama_pedoman"
+                                                                value="{{ $keypdm->nama_pedoman }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <select class="form-control" name="id_periodetahun">
+                                                            <option></option>
+                                                            @foreach ($tahun as $thn)
+                                                                <option value="{{ $thn->id_periodetahun }}">
+                                                                    {{ $thn->periode_tahun }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>File SOP</label>
+                                                            <input type="file" name="file" class="form-control"
+                                                                value="{{ $keypdm->file }}"> {{ $keypdm->file }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
+                                                <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

@@ -92,8 +92,10 @@
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateStandar{{ $item->id_standar }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                        <a href="hapus_standar_pendidikan_nasional/{{ $item->id_standar }}" class="btn btn-danger btn-xs"
-                                            title="klik untuk hapus" onclick="return confirm('anda yakin akan menghapus ini?')"><i class="fa fa-trash"></i></a>
+                                        <a href="hapus_standar_pendidikan_nasional/{{ $item->id_standar }}"
+                                            class="btn btn-danger btn-xs" title="klik untuk hapus"
+                                            onclick="return confirm('anda yakin akan menghapus ini?')"><i
+                                                class="fa fa-trash"></i></a>
                                     </center>
                                 </td>
                             </tr>

@@ -190,14 +190,13 @@
 
             <button type="submit" class="btn btn-info">Simpan</button>
         </form> --}}
-
         <form class="" action="{{ url('simpan_nilai_ta_dospem_dsnlr') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Dosen Pembimbing</b> </h3>
+                    <h3 class="box-title" id="example8"><b>Form Penilaian Dosen Pembimbing</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">

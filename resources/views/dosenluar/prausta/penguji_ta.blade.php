@@ -24,7 +24,7 @@
                 <h3 class="box-title">Data mahasiswa</h3>
             </div>
             <div class="box-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th width="4px">

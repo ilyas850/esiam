@@ -112,6 +112,7 @@ class ProdiController extends Controller
           $dt->id_dosen_pembimbing = $id2;
           $dt->added_by = Auth::user()->name;
           $dt->status = 'ACTIVE';
+          $dt->data_origin = 'eSIAM';
           $dt->save();
         } elseif (count($cekmhs) > 0) {
 
@@ -120,7 +121,8 @@ class ProdiController extends Controller
             ->where('status', 'ACTIVE')
             ->update([
               'id_dosen_pembimbing' => $id2,
-              'dosen_pembimbing' => $id3
+              'dosen_pembimbing' => $id3,
+              'data_origin' => 'eSIAM'
             ]);
         }
       }
