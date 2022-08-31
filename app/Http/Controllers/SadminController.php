@@ -152,7 +152,7 @@ class SadminController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.active', 1)
-            ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student.nisn')
+            ->select('student.nim', 'student.nama', 'prodi.prodi', 'prodi.konsentrasi', 'kelas.kelas', 'angkatan.angkatan', 'student.nisn', 'student.intake')
             ->get();
 
         return view('sadmin/data_mhs', ['mhss' => $mhs]);
@@ -829,7 +829,7 @@ class SadminController extends Controller
     {
         $tahun = Periode_tahun::all();
         $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-        ->where;
+            ->where;
 
         return view('sadmin/pedoman', ['tahun' => $tahun, 'pedoman' => $pedoman]);
     }
@@ -4754,7 +4754,7 @@ class SadminController extends Controller
             'file_sop' => 'mimes:pdf,docx,PDF,DOCX|max:10000',
             'nama_sop' => 'required'
         ]);
-      
+
         $info = Standar::find($id);
         $info->nama_standar = $request->nama_standar;
         $info->nama_sop = $request->nama_sop;
@@ -4794,6 +4794,4 @@ class SadminController extends Controller
         Alert::success('', 'Standar berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
-
-    
 }

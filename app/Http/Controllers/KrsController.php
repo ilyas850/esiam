@@ -62,13 +62,15 @@ class KrsController extends Controller
           'prodi.prodi',
           'student.idangkatan',
           'student.idstatus',
-          'student.kodeprodi'
+          'student.kodeprodi',
+          'student.intake'
         )
         ->first();
 
       $idangkatan = $data_mhs->idangkatan;
       $idstatus = $data_mhs->idstatus;
       $kodeprodi = $data_mhs->kodeprodi;
+      $intake = $data_mhs->intake;
 
       $thn = Periode_tahun::where('status', 'ACTIVE')->first();
       $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -88,18 +90,31 @@ class KrsController extends Controller
           //ganjil
           $a = (($smt + 10) - 1) / 10;
           $b = $a - $idangkatan;
-          $c = ($b * 2) - 1;
+
+          if ($intake == 2) {
+            $c = ($b * 2) - 1 - 1;
+          } elseif ($intake == 1) {
+            $c = ($b * 2) - 1;
+          }
         } elseif ($tipe == 3) {
           //pendek
           $a = (($smt + 10) - 3) / 10;
           $b = $a - $idangkatan;
-          $c = ($b * 2) . '0' . '1';
+          if ($intake == 2) {
+            $c = ($b * 2) - 1 . '0' . '1';
+          } elseif ($intake == 1) {
+            $c = ($b * 2) . '0' . '1';
+          }
         }
       } else {
         //genap
         $a = (($smt + 10) - 2) / 10;
         $b = $a - $idangkatan;
-        $c = $b * 2;
+        if ($intake == 2) {
+          $c = $b * 2 - 1;
+        } elseif ($intake == 1) {
+          $c = $b * 2;
+        }
       }
 
       $biaya = Biaya::where('idangkatan', $idangkatan)
@@ -176,6 +191,8 @@ class KrsController extends Controller
 
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 16.5 / 100)) - $total_semua_dibayar;
+      } elseif ($c == '101') {
+        $cekbyr = ($daftar + $awal + ($dsp * 50 / 100) + $spp1 + ($spp2 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == 2) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + ($spp2 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == '201') {
@@ -281,7 +298,9 @@ class KrsController extends Controller
         'prodi.prodi',
         'student.idangkatan',
         'student.idstatus',
-        'student.kodeprodi'
+        'student.kodeprodi',
+        'student.kodekonsentrasi',
+        'student.intake'
       )
       ->first();
 
@@ -351,13 +370,17 @@ class KrsController extends Controller
         'prodi.prodi',
         'student.idangkatan',
         'student.idstatus',
-        'student.kodeprodi'
+        'student.kodeprodi',
+        'student.kodekonsentrasi',
+        'student.intake'
       )
       ->first();
 
     $idangkatan = $data_mhs->idangkatan;
     $idstatus = $data_mhs->idstatus;
     $kodeprodi = $data_mhs->kodeprodi;
+    $kodekonsentrasi = $data_mhs->kodekonsentrasi;
+    $intake = $data_mhs->intake;
 
     $thn = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
     $tp = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
@@ -375,96 +398,203 @@ class KrsController extends Controller
         //ganjil
         $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
         $b = $a - $idangkatan; // 22 - 20 = 2
-        $c = ($b * 2) - 1; // 2 * 2 - 1 = 3
+        if ($intake == 2) {
+          $c = ($b * 2) - 1 - 1;
+        } elseif ($intake == 1) {
+          $c = ($b * 2) - 1;
+        } // 2 * 2 - 1 = 3
       } elseif ($tipe == 3) {
         //pendek
         $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
         $b = $a - $idangkatan; // 22 - 20 = 2
-        $c = ($b * 2);
+        // $c = ($b * 2);
+        if ($intake == 2) {
+          $c = $b * 2 - 1;
+        } elseif ($intake == 1) {
+          $c = $b * 2;
+        }
       }
     } else {
       //genap
       $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
       $b = $a - $idangkatan; // 22 - 20 = 2
-      $c = $b * 2; // 2 * 2 = 4
+      // 2 * 2 = 4
+      if ($intake == 2) {
+        $c = $b * 2 - 1;
+      } elseif ($intake == 1) {
+        $c = $b * 2;
+      }
     }
 
-    $value = Prodi::where('kodeprodi', $data_mhs->kodeprodi)->first();
-
-    $krlm = Kurikulum_master::where('status', 'ACTIVE')->first();
-
-    if ($tipe == 3) {
-      $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
-        ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
-        ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-        ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-        ->where('kurikulum_periode.id_periodetipe', $tipe)
-        ->where('kurikulum_periode.id_kelas', $idstatus)
-        ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-        ->where('kurikulum_periode.id_prodi', $value->id_prodi)
-        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('kurikulum_periode.status', 'ACTIVE')
-        ->where('matakuliah_bom.status', 'ACTIVE');
-
-      $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
-        ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
-        ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-        ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-        ->where('kurikulum_periode.id_periodetipe', $tipe)
-        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-        ->where('kurikulum_periode.id_kelas', $idstatus)
-        ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-        ->where('kurikulum_periode.id_prodi', $value->id_prodi)
-        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('kurikulum_periode.status', 'ACTIVE')
-        ->where('kurikulum_transaction.status', 'ACTIVE')
-        ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-        ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
-        ->union($add_krs)
-        ->get();
-      return view('mhs/krs/form_krs', compact('final_krs'));
+    if ($kodeprodi == 24) {
+      $value = Prodi::where('kodeprodi', $kodeprodi)->first();
     } else {
-      $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
-        ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
-        ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-        ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-        ->where('kurikulum_periode.id_periodetipe', $tipe)
-        ->where('kurikulum_periode.id_kelas', $idstatus)
-        ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-        ->where('kurikulum_periode.id_prodi', $value->id_prodi)
-        ->where('kurikulum_transaction.id_semester', $c)
-        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('kurikulum_periode.status', 'ACTIVE')
-        ->where('matakuliah_bom.status', 'ACTIVE');
+      $value = Prodi::where('kodeprodi', $kodeprodi)
+        ->where('kodekonsentrasi', $kodekonsentrasi)
+        ->first();
+    }
 
-      $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
-        ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
-        ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-        ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
-        ->where('kurikulum_periode.id_periodetipe', $tipe)
-        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-        ->where('kurikulum_periode.id_kelas', $idstatus)
-        ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
-        ->where('kurikulum_periode.id_prodi', $value->id_prodi)
-        ->where('kurikulum_transaction.id_semester', $c)
-        ->where('kurikulum_transaction.id_angkatan', $idangkatan)
-        ->where('kurikulum_periode.status', 'ACTIVE')
-        ->where('kurikulum_transaction.status', 'ACTIVE')
-        ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-        ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
-        ->union($add_krs)
-        ->get();
-      return view('mhs/krs/form_krs', compact('final_krs'));
+    $krlm = Kurikulum_master::where('remark', $intake)->first();
+
+    if ($kodeprodi == 23 or $kodeprodi == 25 or $kodeprodi == 22) {
+      if ($kodekonsentrasi == null) {
+        alert()->warning('Anda tidak dapat melakukan KRS karena Anda belum memiliki konsentrasi', 'Hubungi Prodi masing-masing')->autoclose(5000);
+        return redirect()->back();
+      } else {
+        if ($tipe == 3) {
+          $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+            ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tipe)
+            ->where('kurikulum_periode.id_kelas', $idstatus)
+            ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('matakuliah_bom.status', 'ACTIVE');
+
+          $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+            ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+            ->where('kurikulum_periode.id_periodetipe', $tipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_kelas', $idstatus)
+            ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('kurikulum_transaction.status', 'ACTIVE')
+            ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+            ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
+            ->union($add_krs)
+            ->get();
+
+          return view('mhs/krs/form_krs', compact('final_krs'));
+        } else {
+          $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+            ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
+            ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tipe)
+            ->where('kurikulum_periode.id_kelas', $idstatus)
+            ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_transaction.id_semester', $c)
+            ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+            ->where('matakuliah_bom.status', 'ACTIVE');
+
+          $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+            ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
+            ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+            ->where('kurikulum_periode.id_periodetipe', $tipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_kelas', $idstatus)
+            ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_transaction.id_semester', $c)
+            ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('kurikulum_transaction.status', 'ACTIVE')
+            ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+            ->whereNotIn('kurikulum_periode.id_makul', [386, 384])
+            ->union($add_krs)
+            ->get();
+
+          return view('mhs/krs/form_krs', compact('final_krs'));
+        }
+      }
+    } elseif ($kodeprodi == 24) {
+      if ($tipe == 3) {
+        $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+          ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
+          ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+          ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+          ->where('kurikulum_periode.id_periodetipe', $tipe)
+          ->where('kurikulum_periode.id_kelas', $idstatus)
+          ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+          ->where('kurikulum_periode.status', 'ACTIVE')
+          ->where('matakuliah_bom.status', 'ACTIVE');
+
+        $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+          ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
+          ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+          ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+          ->where('kurikulum_periode.id_periodetipe', $tipe)
+          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+          ->where('kurikulum_periode.id_kelas', $idstatus)
+          ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+          ->where('kurikulum_periode.status', 'ACTIVE')
+          ->where('kurikulum_transaction.status', 'ACTIVE')
+          ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+          ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
+          ->union($add_krs)
+          ->get();
+
+        return view('mhs/krs/form_krs', compact('final_krs'));
+      } else {
+        $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+          ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
+          ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+          ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+          ->where('kurikulum_periode.id_periodetipe', $tipe)
+          ->where('kurikulum_periode.id_kelas', $idstatus)
+          ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_transaction.id_semester', $c)
+          ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+          ->where('kurikulum_periode.status', 'ACTIVE')
+          ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+          ->where('matakuliah_bom.status', 'ACTIVE');
+
+        $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
+          ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
+          ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')
+          ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+          ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+          ->where('kurikulum_transaction.id_kurikulum', $krlm->id_kurikulum)
+          ->where('kurikulum_periode.id_periodetipe', $tipe)
+          ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+          ->where('kurikulum_periode.id_kelas', $idstatus)
+          ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_transaction.id_semester', $c)
+          ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+          ->where('kurikulum_periode.status', 'ACTIVE')
+          ->where('kurikulum_transaction.status', 'ACTIVE')
+          ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
+          ->whereNotIn('kurikulum_periode.id_makul', [386, 384])
+          ->union($add_krs)
+          ->get();
+
+        return view('mhs/krs/form_krs', compact('final_krs'));
+      }
     }
   }
 
