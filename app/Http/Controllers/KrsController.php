@@ -433,7 +433,7 @@ class KrsController extends Controller
         ->where('kodekonsentrasi', $kodekonsentrasi)
         ->first();
     }
-
+   
     $krlm = Kurikulum_master::where('remark', $intake)->first();
 
     if ($kodeprodi == 23 or $kodeprodi == 25 or $kodeprodi == 22) {
