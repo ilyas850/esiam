@@ -972,9 +972,11 @@ class SadminController extends Controller
 
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
         $idtipe = $tp->id_periodetipe;
+        $namaperiodetipe = $tp->periode_tipe;
 
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $idtahun = $thn->id_periodetahun;
+        $namaperiodetahun = $thn->periode_tahun;
 
         $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
@@ -989,7 +991,7 @@ class SadminController extends Controller
             ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
             ->get();
 
-        return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai]);
+        return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai, 'namaperiodetipe' => $namaperiodetipe, 'namaperiodetahun' => $namaperiodetahun]);
     }
 
     public function cek_krs_mhs($id)

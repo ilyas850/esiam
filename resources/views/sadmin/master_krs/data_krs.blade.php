@@ -49,38 +49,53 @@
             </form>
         </div>
 
-        <br>
 
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title">Rekap Nilai Mahasiswa</h3>
+                <h3 class="box-title">Rekap KRS Mahasiswa <b>{{ $namaperiodetahun }} {{ $namaperiodetipe }}</b></h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Kode/Matakuliah</th>
-                            <th>SKS</th>
-                            <th>Prodi</th>
-                            <th>Kelas</th>
-                            <th>Jumlah Mahasiswa</th>
-                            <th>Dosen</th>
-                            <th>Cek KRS</th>
+                            <th>
+                                <center> No </center>
+                            </th>
+                            <th>
+                                <center>Kode/Matakuliah </center>
+                            </th>
+                            <th>
+                                <center>SKS </center>
+                            </th>
+                            <th>
+                                <center>Prodi</center>
+                            </th>
+                            <th>
+                                <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>Jumlah Mahasiswa</center>
+                            </th>
+                            <th>
+                                <center>Dosen</center>
+                            </th>
+                            <th>
+                                <center>Cek KRS </center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($krs as $key)
                             <tr>
-                                <td>{{ $no++ }}</td>
+                                <td align="center">{{ $no++ }}</td>
                                 <td>{{ $key->kode }}/{{ $key->makul }}</td>
-                                <td>{{ $key->akt_sks_teori + $key->akt_sks_praktek }}</td>
+                                <td align="center">{{ $key->akt_sks_teori + $key->akt_sks_praktek }}</td>
                                 <td>{{ $key->prodi }}</td>
-                                <td>{{ $key->kelas }}</td>
-                                <td>{{ $key->jml_mhs }}</td>
+                                <td align="center">{{ $key->kelas }}</td>
+                                <td align="center">{{ $key->jml_mhs }}</td>
                                 <td>{{ $key->nama }}</td>
-                                <td>
+                                <td align="center">
                                     <a href="cek_krs_mhs/{{ $key->id_kurperiode }}" class="btn btn-info btn-xs">Cek</a>
                                 </td>
                             </tr>
