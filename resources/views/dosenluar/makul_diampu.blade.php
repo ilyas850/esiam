@@ -18,7 +18,7 @@
 
 @section('content')
     <section class="content">
-        <div class="box box-danger">
+        {{-- <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Pilih Tahun Akademik dan Periode</h3>
             </div>
@@ -55,7 +55,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Data Matakuliah <b> {{ $nama_periodetahun }} - {{ $nama_periodetipe }} </b></h3>

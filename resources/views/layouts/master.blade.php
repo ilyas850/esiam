@@ -333,7 +333,7 @@
         <!-- /.content-wrapper -->
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-                <b>Version</b> 2.4.13
+                
             </div>
             <strong>Copyright &copy; 2020-2022 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
             rights
