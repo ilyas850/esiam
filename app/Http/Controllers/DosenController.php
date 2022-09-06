@@ -496,7 +496,7 @@ class DosenController extends Controller
         if ($totalsks > 24) {
             Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
             return redirect('val_krs');
-        } elseif ($totalsks < 24) {
+        } elseif ($totalsks <= 24) {
 
             $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                 ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')

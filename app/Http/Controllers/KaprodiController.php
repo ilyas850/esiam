@@ -666,6 +666,7 @@ class KaprodiController extends Controller
 
   public function krs_validasi(Request $request)
   {
+
     $id = $request->id_student;
 
     $krs = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -716,7 +717,8 @@ class KaprodiController extends Controller
     if ($totalsks > 24) {
       Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
       return redirect('val_krs_kprd');
-    } elseif ($totalsks < 24) {
+    } elseif ($totalsks <= 24) {
+      
       $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
         ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
         ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
