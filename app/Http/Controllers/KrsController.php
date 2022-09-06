@@ -137,7 +137,8 @@ class KrsController extends Controller
           'spp11',
           'spp12',
           'spp13',
-          'spp14'
+          'spp14',
+          'prakerin'
         )
         ->first();
 
@@ -163,6 +164,7 @@ class KrsController extends Controller
         $spp12 = $biaya->spp12 - (($biaya->spp12 * ($cb->spp12)) / 100);
         $spp13 = $biaya->spp13 - (($biaya->spp13 * ($cb->spp13)) / 100);
         $spp14 = $biaya->spp14 - (($biaya->spp14 * ($cb->spp14)) / 100);
+        $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cb->prakerin)) / 100);
       } elseif (($cb) == null) {
 
         $daftar = $biaya->daftar;
@@ -182,13 +184,14 @@ class KrsController extends Controller
         $spp12 = $biaya->spp12;
         $spp13 = $biaya->spp13;
         $spp14 = $biaya->spp14;
+        $prakerin = $biaya->prakerin;
       }
 
       //total pembayaran kuliah
       $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
-
+     
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
@@ -204,7 +207,7 @@ class KrsController extends Controller
       } elseif ($c == '401') {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 5) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 16.5 / 100)) + ($prakerin * 75 / 100) - $total_semua_dibayar;
       } elseif ($c == 6) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == '601') {
@@ -433,7 +436,7 @@ class KrsController extends Controller
         ->where('kodekonsentrasi', $kodekonsentrasi)
         ->first();
     }
-   
+
     $krlm = Kurikulum_master::where('remark', $intake)->first();
 
     if ($kodeprodi == 23 or $kodeprodi == 25 or $kodeprodi == 22) {
