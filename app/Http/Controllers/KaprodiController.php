@@ -228,6 +228,8 @@ class KaprodiController extends Controller
   {
     $id = Auth::user()->id_user;
 
+    $p = DB::select('CALL mhs_bim(?)', [$id]);
+
     $k =  DB::table('student_record')
       ->join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
@@ -261,7 +263,7 @@ class KaprodiController extends Controller
       // ->where('student_record.status', 'TAKEN')
       ->get();
 
-    return view('kaprodi/master/mhs_bim', ['mhs' => $k]);
+    return view('kaprodi/master/mhs_bim', ['mhs' => $p]);
   }
 
   public function record_nilai($id)

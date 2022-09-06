@@ -80,7 +80,11 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{ substr($key->tanggal_krs, 0, 4) }} - {{ $key->periode_tipe }}
+                                        @if ($key->id_krs == 0)
+                                            BELUM ADA
+                                        @else
+                                            {{ $key->thn_krs }} - {{ $key->periode_tipe }}
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
@@ -88,11 +92,11 @@
                                         <a class="btn btn-info btn-xs" href="/record_nilai_kprd/{{ $key->idstudent }}"><i
                                                 class="fa fa-list" title="Klik untuk cek nilai"></i></a>
                                         <a class="btn btn-success btn-xs"
-                                            href="/record_pembayaran_mhs_kprd/{{ $key->idstudent }}"><i
-                                                class="fa fa-money" title="Klik untuk cek pembayaran"></i></a>
+                                            href="/record_pembayaran_mhs_kprd/{{ $key->idstudent }}"><i class="fa fa-money"
+                                                title="Klik untuk cek pembayaran"></i></a>
                                         <a class="btn btn-warning btn-xs"
-                                            href="/cek_makul_mengulang_kprd/{{ $key->idstudent }}"><i
-                                                class="fa fa-repeat" title="Klik untuk cek matakuliah mengulang"></i></a>
+                                            href="/cek_makul_mengulang_kprd/{{ $key->idstudent }}"><i class="fa fa-repeat"
+                                                title="Klik untuk cek matakuliah mengulang"></i></a>
                                     </center>
                                 </td>
                             </tr>

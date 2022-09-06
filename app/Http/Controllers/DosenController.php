@@ -315,7 +315,7 @@ class DosenController extends Controller
             ->select(DB::raw('count(student_record.id_student) as jml_krs'), 'student_record.remark', 'student_record.id_student')
             ->groupBy('student_record.remark', 'student_record.id_student')
             ->get();
-      
+
         return view('dosen/validasi_krs', ['mhs' => $mhs, 'bim' => $bim]);
     }
 
@@ -588,8 +588,8 @@ class DosenController extends Controller
                 'soal_ujian.soal_uts',
                 'soal_ujian.soal_uas'
             )
-            ->get();
 
+            ->get();
 
 
         return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));

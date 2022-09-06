@@ -455,6 +455,7 @@ class KrsController extends Controller
             ->where('kurikulum_periode.id_prodi', $value->id_prodi)
             ->where('kurikulum_transaction.id_angkatan', $idangkatan)
             ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
             ->where('matakuliah_bom.status', 'ACTIVE');
 
           $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
@@ -472,7 +473,7 @@ class KrsController extends Controller
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->where('kurikulum_transaction.status', 'ACTIVE')
             ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-            ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
+            ->whereNotIn('kurikulum_periode.id_makul', [386, 384, 385])
             ->union($add_krs)
             ->get();
 
@@ -511,7 +512,7 @@ class KrsController extends Controller
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->where('kurikulum_transaction.status', 'ACTIVE')
             ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-            ->whereNotIn('kurikulum_periode.id_makul', [386, 384])
+            ->whereNotIn('kurikulum_periode.id_makul', [386, 384, 385])
             ->union($add_krs)
             ->get();
 
