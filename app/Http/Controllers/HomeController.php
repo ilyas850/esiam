@@ -66,6 +66,7 @@ class HomeController extends Controller
         'microsoft_user.username',
         'microsoft_user.password',
         'prodi.id_prodi',
+        'prodi.konsentrasi',
         'student.idangkatan',
         'student.kodeprodi'
       )
@@ -122,7 +123,7 @@ class HomeController extends Controller
     } elseif ($akses == 3) {
 
       $foto = $mhs->foto;
-
+      
       $idprodi = $mhs->id_prodi;
       $idangkatan = $mhs->idangkatan;
 

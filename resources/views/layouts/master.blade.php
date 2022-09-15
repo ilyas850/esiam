@@ -104,10 +104,19 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 @if (Auth::user()->role == 3)
-                                    <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                        class="user-image" alt="User Image">
+                                    @if ($foto == null)
+                                        <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
+                                            alt="User Image">
+                                    @else
+                                        <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
+                                            class="user-image" alt="User Image">
+                                    @endif
                                 @else
-                                    <img src="/adminlte/img/default.jpg" class="user-image" alt="User Image">
+                                    @if ($foto == null)
+                                        <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
+                                            alt="User Image">
+                                    @endif
+
                                 @endif
 
                                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
@@ -115,8 +124,13 @@
                             <ul class="dropdown-menu">
                                 <li class="user-header">
                                     @if (Auth::user()->role == 3)
-                                        <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                            class="img-circle" alt="User Image">
+                                        @if ($foto == null)
+                                            <img src="{{ asset('adminlte/img/default.jpg') }}" class="img-circle"
+                                                alt="User Image">
+                                        @else
+                                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
+                                                class="img-circle" alt="User Image">
+                                        @endif
                                     @else
                                         <img src="/adminlte/img/default.jpg" class="img-circle" alt="User Image">
                                     @endif
@@ -306,8 +320,13 @@
                 <div class="user-panel">
                     <div class="pull-left image">
                         @if (Auth::user()->role == 3)
-                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}" class="img-circle"
-                                alt="User Image">
+                            @if ($foto == null)
+                                <img src="{{ asset('adminlte/img/default.jpg') }}" class="img-circle"
+                                    alt="User Image">
+                            @else
+                                <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
+                                    class="img-circle" alt="User Image">
+                            @endif
                         @else
                             <img src="/adminlte/img/default.jpg" class="img-circle" alt="User Image">
                         @endif
@@ -333,7 +352,7 @@
         <!-- /.content-wrapper -->
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-                
+
             </div>
             <strong>Copyright &copy; 2020-2022 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
             rights

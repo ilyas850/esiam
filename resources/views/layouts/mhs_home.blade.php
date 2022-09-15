@@ -4,8 +4,12 @@
             <div class="box-body box-profile">
 
                 @if ($foto == null)
-                    <img class="profile-user-img img-responsive img-circle" src="/adminlte/img/default.jpg"
+                    <img class="profile-user-img img-responsive img-circle" src="{{ asset('/adminlte/img/default.jpg') }}"
                         alt="User profile picture">
+                    <center>
+                        <a href="/ganti_foto/{{ $mhs->nim }}"><span class="fa fa-camera"></span>
+                            Ganti foto</a>
+                    </center>
                 @else
                     <img class="profile-user-img img-responsive img-circle" src="{{ asset('/foto_mhs/' . $foto) }}"
                         alt="User profile picture">
@@ -23,7 +27,7 @@
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <center>
-                            <b>{{ $mhs->prodi }} </b> <a class="pull-right"> <b></b></a>
+                            <b>{{ $mhs->prodi }} - {{ $mhs->konsentrasi }}</b> <a class="pull-right"> <b></b></a>
                         </center>
                     </li>
                     <li class="list-group-item">
@@ -98,8 +102,7 @@
                     <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
                             class="fa fa-edit"></i> Edit No HP dan E-mail</a>
                 @elseif ($mhs->id_mhs != null)
-                    <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i
-                            class="fa fa-edit"></i>
+                    <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i class="fa fa-edit"></i>
                         Edit data No HP dan E-mail</a>
                 @endif
             </div>
@@ -220,7 +223,6 @@
                             .judul {
                                 color: white
                             }
-
                         </style>
                     </div>
                 </div>
@@ -285,7 +287,6 @@
                         .judul {
                             color: white
                         }
-
                     </style>
                 </div>
             </div>
