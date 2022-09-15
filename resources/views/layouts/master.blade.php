@@ -104,19 +104,11 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 @if (Auth::user()->role == 3)
-                                    @if ($foto == null)
-                                        <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
-                                            alt="User Image">
-                                    @else
-                                        <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                            class="user-image" alt="User Image">
-                                    @endif
+                                    <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
+                                        class="user-image" alt="User Image">
                                 @else
-                                    @if ($foto == null)
-                                        <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
-                                            alt="User Image">
-                                    @endif
-
+                                    <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
+                                        alt="User Image">
                                 @endif
 
                                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
@@ -124,13 +116,8 @@
                             <ul class="dropdown-menu">
                                 <li class="user-header">
                                     @if (Auth::user()->role == 3)
-                                        @if ($foto == null)
-                                            <img src="{{ asset('adminlte/img/default.jpg') }}" class="img-circle"
-                                                alt="User Image">
-                                        @else
-                                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                                class="img-circle" alt="User Image">
-                                        @endif
+                                        <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
+                                            class="img-circle" alt="User Image">
                                     @else
                                         <img src="/adminlte/img/default.jpg" class="img-circle" alt="User Image">
                                     @endif
@@ -320,13 +307,8 @@
                 <div class="user-panel">
                     <div class="pull-left image">
                         @if (Auth::user()->role == 3)
-                            @if ($foto == null)
-                                <img src="{{ asset('adminlte/img/default.jpg') }}" class="img-circle"
-                                    alt="User Image">
-                            @else
-                                <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}"
-                                    class="img-circle" alt="User Image">
-                            @endif
+                            <img src="{{ asset('/foto_mhs/' . Auth::user()->username . '.jpg') }}" class="img-circle"
+                                alt="User Image">
                         @else
                             <img src="/adminlte/img/default.jpg" class="img-circle" alt="User Image">
                         @endif

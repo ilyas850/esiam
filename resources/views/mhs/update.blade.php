@@ -23,7 +23,7 @@
                   <label class="col-sm-4 control-label">No HP baru</label>
 
                   <div class="col-sm-7">
-                      <input type="text" class="form-control" name="hp_baru" placeholder="Masukan No HP baru anda" required >
+                      <input type="text" class="form-control" name="hp_baru" placeholder="Masukan No HP baru anda">
 
                       @if ($errors->has('hp_baru'))
                           <span class="help-block">
@@ -37,7 +37,7 @@
                   <label for="password" class="col-sm-4 control-label">E-mail baru</label>
 
                   <div class="col-sm-7">
-                      <input type="email" class="form-control" name="email_baru" placeholder="Masukan E-mail baru anda" required>
+                      <input type="email" class="form-control" name="email_baru" placeholder="Masukan E-mail baru anda">
 
                       @if ($errors->has('email_baru'))
                           <span class="help-block">

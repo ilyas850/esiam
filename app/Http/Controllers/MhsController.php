@@ -125,16 +125,16 @@ class MhsController extends Controller
         foreach ($cek as $user) {
         }
 
-        return view('mhs/update', ['mhs' => $user]);
+        $foto = $user->foto;
+
+        return view('mhs/update', ['mhs' => $user, 'foto' => $foto]);
     }
 
     public function store_update(Request $request)
     {
         $this->validate($request, [
             'id_mhs' => 'required',
-            'nim_mhs' => 'required',
-            'hp_baru' => 'required',
-            'email_baru' => 'required',
+            'nim_mhs' => 'required'
         ]);
 
         $users = new Update_mahasiswa();
@@ -1599,7 +1599,7 @@ class MhsController extends Controller
 
     public function put_nisn(Request $request, $id)
     {
-   
+
         $nisn = $request->nisn;
         $ceknisn = Student::where('nisn', $nisn)->get();
 
@@ -3422,7 +3422,7 @@ class MhsController extends Controller
                     'prausta_setting_relasi.validasi_baak'
                 )
                 ->first();
-               
+
             if ($cekdata_prausta->validasi_baak == 'SUDAH') {
                 //cek nilai kosong atau tidak lulus
                 $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
