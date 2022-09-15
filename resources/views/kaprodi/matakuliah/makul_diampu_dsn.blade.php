@@ -83,9 +83,6 @@
                                 <center>Semester</center>
                             </th>
                             <th>
-                                <center>Angkatan</center>
-                            </th>
-                            <th>
                                 <center>Soal</center>
                             </th>
                             <th>
@@ -121,9 +118,6 @@
                                 </td>
                                 <td>
                                     <center>{{ $item->semester }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->angkatan }}</center>
                                 </td>
                                 <td>
                                     <center>

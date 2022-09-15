@@ -150,7 +150,7 @@
                                     <center>
                                         <a href="/view_bap_kprd/{{ $item->id_bap }}" class="btn btn-info btn-xs"
                                             title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-                                        @if ($item->tanggal_validasi == '2001-01-01')
+                                        @if ($item->tanggal_validasi == '2001-01-01' or $item->tanggal_validasi == null)
                                             <a href="/edit_bap_kprd/{{ $item->id_bap }}" class="btn btn-success btn-xs"
                                                 title="klik untuk edit"> <i class="fa fa-edit"></i></a>
                                             <a href="/delete_bap_kprd/{{ $item->id_bap }}" class="btn btn-danger btn-xs"

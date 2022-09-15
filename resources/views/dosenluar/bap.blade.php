@@ -143,7 +143,7 @@
                                     <center>
                                         <a href="/view_bap_dsn/{{ $item->id_bap }}" class="btn btn-info btn-xs"
                                             title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-                                        @if ($item->payroll_check == '2001-01-01')
+                                        @if ($item->payroll_check == '2001-01-01' or $item->tanggal_validasi == null)
                                             <a href="/edit_bap_dsn/{{ $item->id_bap }}" class="btn btn-success btn-xs"
                                                 title="klik untuk edit"> <i class="fa fa-edit"></i></a>
                                             <a href="/delete_bap_dsn/{{ $item->id_bap }}" class="btn btn-danger btn-xs"
@@ -151,6 +151,8 @@
                                         @else
                                             <span class="badge bg-yellow">Valid</span>
                                         @endif
+
+                                       
                                     </center>
                                 </td>
                             </tr>

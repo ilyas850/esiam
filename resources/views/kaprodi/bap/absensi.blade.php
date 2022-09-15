@@ -60,7 +60,7 @@
                                 <td><center>{{$item->angkatan}}</center></td>
                                 <td><center>
                                     <input type="hidden" name="id_studentrecord[]" value="{{$item->id_studentrecord}}">
-                                    <input type="checkbox" name="absensi[]" value="{{$item->id_studentrecord}},ABSEN" >
+                                    <input type="checkbox" name="absensi[]" value="{{$item->id_studentrecord}}" >
                                 </center></td>
 
                             </tr>
