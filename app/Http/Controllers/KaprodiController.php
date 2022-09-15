@@ -1052,21 +1052,20 @@ class KaprodiController extends Controller
 
   public function entri_bap($id)
   {
+    $id_dosen = Auth::user()->id_user;
     $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
       ->where('kurikulum_periode.id_kurperiode', $id)
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-      ->get();
-    foreach ($bap as $key) {
-      # code...
-    }
-
+      ->first();
+    
     $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
       ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
       ->where('bap.id_kurperiode', $id)
       ->where('bap.status', 'ACTIVE')
+      ->where('kuliah_transaction.id_dosen', $id_dosen)
       ->select(
         'kuliah_transaction.kurang_jam',
         'kuliah_transaction.tanggal_validasi',
@@ -1086,7 +1085,7 @@ class KaprodiController extends Controller
       ->orderBy('bap.id_bap', 'ASC')
       ->get();
 
-    return view('kaprodi/bap/bap', ['bap' => $key, 'data' => $data]);
+    return view('kaprodi/bap/bap', ['bap' => $bap, 'data' => $data]);
   }
 
   public function input_bap($id)

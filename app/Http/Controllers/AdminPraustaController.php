@@ -1822,7 +1822,7 @@ class AdminPraustaController extends Controller
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))

@@ -27,6 +27,7 @@
             <form action="{{ url('save_edit_absensi') }}" method="post">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_bap" value="{{ $id }}">
+                <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
                 <div class="box-body">
                     <div class="form-group">
                         <div class="callout callout-warning">
@@ -83,13 +84,13 @@
                                                 value="{{ $item->id_studentrecord }}">
                                             @if ($item->absensi == 'HADIR')
                                                 <input type="checkbox" name="absensi[]"
-                                                    value="{{ $item->id_absensi }},ABSEN">
+                                                    value="{{ $item->id_absensi }}">
                                             @elseif ($item->absensi == 'ABSEN')
                                                 <input type="checkbox" name="absensi[]"
-                                                    value="{{ $item->id_absensi }},ABSEN" checked>
+                                                    value="{{ $item->id_absensi }}" checked>
                                             @elseif($item->absensi == null)
                                                 <input type="checkbox" name="abs[]"
-                                                    value="{{ $item->id_studentrecord }},ABSEN">
+                                                    value="{{ $item->id_studentrecord }}">
                                             @endif
                                         </center>
                                     </td>

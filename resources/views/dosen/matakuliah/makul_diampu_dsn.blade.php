@@ -67,11 +67,9 @@
                             <th>
                                 <center>No</center>
                             </th>
+
                             <th>
-                                <center>Kode </center>
-                            </th>
-                            <th>
-                                <center>Matakuliah</center>
+                                <center>Kode - Matakuliah</center>
                             </th>
                             <th>
                                 <center>Program Studi</center>
@@ -112,10 +110,7 @@
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
-                                <td>
-                                    <center>{{ $item->kode }}</center>
-                                </td>
-                                <td>{{ $item->makul }}</td>
+                                <td>{{ $item->kode }} - {{ $item->makul }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>
@@ -143,7 +138,7 @@
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                 target="_blank" style="font: white"> UTS</a>
                                         @endif
-                                        |
+                                        
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
@@ -175,8 +170,7 @@
                                     <center>
                                         <form action="{{ url('export_xlsnilai') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
                                             <button type="submit" class="btn btn-success btn-xs"><i
                                                     class="fa fa-file-excel-o" title="Klik untuk export nilai">
                                                     Export</i></button>
@@ -187,8 +181,7 @@
                                     <center>
                                         <form class="" action="{{ url('unduh_pdf_nilai') }}" method="post">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
                                             <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
                                                     title="Klik untuk export nilai">
                                                     Export</i></button>

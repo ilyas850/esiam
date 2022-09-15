@@ -69,9 +69,9 @@
                         <td>{{ $sks }}</td>
                     </tr>
                     <tr>
-                        <td>Jurusan</td>
+                        <td>Prodi</td>
                         <td> : </td>
-                        <td> {{ $data_mhs->prodi }}</td>
+                        <td> {{ $data_mhs->prodi }} - {{ $data_mhs->konsentrasi }} </td>
                     </tr>
                     <tr>
                         <td>Kelas</td>

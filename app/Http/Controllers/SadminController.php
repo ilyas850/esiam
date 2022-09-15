@@ -987,8 +987,30 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idtipe)
             ->where('kurikulum_periode.id_periodetahun', $idtahun)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
-            ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+            ->where('student_record.status', 'TAKEN')
+            ->select(
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'matakuliah.akt_sks_teori',
+                'matakuliah.akt_sks_praktek',
+                DB::raw('COUNT(student_record.id_student) as jml_mhs'),
+                'dosen.nama',
+                'kelas.kelas',
+                'student_record.id_kurperiode',
+                'prodi.prodi',
+                'prodi.konsentrasi'
+            )
+            ->groupBy(
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'matakuliah.akt_sks_teori',
+                'matakuliah.akt_sks_praktek',
+                'dosen.nama',
+                'kelas.kelas',
+                'student_record.id_kurperiode',
+                'prodi.prodi',
+                'prodi.konsentrasi'
+            )
             ->get();
 
         return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai, 'namaperiodetipe' => $namaperiodetipe, 'namaperiodetahun' => $namaperiodetahun]);

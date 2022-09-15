@@ -91,7 +91,7 @@
                                 <td align="center">{{ $no++ }}</td>
                                 <td>{{ $key->kode }}/{{ $key->makul }}</td>
                                 <td align="center">{{ $key->akt_sks_teori + $key->akt_sks_praktek }}</td>
-                                <td>{{ $key->prodi }}</td>
+                                <td>{{ $key->prodi }} - {{ $key->konsentrasi }}</td>
                                 <td align="center">{{ $key->kelas }}</td>
                                 <td align="center">{{ $key->jml_mhs }}</td>
                                 <td>{{ $key->nama }}</td>
