@@ -42,6 +42,5 @@
             <li><a href="{{ url('jadwal_sidang_ta_luar') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
         </ul>
     </li>
-    <li><a href="{{ url('upload_soal_dsn_luar') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
-    </li>
+    
 </ul>

@@ -143,7 +143,7 @@
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                 target="_blank" style="font: white"> UTS</a>
                                         @endif
-                                        |
+                                        
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
@@ -214,7 +214,7 @@
                                                     value="{{ $item->id_kurperiode }}">
                                                 <div class="form-group">
                                                     <label>File Soal UTS</label>
-                                                    <input type="file" class="form-control" name="soal_uts">
+                                                    <input type="file" class="form-control" name="soal_uts" required>
                                                     <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>

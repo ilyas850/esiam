@@ -14,7 +14,7 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id_settingrelasi_prausta" value="{{ $data->id_settingrelasi_prausta }}">
                 <div class="box-header with-border">
-                    Form Seminar Prakerin
+                    Form Seminar PKL
                 </div>
                 <div class="box-body">
 
@@ -70,7 +70,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Judul Seminar PKL<font color="red-text">*</font></label>
+                                <label>Judul PKL<font color="red-text">*</font></label>
                                 <textarea class="form-control" name="judul_prausta" rows="3" cols="60"
                                     required></textarea>
                             </div>

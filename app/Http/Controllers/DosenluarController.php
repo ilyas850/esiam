@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use PDF;
 use File;
 use Alert;
+use Session;
+use Storage;
 use App\Bap;
 use App\Absensi_mahasiswa;
 use App\Kuliah_transaction;
@@ -76,18 +78,7 @@ class DosenluarController extends Controller
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_hari.hari',
-                'kurikulum_jam.jam',
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester',
-                'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
-            )
+            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
             ->orderBy('semester.semester', 'ASC')
             ->orderBy('kelas.kelas', 'ASC')
             ->orderBy('matakuliah.kode', 'ASC')
@@ -123,18 +114,7 @@ class DosenluarController extends Controller
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_hari.hari',
-                'kurikulum_jam.jam',
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester',
-                'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
-            )
+            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
             ->get();
 
         return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
@@ -146,32 +126,9 @@ class DosenluarController extends Controller
         $nilai = Setting_nilai::where('id_kurperiode', $id)->first();
 
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_student',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'asc')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $id, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $id, 'nilai' => $nilai]);
     }
 
     public function export_xlsnilai(Request $request)
@@ -229,21 +186,7 @@ class DosenluarController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
+            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
             ->orderBy('student.nim', 'asc')
             ->get();
 
@@ -287,30 +230,11 @@ class DosenluarController extends Controller
     public function input_kat($id)
     {
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+
         $kurrr = $id;
 
-        return view('dosenluar/input_kat', ['kuri' => $kurrr, 'ck' => $cks, 'id' => $id]);
+        return view('dosenluar/input_kat', ['kuri' => $kurrr, 'ck' => $kelas_gabungan, 'id' => $id]);
     }
 
     public function save_nilai_KAT(Request $request)
@@ -377,31 +301,7 @@ class DosenluarController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $request->id_kurperiode)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $request->id_kurperiode)
@@ -412,33 +312,13 @@ class DosenluarController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_uts($id)
     {
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_UTS'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
         $keymkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
@@ -447,7 +327,7 @@ class DosenluarController extends Controller
         $kkls = $keymkl->id_kelas;
         $kurrr = $id;
 
-        return view('dosenluar/input_uts', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks,  'id' => $id]);
+        return view('dosenluar/input_uts', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $kelas_gabungan, 'id' => $id]);
     }
 
     public function save_nilai_UTS(Request $request)
@@ -510,46 +390,28 @@ class DosenluarController extends Controller
             }
         }
 
-        $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
+        $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$request->id_kurperiode]);
+        $jml_kelas = count($kelas_gabungan);
 
-        Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
-            ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
-            ->where('jenis_ujian', 'UTS')
-            ->where('id_prodi', $request->id_prodi)
-            ->where('id_kelas', $request->id_kelas)
-            ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
+        for ($j = 0; $j < $jml_kelas; $j++) {
+            $gabungan = $kelas_gabungan[$j];
+
+            $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $gabungan->id_kurperiode)->first();
+            Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+                ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
+                ->where('jenis_ujian', 'UTS')
+                ->where('id_prodi', $request->id_prodi)
+                ->where('id_kelas', $request->id_kelas)
+                ->where('id_makul', $request->id_makul)
+                ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
+        }
 
         //ke halaman list mahasiswa
 
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $request->id_kurperiode)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $request->id_kurperiode)
@@ -559,33 +421,13 @@ class DosenluarController extends Controller
 
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_uas($id)
     {
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_UAS'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
         $keymkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
@@ -594,7 +436,7 @@ class DosenluarController extends Controller
         $kkls = $keymkl->id_kelas;
         $kurrr = $id;
 
-        return view('dosenluar/input_uas', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $cks, 'id' => $id]);
+        return view('dosenluar/input_uas', ['kuri' => $kurrr, 'kkls' => $kkls, 'kprd' => $kprd, 'mkl' => $kmkl, 'ck' => $kelas_gabungan, 'id' => $id]);
     }
 
     public function save_nilai_UAS(Request $request)
@@ -658,45 +500,27 @@ class DosenluarController extends Controller
             }
         }
 
-        $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
+        $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$request->id_kurperiode]);
+        $jml_kelas = count($kelas_gabungan);
 
-        Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
-            ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
-            ->where('jenis_ujian', 'UAS')
-            ->where('id_prodi', $request->id_prodi)
-            ->where('id_kelas', $request->id_kelas)
-            ->where('id_makul', $request->id_makul)
-            ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
+        for ($j = 0; $j < $jml_kelas; $j++) {
+            $gabungan = $kelas_gabungan[$j];
+
+            $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $gabungan->id_kurperiode)->first();
+            Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
+                ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
+                ->where('jenis_ujian', 'UAS')
+                ->where('id_prodi', $request->id_prodi)
+                ->where('id_kelas', $request->id_kelas)
+                ->where('id_makul', $request->id_makul)
+                ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
+        }
 
         //ke halaman list mahasiswa
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $request->id_kurperiode)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $request->id_kurperiode)
@@ -706,7 +530,7 @@ class DosenluarController extends Controller
 
         $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function input_akhir($id)
@@ -720,18 +544,7 @@ class DosenluarController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student_record.id_kurperiode', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
+            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -946,21 +759,7 @@ class DosenluarController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student_record.id_kurperiode', $request->id_kurperiode)
             ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
+            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
             ->get();
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -1017,26 +816,12 @@ class DosenluarController extends Controller
             ->select('kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
             ->first();
 
-
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             ->where('kuliah_transaction.id_dosen', $id_dosen)
-            ->select(
-                'kuliah_transaction.payroll_check',
-                'bap.id_bap',
-                'bap.pertemuan',
-                'bap.tanggal',
-                'bap.jam_mulai',
-                'bap.jam_selsai',
-                'bap.materi_kuliah',
-                'bap.metode_kuliah',
-                'kuliah_tipe.tipe_kuliah',
-                'bap.jenis_kuliah',
-                'bap.hadir',
-                'bap.tidak_hadir'
-            )
+            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
             ->orderBy('bap.id_bap', 'ASC')
             ->get();
 
@@ -2354,21 +2139,7 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select(
-                'kuliah_transaction.payroll_check',
-                'bap.id_bap',
-                'bap.pertemuan',
-                'bap.tanggal',
-                'bap.jam_mulai',
-                'bap.jam_selsai',
-                'bap.materi_kuliah',
-                'bap.metode_kuliah',
-                'kuliah_tipe.tipe_kuliah',
-                'bap.jenis_kuliah',
-                'bap.hadir',
-                'bap.tidak_hadir',
-                'kuliah_transaction.tanggal_validasi'
-            )
+            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir', 'kuliah_transaction.tanggal_validasi')
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
@@ -2404,21 +2175,7 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select(
-                'kuliah_transaction.payroll_check',
-                'bap.id_bap',
-                'bap.pertemuan',
-                'bap.tanggal',
-                'bap.jam_mulai',
-                'bap.jam_selsai',
-                'bap.materi_kuliah',
-                'bap.metode_kuliah',
-                'kuliah_tipe.tipe_kuliah',
-                'bap.jenis_kuliah',
-                'bap.hadir',
-                'bap.tidak_hadir',
-                'kuliah_transaction.tanggal_validasi'
-            )
+            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir', 'kuliah_transaction.tanggal_validasi')
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
@@ -2456,24 +2213,7 @@ class DosenluarController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select(
-                'kurikulum_periode.akt_sks_praktek',
-                'kurikulum_periode.akt_sks_teori',
-                'kurikulum_periode.id_kelas',
-                'periode_tipe.periode_tipe',
-                'periode_tahun.periode_tahun',
-                'dosen.akademik',
-                'dosen.nama',
-                'ruangan.nama_ruangan',
-                'kurikulum_jam.jam',
-                'kurikulum_hari.hari',
-                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester'
-            )
+            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
             ->get();
         foreach ($bap as $key) {
             # code...
@@ -2494,21 +2234,7 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select(
-                'kuliah_transaction.payroll_check',
-                'bap.id_bap',
-                'bap.pertemuan',
-                'bap.tanggal',
-                'bap.jam_mulai',
-                'bap.jam_selsai',
-                'bap.materi_kuliah',
-                'bap.metode_kuliah',
-                'kuliah_tipe.tipe_kuliah',
-                'bap.jenis_kuliah',
-                'bap.hadir',
-                'bap.tidak_hadir',
-                'kuliah_transaction.tanggal_validasi'
-            )
+            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir', 'kuliah_transaction.tanggal_validasi')
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
@@ -2822,25 +2548,8 @@ class DosenluarController extends Controller
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student.active', 1)
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
-            ->select(
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'student.nim',
-                'student.nama',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.validasi_baak'
-            )
-            ->groupBy(
-                'student.nama',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.validasi_baak'
-            )
+            ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -2850,28 +2559,13 @@ class DosenluarController extends Controller
     public function record_bim_pkl($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'student.idstudent',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi'
-            )
+            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi')
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -2933,34 +2627,16 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             //->where('prausta_trans_hasil.status', 'ACTIVE')
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3])
-            ->select(
-                'prausta_setting_relasi.id_dosen_penguji_1',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'prausta_trans_hasil.validasi'
-            )
+            ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_trans_hasil.validasi')
             ->get();
 
         return view('dosenluar/prausta/penguji_pkl', compact('data'));
@@ -3042,11 +2718,9 @@ class DosenluarController extends Controller
         // $nilai_3 = $request->totals;
 
         if ($nilai_pem_lap == null) {
-
             $huruf = ($ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 2;
         } elseif ($nilai_pem_lap != null) {
-
-            $huruf = (($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3);
+            $huruf = ($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3;
         }
 
         $hasilavg = round($huruf, 2);
@@ -3066,7 +2740,6 @@ class DosenluarController extends Controller
         } elseif ($hasilavg >= 0) {
             $nilai_huruf = 'E';
         }
-
 
         $usta = new Prausta_trans_hasil();
         $usta->id_settingrelasi_prausta = $id_prausta;
@@ -3128,22 +2801,20 @@ class DosenluarController extends Controller
             $id_nilai1 = $id_penilaian1[$i];
             $n1 = $nilai1[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)
-                ->update([
-                    'nilai' => $n1,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)->update([
+                'nilai' => $n1,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         for ($i = 0; $i < $hitung_id_penilaian2; $i++) {
             $id_nilai2 = $id_penilaian2[$i];
             $n2 = $nilai2[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai2)
-                ->update([
-                    'nilai' => $n2,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai2)->update([
+                'nilai' => $n2,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai_1 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -3163,11 +2834,9 @@ class DosenluarController extends Controller
             ->first();
 
         if ($nilai_pem_lap == null) {
-
             $huruf = ($ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 2;
         } elseif ($nilai_pem_lap != null) {
-
-            $huruf = (($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3);
+            $huruf = ($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3;
         }
 
         $hasilavg = round($huruf, 2);
@@ -3188,14 +2857,13 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $usta = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_1' => $nilai_pem_lap,
-                'nilai_2' => $ceknilai_1->nilai1,
-                'nilai_3' => $ceknilai_2->nilai2,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $usta = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_1' => $nilai_pem_lap,
+            'nilai_2' => $ceknilai_1->nilai1,
+            'nilai_3' => $ceknilai_2->nilai2,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai Prakerin berhasil disimpan')->autoclose(3500);
         return redirect('penguji_pkl_dsnlr');
@@ -3215,25 +2883,8 @@ class DosenluarController extends Controller
             ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
-            ->select(
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'student.nim',
-                'student.nama',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.validasi_baak'
-            )
-            ->groupBy(
-                'student.nama',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.validasi_baak'
-            )
+            ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -3243,28 +2894,13 @@ class DosenluarController extends Controller
     public function record_bim_sempro($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'student.idstudent',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi'
-            )
+            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi')
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -3282,46 +2918,22 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
 
-            ->where(function ($query)  use ($id) {
-                $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             //->where('prausta_trans_hasil.status', 'ACTIVE')
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6])
-            ->select(
-                'prausta_setting_relasi.id_dosen_penguji_1',
-                'prausta_setting_relasi.id_dosen_penguji_2',
-                'prausta_setting_relasi.id_dosen_pembimbing',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.id_student',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_pembimbing',
-                'prausta_setting_relasi.validasi_penguji_1',
-                'prausta_setting_relasi.validasi_penguji_2'
-            )
+            ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.id_student', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_pembimbing', 'prausta_setting_relasi.validasi_penguji_1', 'prausta_setting_relasi.validasi_penguji_2')
             ->get();
 
         return view('dosenluar/prausta/penguji_sempro', compact('data', 'id'));
@@ -3374,7 +2986,7 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
+        if ($cek_nilai == null) {
             $hasil = $nilai_dospem / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3402,7 +3014,7 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
+        } elseif ($cek_nilai != null) {
             $hasil = ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3422,11 +3034,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_1' => $nilai_dospem,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_1' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
@@ -3480,7 +3091,7 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
+        if ($cek_nilai == null) {
             $hasil = $nilai_dosji1 / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3508,7 +3119,7 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
+        } elseif ($cek_nilai != null) {
             $hasil = ($nilai_dosji1 + $cek_nilai->nilai_1 + $cek_nilai->nilai_3) / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3528,11 +3139,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_2' => $nilai_dosji1,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_2' => $nilai_dosji1,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
@@ -3586,7 +3196,7 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
+        if ($cek_nilai == null) {
             $hasil = $nilai_dosji2 / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3614,7 +3224,7 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
+        } elseif ($cek_nilai != null) {
             $hasil = ($nilai_dosji2 + $cek_nilai->nilai_1 + $cek_nilai->nilai_2) / 3;
             $hasilavg = round($hasil, 2);
 
@@ -3634,11 +3244,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_3' => $nilai_dosji2,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_3' => $nilai_dosji2,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
@@ -3649,11 +3258,10 @@ class DosenluarController extends Controller
     {
         $date = date('Y-m-d');
 
-        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
-            ->update([
-                'validasi_pembimbing' => 'SUDAH',
-                'tgl_val_pembimbing' => $date
-            ]);
+        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update([
+            'validasi_pembimbing' => 'SUDAH',
+            'tgl_val_pembimbing' => $date,
+        ]);
 
         return redirect()->back();
     }
@@ -3662,11 +3270,10 @@ class DosenluarController extends Controller
     {
         $date = date('Y-m-d');
 
-        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
-            ->update([
-                'validasi_penguji_1' => 'SUDAH',
-                'tgl_val_penguji_1' => $date
-            ]);
+        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update([
+            'validasi_penguji_1' => 'SUDAH',
+            'tgl_val_penguji_1' => $date,
+        ]);
 
         return redirect()->back();
     }
@@ -3675,11 +3282,10 @@ class DosenluarController extends Controller
     {
         $date = date('Y-m-d');
 
-        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
-            ->update([
-                'validasi_penguji_2' => 'SUDAH',
-                'tgl_val_penguji_2' => $date
-            ]);
+        $akun = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update([
+            'validasi_penguji_2' => 'SUDAH',
+            'tgl_val_penguji_2' => $date,
+        ]);
 
         return redirect()->back();
     }
@@ -3696,13 +3302,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 2)
             ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_sempro_dospem', compact('nilai_pem', 'datadiri', 'id'));
@@ -3720,11 +3320,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -3758,12 +3357,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_1' => $nilai_dospem,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_1' => $nilai_dospem,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
@@ -3781,13 +3379,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 2)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_sempro_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
@@ -3805,11 +3397,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -3843,12 +3434,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_2' => $nilai_dospem,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_2' => $nilai_dospem,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
@@ -3866,13 +3456,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 2)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_sempro_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
@@ -3890,11 +3474,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -3928,12 +3511,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_3' => $nilai_dospem,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_3' => $nilai_dospem,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
         return redirect('penguji_sempro_dsnlr');
@@ -3953,25 +3535,8 @@ class DosenluarController extends Controller
             ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-            ->select(
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'student.nim',
-                'student.nama',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.validasi_baak'
-            )
-            ->groupBy(
-                'student.nama',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.validasi_baak'
-            )
+            ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -3981,29 +3546,13 @@ class DosenluarController extends Controller
     public function record_bim_ta($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'student.idstudent',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.file_plagiarisme'
-            )
+            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.file_plagiarisme')
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -4021,45 +3570,22 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
 
-            ->where(function ($query)  use ($id) {
-                $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             //->where('prausta_trans_hasil.status', 'ACTIVE')
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [7, 8, 9])
-            ->select(
-                'prausta_setting_relasi.id_dosen_penguji_1',
-                'prausta_setting_relasi.id_dosen_penguji_2',
-                'prausta_setting_relasi.id_dosen_pembimbing',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'student.nim',
-                'student.nama',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'kelas.kelas',
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'prausta_trans_hasil.validasi',
-                'prausta_setting_relasi.file_draft_laporan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.id_student',
-                'prausta_setting_relasi.file_plagiarisme'
-            )
+            ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_trans_hasil.validasi', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.id_student', 'prausta_setting_relasi.file_plagiarisme')
             ->get();
 
         return view('dosenluar/prausta/penguji_ta', compact('data', 'id'));
@@ -4112,8 +3638,8 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
-            $hasil = $nilai_dospem * 60 / 100;
+        if ($cek_nilai == null) {
+            $hasil = ($nilai_dospem * 60) / 100;
 
             $hasilavg = round($hasil, 2);
 
@@ -4141,8 +3667,8 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
-            $hasil = (($nilai_dospem * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
+        } elseif ($cek_nilai != null) {
+            $hasil = ($nilai_dospem * 60) / 100 + ($cek_nilai->nilai_2 * 20) / 100 + ($cek_nilai->nilai_3 * 20) / 100;
             $hasilavg = round($hasil, 2);
 
             if ($hasilavg >= 80) {
@@ -4161,11 +3687,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_1' => $nilai_dospem,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_1' => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
@@ -4219,8 +3744,8 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
-            $hasil = $nilai_dosji1 * 20 / 100;
+        if ($cek_nilai == null) {
+            $hasil = ($nilai_dosji1 * 20) / 100;
             $hasilavg = round($hasil, 2);
 
             if ($hasilavg >= 80) {
@@ -4247,8 +3772,8 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
-            $hasil = (($nilai_dosji1 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
+        } elseif ($cek_nilai != null) {
+            $hasil = ($nilai_dosji1 * 20) / 100 + ($cek_nilai->nilai_1 * 60) / 100 + ($cek_nilai->nilai_3 * 20) / 100;
             $hasilavg = round($hasil, 2);
 
             if ($hasilavg >= 80) {
@@ -4267,11 +3792,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_2' => $nilai_dosji1,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_2' => $nilai_dosji1,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
@@ -4325,8 +3849,8 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        if (($cek_nilai) == null) {
-            $hasil = $nilai_dosji2 * 20 / 100;
+        if ($cek_nilai == null) {
+            $hasil = ($nilai_dosji2 * 20) / 100;
             $hasilavg = round($hasil, 2);
 
             if ($hasilavg >= 80) {
@@ -4353,8 +3877,8 @@ class DosenluarController extends Controller
             $usta->status = 'ACTIVE';
             $usta->data_origin = 'eSIAM';
             $usta->save();
-        } elseif (($cek_nilai) != null) {
-            $hasil = (($nilai_dosji2 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100));
+        } elseif ($cek_nilai != null) {
+            $hasil = ($nilai_dosji2 * 20) / 100 + ($cek_nilai->nilai_1 * 60) / 100 + ($cek_nilai->nilai_2 * 20) / 100;
             $hasilavg = round($hasil, 2);
 
             if ($hasilavg >= 80) {
@@ -4373,11 +3897,10 @@ class DosenluarController extends Controller
                 $nilai_huruf = 'E';
             }
 
-            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-                ->update([
-                    'nilai_3' => $nilai_dosji2,
-                    'nilai_huruf' => $nilai_huruf
-                ]);
+            $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+                'nilai_3' => $nilai_dosji2,
+                'nilai_huruf' => $nilai_huruf,
+            ]);
         }
 
         Alert::success('', 'Nilai berhasil dientri')->autoclose(3500);
@@ -4396,13 +3919,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_ta', compact('nilai_pem', 'datadiri', 'id'));
@@ -4420,11 +3937,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -4439,8 +3955,7 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-
-        $hasil = (($nilai_dospem * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
+        $hasil = ($nilai_dospem * 60) / 100 + ($cek_nilai->nilai_2 * 20) / 100 + ($cek_nilai->nilai_3 * 20) / 100;
         $hasilavg = round($hasil, 2);
 
         if ($hasilavg >= 80) {
@@ -4459,12 +3974,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_1' => $nilai_dospem,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_1' => $nilai_dospem,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
@@ -4482,13 +3996,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_ta_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
@@ -4506,11 +4014,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -4525,7 +4032,7 @@ class DosenluarController extends Controller
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = (($nilai_dospeng1 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_3 * 20 / 100));
+        $hasil = ($nilai_dospeng1 * 20) / 100 + ($cek_nilai->nilai_1 * 60) / 100 + ($cek_nilai->nilai_3 * 20) / 100;
 
         $hasilavg = round($hasil, 2);
 
@@ -4545,12 +4052,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_2' => $nilai_dospeng1,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_2' => $nilai_dospeng1,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
@@ -4568,13 +4074,7 @@ class DosenluarController extends Controller
             ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select(
-                'prausta_master_penilaian.komponen',
-                'prausta_master_penilaian.bobot',
-                'prausta_master_penilaian.acuan',
-                'prausta_trans_penilaian.nilai',
-                'prausta_trans_penilaian.id_trans_penilaian'
-            )
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
         return view('dosenluar/prausta/edit_nilai_ta_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
@@ -4592,11 +4092,10 @@ class DosenluarController extends Controller
             $id_nilai = $id_penilaian[$i];
             $n = $nilai[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)
-                ->update([
-                    'nilai' => $n,
-                    'updated_by' => Auth::user()->name
-                ]);
+            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai)->update([
+                'nilai' => $n,
+                'updated_by' => Auth::user()->name,
+            ]);
         }
 
         $ceknilai = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
@@ -4607,12 +4106,11 @@ class DosenluarController extends Controller
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))
             ->first();
 
-
         $nilai_dospeng2 = $ceknilai->nilai3;
 
         $cek_nilai = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->first();
 
-        $hasil = (($nilai_dospeng2 * 20 / 100) + ($cek_nilai->nilai_1 * 60 / 100) + ($cek_nilai->nilai_2 * 20 / 100));
+        $hasil = ($nilai_dospeng2 * 20) / 100 + ($cek_nilai->nilai_1 * 60) / 100 + ($cek_nilai->nilai_2 * 20) / 100;
 
         $hasilavg = round($hasil, 2);
 
@@ -4632,13 +4130,11 @@ class DosenluarController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)
-            ->update([
-                'nilai_3' => $nilai_dospeng2,
-                'nilai_huruf' => $nilai_huruf,
-                'updated_by' => Auth::user()->name
-            ]);
-
+        $akun = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+            'nilai_3' => $nilai_dospeng2,
+            'nilai_huruf' => $nilai_huruf,
+            'updated_by' => Auth::user()->name,
+        ]);
 
         Alert::success('', 'Nilai TA berhasil diedit')->autoclose(3500);
         return redirect('penguji_ta_dsnlr');
@@ -4650,32 +4146,20 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where(function ($query)  use ($id) {
-                $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3])
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_setting_relasi.jam_mulai_sidang',
-                'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.ruangan'
-            )
+            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
             ->get();
 
         return view('dosenluar/prausta/jadwal_seminar_prakerin', compact('data'));
@@ -4687,33 +4171,20 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->where(function ($query)  use ($id) {
-                $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6])
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_setting_relasi.jam_mulai_sidang',
-                'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.ruangan'
-            )
+            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
             ->get();
 
         return view('dosenluar/prausta/jadwal_seminar_proposal', compact('data'));
@@ -4725,101 +4196,94 @@ class DosenluarController extends Controller
 
         $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->where(function ($query)  use ($id) {
-                $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->whereIn('prausta_master_kode.id_masterkode_prausta', [7, 8, 9])
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'prodi.prodi',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_setting_relasi.jam_mulai_sidang',
-                'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.ruangan'
-            )
+            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
             ->get();
 
         return view('dosenluar/prausta/jadwal_sidang_ta', compact('data'));
-    }
-
-    public function upload_soal_dsn_luar()
-    {
-        $id = Auth::user()->id_user;
-
-        $data = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
-            ->where('kurikulum_periode.id_dosen', $id)
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester',
-                'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
-            )
-            ->get();
-
-        return view('dosenluar/soal/soal_ujian', compact('data'));
     }
 
     public function simpan_soal_uts_dsn_luar(Request $request)
     {
         $message = [
             'max' => ':attribute harus diisi maksimal :max KB',
-            'required' => ':attribute wajib diisi'
+            'required' => ':attribute wajib diisi',
         ];
         $this->validate(
             $request,
             [
-                'soal_uts' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
+                'soal_uts' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000',
             ],
             $message,
         );
 
         $cek = Soal_ujian::where('id_kurperiode', $request->id_kurperiode)->first();
 
-        if (($cek) == null) {
-            $info = new Soal_ujian();
-            $info->id_kurperiode = $request->id_kurperiode;
-            $info->created_by = Auth::user()->name;
+        if ($cek == null) {
+            $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$request->id_kurperiode]);
+            $jml_kelas = count($kelas_gabungan);
 
-            if ($request->hasFile('soal_uts')) {
-                $file = $request->file('soal_uts');
+            for ($i = 0; $i < $jml_kelas; $i++) {
+                $kurperiode = $kelas_gabungan[$i];
 
-                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $path_soal = 'Soal Ujian/' . 'UTS/' . $kurperiode->id_kurperiode;
 
-                $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $request->id_kurperiode;
-                $file->move($tujuan_upload, $nama_file);
-                $info->soal_uts = $nama_file;
+                if (!File::exists($path_soal)) {
+                    File::makeDirectory(public_path() . '/' . $path_soal, 0777, true);
+                }
+
+                // $path_soal_uts = 'Soal Ujian/' . 'UTS/' . $kurperiode->id_kurperiode;
+
+                // if (!File::exists($path_soal_uts)) {
+                //     File::makeDirectory($path_soal_uts);
+                // }
+
+                $info = new Soal_ujian();
+                $info->id_kurperiode = $kurperiode->id_kurperiode;
+                $info->created_by = Auth::user()->name;
+
+                // if ($request->hasFile('soal_uts')) {
+                //     $file = $request->file('soal_uts');
+
+                //     $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                //     $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $kurperiode->id_kurperiode;
+                //     $file->move($tujuan_upload, $nama_file);
+                //     $info->soal_uts = $nama_file;
+                // }
+
+                if ($request->hasFile('soal_uts')) {
+                    $tes1 = $kelas_gabungan[0];
+                    $d1 = $tes1->id_kurperiode;
+                    $file = $request->file('soal_uts');
+                    $tujuan_upload = 'Soal Ujian/' . 'UTS/' . $d1;
+                    $nama_file = time() . '_' . $file->getClientOriginalName();
+
+                    $tes2 = $kelas_gabungan[$i];
+                    $d2 = $tes2->id_kurperiode;
+                    $path = 'Soal Ujian' . '/' . 'UTS/' . $d2;
+                    $nama_file1 = time() . '_' . $file->getClientOriginalName();
+                   
+                    File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
+
+                    $info->soal_uts = $nama_file1;
+                }
+
+                $info->save();
             }
-
-            $info->save();
-        } elseif (($cek) != null) {
+        } elseif ($cek != null) {
             $id = $cek->id_soal;
             $info = Soal_ujian::find($id);
 
@@ -4879,18 +4343,7 @@ class DosenluarController extends Controller
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_hari.hari',
-                'kurikulum_jam.jam',
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester',
-                'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
-            )
+            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
             ->get();
 
         Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
@@ -4901,19 +4354,19 @@ class DosenluarController extends Controller
     {
         $message = [
             'max' => ':attribute harus diisi maksimal :max KB',
-            'required' => ':attribute wajib diisi'
+            'required' => ':attribute wajib diisi',
         ];
         $this->validate(
             $request,
             [
-                'soal_uas' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000'
+                'soal_uas' => 'mimes:pdf,docx,DOCX,PDF,doc,DOC|max:4000',
             ],
             $message,
         );
 
         $cek = Soal_ujian::where('id_kurperiode', $request->id_kurperiode)->first();
 
-        if (($cek) == null) {
+        if ($cek == null) {
             $info = new Soal_ujian();
             $info->id_kurperiode = $request->id_kurperiode;
             $info->created_by = Auth::user()->name;
@@ -4929,7 +4382,7 @@ class DosenluarController extends Controller
             }
 
             $info->save();
-        } elseif (($cek) != null) {
+        } elseif ($cek != null) {
             $id = $cek->id_soal;
             $info = Soal_ujian::find($id);
 
@@ -4989,18 +4442,7 @@ class DosenluarController extends Controller
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_hari.hari',
-                'kurikulum_jam.jam',
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'prodi.prodi',
-                'kelas.kelas',
-                'semester.semester',
-                'soal_ujian.soal_uts',
-                'soal_ujian.soal_uas'
-            )
+            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
             ->get();
 
         Alert::success('', 'Berhasil')->autoclose(3500);
@@ -5011,35 +4453,15 @@ class DosenluarController extends Controller
     {
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'prodi.id_prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_trans_hasil.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.tempat_prausta',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'dosen.nama as nama_dsn',
-                'dosen.nik',
-                'dosen.akademik'
-            )
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'prodi.id_prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_trans_hasil.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.tanggal_selesai', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'dosen.nama as nama_dsn', 'dosen.nik', 'dosen.akademik')
             ->first();
         if ($data == null) {
             Alert::warning('', 'Data PKL Belum ada')->autoclose(3500);
@@ -5088,8 +4510,8 @@ class DosenluarController extends Controller
                     break;
             }
 
-            $bulan = array(
-                1 =>   'Januari',
+            $bulan = [
+                1 => 'Januari',
                 'Februari',
                 'Maret',
                 'April',
@@ -5100,12 +4522,12 @@ class DosenluarController extends Controller
                 'September',
                 'Oktober',
                 'November',
-                'Desember'
-            );
+                'Desember',
+            ];
 
             $pecahkan = explode('-', $data->tanggal_selesai);
 
-            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
             $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
             return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
@@ -5116,37 +4538,15 @@ class DosenluarController extends Controller
     {
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_trans_hasil.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_setting_relasi.id_dosen_pembimbing',
-                'prausta_setting_relasi.id_dosen_penguji_1',
-                'prausta_setting_relasi.id_dosen_penguji_2',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'dosen.nama as nama_dsn',
-                'dosen.akademik'
-            )
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_trans_hasil.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'dosen.nama as nama_dsn', 'dosen.akademik')
             ->first();
 
         if ($data == null) {
@@ -5156,7 +4556,6 @@ class DosenluarController extends Controller
             $nama = $data->nama;
             $nim = $data->nim;
             $kelas = $data->kelas;
-
 
             $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
             $cekhari = date('l', strtotime($data->tanggal_selesai));
@@ -5188,8 +4587,8 @@ class DosenluarController extends Controller
                     break;
             }
 
-            $bulan = array(
-                1 =>   'Januari',
+            $bulan = [
+                1 => 'Januari',
                 'Februari',
                 'Maret',
                 'April',
@@ -5200,12 +4599,12 @@ class DosenluarController extends Controller
                 'September',
                 'Oktober',
                 'November',
-                'Desember'
-            );
+                'Desember',
+            ];
 
             $pecahkan = explode('-', $data->tanggal_selesai);
 
-            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
             $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
 
@@ -5222,37 +4621,15 @@ class DosenluarController extends Controller
     {
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_trans_hasil.id_settingrelasi_prausta',
-                'prausta_setting_relasi.judul_prausta',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_setting_relasi.id_dosen_pembimbing',
-                'prausta_setting_relasi.id_dosen_penguji_1',
-                'prausta_setting_relasi.id_dosen_penguji_2',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_trans_hasil.nilai_1',
-                'prausta_trans_hasil.nilai_2',
-                'prausta_trans_hasil.nilai_3',
-                'prausta_trans_hasil.nilai_huruf',
-                'dosen.nama as nama_dsn',
-                'dosen.akademik'
-            )
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_trans_hasil.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'dosen.nama as nama_dsn', 'dosen.akademik')
             ->first();
 
         if ($data == null) {
@@ -5262,7 +4639,6 @@ class DosenluarController extends Controller
             $nama = $data->nama;
             $nim = $data->nim;
             $kelas = $data->kelas;
-
 
             $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
             $cekhari = date('l', strtotime($data->tanggal_selesai));
@@ -5294,8 +4670,8 @@ class DosenluarController extends Controller
                     break;
             }
 
-            $bulan = array(
-                1 =>   'Januari',
+            $bulan = [
+                1 => 'Januari',
                 'Februari',
                 'Maret',
                 'April',
@@ -5306,12 +4682,12 @@ class DosenluarController extends Controller
                 'September',
                 'Oktober',
                 'November',
-                'Desember'
-            );
+                'Desember',
+            ];
 
             $pecahkan = explode('-', $data->tanggal_selesai);
 
-            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
             $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
 
@@ -5333,18 +4709,19 @@ class DosenluarController extends Controller
         $uts = $set_nilai->uts;
         $uas = $set_nilai->uas;
 
-        $data = Student_record::where('id_kurperiode', $idkur)->get();
+        // $data1 = Student_record::where('id_kurperiode', $idkur)->get();
+        $data = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
         $jml_mhs = count($data);
 
         for ($i = 0; $i < $jml_mhs; $i++) {
             $nilai = $data[$i];
 
-            $id_record = $nilai['id_studentrecord'];
-            $id_student = $nilai['id_student'];
-            $n_kat = $nilai['nilai_KAT'];
-            $n_uts = $nilai['nilai_UTS'];
-            $n_uas = $nilai['nilai_UAS'];
-            $id_kurtrans = $nilai['id_kurtrans'];
+            $id_record = $nilai->id_studentrecord;
+            $id_student = $nilai->id_student;
+            $n_kat = $nilai->nilai_KAT;
+            $n_uts = $nilai->nilai_UTS;
+            $n_uas = $nilai->nilai_UAS;
+            $id_kurtrans = $nilai->id_kurtrans;
 
             $cek_id = Student_record::where('id_student', $id_student)
                 ->where('id_kurtrans', $id_kurtrans)
@@ -5352,9 +4729,9 @@ class DosenluarController extends Controller
 
             $banyak_id = count($cek_id);
 
-            $hsl_kat = $n_kat * $kat / 100;
-            $hsl_uts = $n_uts * $uts / 100;
-            $hsl_uas = $n_uas * $uas / 100;
+            $hsl_kat = ($n_kat * $kat) / 100;
+            $hsl_uts = ($n_uts * $uts) / 100;
+            $hsl_uas = ($n_uas * $uas) / 100;
 
             $n_total = $hsl_kat + $hsl_uts + $hsl_uas;
 
@@ -5417,49 +4794,49 @@ class DosenluarController extends Controller
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'E',
-                            'nilai_ANGKA' => '0'
+                            'nilai_ANGKA' => '0',
                         ]);
                 } elseif ($n_total < 60) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'D',
-                            'nilai_ANGKA' => '1'
+                            'nilai_ANGKA' => '1',
                         ]);
                 } elseif ($n_total < 65) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'C',
-                            'nilai_ANGKA' => '2'
+                            'nilai_ANGKA' => '2',
                         ]);
                 } elseif ($n_total < 70) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'C+',
-                            'nilai_ANGKA' => '2.5'
+                            'nilai_ANGKA' => '2.5',
                         ]);
                 } elseif ($n_total < 75) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'B',
-                            'nilai_ANGKA' => '3'
+                            'nilai_ANGKA' => '3',
                         ]);
                 } elseif ($n_total < 80) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'B+',
-                            'nilai_ANGKA' => '3.5'
+                            'nilai_ANGKA' => '3.5',
                         ]);
                 } elseif ($n_total <= 100) {
                     Student_record::where('id_student', $id_student)
                         ->where('id_kurtrans', $id_kurtrans)
                         ->update([
                             'nilai_AKHIR' => 'A',
-                            'nilai_ANGKA' => '4'
+                            'nilai_ANGKA' => '4',
                         ]);
                 }
             }
@@ -5467,31 +4844,7 @@ class DosenluarController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $idkur)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)
@@ -5502,48 +4855,31 @@ class DosenluarController extends Controller
         $kur = $ckstr->id_kurtrans;
         $idkur = $idkur;
 
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function post_settingnilai_dsn_luar(Request $request)
     {
-        $kpr = new Setting_nilai();
-        $kpr->id_kurperiode = $request->id_kurperiode;
-        $kpr->kat = $request->kat;
-        $kpr->uts = $request->uts;
-        $kpr->uas = $request->uas;
-        $kpr->created_by = Auth::user()->name;
-        $kpr->save();
+        $cek_kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$request->id_kurperiode]);
+        $jml_id_kur = count($cek_kelas_gabungan);
+
+        for ($i = 0; $i < $jml_id_kur; $i++) {
+            $idkurperiode = $cek_kelas_gabungan[$i];
+
+            $kpr = new Setting_nilai();
+            $kpr->id_kurperiode = $idkurperiode->id_kurperiode;
+            $kpr->kat = $request->kat;
+            $kpr->uts = $request->uts;
+            $kpr->uas = $request->uas;
+            $kpr->created_by = Auth::user()->name;
+            $kpr->save();
+        }
 
         //cek setting nilai
         $idkur = $request->id_kurperiode;
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $idkur)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)
@@ -5555,47 +4891,31 @@ class DosenluarController extends Controller
         $idkur = $idkur;
 
         Alert::success('Berhasil');
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function put_settingnilai_dsn_luar(Request $request, $id)
     {
-        $prd = Setting_nilai::find($id);
-        $prd->kat = $request->kat;
-        $prd->uts = $request->uts;
-        $prd->uas = $request->uas;
-        $prd->updated_by = Auth::user()->name;
-        $prd->save();
+        $id_setting = Setting_nilai::where('id_settingnilai', $id)->first();
+        $cek_kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$id_setting->id_kurperiode]);
+        $jml_id_kur = count($cek_kelas_gabungan);
+
+        for ($i = 0; $i < $jml_id_kur; $i++) {
+            $idkurperiode = $cek_kelas_gabungan[$i];
+
+            Setting_nilai::where('id_kurperiode', $idkurperiode->id_kurperiode)->update([
+                'kat' => $request->kat,
+                'uts' => $request->uts,
+                'uas' => $request->uas,
+                'updated_by' => Auth::user()->name,
+            ]);
+        }
 
         //cek setting nilai
         $idkur = $request->id_kurperiode;
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $idkur)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_kurtrans',
-                'student_record.id_student',
-                'student_record.id_studentrecord',
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'student_record.nilai_KAT',
-                'student_record.nilai_UTS',
-                'student_record.nilai_UAS',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_AKHIR_angka'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)
@@ -5607,7 +4927,7 @@ class DosenluarController extends Controller
         $idkur = $idkur;
 
         Alert::success('Berhasil');
-        return view('dosenluar/list_mhs', ['ck' => $cks, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
     }
 
     public function sop_dsn_luar()
