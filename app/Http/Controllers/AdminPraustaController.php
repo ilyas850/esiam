@@ -42,18 +42,6 @@ class AdminPraustaController extends Controller
 {
     public function data_prakerin()
     {
-        $prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-        $prd_tp = Periode_tipe::all();
-        $prodi = Prodi::all();
-
-        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
-        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
-
-        $idperiodetahun = $periodetahun->id_periodetahun;
-        $idperiodetipe = $periodetipe->id_periodetipe;
-        $namaperiodetahun = $periodetahun->periode_tahun;
-        $namaperiodetipe = $periodetipe->periode_tipe;
-
         $akhir = time(); // Waktu sekarang
 
         $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -70,11 +58,10 @@ class AdminPraustaController extends Controller
             })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
-            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->where('prausta_master_waktu.tipe_prausta', 'PKL')
+            ->where('student.active', 1)
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
@@ -98,7 +85,7 @@ class AdminPraustaController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('prausta/prakerin/data_prakerin', compact('akhir', 'data', 'prodi', 'namaperiodetahun', 'namaperiodetipe', 'prd_thn', 'prd_tp'));
+        return view('prausta/prakerin/data_prakerin', compact('akhir', 'data'));
     }
 
     public function filter_prakerin_use_prodi(Request $request)
