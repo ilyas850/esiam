@@ -312,7 +312,7 @@ class DosenController extends Controller
 
         //kode prodi
         $prod = Prodi::where('kodeprodi', $data_mhs->kodeprodi)->first();
-       
+
         //tambah krs
         $krs = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
             ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
@@ -561,7 +561,6 @@ class DosenController extends Controller
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
-
             ->get();
         //sampai sini
 
@@ -5013,12 +5012,13 @@ class DosenController extends Controller
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
             ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+            ->join('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
             ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
             ->where('kurikulum_periode.id_dosen', $id)
             ->where('periode_tahun.id_periodetahun', $idperiodetahun)
             ->where('periode_tipe.id_periodetipe', $idperiodetipe)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
+            ->select('ruangan.id_ruangan', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
             ->get();
 
         Alert::success('', 'Soal berhasil ditambahkan')->autoclose(3500);
