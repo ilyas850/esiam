@@ -618,12 +618,7 @@ class DosenController extends Controller
             ->select('periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'dosen.nama', 'dosen.akademik', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'prodi.prodi', 'kelas.kelas')
             ->get();
 
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student.nama', 'student.nim', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
-            ->orderBy('student.nim', 'ASC')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
         foreach ($mk as $key) {
             # code...
@@ -652,7 +647,7 @@ class DosenController extends Controller
         $y = date('Y');
 
         // return view('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data'=>$key,'tb'=>$cks]);
-        $pdf = PDF::loadView('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $cks]);
+        $pdf = PDF::loadView('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $kelas_gabungan]);
         return $pdf->download('Nilai Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
     }
 
