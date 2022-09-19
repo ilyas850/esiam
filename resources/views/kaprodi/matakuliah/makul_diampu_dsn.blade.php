@@ -141,7 +141,7 @@
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                 target="_blank" style="font: white"> UTS</a>
                                         @endif
-                                        |
+                                        
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
