@@ -353,6 +353,7 @@ class DosenController extends Controller
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student_record.id_student', $id)
+            ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'student_record.remark', 'student_record.id_student', 'student_record.id_studentrecord')
             ->get();
 
@@ -366,6 +367,7 @@ class DosenController extends Controller
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student_record.id_student', $id)
+            ->where('kurikulum_periode.status', 'ACTIVE')
             ->select(DB::raw('DISTINCT(student_record.remark)'), 'student.idstudent')
             ->get();
 
