@@ -546,24 +546,6 @@ class DosenController extends Controller
 
         $makul = DB::select('CALL matakuliah_diampu_dosen(?,?,?)', [$idperiodetahun, $idperiodetipe, $id]);
 
-        //kode lama
-        $makul1 = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
-            ->where('kurikulum_periode.id_dosen', $id)
-            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
-            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
-            ->get();
-        //sampai sini
-
         return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 

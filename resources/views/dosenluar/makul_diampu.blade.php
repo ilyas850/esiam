@@ -83,6 +83,9 @@
                                 <center>Semester</center>
                             </th>
                             <th>
+                                <center>Ruangan</center>
+                            </th>
+                            <th>
                                 <center>Jadwal</center>
                             </th>
                             <th>
@@ -125,6 +128,7 @@
                                 <td>
                                     <center>{{ $item->semester }}</center>
                                 </td>
+                                <td>{{ $item->nama_ruangan }}</td>
                                 <td>{{ $item->hari }}, {{ $item->jam }}</td>
                                 <td>
                                     <center>{{ $item->id_kurperiode }}</center>
