@@ -3800,7 +3800,7 @@ class AdminPraustaController extends Controller
         $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
+            ->Join('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
@@ -3808,11 +3808,11 @@ class AdminPraustaController extends Controller
 
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
-            ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
+            ->where('student.active', 1)
             ->select(
+                'student_record.id_studentrecord',
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
                 'prausta_master_kode.nama_prausta',
