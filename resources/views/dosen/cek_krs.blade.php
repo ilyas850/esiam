@@ -56,7 +56,8 @@
                                     @foreach ($add as $key)
                                         <option value="{{ $key->id_kurperiode }}, {{ $key->idkurtrans }}">
                                             {{ $key->id_kurperiode }} - {{ $key->semester }} - {{ $key->kode }} -
-                                            {{ $key->makul }} - {{ $key->nama }}
+                                            {{ $key->makul }} - {{ $key->nama }} - {{ $key->hari }} -
+                                            {{ $key->jam }} ({{ $key->kelas }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -114,8 +115,8 @@
                                                     value="{{ $item->id_studentrecord }}">
                                                 <input type="hidden" name="id_student" value="{{ $item->idstudent }}">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-danger btn-xs" title="klik untuk batal"
-                                                    data-toggle="tooltip" data-placement="right"
+                                                <button type="submit" class="btn btn-danger btn-xs"
+                                                    title="klik untuk batal" data-toggle="tooltip" data-placement="right"
                                                     onclick="return confirm('apakah anda yakin akan membatalkan matakuliah ini?')">Batal</button>
                                             </form>
                                         @endif

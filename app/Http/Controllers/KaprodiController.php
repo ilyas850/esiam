@@ -762,6 +762,9 @@ class KaprodiController extends Controller
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
       ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+      ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
       ->where('kurikulum_master.status', 'ACTIVE')
       ->where('periode_tahun.status', 'ACTIVE')
@@ -772,7 +775,7 @@ class KaprodiController extends Controller
       ->where('kurikulum_transaction.id_angkatan', $data_mhs->idangkatan)
       ->where('kurikulum_periode.status', 'ACTIVE')
       ->where('kurikulum_transaction.status', 'ACTIVE')
-      ->select('kurikulum_periode.id_kurperiode', 'kurikulum_transaction.idkurtrans', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'dosen.nama')
+      ->select('kurikulum_periode.id_kurperiode', 'kurikulum_transaction.idkurtrans', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'dosen.nama', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'kelas.kelas')
       ->orderBy('semester.semester', 'ASC')
       ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
       ->get();
