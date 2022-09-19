@@ -34,7 +34,7 @@
                         <td>{{ $bap->makul }}</td>
                         <td>Program Studi</td>
                         <td>:</td>
-                        <td>{{ $bap->prodi }} - {{ $bap->konsentrasi }}</td>
+                        <td>{{ $bap->prodi }}</td>
                     </tr>
                     <tr>
                         <td>Kelas</td>
