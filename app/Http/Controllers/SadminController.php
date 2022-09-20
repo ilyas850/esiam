@@ -55,6 +55,7 @@ use App\Soal_ujian;
 use App\Yudisium;
 use App\Waktu;
 use App\Standar;
+use App\Jenis_kegiatan;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -2770,6 +2771,8 @@ class SadminController extends Controller
         return view('sadmin/skpi/skpi', compact('data', 'prodi', 'angkatan'));
     }
 
+
+
     public function kartu_ujian_mhs()
     {
         $data = Student::leftJoin('prodi', function ($join) {
@@ -4684,6 +4687,7 @@ class SadminController extends Controller
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.active', 1)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
             ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
             ->orderBy('student.nim', 'ASC')
@@ -4703,9 +4707,35 @@ class SadminController extends Controller
             ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
             ->first();
 
-        $data = Sertifikat::where('id_student', $id)->get();
+        $data = Sertifikat::leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+            ->where('sertifikat.id_student', $id)
+            ->select('sertifikat.*', 'jenis_kegiatan.deskripsi')
+            ->get();
 
-        return view('sadmin/datamahasiswa/cek_sertifikat', compact('mhs', 'data'));
+        $jenis = Jenis_kegiatan::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/datamahasiswa/cek_sertifikat', compact('mhs', 'data', 'jenis'));
+    }
+
+    public function save_jenis_sertifikat(Request $request)
+    {
+        $jenis_kegiatan = $request->id_jeniskegiatan;
+        $jml_jenis = count($jenis_kegiatan);
+
+        for ($i = 0; $i < $jml_jenis; $i++) {
+            $id_jenis = $jenis_kegiatan[$i];
+            if ($id_jenis != null) {
+                $idj = explode(',', $id_jenis, 2);
+                $tra = $idj[0];
+                $trs = $idj[1];
+
+                Sertifikat::where('id_sertifikat', $tra)
+                    ->update(['id_jeniskegiatan' => $trs]);
+            }
+        }
+
+        Alert::success('', 'Jenis Kegiatan berhasil ditambahkan')->autoclose(3500);
+        return redirect('record_sertifikat_mahasiswa');
     }
 
     public function setting_waktu()
@@ -4817,5 +4847,42 @@ class SadminController extends Controller
 
         Alert::success('', 'Standar berhasil dihapus')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function jenis_kegiatan()
+    {
+        $data = Jenis_kegiatan::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/masterakademik/master_jenis_kegiatan', compact('data'));
+    }
+
+    public function simpan_jeniskegiatan(Request $request)
+    {
+        $ang = new Jenis_kegiatan();
+        $ang->deskripsi = $request->deskripsi;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Jenis Kegiatan berhasil ditambahkan')->autoclose(3500);
+        return redirect('jenis_kegiatan');
+    }
+
+    public function put_jeniskegiatan(Request $request, $id)
+    {
+        $ang = Jenis_kegiatan::find($id);
+        $ang->deskripsi = $request->deskripsi;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Jenis Kegiatan berhasil diedit')->autoclose(3500);
+        return redirect('jenis_kegiatan');
+    }
+
+    public function hapus_jeniskegiatan($id)
+    {
+        Jenis_kegiatan::where('id_jeniskegiatan', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Jenis Kegiatan berhasil dihapus')->autoclose(3500);
+        return redirect('jenis_kegiatan');
     }
 }

@@ -317,6 +317,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master sertifikat mahasiswa
     Route::get('record_sertifikat_mahasiswa', 'SadminController@record_sertifikat_mahasiswa');
     Route::get('cek_sertifikat/{id}', 'SadminController@cek_sertifikat');
+    Route::post('save_jenis_sertifikat', 'SadminController@save_jenis_sertifikat');
 
     //setting waktu 
     Route::get('setting_waktu', 'SadminController@setting_waktu');
@@ -327,6 +328,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('save_standar_pendidikan_nasional', 'SadminController@save_standar_pendidikan_nasional');
     Route::put('put_standar_pendidikan_nasional/{id}', 'SadminController@put_standar_pendidikan_nasional');
     Route::get('hapus_standar_pendidikan_nasional/{id}', 'SadminController@hapus_standar_pendidikan_nasional');
+
+    //jenis kegiatan di sertifikat
+    Route::get('jenis_kegiatan', 'SadminController@jenis_kegiatan');
+    Route::post('simpan_jeniskegiatan', 'SadminController@simpan_jeniskegiatan');
+    Route::put('put_jeniskegiatan/{id}', 'SadminController@put_jeniskegiatan');
+    Route::get('hapus_jeniskegiatan/{id}', 'SadminController@hapus_jeniskegiatan');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
