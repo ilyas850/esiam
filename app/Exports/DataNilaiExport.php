@@ -28,7 +28,7 @@ class DataNilaiExport implements FromView, ShouldAutoSize
     public function view(): View
     {
         return view('export_excel/nilai', [
-            'ck' => DB::select("CALL absen_mahasiswa(?)", array($this->id))
+            'ck' => DB::select("CALL absensi_mahasiswa_prodi_kelas(?)", array($this->id))
             
         ]);
     }

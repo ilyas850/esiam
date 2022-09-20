@@ -327,7 +327,7 @@ class DosenController extends Controller
             ->where('kurikulum_master.status', 'ACTIVE')
             ->where('periode_tahun.status', 'ACTIVE')
             ->where('periode_tipe.status', 'ACTIVE')
-            
+
             ->where('kurikulum_periode.id_prodi', $data_mhs->id_prodi)
             ->where('kurikulum_transaction.id_prodi', $data_mhs->id_prodi)
             ->where('kurikulum_transaction.id_angkatan', $data_mhs->idangkatan)
@@ -620,7 +620,7 @@ class DosenController extends Controller
             ->select('periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'dosen.nama', 'dosen.akademik', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'prodi.prodi', 'kelas.kelas')
             ->get();
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+        $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
 
         foreach ($mk as $key) {
             # code...
@@ -2853,8 +2853,7 @@ class DosenController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 
-            'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'prodi.kodeprodi', 'kelas.kelas', 'semester.semester')
+            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'prodi.kodeprodi', 'kelas.kelas', 'semester.semester')
             ->get();
 
         foreach ($bap as $key) {
@@ -2866,7 +2865,6 @@ class DosenController extends Controller
             ->where('prodi.kodeprodi', $key->kodeprodi)
             ->select('dosen.nama', 'dosen.akademik', 'dosen.nik')
             ->first();
-         
 
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
@@ -2925,22 +2923,7 @@ class DosenController extends Controller
     {
         $iddsn = Auth::user()->id_user;
 
-        $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->where('kurikulum_periode.id_dosen', $iddsn)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-            ->orderBy('kurikulum_periode.id_periodetahun', 'DESC')
-            ->orderBy('semester.semester', 'ASC')
-            ->orderBy('kelas.kelas', 'ASC')
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
+        $mkul = DB::select('CALL history_makul_diampu(?)', [$iddsn]);
 
         return view('dosen/history_makul_dsn', ['makul' => $mkul]);
     }
@@ -2948,16 +2931,7 @@ class DosenController extends Controller
     public function cekmhs_dsn_his($id)
     {
         //cek mahasiswa
-        $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
-            ->get();
+        $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $id)
@@ -2967,7 +2941,7 @@ class DosenController extends Controller
 
         $kur = $ckstr->id_kurtrans;
 
-        return view('dosen/list_mhs_dsn_his', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn_his', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur]);
     }
 
     public function view_bap_his($id)

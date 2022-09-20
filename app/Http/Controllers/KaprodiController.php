@@ -973,7 +973,7 @@ class KaprodiController extends Controller
       ->select('periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'dosen.nama', 'dosen.akademik', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'prodi.prodi', 'kelas.kelas')
       ->get();
 
-    $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+    $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
 
     foreach ($mk as $key) {
       # code...
@@ -2085,20 +2085,7 @@ class KaprodiController extends Controller
   {
     $iddsn = Auth::user()->id_user;
 
-    $mkul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-      ->where('kurikulum_periode.id_dosen', $iddsn)
-      ->where('kurikulum_periode.status', 'ACTIVE')
-      ->select('periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-      ->orderBy('kurikulum_periode.id_periodetahun', 'DESC')
-      ->orderBy('semester.semester', 'ASC')
-      ->orderBy('kelas.kelas', 'ASC')
-      ->orderBy('matakuliah.kode', 'ASC')
-      ->get();
+    $mkul = DB::select('CALL history_makul_diampu(?)', [$iddsn]);
 
     return view('kaprodi/record/history_makul_dsn', ['makul' => $mkul]);
   }
@@ -2106,31 +2093,8 @@ class KaprodiController extends Controller
   public function cekmhs_dsn_his($id)
   {
     //cek mahasiswa
-    $cks = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->leftJoin('prodi', function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      })
-      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-      ->where('student_record.id_kurperiode', $id)
-      ->where('student_record.status', 'TAKEN')
-      ->select(
-        'student_record.id_kurtrans',
-        'student_record.id_student',
-        'student_record.id_studentrecord',
-        'student.nama',
-        'student.nim',
-        'prodi.prodi',
-        'kelas.kelas',
-        'angkatan.angkatan',
-        'student_record.nilai_KAT',
-        'student_record.nilai_UTS',
-        'student_record.nilai_UAS',
-        'student_record.nilai_AKHIR',
-        'student_record.nilai_AKHIR_angka'
-      )
-      ->get();
-
+    $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
+    
     $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->where('id_kurperiode', $id)
       ->where('student_record.status', 'TAKEN')
@@ -2139,7 +2103,7 @@ class KaprodiController extends Controller
 
     $kur = $ckstr->id_kurtrans;
 
-    return view('kaprodi/record/list_mhs_dsn_his', ['ck' => $cks, 'ids' => $id, 'kur' => $kur]);
+    return view('kaprodi/record/list_mhs_dsn_his', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur]);
   }
 
   public function view_bap_his($id)
