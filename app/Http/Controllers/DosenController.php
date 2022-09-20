@@ -2933,15 +2933,7 @@ class DosenController extends Controller
         //cek mahasiswa
         $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
 
-        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('id_kurperiode', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans')
-            ->first();
-
-        $kur = $ckstr->id_kurtrans;
-
-        return view('dosen/list_mhs_dsn_his', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur]);
+        return view('dosen/list_mhs_dsn_his', ['ck' => $kelas_gabungan, 'ids' => $id]);
     }
 
     public function view_bap_his($id)
