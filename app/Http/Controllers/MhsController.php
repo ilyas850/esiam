@@ -157,9 +157,7 @@ class MhsController extends Controller
     public function store_change(Request $request, $id)
     {
         $this->validate($request, [
-            'id_mhs' => 'required',
-            'hp_baru' => 'required',
-            'email_baru' => 'required',
+            'id_mhs' => 'required'
         ]);
 
         $user = Update_Mahasiswa::find($id);
