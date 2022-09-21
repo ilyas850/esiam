@@ -95,7 +95,14 @@
                 </p>
                 <hr>
                 <strong><i class="fa fa-envelope margin-r-5"></i> E-mail</strong>
-                <p class="text-muted">{{ $mhs->email }}</p>
+                <p class="text-muted">
+                    @if ($mhs->email_baru == null)
+                        {{ $mhs->email }}
+                    @elseif($mhs->email_baru != null)
+                        {{ $mhs->email_baru }}
+                    @endif
+
+                </p>
                 <hr>
 
                 @if ($mhs->id_mhs == null)
