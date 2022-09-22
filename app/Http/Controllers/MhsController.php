@@ -265,16 +265,9 @@ class MhsController extends Controller
 
     public function jadwal()
     {
-        $cek_waktu = Waktu_krs::all();
-        foreach ($cek_waktu as $time) {
-        }
         $id = Auth::user()->username;
 
-        $prd_thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-        $prd_tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-        $maha = Student::where('nim', Auth::user()->username)->get();
+        $maha = Student::where('nim', $id)->get();
 
         foreach ($maha as $key) {
             # code...
@@ -292,24 +285,7 @@ class MhsController extends Controller
             // code...
         }
 
-        $sub_thn = substr($tahun->periode_tahun, 6, 2);
         $tp = $tipe->id_periodetipe;
-        $smt = $sub_thn . $tp;
-        $angk = $key->idangkatan;
-
-        if ($smt % 2 != 0) {
-            $a = ($smt + 10 - 1) / 10;
-            $b = $a - $angk;
-            $c = $b * 2 - 1;
-        } else {
-            $a = ($smt + 10 - 2) / 10;
-            $b = $a - $angk;
-            $c = $b * 2;
-        }
-
-        $semester = Semester::all();
-        $ruang = Ruangan::all();
-        $dosen = Dosen::all();
 
         $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -323,12 +299,13 @@ class MhsController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $tp)
             ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
+            ->where('kurikulum_periode.status', 'ACTIVE')
             ->select('kurikulum_periode.id_kurperiode', 'student_record.tanggal_krs', 'kurikulum_periode.id_semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'dosen.nama')
             ->orderBy('kurikulum_periode.id_hari', 'ASC')
             ->orderBy('kurikulum_periode.id_jam', 'ASC')
             ->get();
 
-        return view('mhs/jadwal', ['mhs' => $key, 'tp' => $prd_tp, 'thn' => $prd_thn, 'jadwal' => $record, 'smt' => $semester, 'rng' => $ruang, 'dsn' => $dosen]);
+        return view('mhs/jadwal', ['jadwal' => $record]);
     }
 
     public function lihatabsen($id)
