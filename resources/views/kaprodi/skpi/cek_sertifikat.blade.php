@@ -58,7 +58,10 @@
                                         <center>Tanggal Pelaksanaan</center>
                                     </th>
                                     <th>
-                                        <center>File Sertifikat</center>
+                                        <center>Sertifikat</center>
+                                    </th>
+                                    <th>
+                                        <center>Jenis Sertifikat</center>
                                     </th>
                                     <th>
                                         <center>Validasi</center>
@@ -75,14 +78,15 @@
                                         <td align="center">{{ $item->tgl_pelaksanaan }}</td>
                                         <td align="center"><a
                                                 href="/Sertifikat/{{ $item->id_student }}/{{ $item->file_sertifikat }}"
-                                                target="_blank" style="font: white"> File Sertifikat</a></td>
+                                                target="_blank" style="font: white"> File</a></td>
+                                        <td>{{ $item->deskripsi }}</td>
                                         <td align="center">
                                             @if ($item->validasi == 'BELUM' or $item->validasi == null)
                                                 <a href="/validasi_sertifikat/{{ $item->id_sertifikat }}"
                                                     class="btn btn-info btn-xs">Validasi</a>
                                             @elseif($item->validasi == 'SUDAH')
                                                 <a href="/batal_validasi_sertifikat/{{ $item->id_sertifikat }}"
-                                                    class="btn btn-warning btn-xs">Batal</a>
+                                                    class="btn btn-danger btn-xs">Batal</a>
                                             @endif
                                         </td>
                                         <td align="center">
@@ -92,11 +96,12 @@
                                     </tr>
                                 @endforeach
                             </table>
-                            <br>
+                        </div>
+                        <div class="box-footer">
                             <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
-                                class="btn btn-warning">
+                                class="btn btn-success">
                             <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                                class="btn btn-danger">
+                                class="btn btn-warning">
                             <input class="btn btn-info full-right" type="submit" name="submit" value="Validasi">
                         </div>
                     </form>

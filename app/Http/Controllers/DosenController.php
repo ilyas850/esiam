@@ -82,7 +82,7 @@ class DosenController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->get();
 
-        return view('dosen/mhs_bim', ['mhs' => $p]);
+        return view('dosen/mhs_bim', ['mhs' => $k]);
     }
 
     public function record_nilai($id)

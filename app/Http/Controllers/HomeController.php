@@ -173,7 +173,7 @@ class HomeController extends Controller
       $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
         ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
         ->where('kaprodi.id_dosen', Auth::user()->id_user)
-        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama')
+        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
         ->get();
       foreach ($cek as $key) {
         // code...

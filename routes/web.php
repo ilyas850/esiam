@@ -1028,6 +1028,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //validasi sertifikat skpi
     Route::get('val_sertifikat_kprd', 'KaprodiController@val_sertifikat_kprd');
     Route::get('cek_sertifikat_kprd/{id}', 'KaprodiController@cek_sertifikat_kprd');
+    Route::get('validasi_sertifikat/{id}', 'KaprodiController@validasi_sertifikat');
+    Route::get('batal_validasi_sertifikat/{id}', 'KaprodiController@batal_validasi_sertifikat');
+    Route::post('save_validasi_all_sertifikat', 'KaprodiController@save_validasi_all_sertifikat');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

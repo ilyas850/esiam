@@ -2,10 +2,10 @@
     <div class="col-md-12">
         <div
             class="alert
-          @if ($prd->id_prodi == 1) alert-info
-          @elseif ($prd->id_prodi == 2)
+          @if ($prd->kodeprodi == 22 or $prd->kodeprodi == 25) alert-info
+          @elseif ($prd->kodeprodi == 23)
             alert-danger
-          @elseif ($prd->id_prodi == 3)
+          @elseif ($prd->kodeprodi == 34)
             alert-success @endif
           alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

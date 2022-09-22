@@ -8068,18 +8068,33 @@ class KaprodiController extends Controller
       ->where('id_dosen', $iddosen)
       ->select('prodi.kodeprodi')
       ->first();
-
-    $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
-      ->leftjoin('prodi', function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      })
-      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-      ->where('prodi.kodeprodi', $prodi->kodeprodi)
-      ->where('student.active', 1)
-      ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
-      ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi')
-      ->get();
+    if ($prodi->kodeprodi == 25 or $prodi->kodeprodi == 22) {
+      $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+        ->leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+        ->leftjoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        ->whereIn('prodi.kodeprodi', [22, 25])
+        ->where('student.active', 1)
+        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'), 'jenis_kegiatan.deskripsi')
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', 'jenis_kegiatan.deskripsi')
+        ->get();
+    } else {
+      $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+        ->leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+        ->leftjoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        ->whereIn('prodi.kodeprodi', [$prodi->kodeprodi])
+        ->where('student.active', 1)
+        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'), 'jenis_kegiatan.deskripsi')
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', 'jenis_kegiatan.deskripsi')
+        ->get();
+    }
 
     return view('kaprodi/skpi/validasi_sertifikat', compact('data'));
   }
@@ -8095,8 +8110,44 @@ class KaprodiController extends Controller
       ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
       ->first();
 
-    $data = Sertifikat::where('id_student', $id)->get();
+    $data = Sertifikat::where('sertifikat.id_student', $id)
+      ->leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+      ->get();
 
     return view('kaprodi/skpi/cek_sertifikat', compact('mhs', 'data'));
+  }
+
+  public function validasi_sertifikat($id)
+  {
+    Sertifikat::where('id_sertifikat', $id)->update(['validasi' => 'SUDAH']);
+
+    $idmhs = Sertifikat::where('id_sertifikat', $id)->select('id_student')->first();
+
+    return redirect('cek_sertifikat_kprd/' . $idmhs->id_student);
+  }
+
+  public function batal_validasi_sertifikat($id)
+  {
+    Sertifikat::where('id_sertifikat', $id)->update(['validasi' => 'BELUM']);
+
+    $idmhs = Sertifikat::where('id_sertifikat', $id)->select('id_student')->first();
+
+    return redirect('cek_sertifikat_kprd/' . $idmhs->id_student);
+  }
+
+  public function save_validasi_all_sertifikat(Request $request)
+  {
+    $sertifikat = $request->id_sertifikat;
+    $jml_sertifikat = count($sertifikat);
+
+    for ($i = 0; $i < $jml_sertifikat; $i++) {
+      $id_sert = $sertifikat[$i];
+
+      Sertifikat::where('id_sertifikat', $id_sert)->update(['validasi' => 'SUDAH']);
+
+      $idmhs = Sertifikat::where('id_sertifikat', $id_sert)->select('id_student')->first();
+    }
+
+    return redirect('cek_sertifikat_kprd/' . $idmhs->id_student);
   }
 }

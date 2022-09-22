@@ -80,13 +80,13 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($key->id_krs == 0)
+                                        {{-- @if ($key->id_krs == 0)
                                             BELUM ADA
                                         @else
                                             {{ $key->thn_krs }} - {{ $key->periode_tipe }}
-                                        @endif
+                                        @endif --}}
 
-                                        {{-- {{ substr($key->tanggal_krs, 0, 4) }} - {{ $key->periode_tipe }} --}}
+                                        {{ substr($key->tanggal_krs, 0, 4) }} - {{ $key->periode_tipe }}
                                     </center>
                                 </td>
                                 <td>

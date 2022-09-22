@@ -101,7 +101,6 @@
                     @elseif($mhs->email_baru != null)
                         {{ $mhs->email_baru }}
                     @endif
-
                 </p>
                 <hr>
 
