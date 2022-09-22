@@ -354,9 +354,9 @@ class PraustaController extends Controller
                 'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->first();
-
-        $kategori = Prausta_master_kategori::join('prodi', '')
-        ->where('id_prodi', $data->id_prodi)->get();
+        
+        $kategori = Prausta_master_kategori::join('prodi', 'prausta_master_kategori.id_prodi', '=', 'prodi.id_prodi')
+            ->where('prodi.id_prodi', $data->id_prodi)->get();
 
         return view('mhs/prausta/ajuan_prakerin', compact('data', 'kategori'));
     }

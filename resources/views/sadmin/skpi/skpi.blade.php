@@ -81,9 +81,9 @@
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
                                 <td align="center">{{ $item->nim }}</td>
-                                <td> {{ $item->nama }}</td>
-                                <td>{{ $item->tmptlahir }},
-                                    {{ Carbon\Carbon::parse($item->tgllahir)->formatLocalized('%d %B %Y') }}
+                                <td> {{ $item->nama_lengkap }}</td>
+                                <td>{{ $item->tmpt_lahir }},
+                                    {{ Carbon\Carbon::parse($item->tgl_lahir)->formatLocalized('%d %B %Y') }}
                                 </td>
                                 <td>{{ $item->date_masuk }}</td>
                                 <td>{{ $item->date_lulus }}</td>

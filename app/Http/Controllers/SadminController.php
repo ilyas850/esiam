@@ -56,6 +56,7 @@ use App\Yudisium;
 use App\Waktu;
 use App\Standar;
 use App\Jenis_kegiatan;
+use App\Pengalaman;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -2760,10 +2761,20 @@ class SadminController extends Controller
 
     public function skpi()
     {
-        $prodi = Prodi::all();
-        $angkatan = Angkatan::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
 
-        $data = Student::leftjoin('skpi', 'student.idstudent', '=', 'skpi.id_student')
+        $angkatan = Angkatan::where('angkatan', '>', 2016)->get();
+
+        $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->leftjoin('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->where('student.active', 1)
+            ->where('yudisium.validasi', 'SUDAH')
+            ->select('yudisium.id_student', 'student.nim', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.id_skpi', 'skpi.no_skpi', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_ijazah')
+            ->get();
+
+        $data1 = Student::leftjoin('skpi', 'student.idstudent', '=', 'skpi.id_student')
             ->where('student.active', 1)
             ->select('student.nim', 'student.nama', 'student.idstudent', 'skpi.id_skpi', 'skpi.no_skpi', 'student.tmptlahir', 'student.tgllahir', 'skpi.gelar')
             ->get();
@@ -2771,7 +2782,30 @@ class SadminController extends Controller
         return view('sadmin/skpi/skpi', compact('data', 'prodi', 'angkatan'));
     }
 
+    public function filter_skpi(Request $request)
+    {
+        $kodeprodi = $request->kodeprodi;
+        $idangkatan = $request->idangkatan;
 
+        $prodi = Prodi::where('kodeprodi', $kodeprodi)->first();
+        $angkatan = Angkatan::where('idangkatan', $idangkatan)->first();
+
+        $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->leftjoin('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->where('student.active', 1)
+            ->where('yudisium.validasi', 'SUDAH')
+            ->where('student.kodeprodi', $kodeprodi)
+            ->where('student.idangkatan', $idangkatan)
+            ->select('yudisium.id_student', 'student.nim', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.id_skpi', 'skpi.no_skpi', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_ijazah')
+            ->get();
+
+        if (count($data) == 0) {
+            Alert::warning('', 'Maaf belum ada yang mendaftar Yudisium!')->autoclose(3500);
+            return redirect('skpi');
+        } elseif (count($data) > 0) {
+            return view('sadmin/skpi/filter_skpi', compact('data', 'prodi', 'angkatan'));
+        }
+    }
 
     public function kartu_ujian_mhs()
     {

@@ -221,6 +221,7 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //SKPI
     Route::get('skpi', 'SadminController@skpi');
+    Route::post('filter_skpi', 'SadminController@filter_skpi');
 
     //Kartu ujian mahasiswa
     Route::get('kartu_ujian_mhs', 'SadminController@kartu_ujian_mhs');
