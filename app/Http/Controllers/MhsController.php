@@ -3699,8 +3699,8 @@ class MhsController extends Controller
         if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
             $data = Wisuda::join('prodi', 'wisuda.id_prodi', '=', 'prodi.id_prodi')
                 ->where('wisuda.id_student', $id)
-
                 ->first();
+
             $prodi = Prodi::all();
 
             return view('mhs/pendaftaran/wisuda', compact('id', 'data', 'prodi'));
@@ -3735,7 +3735,7 @@ class MhsController extends Controller
                 'nama_ibu'          => 'required',
                 'no_hp_ayah'        => 'required',
                 'alamat_ortu'       => 'required',
-                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
             ],
             $message,
         );
