@@ -57,13 +57,13 @@
                                 <center>Tanggal, Bulan dan Tahun </center>
                             </th>
                             <th rowspan="2">
-                                <center>No. Ijazah</center>
-                            </th>
-                            <th rowspan="2">
                                 <center>No. SKPI</center>
                             </th>
                             <th rowspan="2">
-                                <center>Gelar</center>
+                                <center>No. Ijazah</center>
+                            </th>
+                            <th rowspan="2">
+                                <center>Aksi</center>
                             </th>
                         </tr>
                         <tr>
@@ -87,9 +87,16 @@
                                 </td>
                                 <td>{{ $item->date_masuk }}</td>
                                 <td>{{ $item->date_lulus }}</td>
-                                <td>{{ $item->no_ijazah }}</td>
                                 <td>{{ $item->no_skpi }}</td>
-                                <td>{{ $item->gelar }}</td>
+                                <td>{{ $item->no_ijazah }}</td>
+                                <td align="center">
+                                    @if ($item->id_skpi != null)
+                                        <a href="/download_skpi/{{ $item->id_skpi }}"
+                                            class="btn btn-info btn-xs">Download</a>
+                                    @else
+                                    @endif
+
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

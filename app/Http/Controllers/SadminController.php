@@ -2807,6 +2807,75 @@ class SadminController extends Controller
         }
     }
 
+    public function download_skpi($id)
+    {
+        $mhs = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->where('skpi.id_skpi', $id)
+            ->select(
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'skpi.date_masuk',
+                'skpi.date_lulus',
+                'skpi.no_skpi',
+                'skpi.no_ijazah',
+                'yudisium.id_student'
+            )
+            ->first();
+
+        $nama_mhs = strtolower($mhs->nama_lengkap);
+        $new_name = ucwords($nama_mhs);
+        $nim = $mhs->nim;
+        $tmptlahir = $mhs->tmpt_lahir;
+        $tgllahir = $mhs->tgl_lahir->isoFormat('D MMMM Y');
+
+        $dateTime = $mhs->date_masuk;
+        $updatedDateFormat =  Carbon::createFromFormat('Y-m-d', $dateTime)->isoFormat('D MMMM Y');
+
+        dd($updatedDateFormat);
+    }
+
+    public function save_skpi_prodi(Request $request)
+    {
+        $data_student = $request->id_student;
+        $data_skpi = $request->no_skpi;
+        $data_ijazah = $request->no_ijazah;
+        $tgl_masuk = $request->date_masuk;
+        $tgl_lulus = $request->date_lulus;
+
+        $jml_id = count($data_student);
+
+        for ($i = 0; $i <  $jml_id; $i++) {
+            $idstudent = $data_student[$i];
+            $noskpi = $data_skpi[$i];
+            $noijazah = $data_ijazah[$i];
+
+            $cek = Skpi::where('id_student', $idstudent)->get();
+
+            if (count($cek) == 0) {
+                $abs = new Skpi();
+                $abs->id_student = $idstudent;
+                $abs->no_skpi = $noskpi;
+                $abs->no_ijazah = $noijazah;
+                $abs->date_masuk = $tgl_masuk;
+                $abs->date_lulus = $tgl_lulus;
+                $abs->save();
+            } elseif (count($cek) > 0) {
+                Skpi::where('id_student', $idstudent)
+                    ->update([
+                        'no_skpi' => $noskpi,
+                        'no_ijazah' => $noijazah,
+                        'date_masuk' => $tgl_masuk,
+                        'date_lulus' => $tgl_lulus
+                    ]);
+            }
+        }
+
+        return redirect('skpi');
+    }
+
     public function kartu_ujian_mhs()
     {
         $data = Student::leftJoin('prodi', function ($join) {

@@ -80,12 +80,24 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Bimbingan</th>
-                            <th>Uraian Bimbingan</th>
-                            <th>Komentar</th>
-                            <th>Validasi</th>
-                            <th>File</th>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Tanggal Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Uraian Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Komentar</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                            <th>
+                                <center>File</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

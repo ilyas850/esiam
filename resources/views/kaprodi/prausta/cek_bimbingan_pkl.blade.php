@@ -80,12 +80,24 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Bimbingan</th>
-                            <th>Uraian Bimbingan</th>
-                            <th>Komentar</th>
-                            <th>Validasi</th>
-                            <th>File</th>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Tanggal Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Uraian Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Komentar</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                            <th>
+                                <center>File</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,8 +134,8 @@
                                     @endif
                                 </td>
                             </tr>
-                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
-                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -135,8 +147,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
-                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20" rows="10"> {{ $key->komentar_bimbingan }} </textarea>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>
@@ -163,8 +174,7 @@
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
                         <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
                             Seminar Prakerin</a>
-                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}"
-                            class="btn btn-danger">Tolak
+                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
                             Seminar Prakerin</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
                         <span class="badge bg-blue">Sudah di Acc.</span>

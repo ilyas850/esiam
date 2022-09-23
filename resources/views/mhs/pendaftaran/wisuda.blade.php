@@ -33,7 +33,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>NIM</label>
-                                        <input type="number" class="form-control" value="nim" required>
+                                        <input type="number" class="form-control" name="nim" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">

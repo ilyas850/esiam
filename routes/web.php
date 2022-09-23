@@ -222,6 +222,8 @@ Route::group(['middleware' => 'sadmin'], function () {
     //SKPI
     Route::get('skpi', 'SadminController@skpi');
     Route::post('filter_skpi', 'SadminController@filter_skpi');
+    Route::post('save_skpi_prodi', 'SadminController@save_skpi_prodi');
+    Route::get('download_skpi/{id}', 'SadminController@download_skpi');
 
     //Kartu ujian mahasiswa
     Route::get('kartu_ujian_mhs', 'SadminController@kartu_ujian_mhs');
@@ -320,10 +322,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('cek_sertifikat/{id}', 'SadminController@cek_sertifikat');
     Route::post('save_jenis_sertifikat', 'SadminController@save_jenis_sertifikat');
 
-    //setting waktu 
+    //setting waktu
     Route::get('setting_waktu', 'SadminController@setting_waktu');
     Route::post('post_waktu', 'SadminController@post_waktu');
-    
+
     //master standar pendidikan nasional
     Route::get('standar_pendidikan_nasional', 'SadminController@standar_pendidikan_nasional');
     Route::post('save_standar_pendidikan_nasional', 'SadminController@save_standar_pendidikan_nasional');
@@ -508,13 +510,13 @@ Route::group(['middleware' => 'mhs'], function () {
     // Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
-    
+
     //isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');
     // Route::get('input_krs', 'KrsController@input_krs');
-    
+
     Route::post('unduh_krs', 'KrsController@unduh_krs');
-    
+
     //KRS mahasiswa
     Route::get('krs', 'KrsController@krs');
     Route::post('filter_krs', 'KRsController@filter_krs');
@@ -528,7 +530,6 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('unduh_khs_mid_term', 'NilaiController@unduh_khs_mid_term');
     Route::post('unduh_khs_final_term', 'NilaiController@unduh_khs_final_term');
 
-    
     Route::get('isi_edom', 'EdomController@isi_edom');
     Route::post('form_edom', 'EdomController@form_edom');
     Route::post('save_edom', 'EdomController@save_edom');
@@ -845,7 +846,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('save_nilai_UAS_kprd', 'KaprodiController@save_nilai_UAS_kprd');
     Route::get('input_akhir_kprd/{id}', 'KaprodiController@input_akhir_kprd');
     Route::post('save_nilai_AKHIR_kprd', 'KaprodiController@save_nilai_AKHIR_kprd');
-    
+
     //setting nilai matakuliah
     Route::post('post_settingnilai_dsn_kprd', 'KaprodiController@post_settingnilai_dsn_kprd');
     Route::post('generate_nilai_akhir_dsn_kprd', 'KaprodiController@generate_nilai_akhir_dsn_kprd');

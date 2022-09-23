@@ -80,20 +80,32 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Bimbingan</th>
-                            <th>Uraian Bimbingan</th>
-                            <th>Komentar</th>
-                            <th>Validasi</th>
-                            <th>File</th>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Tanggal Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Uraian Bimbingan</center>
+                            </th>
+                            <th>
+                                <center>Komentar</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                            <th>
+                                <center>File</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($pkl as $key)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $key->tanggal_bimbingan }}</td>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
                                 <td>
                                     <center>
@@ -118,7 +130,7 @@
                                     </center>
                                 </td>
 
-                                <td>
+                                <td align="center">
                                     @if ($key->file_bimbingan == null)
                                     @elseif ($key->file_bimbingan != null)
                                         <a href="/File Bimbingan PKL/{{ $key->id_student }}/{{ $key->file_bimbingan }}"
