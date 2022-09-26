@@ -103,7 +103,8 @@
     {{-- <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li> --}}
     <li><a href="{{ url('upload_sertifikat') }}"><i class="fa fa-file"></i> <span>Upload Sertifikat</span></a>
     </li>
-
+    <li><a href="{{ url('pengalaman_kerja') }}"><i class="fa fa-file"></i> <span>Pengalaman Kerja</span></a>
+    </li>
     {{-- <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li> --}}
 
 </ul>

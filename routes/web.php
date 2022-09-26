@@ -654,6 +654,12 @@ Route::group(['middleware' => 'mhs'], function () {
 
     //standar operasional prosedur
     Route::get('sop', 'MhsController@sop');
+
+    //pengalaman kerja
+    Route::get('pengalaman_kerja', 'MhsController@pengalaman_kerja');
+    Route::post('post_pengalaman', 'MhsController@post_pengalaman');
+    Route::put('put_pengalaman/{id}', 'MhsController@put_pengalaman');
+    Route::get('hapus_pengalaman/{id}', 'MhsController@hapus_pengalaman');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

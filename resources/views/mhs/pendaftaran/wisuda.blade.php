@@ -170,6 +170,7 @@
                                     <div class="form-group">
                                         <label>File Vaksin</label>
                                         <input type="file" class="form-control" name="file_vaksin" required>
+                                        <span>File size max. 4mb dan format file .jpg .png .pdf </span>
                                     </div>
                                 </div>
                             </div>
@@ -534,7 +535,7 @@
                                                 <input type="file" class="form-control" name="file_vaksin"
                                                     value="{{ $data->file_vaksin }}">
                                                 {{ $data->file_vaksin }} <br>
-                                                <span>File size max. 4mb dan format file .jpg </span>
+                                                <span>File size max. 4mb dan format file .jpg .png .pdf </span>
                                             </div>
 
                                             <button type="submit" class="btn btn-primary">Perbarui Data</button>

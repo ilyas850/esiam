@@ -2821,20 +2821,187 @@ class SadminController extends Controller
                 'skpi.date_lulus',
                 'skpi.no_skpi',
                 'skpi.no_ijazah',
-                'yudisium.id_student'
+                'yudisium.id_student',
+                'student.kodeprodi'
             )
             ->first();
 
         $nama_mhs = strtolower($mhs->nama_lengkap);
         $new_name = ucwords($nama_mhs);
         $nim = $mhs->nim;
-        $tmptlahir = $mhs->tmpt_lahir;
+        $tmptlahir = strtolower($mhs->tmpt_lahir);
+        $new_tmptlahir = ucwords($tmptlahir);
+
         $tgllahir = $mhs->tgl_lahir->isoFormat('D MMMM Y');
 
-        $dateTime = $mhs->date_masuk;
-        $updatedDateFormat =  Carbon::createFromFormat('Y-m-d', $dateTime)->isoFormat('D MMMM Y');
+        $datemasuk = $mhs->date_masuk;
+        $updatedDateMasuk =  Carbon::createFromFormat('Y-m-d', $datemasuk)->isoFormat('D MMMM Y');
 
-        dd($updatedDateFormat);
+        $datelulus = $mhs->date_lulus;
+        $updatedDateLulus =  Carbon::createFromFormat('Y-m-d', $datelulus)->isoFormat('D MMMM Y');
+
+        $ijazah = $mhs->no_ijazah;
+        $skpi = $mhs->no_skpi;
+
+        $prodi = $mhs->kodeprodi;
+
+        if ($prodi == 24) {
+            $pathTemplate = new TemplateProcessor('word-template/template SKPI FA.docx');
+        } elseif ($prodi == 22) {
+            # code...
+        } elseif ($prodi == 23) {
+            # code...
+        }
+
+        $template = $pathTemplate;
+        $template->setValue('nama', $new_name);
+        $template->setValue('tempat', $new_tmptlahir);
+        $template->setValue('tanggal', $tgllahir);
+        $template->setValue('nim', $nim);
+        $template->setValue('tanggal_masuk', $updatedDateMasuk);
+        $template->setValue('tanggal_lulus', $updatedDateLulus);
+        $template->setValue('no_ijazah', $ijazah);
+        $template->setValue('no_skpi', $skpi);
+
+        $dataA = Sertifikat::where('id_jeniskegiatan', 1)
+            ->where('id_student', $mhs->id_student)
+            ->get();
+
+        $dataB =  Sertifikat::where('id_jeniskegiatan', 2)
+            ->where('id_student', $mhs->id_student)
+            ->get();
+
+        $dataC =  Sertifikat::where('id_jeniskegiatan', 3)
+            ->where('id_student', $mhs->id_student)
+            ->get();
+
+        $dataD =  Sertifikat::where('id_jeniskegiatan', 4)
+            ->where('id_student', $mhs->id_student)
+            ->get();
+
+        $dataE =  Sertifikat::where('id_jeniskegiatan', 5)
+            ->where('id_student', $mhs->id_student)
+            ->get();
+
+        $pengalaman = Pengalaman::where('id_student', $mhs->id_student)
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        $data_baruA = [];
+
+        for ($i = 0; $i < count($dataA); $i++) {
+            $dataA[$i]->nama_kegiatan = str_replace('&', 'dan', $dataA[$i]->nama_kegiatan);
+            $updatedDatePelaksanaanA =  Carbon::createFromFormat('Y-m-d', $dataA[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+
+            $dA = [
+                'nama_kegiatan' => $dataA[$i]->nama_kegiatan,
+                'prestasi' => $dataA[$i]->prestasi,
+                'tingkat' => $dataA[$i]->tingkat,
+                'tgl_pelaksanaan' => $updatedDatePelaksanaanA,
+                'no' => $i + 1
+            ];
+
+            array_push($data_baruA, (object) $dA);
+        }
+
+        $data_baruB = [];
+
+        for ($i = 0; $i < count($dataB); $i++) {
+            $dataB[$i]->nama_kegiatan = str_replace('&', 'dan', $dataB[$i]->nama_kegiatan);
+            $updatedDatePelaksanaanB =  Carbon::createFromFormat('Y-m-d', $dataB[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $dB = [
+                'nama_kegiatanB' => $dataB[$i]->nama_kegiatan,
+                'prestasiB' => $dataB[$i]->prestasi,
+                'tingkatB' => $dataB[$i]->tingkat,
+                'tgl_pelaksanaanB' => $updatedDatePelaksanaanB,
+                'noB' => $i + 1
+            ];
+
+            array_push($data_baruB, (object) $dB);
+        }
+
+        $data_baruC = [];
+
+        for ($i = 0; $i < count($dataC); $i++) {
+            $dataC[$i]->nama_kegiatan = str_replace('&', 'dan', $dataC[$i]->nama_kegiatan);
+            $updatedDatePelaksanaanC =  Carbon::createFromFormat('Y-m-d', $dataC[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $dC = [
+                'nama_kegiatanC' => $dataC[$i]->nama_kegiatan,
+                'prestasiC' => $dataC[$i]->prestasi,
+                'tingkatC' => $dataC[$i]->tingkat,
+                'tgl_pelaksanaanC' => $updatedDatePelaksanaanC,
+                'noC' => $i + 1
+            ];
+
+            array_push($data_baruC, (object) $dC);
+        }
+
+        $data_baruD = [];
+
+        for ($i = 0; $i < count($dataD); $i++) {
+            $dataD[$i]->nama_kegiatan = str_replace('&', 'dan', $dataD[$i]->nama_kegiatan);
+            $updatedDatePelaksanaanD =  Carbon::createFromFormat('Y-m-d', $dataD[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $dD = [
+                'nama_kegiatanD' => $dataD[$i]->nama_kegiatan,
+                'prestasiD' => $dataD[$i]->prestasi,
+                'tingkatD' => $dataD[$i]->tingkat,
+                'tgl_pelaksanaanD' => $updatedDatePelaksanaanD,
+                'noD' => $i + 1
+            ];
+
+            array_push($data_baruD, (object) $dD);
+        }
+
+        $data_baruE = [];
+
+        for ($i = 0; $i < count($dataE); $i++) {
+            $dataE[$i]->nama_kegiatan = str_replace('&', 'dan', $dataE[$i]->nama_kegiatan);
+            $updatedDatePelaksanaanE =  Carbon::createFromFormat('Y-m-d', $dataE[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $dE = [
+                'nama_kegiatanE' => $dataE[$i]->nama_kegiatan,
+                'prestasiE' => $dataE[$i]->prestasi,
+                'tingkatE' => $dataE[$i]->tingkat,
+                'tgl_pelaksanaanE' => $updatedDatePelaksanaanE,
+                'noE' => $i + 1
+            ];
+
+            array_push($data_baruE, (object) $dE);
+        }
+
+        $data_pengalaman = [];
+
+        for ($i = 0; $i < count($pengalaman); $i++) {
+            $pengalaman[$i]->nama_pt = str_replace('&', 'dan', $pengalaman[$i]->nama_pt);
+
+            $peng = [
+                'nama_pt' => $pengalaman[$i]->nama_pt,
+                'posisi' => $pengalaman[$i]->posisi,
+                'tahun_masuk' => $pengalaman[$i]->tahun_masuk,
+                'tahun_keluar' =>  $pengalaman[$i]->tahun_keluar,
+                'noP' => $i + 1
+            ];
+
+            array_push($data_pengalaman, (object) $peng);
+        }
+
+        $template->cloneRowAndSetValues('nama_kegiatan', $data_baruA);
+
+        $template->cloneRowAndSetValues('nama_kegiatanB', $data_baruB);
+
+        $template->cloneRowAndSetValues('nama_kegiatanC', $data_baruC);
+
+        $template->cloneRowAndSetValues('nama_kegiatanD', $data_baruD);
+
+        $template->cloneRowAndSetValues('nama_kegiatanE', $data_baruE);
+
+        $template->cloneRowAndSetValues('nama_pt', $data_pengalaman);
+
+        $fileName = $new_name;
+
+        $template->saveAs($fileName . '.docx');
+        return response()
+            ->download($fileName . '.docx')
+            ->deleteFileAfterSend(true);
     }
 
     public function save_skpi_prodi(Request $request)

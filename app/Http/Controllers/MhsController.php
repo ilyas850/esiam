@@ -50,6 +50,7 @@ use App\Skpi;
 use App\Yudisium;
 use App\Wisuda;
 use App\Standar;
+use App\Pengalaman;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -3553,7 +3554,6 @@ class MhsController extends Controller
 
     public function put_yudisium(Request $request, $id)
     {
-
         $bap = Yudisium::find($id);
         $bap->id_student = Auth::user()->id_user;
         $bap->nama_lengkap = $request->nama_lengkap;
@@ -3854,5 +3854,54 @@ class MhsController extends Controller
         $data = Standar::where('status', 'ACTIVE')->get();
 
         return view('mhs/sop', compact('data'));
+    }
+
+    public function pengalaman_kerja()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Pengalaman::where('id_student', $id)
+        ->where('status', 'ACTIVE')
+        ->get();
+
+        return view('mhs/pengalaman/pengalaman_kerja', compact('data'));
+    }
+
+    public function post_pengalaman(Request $request)
+    {
+        $info = new Pengalaman();
+        $info->nama_pt = $request->nama_pt;
+        $info->posisi = $request->posisi;
+        $info->tahun_masuk = $request->tahun_masuk;
+        $info->tahun_keluar = $request->tahun_keluar;
+        $info->id_student = Auth::user()->id_user;
+        $info->created_by = Auth::user()->name;
+        $info->save();
+
+        Alert::success('', 'Pengalaman berhasil ditambahkan')->autoclose(3500);
+        return redirect('pengalaman_kerja');
+    }
+
+    public function put_pengalaman(Request $request, $id)
+    {
+        $info = Pengalaman::find($id);
+        $info->nama_pt = $request->nama_pt;
+        $info->posisi = $request->posisi;
+        $info->tahun_masuk = $request->tahun_masuk;
+        $info->tahun_keluar = $request->tahun_keluar;
+        $info->id_student = Auth::user()->id_user;
+        $info->updated_by = Auth::user()->name;
+        $info->save();
+
+        Alert::success('', 'Pengalaman berhasil diedit')->autoclose(3500);
+        return redirect('pengalaman_kerja');
+    }
+
+    public function hapus_pengalaman($id)
+    {
+        Pengalaman::where('id_pengalaman', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pengalaman berhasil dihapus')->autoclose(3500);
+        return redirect('pengalaman_kerja');
     }
 }
