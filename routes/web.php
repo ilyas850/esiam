@@ -337,6 +337,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('simpan_jeniskegiatan', 'SadminController@simpan_jeniskegiatan');
     Route::put('put_jeniskegiatan/{id}', 'SadminController@put_jeniskegiatan');
     Route::get('hapus_jeniskegiatan/{id}', 'SadminController@hapus_jeniskegiatan');
+
+    //pengalaman kerja mahasiswa
+    Route::get('pengalaman_kerja_mahasiswa', 'SadminController@pengalaman_kerja_mahasiswa');
+    Route::get('detail_pengalaman/{id}', 'SadminController@detail_pengalaman');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

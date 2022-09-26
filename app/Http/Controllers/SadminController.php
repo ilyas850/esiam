@@ -5160,4 +5160,37 @@ class SadminController extends Controller
         Alert::success('', 'Jenis Kegiatan berhasil dihapus')->autoclose(3500);
         return redirect('jenis_kegiatan');
     }
+
+    public function pengalaman_kerja_mahasiswa()
+    {
+        $data = Pengalaman::leftjoin('student', 'pengalaman_kerja.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('pengalaman_kerja.status', 'ACTIVE')
+            ->select(DB::raw('COUNT(pengalaman_kerja.id_student) as jml_pengalaman'), 'pengalaman_kerja.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+            ->groupBy('pengalaman_kerja.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+            ->get();
+
+        return view('sadmin/datamahasiswa/pengalaman_kerja', compact('data'));
+    }
+
+    public function detail_pengalaman($id)
+    {
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.idstudent', $id)
+            ->first();
+
+        $data = Pengalaman::where('id_student', $id)->get();
+
+        return view('sadmin/datamahasiswa/detail_pengalaman_kerja', compact('data', 'mhs'));
+    }
 }

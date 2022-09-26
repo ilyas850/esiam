@@ -54,6 +54,8 @@
                     Mahasiswa</a></li>
             <li><a href="{{ url('record_sertifikat_mahasiswa') }}"><i class="fa fa-circle-o"></i>Sertifikat
                     Mahasiswa</a></li>
+            <li><a href="{{ url('pengalaman_kerja_mahasiswa') }}"><i class="fa fa-circle-o"></i>Pengalaman Kerja
+                    Mahasiswa</a></li>
         </ul>
     </li>
     <li class="treeview">
