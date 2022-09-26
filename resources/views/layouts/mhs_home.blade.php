@@ -103,6 +103,9 @@
                     @endif
                 </p>
                 <hr>
+                <strong><i class="fa fa-cc-mastercard"></i> Virtual Account</strong>
+                <p class="text-muted">{{ $mhs->virtual_account }}</p>
+                <hr>
 
                 @if ($mhs->id_mhs == null)
                     <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
@@ -111,6 +114,7 @@
                     <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i class="fa fa-edit"></i>
                         Edit data No HP dan E-mail</a>
                 @endif
+
             </div>
         </div>
     </div>

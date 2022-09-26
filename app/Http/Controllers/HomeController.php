@@ -68,7 +68,8 @@ class HomeController extends Controller
         'prodi.id_prodi',
         'prodi.konsentrasi',
         'student.idangkatan',
-        'student.kodeprodi'
+        'student.kodeprodi',
+        'student.virtual_account'
       )
       ->first();
 
