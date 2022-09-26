@@ -5173,6 +5173,9 @@ class SadminController extends Controller
             ->where('pengalaman_kerja.status', 'ACTIVE')
             ->select(DB::raw('COUNT(pengalaman_kerja.id_student) as jml_pengalaman'), 'pengalaman_kerja.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
             ->groupBy('pengalaman_kerja.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('sadmin/datamahasiswa/pengalaman_kerja', compact('data'));
