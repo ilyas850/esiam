@@ -2864,22 +2864,27 @@ class SadminController extends Controller
         $template->setValue('no_skpi', $skpi);
 
         $dataA = Sertifikat::where('id_jeniskegiatan', 1)
+            ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
         $dataB =  Sertifikat::where('id_jeniskegiatan', 2)
+            ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
         $dataC =  Sertifikat::where('id_jeniskegiatan', 3)
+            ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
         $dataD =  Sertifikat::where('id_jeniskegiatan', 4)
+            ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
         $dataE =  Sertifikat::where('id_jeniskegiatan', 5)
+            ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
