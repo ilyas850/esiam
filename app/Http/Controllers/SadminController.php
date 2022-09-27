@@ -403,7 +403,7 @@ class SadminController extends Controller
     {
         $angk = Angkatan::all();
 
-        $fototk = Student::where('kodeprodi', 22)
+        $fototk = Student::whereIn('kodeprodi', [22, 25])
             ->where('active', 1)
             ->orderBy('idangkatan', 'DESC')
             ->paginate(12);
@@ -418,7 +418,7 @@ class SadminController extends Controller
             ->orderBy('idangkatan', 'DESC')
             ->paginate(12);
 
-        $jmltk = Student::where('kodeprodi', 22)
+        $jmltk = Student::whereIn('kodeprodi', [22, 25])
             ->where('active', 1)
             ->get();
         $jmlti = Student::where('kodeprodi', 23)
@@ -453,12 +453,12 @@ class SadminController extends Controller
     public function lihat_foto_tk()
     {
         $angk = Angkatan::all();
-        $fototk = Student::where('kodeprodi', 22)
+        $fototk = Student::whereIn('kodeprodi', [22, 25])
             ->where('active', 1)
             ->orderBy('idangkatan', 'DESC')
             ->get();
 
-        $jmltk = Student::where('kodeprodi', 22)
+        $jmltk = Student::whereIn('kodeprodi', [22,25])
             ->where('active', 1)
             ->get();
 
@@ -487,10 +487,16 @@ class SadminController extends Controller
         $nilai = student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.idstatus', 'student.nim', 'student.idangkatan', 'student.kodeprodi', 'student.nama')
-            ->orderBy('student.nim', 'DESC')
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'student.idangkatan', 'prodi.prodi', 'prodi.konsentrasi', 'student.nama')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('sadmin/nilai/data_nilai', ['nilai' => $nilai]);
