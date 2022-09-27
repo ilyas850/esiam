@@ -82,7 +82,7 @@
                                     <button class="btn btn-success btn-xs" data-toggle="modal"
                                         data-target="#modalUpdateStandar{{ $keypdm->id_pedomanakademik }}"
                                         title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                    <a href="hapus_standar_pendidikan_nasional/{{ $keypdm->id_pedomanakademik }}"
+                                    <a href="hapus_pedoman_akademik/{{ $keypdm->id_pedomanakademik }}"
                                         class="btn btn-danger btn-xs" title="klik untuk hapus"
                                         onclick="return confirm('anda yakin akan menghapus ini?')"><i
                                             class="fa fa-trash"></i></a>
@@ -111,9 +111,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-12">
+                                                        <label>Periode Tahun</label>
                                                         <select class="form-control" name="id_periodetahun">
-                                                            <option></option>
+                                                            <option value="{{ $keypdm->id_periodetahun }}">
+                                                                {{ $keypdm->periode_tahun }}</option>
                                                             @foreach ($tahun as $thn)
                                                                 <option value="{{ $thn->id_periodetahun }}">
                                                                     {{ $thn->periode_tahun }}</option>

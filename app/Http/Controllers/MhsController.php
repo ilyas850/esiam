@@ -1557,7 +1557,7 @@ class MhsController extends Controller
     public function pedoman_akademik()
     {
         $thn = Periode_tahun::all();
-        $pedoman = Pedoman_akademik::all();
+        $pedoman = Pedoman_akademik::where('status', 'ACTIVE')->get();
 
         return view('mhs/pedoman_akademik', ['pedoman' => $pedoman, 'idhn' => $thn]);
     }

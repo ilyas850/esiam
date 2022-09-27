@@ -43,6 +43,7 @@ use App\Prausta_master_penilaian;
 use App\Prausta_trans_penilaian;
 use App\Setting_nilai;
 use App\Standar;
+use App\Pedoman_akademik;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Soal_ujian;
@@ -50,6 +51,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Response;
 
 class DosenController extends Controller
 {
@@ -5737,5 +5739,25 @@ class DosenController extends Controller
         $data = Standar::where('status', 'ACTIVE')->get();
 
         return view('dosen/sop', compact('data'));
+    }
+
+    public function pedoman_akademik_dsn_dlm()
+    {
+        $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->where('pedoman_akademik.status', 'ACTIVE')
+            ->get();
+
+        return view('dosen/pedoman_akademik', ['pedoman' => $pedoman]);
+    }
+
+    public function download_pedoman_dsn_dlm($id)
+    {
+        $ped = Pedoman_akademik::where('id_pedomanakademik', $id)->get();
+        foreach ($ped as $keyped) {
+            // code...
+        }
+        //PDF file is stored under project/public/download/info.pdf
+        $file = 'pedoman/' . $keyped->file;
+        return Response::download($file);
     }
 }

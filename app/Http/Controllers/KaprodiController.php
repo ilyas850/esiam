@@ -43,6 +43,7 @@ use App\Soal_ujian;
 use App\Setting_nilai;
 use App\Standar;
 use App\Sertifikat;
+use App\Pedoman_akademik;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -55,6 +56,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Response;
 
 class KaprodiController extends Controller
 {
@@ -8150,4 +8152,24 @@ class KaprodiController extends Controller
 
     return redirect('cek_sertifikat_kprd/' . $idmhs->id_student);
   }
+
+  public function pedoman_akademik_dsn_kprd()
+    {
+        $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->where('pedoman_akademik.status', 'ACTIVE')
+            ->get();
+
+        return view('kaprodi/pedoman_akademik', ['pedoman' => $pedoman]);
+    }
+
+    public function download_pedoman_dsn_kprd($id)
+    {
+        $ped = Pedoman_akademik::where('id_pedomanakademik', $id)->get();
+        foreach ($ped as $keyped) {
+            // code...
+        }
+        //PDF file is stored under project/public/download/info.pdf
+        $file = 'pedoman/' . $keyped->file;
+        return Response::download($file);
+    }
 }

@@ -136,6 +136,8 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::delete('hapususerdsn_luar/{id}', 'SadminController@hapususerdsn_luar');
     Route::get('pdm_aka', 'SadminController@pedoman');
     Route::post('save_pedoman_akademik', 'SadminController@save_pedoman_akademik');
+    Route::put('put_pedoman_akademik/{id}', 'SadminController@put_pedoman_akademik');
+    Route::get('hapus_pedoman_akademik/{id}', 'SadminController@hapus_pedoman_akademik');
     Route::get('data_ktm', 'SadminController@data_ktm');
     Route::post('view_ktm', 'SadminController@view_ktm');
     Route::get('downloadktm/{id}', 'SadminController@downloadktm');
@@ -493,6 +495,10 @@ Route::group(['middleware' => 'dosen'], function () {
 
     //standar operasional prosedur
     Route::get('sop_dsn_dlm', 'DosenController@sop_dsn_dlm');
+
+    //pedoman akademik
+    Route::get('pedoman_akademik_dsn_dlm', 'DosenController@pedoman_akademik_dsn_dlm');
+    Route::get('download_pedoman_dsn_dlm/{id}', 'DosenController@download_pedoman_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -804,6 +810,10 @@ Route::group(['middleware' => 'dosenluar'], function () {
 
     //standar operasional prosedur
     Route::get('sop_dsn_luar', 'DosenluarController@sop_dsn_luar');
+
+    //pedoman akademik
+    Route::get('pedoman_akademik_dsn_luar', 'DosenluarController@pedoman_akademik_dsn_luar');
+    Route::get('download_pedoman_dsn_luar/{id}', 'DosenluarController@download_pedoman_dsn_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -1043,6 +1053,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('validasi_sertifikat/{id}', 'KaprodiController@validasi_sertifikat');
     Route::get('batal_validasi_sertifikat/{id}', 'KaprodiController@batal_validasi_sertifikat');
     Route::post('save_validasi_all_sertifikat', 'KaprodiController@save_validasi_all_sertifikat');
+
+    //pedoman akademik
+    Route::get('pedoman_akademik_dsn_kprd', 'KaprodiController@pedoman_akademik_dsn_kprd');
+    Route::get('download_pedoman_dsn_kprd/{id}', 'KaprodiController@download_pedoman_dsn_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

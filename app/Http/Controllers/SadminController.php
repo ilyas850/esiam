@@ -169,25 +169,11 @@ class SadminController extends Controller
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->select(
-                'users.id',
-                'users.id_user',
-                'users.username',
-                'users.deleted_at',
-                'passwords.pwd',
-                'student.nim',
-                'student.nama',
-                'kelas.kelas',
-                'prodi.prodi',
-                'student.idstudent',
-                'users.role',
-                'angkatan.angkatan'
-            )
+            ->select('users.id', 'users.id_user', 'users.username', 'users.deleted_at', 'passwords.pwd', 'student.nim', 'student.nama', 'kelas.kelas', 'prodi.prodi', 'student.idstudent', 'users.role', 'angkatan.angkatan')
             ->where('student.active', 1)
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('student.nim', 'ASC')
             ->get();
-
 
         return view('sadmin/data_user', ['users' => $usermhs]);
     }
@@ -751,7 +737,6 @@ class SadminController extends Controller
 
     public function view_krs(Request $request)
     {
-
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
         $tp = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -881,8 +866,48 @@ class SadminController extends Controller
         }
 
         $pedoman->save();
-        Alert::success('', 'Informasi berhasil ditambahkan')->autoclose(3500);
+        Alert::success('', 'Pedoman berhasil ditambahkan')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function put_pedoman_akademik(Request $request, $id)
+    {
+        $info = Pedoman_akademik::find($id);
+        $info->nama_pedoman = $request->nama_pedoman;
+        $info->id_periodetahun = $request->id_periodetahun;
+
+        if ($info->file) {
+            if ($request->hasFile('file')) {
+                File::delete('pedoman/' . $info->file);
+                $file = $request->file('file');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'pedoman';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'pedoman';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        }
+
+        $info->save();
+
+        Alert::success('', 'Pedoman berhasil diedit')->autoclose(3500);
+        return redirect('pdm_aka');
+    }
+
+    public function hapus_pedoman_akademik($id)
+    {
+        Pedoman_akademik::where('id_pedomanakademik', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pedoman berhasil dihapus')->autoclose(3500);
+        return redirect('pdm_aka');
     }
 
     public function data_ktm()
@@ -991,29 +1016,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetahun', $idtahun)
             ->where('kurikulum_periode.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
-            ->select(
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'matakuliah.akt_sks_teori',
-                'matakuliah.akt_sks_praktek',
-                DB::raw('COUNT(student_record.id_student) as jml_mhs'),
-                'dosen.nama',
-                'kelas.kelas',
-                'student_record.id_kurperiode',
-                'prodi.prodi',
-                'prodi.konsentrasi'
-            )
-            ->groupBy(
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'matakuliah.akt_sks_teori',
-                'matakuliah.akt_sks_praktek',
-                'dosen.nama',
-                'kelas.kelas',
-                'student_record.id_kurperiode',
-                'prodi.prodi',
-                'prodi.konsentrasi'
-            )
+            ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi', 'prodi.konsentrasi')
+            ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi', 'prodi.konsentrasi')
             ->get();
 
         return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai, 'namaperiodetipe' => $namaperiodetipe, 'namaperiodetahun' => $namaperiodetahun]);
@@ -2465,7 +2469,7 @@ class SadminController extends Controller
 
         User::where('username', 'wadir1')->update([
             'id_user' => $request->id_dosen,
-            'name' => $nama_dsn
+            'name' => $nama_dsn,
         ]);
 
         $prd = Wadir::find($id);
@@ -2813,18 +2817,7 @@ class SadminController extends Controller
         $mhs = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
             ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
             ->where('skpi.id_skpi', $id)
-            ->select(
-                'yudisium.nama_lengkap',
-                'student.nim',
-                'yudisium.tmpt_lahir',
-                'yudisium.tgl_lahir',
-                'skpi.date_masuk',
-                'skpi.date_lulus',
-                'skpi.no_skpi',
-                'skpi.no_ijazah',
-                'yudisium.id_student',
-                'student.kodeprodi'
-            )
+            ->select('yudisium.nama_lengkap', 'student.nim', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_skpi', 'skpi.no_ijazah', 'yudisium.id_student', 'student.kodeprodi')
             ->first();
 
         $nama_mhs = strtolower($mhs->nama_lengkap);
@@ -2836,10 +2829,10 @@ class SadminController extends Controller
         $tgllahir = $mhs->tgl_lahir->isoFormat('D MMMM Y');
 
         $datemasuk = $mhs->date_masuk;
-        $updatedDateMasuk =  Carbon::createFromFormat('Y-m-d', $datemasuk)->isoFormat('D MMMM Y');
+        $updatedDateMasuk = Carbon::createFromFormat('Y-m-d', $datemasuk)->isoFormat('D MMMM Y');
 
         $datelulus = $mhs->date_lulus;
-        $updatedDateLulus =  Carbon::createFromFormat('Y-m-d', $datelulus)->isoFormat('D MMMM Y');
+        $updatedDateLulus = Carbon::createFromFormat('Y-m-d', $datelulus)->isoFormat('D MMMM Y');
 
         $ijazah = $mhs->no_ijazah;
         $skpi = $mhs->no_skpi;
@@ -2869,22 +2862,22 @@ class SadminController extends Controller
             ->where('id_student', $mhs->id_student)
             ->get();
 
-        $dataB =  Sertifikat::where('id_jeniskegiatan', 2)
+        $dataB = Sertifikat::where('id_jeniskegiatan', 2)
             ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
-        $dataC =  Sertifikat::where('id_jeniskegiatan', 3)
+        $dataC = Sertifikat::where('id_jeniskegiatan', 3)
             ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
-        $dataD =  Sertifikat::where('id_jeniskegiatan', 4)
+        $dataD = Sertifikat::where('id_jeniskegiatan', 4)
             ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
 
-        $dataE =  Sertifikat::where('id_jeniskegiatan', 5)
+        $dataE = Sertifikat::where('id_jeniskegiatan', 5)
             ->where('validasi', 'SUDAH')
             ->where('id_student', $mhs->id_student)
             ->get();
@@ -2897,14 +2890,14 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($dataA); $i++) {
             $dataA[$i]->nama_kegiatan = str_replace('&', 'dan', $dataA[$i]->nama_kegiatan);
-            $updatedDatePelaksanaanA =  Carbon::createFromFormat('Y-m-d', $dataA[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $updatedDatePelaksanaanA = Carbon::createFromFormat('Y-m-d', $dataA[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
 
             $dA = [
                 'nama_kegiatan' => $dataA[$i]->nama_kegiatan,
                 'prestasi' => $dataA[$i]->prestasi,
                 'tingkat' => $dataA[$i]->tingkat,
                 'tgl_pelaksanaan' => $updatedDatePelaksanaanA,
-                'no' => $i + 1
+                'no' => $i + 1,
             ];
 
             array_push($data_baruA, (object) $dA);
@@ -2914,13 +2907,13 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($dataB); $i++) {
             $dataB[$i]->nama_kegiatan = str_replace('&', 'dan', $dataB[$i]->nama_kegiatan);
-            $updatedDatePelaksanaanB =  Carbon::createFromFormat('Y-m-d', $dataB[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $updatedDatePelaksanaanB = Carbon::createFromFormat('Y-m-d', $dataB[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
             $dB = [
                 'nama_kegiatanB' => $dataB[$i]->nama_kegiatan,
                 'prestasiB' => $dataB[$i]->prestasi,
                 'tingkatB' => $dataB[$i]->tingkat,
                 'tgl_pelaksanaanB' => $updatedDatePelaksanaanB,
-                'noB' => $i + 1
+                'noB' => $i + 1,
             ];
 
             array_push($data_baruB, (object) $dB);
@@ -2930,13 +2923,13 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($dataC); $i++) {
             $dataC[$i]->nama_kegiatan = str_replace('&', 'dan', $dataC[$i]->nama_kegiatan);
-            $updatedDatePelaksanaanC =  Carbon::createFromFormat('Y-m-d', $dataC[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $updatedDatePelaksanaanC = Carbon::createFromFormat('Y-m-d', $dataC[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
             $dC = [
                 'nama_kegiatanC' => $dataC[$i]->nama_kegiatan,
                 'prestasiC' => $dataC[$i]->prestasi,
                 'tingkatC' => $dataC[$i]->tingkat,
                 'tgl_pelaksanaanC' => $updatedDatePelaksanaanC,
-                'noC' => $i + 1
+                'noC' => $i + 1,
             ];
 
             array_push($data_baruC, (object) $dC);
@@ -2946,13 +2939,13 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($dataD); $i++) {
             $dataD[$i]->nama_kegiatan = str_replace('&', 'dan', $dataD[$i]->nama_kegiatan);
-            $updatedDatePelaksanaanD =  Carbon::createFromFormat('Y-m-d', $dataD[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $updatedDatePelaksanaanD = Carbon::createFromFormat('Y-m-d', $dataD[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
             $dD = [
                 'nama_kegiatanD' => $dataD[$i]->nama_kegiatan,
                 'prestasiD' => $dataD[$i]->prestasi,
                 'tingkatD' => $dataD[$i]->tingkat,
                 'tgl_pelaksanaanD' => $updatedDatePelaksanaanD,
-                'noD' => $i + 1
+                'noD' => $i + 1,
             ];
 
             array_push($data_baruD, (object) $dD);
@@ -2962,13 +2955,13 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($dataE); $i++) {
             $dataE[$i]->nama_kegiatan = str_replace('&', 'dan', $dataE[$i]->nama_kegiatan);
-            $updatedDatePelaksanaanE =  Carbon::createFromFormat('Y-m-d', $dataE[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
+            $updatedDatePelaksanaanE = Carbon::createFromFormat('Y-m-d', $dataE[$i]->tgl_pelaksanaan)->isoFormat('D MMMM Y');
             $dE = [
                 'nama_kegiatanE' => $dataE[$i]->nama_kegiatan,
                 'prestasiE' => $dataE[$i]->prestasi,
                 'tingkatE' => $dataE[$i]->tingkat,
                 'tgl_pelaksanaanE' => $updatedDatePelaksanaanE,
-                'noE' => $i + 1
+                'noE' => $i + 1,
             ];
 
             array_push($data_baruE, (object) $dE);
@@ -2983,8 +2976,8 @@ class SadminController extends Controller
                 'nama_pt' => $pengalaman[$i]->nama_pt,
                 'posisi' => $pengalaman[$i]->posisi,
                 'tahun_masuk' => $pengalaman[$i]->tahun_masuk,
-                'tahun_keluar' =>  $pengalaman[$i]->tahun_keluar,
-                'noP' => $i + 1
+                'tahun_keluar' => $pengalaman[$i]->tahun_keluar,
+                'noP' => $i + 1,
             ];
 
             array_push($data_pengalaman, (object) $peng);
@@ -3020,7 +3013,7 @@ class SadminController extends Controller
 
         $jml_id = count($data_student);
 
-        for ($i = 0; $i <  $jml_id; $i++) {
+        for ($i = 0; $i < $jml_id; $i++) {
             $idstudent = $data_student[$i];
             $noskpi = $data_skpi[$i];
             $noijazah = $data_ijazah[$i];
@@ -3036,13 +3029,12 @@ class SadminController extends Controller
                 $abs->date_lulus = $tgl_lulus;
                 $abs->save();
             } elseif (count($cek) > 0) {
-                Skpi::where('id_student', $idstudent)
-                    ->update([
-                        'no_skpi' => $noskpi,
-                        'no_ijazah' => $noijazah,
-                        'date_masuk' => $tgl_masuk,
-                        'date_lulus' => $tgl_lulus
-                    ]);
+                Skpi::where('id_student', $idstudent)->update([
+                    'no_skpi' => $noskpi,
+                    'no_ijazah' => $noijazah,
+                    'date_masuk' => $tgl_masuk,
+                    'date_lulus' => $tgl_lulus,
+                ]);
             }
         }
 
@@ -4144,19 +4136,7 @@ class SadminController extends Controller
             ->leftjoin('transkrip_final', 'yudisium.id_student', '=', 'transkrip_final.id_student')
             ->where('student.active', 1)
             ->where('yudisium.id_yudisium', $id)
-            ->select(
-                'yudisium.nama_lengkap',
-                'student.nim',
-                'yudisium.tmpt_lahir',
-                'yudisium.tgl_lahir',
-                'yudisium.nik',
-                'prodi.prodi',
-                'prodi.study_year',
-                'prodi.kodeprodi',
-                'transkrip_final.no_ijazah',
-                'transkrip_final.tgl_yudisium',
-                'transkrip_final.tgl_wisuda'
-            )
+            ->select('yudisium.nama_lengkap', 'student.nim', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'yudisium.nik', 'prodi.prodi', 'prodi.study_year', 'prodi.kodeprodi', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda')
             ->first();
 
         //no ijazah
@@ -4204,7 +4184,6 @@ class SadminController extends Controller
             $wisuda = $data_mhs->tgl_wisuda;
         }
 
-
         $pisahyudi = explode('-', $yudisium);
 
         $pisahwisu = explode('-', $wisuda);
@@ -4231,7 +4210,6 @@ class SadminController extends Controller
         //tanggal wisuda
         $tglwisuda = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
 
-
         $template = new TemplateProcessor('word-template/Template Ijazah 2022 New.docx');
 
         $template->setValue('nama', $new_nama);
@@ -4246,8 +4224,7 @@ class SadminController extends Controller
         $template->setValue('jenjang', $jenjang);
         $template->setValue('gelar', $gelar);
 
-
-        $fileName =  $new_nama . ' ' . $nim . ' ' . $prodi;
+        $fileName = $new_nama . ' ' . $nim . ' ' . $prodi;
 
         $template->saveAs($fileName . '.docx');
         return response()
@@ -4259,37 +4236,13 @@ class SadminController extends Controller
     {
         $prodi = Prodi::all();
 
-        $data  = Wisuda::join('student', 'wisuda.id_student', '=', 'student.idstudent')
+        $data = Wisuda::join('student', 'wisuda.id_student', '=', 'student.idstudent')
             ->leftjoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.active', 1)
-            ->select(
-                'wisuda.id_wisuda',
-                'wisuda.nama_lengkap',
-                'wisuda.nim',
-                'wisuda.tahun_lulus',
-                'wisuda.ukuran_toga',
-                'wisuda.no_hp',
-                'wisuda.email',
-                'wisuda.nik',
-                'wisuda.alamat_ktp',
-                'wisuda.alamat_domisili',
-                'wisuda.nama_ayah',
-                'wisuda.nama_ibu',
-                'wisuda.no_hp_ayah',
-                'wisuda.no_hp_ibu',
-                'wisuda.alamat_ortu',
-                'wisuda.status_vaksin',
-                'wisuda.file_vaksin',
-                'wisuda.npwp',
-                'wisuda.validasi',
-                'wisuda.id_student',
-                'wisuda.id_prodi',
-                'prodi.prodi',
-                'kelas.kelas'
-            )
+            ->select('wisuda.id_wisuda', 'wisuda.nama_lengkap', 'wisuda.nim', 'wisuda.tahun_lulus', 'wisuda.ukuran_toga', 'wisuda.no_hp', 'wisuda.email', 'wisuda.nik', 'wisuda.alamat_ktp', 'wisuda.alamat_domisili', 'wisuda.nama_ayah', 'wisuda.nama_ibu', 'wisuda.no_hp_ayah', 'wisuda.no_hp_ibu', 'wisuda.alamat_ortu', 'wisuda.status_vaksin', 'wisuda.file_vaksin', 'wisuda.npwp', 'wisuda.validasi', 'wisuda.id_student', 'wisuda.id_prodi', 'prodi.prodi', 'kelas.kelas')
             ->get();
 
         return view('sadmin/masterakademik/master_wisuda', compact('data', 'prodi'));
@@ -4299,28 +4252,28 @@ class SadminController extends Controller
     {
         $message = [
             'max' => ':attribute harus diisi maksimal :max KB',
-            'required' => ':attribute wajib diisi'
+            'required' => ':attribute wajib diisi',
         ];
         $this->validate(
             $request,
             [
-                'ukuran_toga'       => 'required',
-                'status_vaksin'     => 'required',
-                'tahun_lulus'       => 'required',
-                'nim'               => 'required',
-                'nama_lengkap'      => 'required',
-                'id_prodi'          => 'required',
-                'no_hp'             => 'required',
-                'email'             => 'required',
-                'nik'               => 'required',
-                'npwp'              => 'required',
-                'alamat_ktp'        => 'required',
-                'alamat_domisili'   => 'required',
-                'nama_ayah'         => 'required',
-                'nama_ibu'          => 'required',
-                'no_hp_ayah'        => 'required',
-                'alamat_ortu'       => 'required',
-                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+                'ukuran_toga' => 'required',
+                'status_vaksin' => 'required',
+                'tahun_lulus' => 'required',
+                'nim' => 'required',
+                'nama_lengkap' => 'required',
+                'id_prodi' => 'required',
+                'no_hp' => 'required',
+                'email' => 'required',
+                'nik' => 'required',
+                'npwp' => 'required',
+                'alamat_ktp' => 'required',
+                'alamat_domisili' => 'required',
+                'nama_ayah' => 'required',
+                'nama_ibu' => 'required',
+                'no_hp_ayah' => 'required',
+                'alamat_ortu' => 'required',
+                'file_vaksin' => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
             ],
             $message,
         );
@@ -4329,27 +4282,27 @@ class SadminController extends Controller
         $bap->id_student = $request->id_student;
         $bap->ukuran_toga = $request->ukuran_toga;
         $bap->status_vaksin = $request->status_vaksin;
-        $bap->tahun_lulus       = $request->tahun_lulus;
-        $bap->nim               = $request->nim;
-        $bap->nama_lengkap      = $request->nama_lengkap;
-        $bap->id_prodi          = $request->id_prodi;
-        $bap->no_hp             = $request->no_hp;
-        $bap->email             = $request->email;
-        $bap->nik               = $request->nik;
-        $bap->npwp              = $request->npwp;
-        $bap->alamat_ktp        = $request->alamat_ktp;
-        $bap->alamat_domisili   = $request->alamat_domisili;
-        $bap->nama_ayah         = $request->nama_ayah;
-        $bap->nama_ibu          = $request->nama_ibu;
-        $bap->no_hp_ayah        = $request->no_hp_ayah;
-        $bap->no_hp_ibu         = $request->no_hp_ibu;
-        $bap->alamat_ortu       = $request->alamat_ortu;
+        $bap->tahun_lulus = $request->tahun_lulus;
+        $bap->nim = $request->nim;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->id_prodi = $request->id_prodi;
+        $bap->no_hp = $request->no_hp;
+        $bap->email = $request->email;
+        $bap->nik = $request->nik;
+        $bap->npwp = $request->npwp;
+        $bap->alamat_ktp = $request->alamat_ktp;
+        $bap->alamat_domisili = $request->alamat_domisili;
+        $bap->nama_ayah = $request->nama_ayah;
+        $bap->nama_ibu = $request->nama_ibu;
+        $bap->no_hp_ayah = $request->no_hp_ayah;
+        $bap->no_hp_ibu = $request->no_hp_ibu;
+        $bap->alamat_ortu = $request->alamat_ortu;
 
         if ($bap->file_vaksin) {
             if ($request->hasFile('file_vaksin')) {
                 File::delete('File Vaksin/' . $request->id_student . '/' . $bap->file_vaksin);
                 $file = $request->file('file_vaksin');
-                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $nama_file = 'File Vaksin' . '-' . $file->getClientOriginalName();
                 $tujuan_upload = 'File Vaksin/' . $request->id_student;
                 $file->move($tujuan_upload, $nama_file);
                 $bap->file_vaksin = $nama_file;
@@ -4357,7 +4310,7 @@ class SadminController extends Controller
         } else {
             if ($request->hasFile('file_vaksin')) {
                 $file = $request->file('file_vaksin');
-                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
+                $nama_file = 'File Vaksin' . '-' . $file->getClientOriginalName();
                 $tujuan_upload = 'File Vaksin/' . $request->id_student;
                 $file->move($tujuan_upload, $nama_file);
                 $bap->file_vaksin = $nama_file;
@@ -4435,33 +4388,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4499,33 +4427,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4563,33 +4466,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4627,33 +4505,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4691,33 +4544,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4755,33 +4583,8 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
-            )
-            ->groupBy(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'student.nama',
-                'student.nim',
-                'student.idstudent',
-                'prodi.prodi',
-                'kelas.kelas',
-                'angkatan.angkatan',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
-            )
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
+            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -5005,8 +4808,7 @@ class SadminController extends Controller
                 $tra = $idj[0];
                 $trs = $idj[1];
 
-                Sertifikat::where('id_sertifikat', $tra)
-                    ->update(['id_jeniskegiatan' => $trs]);
+                Sertifikat::where('id_sertifikat', $tra)->update(['id_jeniskegiatan' => $trs]);
             }
         }
 
@@ -5039,7 +4841,7 @@ class SadminController extends Controller
     public function tutup_yudisium($id)
     {
         Waktu::where('id_waktu', $id)->update([
-            'status' => '0'
+            'status' => '0',
         ]);
 
         return redirect()->back();
@@ -5057,7 +4859,7 @@ class SadminController extends Controller
         $this->validate($request, [
             'nama_standar' => 'required',
             'file_sop' => 'mimes:pdf,docx,PDF,DOCX|max:10000',
-            'nama_sop' => 'required'
+            'nama_sop' => 'required',
         ]);
 
         $info = new Standar();
@@ -5082,7 +4884,7 @@ class SadminController extends Controller
         $this->validate($request, [
             'nama_standar' => 'required',
             'file_sop' => 'mimes:pdf,docx,PDF,DOCX|max:10000',
-            'nama_sop' => 'required'
+            'nama_sop' => 'required',
         ]);
 
         $info = Standar::find($id);
@@ -5165,10 +4967,9 @@ class SadminController extends Controller
     public function pengalaman_kerja_mahasiswa()
     {
         $data = Pengalaman::leftjoin('student', 'pengalaman_kerja.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('pengalaman_kerja.status', 'ACTIVE')
@@ -5184,10 +4985,9 @@ class SadminController extends Controller
 
     public function detail_pengalaman($id)
     {
-        $mhs = Student::leftJoin('prodi', (function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        }))
+        $mhs = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.idstudent', $id)
