@@ -86,9 +86,9 @@
                                                             {{ $item_jns->deskripsi }}</option>
                                                     @endforeach
                                                 </select>
-                                            @else
+                                            @elseif ($item->id_jeniskegiatan != null)
                                                 <select name="id_jeniskegiatan[]">
-                                                    <option value="{{ $item->id_jeniskegiatan }}">{{ $item->deskripsi }}
+                                                    <option value="{{ $item->id_sertifikat }},{{ $item->id_jeniskegiatan }}">{{ $item->deskripsi }}
                                                     </option>
                                                     @foreach ($jenis as $item_jns)
                                                         <option

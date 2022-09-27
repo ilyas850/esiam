@@ -80,7 +80,6 @@ class SadminController extends Controller
     public function master_angkatan()
     {
         $data = Angkatan::all();
-        $pass = decrypt(12345678);
 
         return view('sadmin/masterakademik/master_angkatan', compact('data'));
     }
@@ -458,7 +457,7 @@ class SadminController extends Controller
             ->orderBy('idangkatan', 'DESC')
             ->get();
 
-        $jmltk = Student::whereIn('kodeprodi', [22,25])
+        $jmltk = Student::whereIn('kodeprodi', [22, 25])
             ->where('active', 1)
             ->get();
 
@@ -488,9 +487,9 @@ class SadminController extends Controller
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
-        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'student.idangkatan', 'prodi.prodi', 'prodi.konsentrasi', 'student.nama')
@@ -4806,7 +4805,7 @@ class SadminController extends Controller
     {
         $jenis_kegiatan = $request->id_jeniskegiatan;
         $jml_jenis = count($jenis_kegiatan);
-
+     
         for ($i = 0; $i < $jml_jenis; $i++) {
             $id_jenis = $jenis_kegiatan[$i];
             if ($id_jenis != null) {
