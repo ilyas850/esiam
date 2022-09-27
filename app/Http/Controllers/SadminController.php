@@ -831,7 +831,8 @@ class SadminController extends Controller
     {
         $tahun = Periode_tahun::all();
         $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->where;
+            ->where('pedoman_akademik.status', 'ACTIVE')
+            ->get();
 
         return view('sadmin/pedoman', ['tahun' => $tahun, 'pedoman' => $pedoman]);
     }
@@ -5184,9 +5185,9 @@ class SadminController extends Controller
     public function detail_pengalaman($id)
     {
         $mhs = Student::leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.idstudent', $id)
