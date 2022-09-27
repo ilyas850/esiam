@@ -35,7 +35,7 @@
                                 <td>{{ $item->nama_lengkap }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->tmpt_lahir }}</td>
-                                <td>{{ Carbon\Carbon::parse($item->tgl_lahir)->formatLocalized('%d %B %Y') }} {{$item->tgl_lahir->isoFormat('D MMMM Y')}}
+                                <td>{{$item->tgl_lahir->isoFormat('D MMMM Y')}}
                                 </td>
                                 <td>{{ $item->nik }}</td>
                                 <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ijazah }}" target="_blank">
