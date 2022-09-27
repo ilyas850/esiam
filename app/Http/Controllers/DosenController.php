@@ -271,6 +271,8 @@ class DosenController extends Controller
     public function val_krs()
     {
         $ids = Auth::user()->id_user;
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
         $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -298,7 +300,7 @@ class DosenController extends Controller
             ->groupBy('student_record.remark', 'student_record.id_student')
             ->get();
 
-        return view('dosen/validasi_krs', ['mhs' => $mhs, 'bim' => $bim]);
+        return view('dosen/validasi_krs', ['mhs' => $mhs, 'bim' => $bim, 'tahun' => $tahun, 'tipe' => $tipe]);
     }
 
     public function cek_krs($id)

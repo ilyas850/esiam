@@ -635,6 +635,8 @@ class KaprodiController extends Controller
   public function val_krs()
   {
     $ids = Auth::user()->id_user;
+    $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
     $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', (function ($join) {
@@ -663,7 +665,7 @@ class KaprodiController extends Controller
       ->groupBy('student_record.remark', 'student_record.id_student')
       ->get();
 
-    return view('kaprodi/validasi_krs', ['mhs' => $mhs, 'bim' => $bim]);
+    return view('kaprodi/validasi_krs', ['mhs' => $mhs, 'bim' => $bim, 'tahun' => $tahun, 'tipe' => $tipe]);
   }
 
   public function krs_validasi(Request $request)
@@ -8154,22 +8156,22 @@ class KaprodiController extends Controller
   }
 
   public function pedoman_akademik_dsn_kprd()
-    {
-        $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->where('pedoman_akademik.status', 'ACTIVE')
-            ->get();
+  {
+    $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->where('pedoman_akademik.status', 'ACTIVE')
+      ->get();
 
-        return view('kaprodi/pedoman_akademik', ['pedoman' => $pedoman]);
-    }
+    return view('kaprodi/pedoman_akademik', ['pedoman' => $pedoman]);
+  }
 
-    public function download_pedoman_dsn_kprd($id)
-    {
-        $ped = Pedoman_akademik::where('id_pedomanakademik', $id)->get();
-        foreach ($ped as $keyped) {
-            // code...
-        }
-        //PDF file is stored under project/public/download/info.pdf
-        $file = 'pedoman/' . $keyped->file;
-        return Response::download($file);
+  public function download_pedoman_dsn_kprd($id)
+  {
+    $ped = Pedoman_akademik::where('id_pedomanakademik', $id)->get();
+    foreach ($ped as $keyped) {
+      // code...
     }
+    //PDF file is stored under project/public/download/info.pdf
+    $file = 'pedoman/' . $keyped->file;
+    return Response::download($file);
+  }
 }
