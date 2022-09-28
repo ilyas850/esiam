@@ -57,13 +57,14 @@ use App\Waktu;
 use App\Standar;
 use App\Jenis_kegiatan;
 use App\Pengalaman;
+use App\Penangguhan_kategori;
+use App\Penangguhan_trans;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
 use App\Exports\DataPrakerinExport;
 use App\Exports\DataAkmMhsExport;
-
 use App\Imports\ImportMicrosoftUser;
 use App\Wisuda;
 use Illuminate\Http\Request;
@@ -1328,6 +1329,8 @@ class SadminController extends Controller
 
     public function input_transkrip_final($id)
     {
+        // $mhs = Student::
+
         $mhs = Student::leftJoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
@@ -2781,7 +2784,20 @@ class SadminController extends Controller
             ->leftjoin('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
             ->where('student.active', 1)
             ->where('yudisium.validasi', 'SUDAH')
-            ->select('yudisium.id_student', 'student.nim', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.id_skpi', 'skpi.no_skpi', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_ijazah')
+            ->select(
+                'yudisium.id_student',
+                'student.nim',
+                'yudisium.nama_lengkap',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'skpi.id_skpi',
+                'skpi.no_skpi',
+                'skpi.date_masuk',
+                'skpi.date_lulus',
+                'skpi.no_ijazah',
+                'skpi.no_transkrip',
+                'skpi.date_wisuda'
+            )
             ->get();
 
         $data1 = Student::leftjoin('skpi', 'student.idstudent', '=', 'skpi.id_student')
@@ -4805,7 +4821,7 @@ class SadminController extends Controller
     {
         $jenis_kegiatan = $request->id_jeniskegiatan;
         $jml_jenis = count($jenis_kegiatan);
-     
+
         for ($i = 0; $i < $jml_jenis; $i++) {
             $id_jenis = $jenis_kegiatan[$i];
             if ($id_jenis != null) {
@@ -5001,5 +5017,42 @@ class SadminController extends Controller
         $data = Pengalaman::where('id_student', $id)->get();
 
         return view('sadmin/datamahasiswa/detail_pengalaman_kerja', compact('data', 'mhs'));
+    }
+
+    public function master_kategori_penangguhan()
+    {
+        $data = Penangguhan_kategori::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/penangguhan/kategori_penangguhan', compact('data'));
+    }
+
+    public function simpan_kategori_penangguhan(Request $request)
+    {
+        $ang = new Penangguhan_kategori();
+        $ang->kategori = $request->kategori;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Penangguhan berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_kategori_penangguhan');
+    }
+
+    public function put_kategori_penangguhan(Request $request, $id)
+    {
+        $ang = Penangguhan_kategori::find($id);
+        $ang->kategori = $request->kategori;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Penangguhan berhasil diedit')->autoclose(3500);
+        return redirect('master_kategori_penangguhan');
+    }
+
+    public function hapus_kategori_penangguhan($id)
+    {
+        Penangguhan_kategori::where('id_penangguhan_kategori', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kategori Penangguhan berhasil dihapus')->autoclose(3500);
+        return redirect('master_kategori_penangguhan');
     }
 }

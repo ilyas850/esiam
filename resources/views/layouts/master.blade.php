@@ -136,6 +136,10 @@
                                             Kaprodi
                                         @elseif (Auth::user()->role == 7)
                                             WADIR 1
+                                        @elseif (Auth::user()->role == 8)
+                                            BAUK
+                                        @elseif (Auth::user()->role == 9)
+                                            Admin Prodi
                                         @elseif (Auth::user()->role == 11)
                                             PraUSTA
                                         @endif
@@ -290,6 +294,23 @@
                                             </form>
                                         </div>
                                     </li>
+                                @elseif (Auth::user()->role == 8)
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="/change_pass_bauk/{{ Auth::user()->id }}"
+                                                class="btn btn-default btn-flat">Ubah Password</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{ route('logout') }}"
+                                                onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();"
+                                                class="btn btn-default btn-flat">Keluar</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </div>
+                                    </li>
                                 @endif
                             </ul>
                         </li>
@@ -299,11 +320,8 @@
             </nav>
         </header>
 
-        <!-- Left side column. contains the sidebar -->
         <aside class="main-sidebar">
-            <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
-                <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
                         @if (Auth::user()->role == 3)
@@ -320,18 +338,15 @@
                 </div>
                 @yield('side')
             </section>
-            <!-- /.sidebar -->
         </aside>
         @include('sweetalert::alert')
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
             @yield('content_header')
-            <!-- Main content -->
+
             @yield('content')
-            <!-- /.content -->
+
         </div>
-        <!-- /.content-wrapper -->
+
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
 
@@ -551,7 +566,6 @@
             })
         })
     </script>
-
 
 </body>
 

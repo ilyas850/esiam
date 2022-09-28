@@ -343,6 +343,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     //pengalaman kerja mahasiswa
     Route::get('pengalaman_kerja_mahasiswa', 'SadminController@pengalaman_kerja_mahasiswa');
     Route::get('detail_pengalaman/{id}', 'SadminController@detail_pengalaman');
+
+    //master penangguhan
+    Route::get('master_kategori_penangguhan', 'SadminController@master_kategori_penangguhan');
+    Route::post('simpan_kategori_penangguhan', 'SadminController@simpan_kategori_penangguhan');
+    Route::put('put_kategori_penangguhan/{id}', 'SadminController@put_kategori_penangguhan');
+    Route::get('hapus_kategori_penangguhan/{id}', 'SAdminController@hapus_kategori_penangguhan');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -499,6 +505,9 @@ Route::group(['middleware' => 'dosen'], function () {
     //pedoman akademik
     Route::get('pedoman_akademik_dsn_dlm', 'DosenController@pedoman_akademik_dsn_dlm');
     Route::get('download_pedoman_dsn_dlm/{id}', 'DosenController@download_pedoman_dsn_dlm');
+
+    //penangguhan mahasiswa
+    Route::get('penangguhan_mhs_dsn', 'DosenController@penangguhan_mhs_dsn');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -670,6 +679,11 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('post_pengalaman', 'MhsController@post_pengalaman');
     Route::put('put_pengalaman/{id}', 'MhsController@put_pengalaman');
     Route::get('hapus_pengalaman/{id}', 'MhsController@hapus_pengalaman');
+
+    //penangguhan mahasiswa
+    Route::get('penangguhan_mhs', 'MhsController@penangguhan_mhs');
+    Route::post('post_penangguhan', 'MhsController@post_penangguhan');
+    Route::put('put_penangguhan/{id}', 'MhsController@put_penangguhan');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1262,6 +1276,15 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('filter_honor_sempro', 'AdminPraustaController@filter_honor_sempro');
     Route::get('honor_ta', 'AdminPraustaController@honor_ta');
     Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
+});
+
+Route::group(['middleware' => 'bauk'], function () {
+    Route::get('kategori_penangguhan_bauk', 'BaukController@kategori_penangguhan_bauk');
+
+    Route::get('data_penangguhan_bauk/{id}', 'BaukController@data_penangguhan_bauk');
+    Route::put('put_tunggakan/{id}', 'BaukController@put_tunggakan');
+    Route::get('val_penangguhan_bauk/{id}', 'BaukController@val_penangguhan_bauk');
+    Route::get('batal_val_penangguhan_bauk/{id}', 'BaukController@batal_val_penangguhan_bauk');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

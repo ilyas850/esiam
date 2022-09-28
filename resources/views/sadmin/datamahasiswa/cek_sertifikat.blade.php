@@ -62,6 +62,9 @@
                                         <center>File Sertifikat</center>
                                     </th>
                                     <th>
+                                        <center>Validasi</center>
+                                    </th>
+                                    <th>
                                         <center>Jenis Kegiatan</center>
                                     </th>
                                 </tr>
@@ -76,6 +79,13 @@
                                         <td align="center"><a
                                                 href="/Sertifikat/{{ $item->id_student }}/{{ $item->file_sertifikat }}"
                                                 target="_blank" style="font: white"> File Sertifikat</a></td>
+                                        <td align="center">
+                                            @if ($item->validasi == 'BELUM' or $item->validasi == null)
+                                                <span class="badge bg-yellow">BELUM</span>
+                                            @elseif ($item->validasi == 'SUDAH')
+                                                <span class="badge bg-green">SUDAH</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($item->id_jeniskegiatan == null)
                                                 <select name="id_jeniskegiatan[]">
@@ -88,7 +98,9 @@
                                                 </select>
                                             @elseif ($item->id_jeniskegiatan != null)
                                                 <select name="id_jeniskegiatan[]">
-                                                    <option value="{{ $item->id_sertifikat }},{{ $item->id_jeniskegiatan }}">{{ $item->deskripsi }}
+                                                    <option
+                                                        value="{{ $item->id_sertifikat }},{{ $item->id_jeniskegiatan }}">
+                                                        {{ $item->deskripsi }}
                                                     </option>
                                                     @foreach ($jenis as $item_jns)
                                                         <option

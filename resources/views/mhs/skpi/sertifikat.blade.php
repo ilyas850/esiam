@@ -117,10 +117,6 @@
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateSertifikat{{ $item->id_sertifikat }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                        {{-- <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                            data-target="#modalHapusSertifikat{{ $item->id_sertifikat }}"
-                                            title="klik untuk hapus"><i class="fa fa-trash"></i></button> --}}
-
                                             <a class="btn btn-danger btn-xs"
                                             href="/hapus_sertifikat/{{ $item->id_sertifikat }}"
                                             onclick="return confirm('anda yakin akan menghapus ini ?')"><i

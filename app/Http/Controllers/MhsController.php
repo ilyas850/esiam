@@ -51,6 +51,8 @@ use App\Yudisium;
 use App\Wisuda;
 use App\Standar;
 use App\Pengalaman;
+use App\Penangguhan_kategori;
+use App\Penangguhan_trans;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -3861,8 +3863,8 @@ class MhsController extends Controller
         $id = Auth::user()->id_user;
 
         $data = Pengalaman::where('id_student', $id)
-        ->where('status', 'ACTIVE')
-        ->get();
+            ->where('status', 'ACTIVE')
+            ->get();
 
         return view('mhs/pengalaman/pengalaman_kerja', compact('data'));
     }
@@ -3903,5 +3905,71 @@ class MhsController extends Controller
 
         Alert::success('', 'Pengalaman berhasil dihapus')->autoclose(3500);
         return redirect('pengalaman_kerja');
+    }
+
+    public function penangguhan_mhs()
+    {
+        $id = Auth::user()->id_user;
+
+        $kategori_penangguhan = Penangguhan_kategori::where('status', 'ACTIVE')->get();
+
+        $data = Penangguhan_trans::join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
+            ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('penangguhan_master_trans.id_student', $id)
+            ->select(
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'penangguhan_master_trans.id_periodetahun',
+                'penangguhan_master_trans.id_periodetipe',
+                'penangguhan_master_trans.id_student',
+                'penangguhan_master_trans.id_penangguhan_kategori',
+                'penangguhan_master_kategori.kategori',
+                'penangguhan_master_trans.total_tunggakan',
+                'penangguhan_master_trans.rencana_bayar',
+                'penangguhan_master_trans.alasan',
+                'penangguhan_master_trans.validasi_kaprodi',
+                'penangguhan_master_trans.validasi_dsn_pa',
+                'penangguhan_master_trans.validasi_bauk',
+                'penangguhan_master_trans.validasi_baak',
+                'penangguhan_master_trans.id_penangguhan_trans'
+            )
+            ->get();
+
+        return view('mhs/penangguhan/data_penangguhan', compact('data', 'kategori_penangguhan'));
+    }
+
+    public function post_penangguhan(Request $request)
+    {
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $id = Auth::user()->id_user;
+
+        $new = new Penangguhan_trans;
+        $new->id_periodetahun = $tahun->id_periodetahun;
+        $new->id_periodetipe = $tipe->id_periodetipe;
+        $new->id_student = $id;
+        $new->id_penangguhan_kategori = $request->id_penangguhan_kategori;
+        $new->rencana_bayar = $request->rencana_bayar;
+        $new->alasan = $request->alasan;
+        $new->save();
+
+        Alert::success('', 'Penangguhan berhasil ditambahkan')->autoclose(3500);
+        return redirect('penangguhan_mhs');
+    }
+
+    public function put_penangguhan(Request $request, $id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $new = Penangguhan_trans::find($id);
+        $new->id_student = $ids;
+        $new->id_penangguhan_kategori = $request->id_penangguhan_kategori;
+        $new->rencana_bayar = $request->rencana_bayar;
+        $new->alasan = $request->alasan;
+        $new->save();
+
+        Alert::success('', 'Penangguhan berhasil diedit')->autoclose(3500);
+        return redirect('penangguhan_mhs');
     }
 }

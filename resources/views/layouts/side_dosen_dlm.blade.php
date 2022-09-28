@@ -45,6 +45,7 @@
             <li><a href="{{ url('jadwal_sidang_ta_dlm') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
         </ul>
     </li>
+    <li><a href="{{ url('penangguhan_mhs_dsn') }}"><i class="fa fa-money"></i> <span>Penangguhan Mahasiswa</span></a></li>
     {{-- <li><a href="{{ url('upload_soal_dsn_dlm') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
     </li> --}}
 

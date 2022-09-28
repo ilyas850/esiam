@@ -16,10 +16,13 @@
 @elseif (Auth::user()->role == 7)
     @include('layouts.side_wadir1')
 
-@elseif (Auth::user()->role == 11)
-    @include('layouts.side_admin_prausta')
+@elseif (Auth::user()->role == 8)
+    @include('layouts.side_bauk')
 
 @elseif (Auth::user()->role == 9)
     @include('layouts.side_admin_prodi')
+
+@elseif (Auth::user()->role == 11)
+    @include('layouts.side_admin_prausta')
 
 @endif

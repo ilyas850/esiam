@@ -124,7 +124,7 @@ class HomeController extends Controller
     } elseif ($akses == 3) {
 
       $foto = $mhs->foto;
-      
+
       $idprodi = $mhs->id_prodi;
       $idangkatan = $mhs->idangkatan;
 
@@ -195,9 +195,12 @@ class HomeController extends Controller
         ->count('idstudent');
 
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
+    } elseif ($akses == 8) {
+
+      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info]);
     } elseif ($akses == 11) {
 
-      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
+      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info]);
     } elseif ($akses == 9) {
 
       $mhs_ti = Student::where('kodeprodi', 23)

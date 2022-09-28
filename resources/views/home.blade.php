@@ -303,8 +303,7 @@
                                     <li class="item">
                                         <div class="product-img">
                                             @if ($item->file != null)
-                                                <img class="img-circle"
-                                                    src="{{ asset('/data_file/' . $item->file) }}">
+                                                <img class="img-circle" src="{{ asset('/data_file/' . $item->file) }}">
                                             @else
                                             @endif
 
@@ -336,10 +335,12 @@
             @include('layouts.kaprodi_home')
         @elseif (Auth::user()->role == 7)
             @include('layouts.wadir1_home')
-        @elseif (Auth::user()->role == 11)
-            @include('layouts.prausta_home')
+        @elseif (Auth::user()->role == 8)
+            @include('layouts.bauk_home')
         @elseif (Auth::user()->role == 9)
             @include('layouts.adminprodi_home')
+        @elseif (Auth::user()->role == 11)
+            @include('layouts.prausta_home')
         @endif
     </section>
 @endsection

@@ -10,14 +10,14 @@
             <div class="col-md-6">
                 <div class="box box-info">
                     <div class="box-header">
-                        <h3 class="box-title">Master Angkatan</h3>
+                        <h3 class="box-title">Master Kategori Penangguhan</h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
                             <div class="col-xs-2">
                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-target="#addangkatan">
-                                    Tambah Master Angkatan
+                                    Tambah Master Kategori Penangguhan
                                 </button>
                             </div>
                         </div>
@@ -25,22 +25,19 @@
                         <div class="modal fade" id="addangkatan" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
-                                <form method="post" action="{{ url('simpan_angkatan') }}" enctype="multipart/form-data">
+                                <form method="post" action="{{ url('simpan_kategori_penangguhan') }}"
+                                    enctype="multipart/form-data">
                                     {{ csrf_field() }}
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Master Angkatan</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Master Kategori
+                                                Penangguhan</h5>
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <label>ID Angkatan</label>
-                                                <input type="text" class="form-control" name="idangkatan"
-                                                    placeholder="Masukan ID">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Angkatan</label>
-                                                <input type="text" class="form-control" name="angkatan"
-                                                    placeholder="Masukan Tahun">
+                                                <label>Kategori</label>
+                                                <input type="text" class="form-control" name="kategori"
+                                                    placeholder="Masukan Kategori">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -59,10 +56,7 @@
                                         <center>No</center>
                                     </th>
                                     <th>
-                                        <center>ID</center>
-                                    </th>
-                                    <th>
-                                        <center>Angkatan</center>
+                                        <center>Kategori</center>
                                     </th>
                                     <th>
                                         <center>Aksi</center>
@@ -77,74 +71,45 @@
                                             <center>{{ $no++ }}</center>
                                         </td>
                                         <td>
-                                            <center> {{ $item->idangkatan }} </center>
-                                        </td>
-                                        <td>
-                                            <center>{{ $item->angkatan }} </center>
+                                            {{ $item->kategori }}
                                         </td>
                                         <td>
                                             <center>
                                                 <button class="btn btn-success btn-xs" data-toggle="modal"
-                                                    data-target="#modalUpdateAngkatan{{ $item->idangkatan }}"
+                                                    data-target="#modalUpdateAngkatan{{ $item->id_penangguhan_kategori }}"
                                                     title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                                <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                                    data-target="#modalHapusAngkatan{{ $item->idangkatan }}"
-                                                    title="klik untuk hapus"><i class="fa fa-trash"></i></button>
+                                                <a class="btn btn-danger btn-xs"
+                                                    href="/hapus_kategori_penangguhan/{{ $item->id_penangguhan_kategori }}"
+                                                    onclick="return confirm('anda yakin akan menghapus ini ?')"><i
+                                                        class="fa fa-trash"></i></a>
                                                 <center>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="modalUpdateAngkatan{{ $item->idangkatan }}"
+                                    <div class="modal fade" id="modalUpdateAngkatan{{ $item->id_penangguhan_kategori }}"
                                         tabindex="-1" aria-labelledby="modalUpdateAngkatan" aria-hidden="true">
                                         <div class="modal-dialog">
-                                            <form action="/put_angkatan/{{ $item->idangkatan }}" method="post">
+                                            <form action="/put_kategori_penangguhan/{{ $item->id_penangguhan_kategori }}"
+                                                method="post">
                                                 @csrf
                                                 @method('put')
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Update Master Angkatan</h5>
+                                                        <h5 class="modal-title">Update Master Kategori Penangguhan</h5>
                                                     </div>
                                                     <div class="modal-body">
-
                                                         <div class="form-group">
-                                                            <label>ID Angkatan</label>
-                                                            <input type="text" class="form-control" name="idangkatan"
-                                                                value="{{ $item->idangkatan }}">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Angkatan</label>
-                                                            <input type="text" class="form-control" name="angkatan"
-                                                                value="{{ $item->angkatan }}">
+                                                            <label>Kategori</label>
+                                                            <input type="text" class="form-control" name="kategori"
+                                                                value="{{ $item->kategori }}">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                            data-dismiss="modal">Tutup</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
                                                     </div>
                                                 </div>
                                             </form>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="modalHapusAngkatan{{ $item->idangkatan }}"
-                                        tabindex="-1" aria-labelledby="modalHapusAngkatan" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <h4 class="text-center">Apakah anda yakin menghapus data master
-                                                        angkatan ini ?</h4>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <form action="{{ url('hapusangkatan') }}" method="post">
-                                                        {{ csrf_field() }}
-                                                        <input type="hidden" name="idangkatan"
-                                                            value="{{ $item->idangkatan }}" />
-                                                        <button type="submit" class="btn btn-primary">Hapus data!</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Batal</button>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -153,6 +118,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 @endsection

@@ -39,83 +39,92 @@ class User extends Authenticatable
     ];
 
     public function isSadmin()
-  {
-      if ($this->role == 1) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    {
+        if ($this->role == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isDosen()
-  {
-      if ($this->role == 2) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isDosen()
+    {
+        if ($this->role == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isMhs()
-  {
-      if ($this->role == 3) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isMhs()
+    {
+        if ($this->role == 3) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isNoMhs()
-  {
-      if ($this->role == 4) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isNoMhs()
+    {
+        if ($this->role == 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isDosenluar()
-  {
-      if ($this->role == 5) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isDosenluar()
+    {
+        if ($this->role == 5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isKaprodi()
-  {
-      if ($this->role == 6) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isKaprodi()
+    {
+        if ($this->role == 6) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isWadir1()
-  {
-      if ($this->role == 7) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isWadir1()
+    {
+        if ($this->role == 7) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isAdminprodi()
-  {
-      if ($this->role == 9) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isBauk()
+    {
+        if ($this->role == 8) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  public function isPrausta()
-  {
-      if ($this->role == 11) {
-          return true;
-      }else {
-          return false;
-      }
-  }
+    public function isAdminprodi()
+    {
+        if ($this->role == 9) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isPrausta()
+    {
+        if ($this->role == 11) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

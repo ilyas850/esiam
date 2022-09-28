@@ -44,6 +44,8 @@ use App\Prausta_trans_penilaian;
 use App\Setting_nilai;
 use App\Standar;
 use App\Pedoman_akademik;
+use App\Penangguhan_kategori;
+use App\Penangguhan_trans;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Soal_ujian;
@@ -5761,5 +5763,10 @@ class DosenController extends Controller
         //PDF file is stored under project/public/download/info.pdf
         $file = 'pedoman/' . $keyped->file;
         return Response::download($file);
+    }
+
+    public function penangguhan_mhs_dsn()
+    {
+        # code...
     }
 }
