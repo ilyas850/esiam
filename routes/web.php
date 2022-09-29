@@ -348,7 +348,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('master_kategori_penangguhan', 'SadminController@master_kategori_penangguhan');
     Route::post('simpan_kategori_penangguhan', 'SadminController@simpan_kategori_penangguhan');
     Route::put('put_kategori_penangguhan/{id}', 'SadminController@put_kategori_penangguhan');
-    Route::get('hapus_kategori_penangguhan/{id}', 'SAdminController@hapus_kategori_penangguhan');
+    Route::get('hapus_kategori_penangguhan/{id}', 'SadminController@hapus_kategori_penangguhan');
+
+    //transaction penangguhan
+    Route::get('master_trans_penangguhan', 'SadminController@master_trans_penangguhan');
+    Route::get('val_penangguhan_baak/{id}', 'SadminController@val_penangguhan_baak');
+    Route::get('batal_val_penangguhan_baak/{id}', 'SadminController@batal_val_penangguhan_baak');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -508,6 +513,8 @@ Route::group(['middleware' => 'dosen'], function () {
 
     //penangguhan mahasiswa
     Route::get('penangguhan_mhs_dsn', 'DosenController@penangguhan_mhs_dsn');
+    Route::get('val_penangguhan_dsn_pa/{id}', 'DosenController@val_penangguhan_dsn_pa');
+    Route::get('batal_val_penangguhan_dsn_pa/{id}', 'DosenController@batal_val_penangguhan_dsn_pa');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -684,6 +691,11 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('penangguhan_mhs', 'MhsController@penangguhan_mhs');
     Route::post('post_penangguhan', 'MhsController@post_penangguhan');
     Route::put('put_penangguhan/{id}', 'MhsController@put_penangguhan');
+
+    //link penangguhan
+    Route::get('penangguhan_krs', 'PenangguhanController@penangguhan_krs');
+    Route::post('input_krs_penangguhan', 'PenangguhanController@input_krs_penangguhan');
+    Route::post('save_penangguhan_krs', 'PenangguhanController@save_penangguhan_krs');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1071,6 +1083,15 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //pedoman akademik
     Route::get('pedoman_akademik_dsn_kprd', 'KaprodiController@pedoman_akademik_dsn_kprd');
     Route::get('download_pedoman_dsn_kprd/{id}', 'KaprodiController@download_pedoman_dsn_kprd');
+
+    //penangguhan mahasiswa
+    Route::get('penangguhan_mhs_dsn_kprd', 'KaprodiController@penangguhan_mhs_dsn_kprd');
+    Route::get('val_penangguhan_dsn_kprd/{id}', 'KaprodiController@val_penangguhan_dsn_kprd');
+    Route::get('batal_val_penangguhan_dsn_kprd/{id}', 'KaprodiController@batal_val_penangguhan_dsn_kprd');
+
+    Route::get('penangguhan_mhs_prodi', 'KaprodiController@penangguhan_mhs_prodi');
+    Route::get('val_penangguhan_prodi/{id}', 'KaprodiController@val_penangguhan_prodi');
+    Route::get('batal_val_penangguhan_prodi/{id}', 'KaprodiController@batal_val_penangguhan_prodi');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

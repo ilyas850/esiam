@@ -163,7 +163,7 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      $mhs_tk = Student::where('kodeprodi', 22)
+      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
         ->where('active', 1)
         ->count('idstudent');
 
@@ -186,7 +186,7 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      $mhs_tk = Student::where('kodeprodi', 22)
+      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
         ->where('active', 1)
         ->count('idstudent');
 
@@ -207,7 +207,7 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      $mhs_tk = Student::where('kodeprodi', 22)
+      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
         ->where('active', 1)
         ->count('idstudent');
 

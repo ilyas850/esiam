@@ -76,37 +76,30 @@
                                 <td>{{ $item->kelas }}</td>
                                 <td align="center">{{ $item->kategori }}</td>
                                 <td align="right">
-                                    @if ($item->total_tunggakan == null)
-                                        <center>
-                                            <button class="btn btn-info btn-xs" data-toggle="modal"
-                                                data-target="#modalTambahKomentar{{ $item->id_penangguhan_trans }}">Edit
-                                                Tunggakan</button>
-                                        </center>
-                                    @elseif($item->total_tunggakan != null)
-                                        @currency ( $item->total_tunggakan )
-                                        <button class="btn btn-warning btn-xs" data-toggle="modal"
-                                            data-target="#modalTambahKomentar{{ $item->id_penangguhan_trans }}"><i
-                                                class="fa fa-edit"></i></button>
-                                    @endif
-
+                                    @currency ( $item->total_tunggakan )
                                 </td>
                                 <td>{{ $item->rencana_bayar }}</td>
                                 <td>{{ $item->alasan }}</td>
                                 <td align="center">
                                     @if ($item->validasi_bauk == 'BELUM')
-                                        <a href="/val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-info btn-xs">Validasi</a>
-                                    @elseif ($item->validasi_bauk == 'SUDAH')
-                                        <a href="/batal_val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-warning btn-xs">Batal</a>
+                                        <span class="badge bg-yellow">{{ $item->validasi_bauk }}</span>
+                                    @else
+                                        <span class="badge bg-green">{{ $item->validasi_bauk }}</span>
                                     @endif
                                 </td>
                                 <td align="center">
-                                    @if ($item->validasi_dsn_pa == 'BELUM')
-                                        <span class="badge bg-yellow">{{ $item->validasi_dsn_pa }}</span>
-                                    @else
-                                        <span class="badge bg-green">{{ $item->validasi_dsn_pa }}</span>
+                                    @if ($item->validasi_bauk == 'BELUM')
+                                        <span class="badge bg-red">Belum valid</span>
+                                    @elseif ($item->validasi_bauk == 'SUDAH')
+                                        @if ($item->validasi_dsn_pa == 'BELUM')
+                                            <a href="/val_penangguhan_dsn_kprd/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-info btn-xs">Validasi</a>
+                                        @elseif ($item->validasi_dsn_pa == 'SUDAH')
+                                            <a href="/batal_val_penangguhan_dsn_kprd/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-warning btn-xs">Batal</a>
+                                        @endif
                                     @endif
+
                                 </td>
                                 <td align="center">
                                     @if ($item->validasi_kaprodi == 'BELUM')
@@ -123,32 +116,6 @@
                                     @endif
                                 </td>
                             </tr>
-                            <div class="modal fade" id="modalTambahKomentar{{ $item->id_penangguhan_trans }}"
-                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Tunggakan</h5>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="/put_tunggakan/{{ $item->id_penangguhan_trans }}" method="post"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                @method('put')
-                                                <div class="form-group">
-                                                    <label>Nominal Tunggakan</label>
-                                                    <input type="number" class="form-control" name="total_tunggakan"
-                                                        value="{{ $item->total_tunggakan }}" required>
-                                                </div>
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary">Simpan
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @endforeach
                     </tbody>
                 </table>

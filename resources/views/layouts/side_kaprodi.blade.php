@@ -114,4 +114,8 @@
             </li>
         </ul>
     </li>
+    <li><a href="{{ url('penangguhan_mhs_dsn_kprd') }}"><i class="fa fa-money"></i> <span>Penangguhan Mhs
+                Bimbingan</span></a></li>
+    <li><a href="{{ url('penangguhan_mhs_prodi') }}"><i class="fa fa-money"></i> <span>Penangguhan Mhs
+                Prodi</span></a></li>
 </ul>

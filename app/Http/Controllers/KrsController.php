@@ -557,7 +557,7 @@ class KrsController extends Controller
           ->where('kurikulum_periode.status', 'ACTIVE')
           ->where('kurikulum_transaction.status', 'ACTIVE')
           ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-          ->whereNotIn('kurikulum_periode.id_makul', [209, 210])
+          ->whereNotIn('kurikulum_periode.id_makul', [386, 384, 385, 387])
           ->union($add_krs)
           ->get();
 
@@ -596,7 +596,7 @@ class KrsController extends Controller
           ->where('kurikulum_periode.status', 'ACTIVE')
           ->where('kurikulum_transaction.status', 'ACTIVE')
           ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
-          ->whereNotIn('kurikulum_periode.id_makul', [386, 384])
+          ->whereNotIn('kurikulum_periode.id_makul', [386, 384, 385, 387])
           ->union($add_krs)
           ->get();
 

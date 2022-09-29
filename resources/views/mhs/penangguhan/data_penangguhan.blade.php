@@ -63,6 +63,9 @@
                                 <center>No</center>
                             </th>
                             <th rowspan="2">
+                                <center>Tahun Akademik</center>
+                            </th>
+                            <th rowspan="2">
                                 <center>Jenis Penangguhan</center>
                             </th>
                             <th rowspan="2">
@@ -101,8 +104,9 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
+                                <td>{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
                                 <td>{{ $item->kategori }}</td>
-                                <td align="right">{{ $item->total_tunggakan }}</td>
+                                <td align="right">@currency ( $item->total_tunggakan )</td>
                                 <td>{{ $item->rencana_bayar }}</td>
                                 <td>{{ $item->alasan }}</td>
                                 <td align="center">
@@ -139,7 +143,15 @@
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateSertifikat{{ $item->id_penangguhan_trans }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                    @else
+                                    @elseif ($item->validasi_dsn_pa == 'SUDAH' && $item->validasi_kaprodi == 'SUDAH' && $item->validasi_baak == 'SUDAH')
+                                        @if ($item->id_penangguhan_kategori == 1)
+                                            <a href="{{ url('penangguhan_krs') }}" class="btn btn-info btn-xs">KRS</a>
+                                        @elseif($item->id_penangguhan_kategori == 2)
+
+                                        @elseif($item->id_penangguhan_kategori == 3)
+
+                                        @elseif($item->id_penangguhan_kategori == 4)
+                                        @endif
                                     @endif
 
                                 </td>

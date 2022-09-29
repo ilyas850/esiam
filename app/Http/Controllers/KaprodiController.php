@@ -44,6 +44,8 @@ use App\Setting_nilai;
 use App\Standar;
 use App\Sertifikat;
 use App\Pedoman_akademik;
+use App\Penangguhan_kategori;
+use App\Penangguhan_trans;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -8173,5 +8175,130 @@ class KaprodiController extends Controller
     //PDF file is stored under project/public/download/info.pdf
     $file = 'pedoman/' . $keyped->file;
     return Response::download($file);
+  }
+
+  public function penangguhan_mhs_dsn_kprd()
+  {
+    $id = Auth::user()->id_user;
+
+    $data = Dosen_pembimbing::join('penangguhan_master_trans', 'dosen_pembimbing.id_student', '=', 'penangguhan_master_trans.id_student')
+      ->join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
+      ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'penangguhan_master_trans.id_student', '=', 'student.idstudent')
+      ->join('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('dosen_pembimbing.id_dosen', $id)
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'penangguhan_master_trans.id_periodetahun',
+        'penangguhan_master_trans.id_periodetipe',
+        'penangguhan_master_trans.id_student',
+        'penangguhan_master_trans.id_penangguhan_kategori',
+        'penangguhan_master_kategori.kategori',
+        'penangguhan_master_trans.total_tunggakan',
+        'penangguhan_master_trans.rencana_bayar',
+        'penangguhan_master_trans.alasan',
+        'penangguhan_master_trans.validasi_kaprodi',
+        'penangguhan_master_trans.validasi_dsn_pa',
+        'penangguhan_master_trans.validasi_bauk',
+        'penangguhan_master_trans.validasi_baak',
+        'penangguhan_master_trans.id_penangguhan_trans'
+      )
+      ->orderBy('student.nim')
+      ->get();
+
+    return view('kaprodi/penangguhan/data_penangguhan', compact('data'));
+  }
+
+  public function val_penangguhan_dsn_kprd($id)
+  {
+    Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['validasi_dsn_pa' => 'SUDAH']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function batal_val_penangguhan_dsn_kprd($id)
+  {
+    Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['validasi_dsn_pa' => 'BELUM']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function penangguhan_mhs_prodi()
+  {
+    $id = Auth::user()->id_user;
+
+    $cekkprd = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('dosen.iddosen', $id)
+      ->select('dosen.nama', 'dosen.akademik', 'dosen.nik', 'prodi.kodeprodi')
+      ->first();
+
+    $data = Student::join('penangguhan_master_trans', 'student.idstudent', '=', 'penangguhan_master_trans.id_student')
+      ->join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
+      ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->where('student.kodeprodi', $cekkprd->kodeprodi)
+      ->select(
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'penangguhan_master_trans.id_periodetahun',
+        'penangguhan_master_trans.id_periodetipe',
+        'penangguhan_master_trans.id_student',
+        'penangguhan_master_trans.id_penangguhan_kategori',
+        'penangguhan_master_kategori.kategori',
+        'penangguhan_master_trans.total_tunggakan',
+        'penangguhan_master_trans.rencana_bayar',
+        'penangguhan_master_trans.alasan',
+        'penangguhan_master_trans.validasi_kaprodi',
+        'penangguhan_master_trans.validasi_dsn_pa',
+        'penangguhan_master_trans.validasi_bauk',
+        'penangguhan_master_trans.validasi_baak',
+        'penangguhan_master_trans.id_penangguhan_trans'
+      )
+      ->orderBy('student.nim')
+      ->get();
+
+    return view('kaprodi/penangguhan/data_penangguhan_prodi', compact('data'));
+  }
+
+  public function val_penangguhan_prodi($id)
+  {
+    Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['validasi_kaprodi' => 'SUDAH']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function batal_val_penangguhan_prodi($id)
+  {
+    Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['validasi_kaprodi' => 'BELUM']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
   }
 }
