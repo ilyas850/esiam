@@ -22,7 +22,7 @@
                             <div class="form-group">
                                 <div class="col-md-6">
                                     <label>Nama Lengkap</label>
-                                    <input type="text" class="form-control" value="{{ $item->nama }}" readonly>
+                                    <input type="text" class="form-control" value="{{ $item->nama_lengkap }}" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label>No. Transkrip</label>
@@ -46,7 +46,7 @@
                                 <div class="col-md-6">
                                     <label>Tempat & Tanggal Lahir</label>
                                     <input type="text" class="form-control"
-                                        value="{{ $item->tmptlahir }}, {{ $tgllhr }}" readonly>
+                                        value="{{ $item->tmpt_lahir }}, {{ $tgllhr }}" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label>Tanggal Yudisium</label>

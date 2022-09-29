@@ -48,6 +48,9 @@
                                 <th>
                                     <center>Nomor Ijazah</center>
                                 </th>
+                                <th>
+                                    <center>Nomor Transkrip</center>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,6 +68,8 @@
                                             value="{{ $item->no_skpi }}" required></td>
                                     <td><input type="text" class="form-control" name="no_ijazah[]"
                                             value="{{ $item->no_ijazah }}" required></td>
+                                    <td><input type="text" class="form-control" name="no_transkrip[]"
+                                            value="{{ $item->no_transkrip }}" required></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -72,26 +77,32 @@
                 </div>
                 <div class="box-footer">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>
                                     <font color="red-text">*</font>Masukan Tanggal Masuk
                                 </label>
-                                <input type="date" class="form-control" name="date_masuk"
-                                    placeholder="Masukan Tanggal Lulus" required>
+                                <input type="date" class="form-control" name="date_masuk" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>
                                     <font color="red-text">*</font>Masukan Tanggal Lulus
                                 </label>
-                                <input type="date" class="form-control" name="date_lulus"
-                                    placeholder="Masukan Tanggal Lulus" required>
+                                <input type="date" class="form-control" name="date_lulus" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    <font color="red-text">*</font>Masukan Tanggal Wisuda
+                                </label>
+                                <input type="date" class="form-control" name="date_wisuda" required>
                             </div>
                         </div>
                     </div>
-                    <br><br>
+                    
                     <button type="submit" class="btn btn-info btn-block">
                         Simpan
                     </button>

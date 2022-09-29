@@ -28,7 +28,7 @@
                     <tr>
                         <td>Tempat & Tanggal lahir</td>
                         <td>:</td>
-                        <td>{{ $item->tmptlahir }}, {{ $item->tgllahir->isoFormat('D MMMM Y') }}</td>
+                        <td>{{ $item->tmpt_lahir }}, {{ $item->tgl_lahir->isoFormat('D MMMM Y') }}</td>
                     </tr>
                     <tr>
                         <td>Nomor Induk Mahasiswa</td>

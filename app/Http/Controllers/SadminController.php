@@ -1309,40 +1309,74 @@ class SadminController extends Controller
 
     public function transkrip_nilai_final()
     {
-        $nilai = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+        $nilai = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->leftjoin('transkrip_final', 'prausta_setting_relasi.id_student', '=', 'transkrip_final.id_student')
-            ->whereIn('prausta_master_kode.kode_prausta', ['FA-602', 'TI-602', 'TK-602'])
-            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->leftjoin('transkrip_final', 'yudisium.id_student', '=', 'transkrip_final.id_student')
             ->where('student.active', 1)
-            ->select('transkrip_final.id_transkrip_final', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'student.idstudent', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
-            ->orderBy('student.nim', 'desc')
+            ->select('transkrip_final.id_transkrip_final', 'student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+            ->orderBy('student.nim', 'ASC')
             ->get();
+
+
+        // $nilai1 = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        //     ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+        //     ->leftJoin('prodi', function ($join) {
+        //         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        //     })
+        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        //     ->leftjoin('transkrip_final', 'prausta_setting_relasi.id_student', '=', 'transkrip_final.id_student')
+        //     ->whereIn('prausta_master_kode.kode_prausta', ['FA-602', 'TI-602', 'TK-602'])
+        //     ->where('prausta_setting_relasi.status', 'ACTIVE')
+        //     ->where('student.active', 1)
+        //     ->select('transkrip_final.id_transkrip_final', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'student.idstudent', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
+        //     ->orderBy('student.nim', 'desc')
+        //     ->get();
 
         return view('sadmin/nilai/transkrip_final', compact('nilai'));
     }
 
     public function input_transkrip_final($id)
     {
-        // $mhs = Student::
-
-        $mhs = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
+        $item = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-            ->where('student.idstudent', $id)
-            ->select('student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
-            ->get();
+            ->where('yudisium.id_student', $id)
+            ->select(
+                'yudisium.id_student',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'prodi.prodi',
+                'prausta_setting_relasi.judul_prausta',
+                'skpi.no_transkrip',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda'
+            )
+            ->first();
 
-        foreach ($mhs as $item) {
-            // code...
-        }
+        // $mhs = Student::leftJoin('prodi', function ($join) {
+        //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        // })
+        //     ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        //     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+        //     ->where('student.idstudent', $id)
+        //     ->select('student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
+        //     ->get();
+
+        // foreach ($mhs as $item1) {
+
+        // }
 
         return view('sadmin/transkrip/form_transkrip_final', compact('item'));
     }
@@ -1369,21 +1403,58 @@ class SadminController extends Controller
 
     public function lihat_transkrip_final($id)
     {
-        $mhs = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
+        $item = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            ->where('student.idstudent', $id)
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
-            ->get();
+            ->where('yudisium.id_student', $id)
+            ->select(
+                'student.idstudent',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'prodi.prodi',
+                'prausta_setting_relasi.judul_prausta',
+                'transkrip_final.no_transkrip_final',
+                'transkrip_final.no_ijazah',
+                'transkrip_final.tgl_yudisium',
+                'transkrip_final.tgl_wisuda'
+            )
+            ->first();
 
-        foreach ($mhs as $item) {
-            // code...
-        }
+        // $mhs = Student::leftJoin('prodi', function ($join) {
+        //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        // })
+        //     ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
+        //     ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+        //     ->where('student.idstudent', $id)
+        //     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+        //     ->select(
+        //         'prausta_setting_relasi.judul_prausta',
+        //         'transkrip_final.id_transkrip_final',
+        //         'transkrip_final.no_ijazah',
+        //         'transkrip_final.tgl_yudisium',
+        //         'transkrip_final.tgl_wisuda',
+        //         'transkrip_final.no_transkrip_final',
+        //         'student.idstudent',
+        //         'student.nama',
+        //         'student.nim',
+        //         'student.tmptlahir',
+        //         'student.tgllahir',
+        //         'prodi.prodi'
+        //     )
+        //     ->get();
 
-        $nama = strtoupper($item->nama);
+        // foreach ($mhs as $item1) {
+
+        // }
+
+        $nama = strtoupper($item->nama_lengkap);
 
         $yudisium = $item->tgl_yudisium;
 
@@ -1434,21 +1505,59 @@ class SadminController extends Controller
 
     public function print_transkrip_final($id)
     {
-        $mhs = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
+        $item = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            ->where('student.idstudent', $id)
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
-            ->get();
+            ->where('yudisium.id_student', $id)
+            ->select(
+                'student.idstudent',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'prodi.prodi',
+                'prausta_setting_relasi.judul_prausta',
+                'transkrip_final.no_transkrip_final',
+                'transkrip_final.no_ijazah',
+                'transkrip_final.tgl_yudisium',
+                'transkrip_final.tgl_wisuda'
+            )
+            ->first();
 
-        foreach ($mhs as $item) {
-            // code...
-        }
+        $nama = strtoupper($item->nama_lengkap);
 
-        $nama = strtoupper($item->nama);
+        $yudisium = $item->tgl_yudisium;
+
+        $wisuda = $item->tgl_wisuda;
+
+        $pisahyudi = explode('-', $yudisium);
+
+        $pisahwisu = explode('-', $wisuda);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $blnyudi = $bulan[$pisahyudi[1]];
+        $blnwisu = $bulan[$pisahwisu[1]];
+        $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
+        $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
 
         $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
@@ -1466,27 +1575,38 @@ class SadminController extends Controller
             // code...
         }
 
-        return view('sadmin/transkrip/print_transkrip_final', compact('item', 'data', 'keysks', 'nama'));
+        return view('sadmin/transkrip/print_transkrip_final', compact('item', 'data', 'keysks', 'nama', 'tglyudi', 'tglwisu'));
     }
 
     public function downloadAbleFile($id)
     {
-        $mhs = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
+        $item = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            ->where('student.idstudent', $id)
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-            ->select('prausta_setting_relasi.judul_prausta', 'transkrip_final.id_transkrip_final', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
-            ->get();
+            ->where('yudisium.id_student', $id)
+            ->select(
+                'student.idstudent',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'prodi.prodi',
+                'prausta_setting_relasi.judul_prausta',
+                'transkrip_final.no_transkrip_final',
+                'transkrip_final.no_ijazah',
+                'transkrip_final.tgl_yudisium',
+                'transkrip_final.tgl_wisuda'
+            )
+            ->first();
 
-        foreach ($mhs as $item) {
-            // code...
-        }
-        $tgllahir = $item->tgllahir->isoFormat('D MMMM Y');
+        $tgllahir = $item->tgl_lahir->isoFormat('D MMMM Y');
 
-        $nama = strtoupper($item->nama);
+        $nama = strtoupper($item->nama_lengkap);
 
         $yudisium = $item->tgl_yudisium;
 
@@ -1546,7 +1666,7 @@ class SadminController extends Controller
         $template->setValue('no_transkrip_final', $item->no_transkrip_final);
         $template->setValue('nim', $item->nim);
         $template->setValue('tgllahir', $tgllahir);
-        $template->setValue('tmptlahir', $item->tmptlahir);
+        $template->setValue('tmptlahir', $item->tmpt_lahir);
         $template->setValue('prodi', $item->prodi);
         $template->setValue('kelulusan', $tglyudi);
         $template->setValue('wisuda', $tglwisu);
@@ -1577,7 +1697,7 @@ class SadminController extends Controller
 
         $template->cloneRowAndSetValues('kode', $new_data);
 
-        $fileName = $item->nama;
+        $fileName = $item->nama_lengkap;
 
         $template->saveAs($fileName . '.docx');
         return response()
@@ -1592,11 +1712,25 @@ class SadminController extends Controller
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('yudisium', 'transkrip_final.id_student', '=', 'yudisium.id_student')
             ->where('transkrip_final.id_transkrip_final', $id)
-            ->select('transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda', 'transkrip_final.no_ijazah', 'transkrip_final.no_transkrip_final', 'transkrip_final.id_transkrip_final', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
+            ->select(
+                'transkrip_final.tgl_yudisium',
+                'transkrip_final.tgl_wisuda',
+                'transkrip_final.no_ijazah',
+                'transkrip_final.no_transkrip_final',
+                'transkrip_final.id_transkrip_final',
+                'student.idstudent',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'prodi.prodi',
+                'prausta_setting_relasi.judul_prausta'
+            )
             ->first();
 
-        $lahir = $item->tgllahir;
+        $lahir = $item->tgl_lahir;
 
         $pisahlahir = explode('-', $lahir);
 
@@ -2798,11 +2932,12 @@ class SadminController extends Controller
                 'skpi.no_transkrip',
                 'skpi.date_wisuda'
             )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         $data1 = Student::leftjoin('skpi', 'student.idstudent', '=', 'skpi.id_student')
             ->where('student.active', 1)
-            ->select('student.nim', 'student.nama', 'student.idstudent', 'skpi.id_skpi', 'skpi.no_skpi', 'student.tmptlahir', 'student.tgllahir', 'skpi.gelar')
+            ->select('student.nim', 'student.nama', 'student.idstudent', 'skpi.id_skpi', 'skpi.no_skpi', 'student.tmptlahir', 'student.tgllahir')
             ->get();
 
         return view('sadmin/skpi/skpi', compact('data', 'prodi', 'angkatan'));
@@ -2822,7 +2957,21 @@ class SadminController extends Controller
             ->where('yudisium.validasi', 'SUDAH')
             ->where('student.kodeprodi', $kodeprodi)
             ->where('student.idangkatan', $idangkatan)
-            ->select('yudisium.id_student', 'student.nim', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.id_skpi', 'skpi.no_skpi', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_ijazah')
+            ->select(
+                'yudisium.id_student',
+                'student.nim',
+                'yudisium.nama_lengkap',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'skpi.id_skpi',
+                'skpi.no_skpi',
+                'skpi.date_masuk',
+                'skpi.date_lulus',
+                'skpi.no_ijazah',
+                'skpi.no_transkrip',
+                'skpi.date_wisuda'
+            )
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         if (count($data) == 0) {
@@ -3029,8 +3178,10 @@ class SadminController extends Controller
         $data_student = $request->id_student;
         $data_skpi = $request->no_skpi;
         $data_ijazah = $request->no_ijazah;
+        $data_transkrip = $request->no_transkrip;
         $tgl_masuk = $request->date_masuk;
         $tgl_lulus = $request->date_lulus;
+        $tgl_wisuda = $request->date_wisuda;
 
         $jml_id = count($data_student);
 
@@ -3038,6 +3189,7 @@ class SadminController extends Controller
             $idstudent = $data_student[$i];
             $noskpi = $data_skpi[$i];
             $noijazah = $data_ijazah[$i];
+            $notranskrip = $data_transkrip[$i];
 
             $cek = Skpi::where('id_student', $idstudent)->get();
 
@@ -3046,15 +3198,19 @@ class SadminController extends Controller
                 $abs->id_student = $idstudent;
                 $abs->no_skpi = $noskpi;
                 $abs->no_ijazah = $noijazah;
+                $abs->no_transkrip = $notranskrip;
                 $abs->date_masuk = $tgl_masuk;
                 $abs->date_lulus = $tgl_lulus;
+                $abs->date_wisuda = $tgl_wisuda;
                 $abs->save();
             } elseif (count($cek) > 0) {
                 Skpi::where('id_student', $idstudent)->update([
                     'no_skpi' => $noskpi,
                     'no_ijazah' => $noijazah,
+                    'no_transkrip' => $notranskrip,
                     'date_masuk' => $tgl_masuk,
                     'date_lulus' => $tgl_lulus,
+                    'date_wisuda' => $tgl_wisuda
                 ]);
             }
         }

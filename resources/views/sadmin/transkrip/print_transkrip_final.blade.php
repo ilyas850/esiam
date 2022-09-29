@@ -6,7 +6,6 @@
     tr.b {
         line-height: 50px;
     }
-
 </style>
 
 <body>
@@ -49,8 +48,8 @@
         </tr>
         <tr>
             <td><span style="font-size:65%">Tempat dan Tanggal Lahir</span></td>
-            <td><span style="font-size:65%">: {{ $item->tmptlahir }},
-                    {{ $item->tgllahir->isoFormat('D MMMM Y') }}</span></td>
+            <td><span style="font-size:65%">: {{ $item->tmpt_lahir }},
+                    {{ $item->tgl_lahir->isoFormat('D MMMM Y') }}</span></td>
         </tr>
         <tr>
             <td><span style="font-size:65%">Nomor Induk Mahasiswa</span></td>
@@ -67,8 +66,9 @@
 
         <tr>
             <td><span style="font-size:65%">Tanggal Kelulusan</span></td>
-            <td><span style="font-size:65%">: </span></td>
+            <td><span style="font-size:65%">: {{ $tglyudi }}</span></td>
         </tr>
+
     </table>
     <br>
     <table border="1" width="100%">
@@ -171,7 +171,7 @@
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">Cikarang, </span></td>
+            <td width="33%"><span style="font-size:65%">Cikarang, {{ $tglwisu }}</span></td>
         </tr>
     </table>
     <table width="100%">
@@ -190,13 +190,13 @@
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">Fransisca Debora, S.Si., M.T.</span></td>
+            <td width="33%"><span style="font-size:65%">Tisa Amalia, S.Si., M.H.</span></td>
         </tr>
     </table>
     <table width="100%">
         <tr>
             <td width="60%"><span style="font-size:65%"></span></td>
-            <td width="33%"><span style="font-size:65%">NIDN. 0414029402</span></td>
+            <td width="33%"><span style="font-size:65%">NIDN. 0625048701</span></td>
         </tr>
     </table>
     <script>

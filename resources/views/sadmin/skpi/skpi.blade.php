@@ -53,7 +53,7 @@
                             <th rowspan="2">
                                 <center>Tempat, tanggal lahir</center>
                             </th>
-                            <th colspan="2">
+                            <th colspan="3">
                                 <center>Tanggal, Bulan dan Tahun </center>
                             </th>
                             <th rowspan="2">
@@ -61,6 +61,9 @@
                             </th>
                             <th rowspan="2">
                                 <center>No. Ijazah</center>
+                            </th>
+                            <th rowspan="2">
+                                <center>No. Transkrip</center>
                             </th>
                             <th rowspan="2">
                                 <center>Aksi</center>
@@ -72,6 +75,9 @@
                             </td>
                             <td>
                                 <center>Lulus</center>
+                            </td>
+                            <td>
+                                <center>Wisuda</center>
                             </td>
                         </tr>
                     </thead>
@@ -87,8 +93,10 @@
                                 </td>
                                 <td>{{ $item->date_masuk }}</td>
                                 <td>{{ $item->date_lulus }}</td>
+                                <td>{{ $item->date_wisuda }}</td>
                                 <td>{{ $item->no_skpi }}</td>
                                 <td>{{ $item->no_ijazah }}</td>
+                                <td>{{ $item->no_transkrip }}</td>
                                 <td align="center">
                                     @if ($item->id_skpi != null)
                                         <a href="/download_skpi/{{ $item->id_skpi }}"
