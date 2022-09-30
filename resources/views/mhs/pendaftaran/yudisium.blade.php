@@ -233,9 +233,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
                                 <div class="form-group">
                                     <label>File Ijazah Terakhir</label>
                                     <input type="file" class="form-control" name="file_ijazah"

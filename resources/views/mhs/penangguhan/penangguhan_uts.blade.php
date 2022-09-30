@@ -9,13 +9,14 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <center>
-                    <h3>Kartu Ujian Akhir Semester (UAS)</h3>
+                    <h3>Kartu Ujian Tengah Semester (UTS)</h3>
                 </center>
                 <table width="100%">
                     <tr>
                         <td width="15%">Nama</td>
                         <td>:</td>
                         <td>{{ $datamhs->nama }}</td>
+
                         <td width="15%">Tahun Ajaran</td>
                         <td>:</td>
                         <td>{{ $periodetahun }}</td>
@@ -24,6 +25,7 @@
                         <td>NIM</td>
                         <td>:</td>
                         <td>{{ $datamhs->nim }}</td>
+
                         <td>Semester</td>
                         <td>:</td>
                         <td>{{ $periodetipe }}</td>
@@ -40,8 +42,7 @@
                 </table>
             </div>
             <div class="box-body">
-                <a class="btn btn-warning" href="{{ url('unduh_kartu_uas') }}">Unduh Kartu UAS</a>
-
+                <a class="btn btn-warning" href="{{ url('unduh_kartu_uts') }}">Unduh Kartu UTS</a>
                 <table class="table table-striped">
                     <thead>
                         <tr>

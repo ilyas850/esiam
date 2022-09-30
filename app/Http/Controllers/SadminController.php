@@ -4269,6 +4269,7 @@ class SadminController extends Controller
             })
             ->where('student.active', 1)
             ->select('yudisium.id_yudisium', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'yudisium.nik', 'student.nim', 'prodi.prodi', 'yudisium.id_student', 'yudisium.file_ijazah', 'yudisium.file_ktp', 'yudisium.file_foto', 'yudisium.validasi')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('sadmin/masterakademik/master_yudisium', compact('data'));
