@@ -154,9 +154,10 @@
                                             <a href="penangguhan_kartu_uas/{{ $item->id_penangguhan_trans }}"
                                                 class="btn btn-danger btn-xs">UAS</a>
                                         @elseif($item->id_penangguhan_kategori == 4)
+                                            <a href="penangguhan_yudisium/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-primary btn-xs">Yudisium</a>
                                         @endif
                                     @endif
-
                                 </td>
                             </tr>
                             <div class="modal fade" id="modalUpdateSertifikat{{ $item->id_penangguhan_trans }}"

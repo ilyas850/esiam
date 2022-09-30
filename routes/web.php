@@ -699,6 +699,10 @@ Route::group(['middleware' => 'mhs'], function () {
 
     Route::get('penangguhan_kartu_uts/{id}', 'PenangguhanController@penangguhan_kartu_uts');
     Route::get('penangguhan_kartu_uas/{id}', 'PenangguhanController@penangguhan_kartu_uas');
+
+    Route::get('penangguhan_yudisium/{id}', 'PenangguhanController@penangguhan_yudisium');
+    Route::post('save_penangguhan_yudisium', 'PenangguhanController@save_penangguhan_yudisium');
+    Route::put('put_penangguhan_yudisium/{id}', 'PenangguhanController@put_penangguhan_yudisium');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use File;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Prodi;
 use App\Student;
+use App\Sertifikat;
+use App\Yudisium;
 use App\Waktu_krs;
 use App\Periode_tipe;
 use App\Periode_tahun;
@@ -14,6 +17,7 @@ use App\Kurikulum_transaction;
 use App\Penangguhan_trans;
 use App\Edom_transaction;
 use App\Kuisioner_transaction;
+use App\Prausta_setting_relasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -552,5 +556,266 @@ class PenangguhanController extends Controller
             Alert::error('Maaf anda belum melakukan pengisian edom', 'MAAF !!');
             return redirect()->back();
         }
+    }
+
+    public function penangguhan_yudisium($id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $data_mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $ids)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi'
+            )
+            ->first();
+
+        $idangkatan = $data_mhs->idangkatan;
+        $idstatus = $data_mhs->idstatus;
+        $kodeprodi = $data_mhs->kodeprodi;
+        $idprodi = $data_mhs->id_prodi;
+
+        $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->where('prausta_setting_relasi.id_student', $ids)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.validasi_baak'
+            )
+            ->first();
+
+        if ($cekdata_prausta->validasi_baak == 'SUDAH') {
+            //cek nilai kosong atau tidak lulus
+            $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
+                ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                ->where('kurikulum_transaction.id_prodi', $idprodi)
+                ->where('kurikulum_transaction.id_angkatan', $idangkatan)
+                ->where('kurikulum_transaction.status', 'ACTIVE')
+                ->where('student_record.id_student', $ids)
+                ->where('student_record.status', 'TAKEN')
+                ->where(function ($query) {
+                    $query
+                        ->where('student_record.nilai_AKHIR', '0')
+                        ->orWhere('student_record.nilai_AKHIR', 'D')
+                        ->orWhere('student_record.nilai_AKHIR', 'E');
+                })
+                ->select('kurikulum_transaction.id_makul', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                ->get();
+
+            $hitjml_kur = count($cek_kur);
+
+            if ($hitjml_kur == 0) {
+                $serti = Sertifikat::where('id_student', $ids)->count();
+
+                if ($serti >= 10) {
+                    //cek kuisioner dosen pembimbing pkl
+                    $cek_kuis_dospem_pkl = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                        ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                        ->where('kuisioner_transaction.id_student', $ids)
+                        ->where('kuisioner_master_kategori.id_kategori_kuisioner', 2)
+                        ->count();
+
+                    if (($cek_kuis_dospem_pkl) > 0) {
+
+                        //cek kuisioner dosen pembimbing ta
+                        $cek_kuis_dospem_ta = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                            ->where('kuisioner_transaction.id_student', $ids)
+                            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 3)
+                            ->count();
+
+                        if (($cek_kuis_dospem_ta) > 0) {
+
+                            //cek kuisioner dosen penguji 1 ta
+                            $cek_kuis_dospeng_ta_1 = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                ->where('kuisioner_transaction.id_student', $ids)
+                                ->where('kuisioner_master_kategori.id_kategori_kuisioner', 4)
+                                ->count();
+
+                            if (($cek_kuis_dospeng_ta_1) > 0) {
+
+                                //cek kuisioner dosen penguji 2 ta
+                                $cek_kuis_dospeng_ta_2 = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                    ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                    ->where('kuisioner_transaction.id_student', $ids)
+                                    ->where('kuisioner_master_kategori.id_kategori_kuisioner', 5)
+                                    ->count();
+
+                                if (($cek_kuis_dospeng_ta_2) > 0) {
+                                    $data = Yudisium::where('id_student', $ids)->first();
+
+                                    return view('mhs/penangguhan/penangguhan_yudisium', compact('id', 'data'));
+                                } else {
+                                    alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
+                                    return redirect('home');
+                                }
+                            } else {
+                                alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 1 TA')->autoclose(5000);
+                                return redirect('home');
+                            }
+                        } else {
+                            alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen pembimbing TA')->autoclose(5000);
+                            return redirect('home');
+                        }
+                    } else {
+                        alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen pembimbing PKL')->autoclose(5000);
+                        return redirect('home');
+                    }
+                } else {
+                    alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena sertifikat anda kurang dari 10')->autoclose(5000);
+                    return redirect('home');
+                }
+            } else {
+                alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena ada nilai yang masih kosong / belum lulus')->autoclose(5000);
+                return redirect('home');
+            }
+        } else {
+            alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena BAAK belum validasi Tugas Akhir anda')->autoclose(5000);
+            return redirect('home');
+        }
+    }
+
+    public function save_penangguhan_yudisium(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi'
+        ];
+        $this->validate(
+            $request,
+            [
+                'nama_lengkap' => 'required',
+                'tmpt_lahir' => 'required',
+                'tgl_lahir' => 'required',
+                'nik' => 'required',
+                'file_ijazah'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_foto'     => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+            ],
+            $message,
+        );
+
+        $bap = new Yudisium();
+        $bap->id_student = $request->id_student;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->tmpt_lahir = $request->tmpt_lahir;
+        $bap->tgl_lahir = $request->tgl_lahir;
+        $bap->nik = $request->nik;
+
+        if ($request->hasFile('file_ijazah')) {
+            $file = $request->file('file_ijazah');
+            $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_ijazah = $nama_file;
+        }
+
+        if ($request->hasFile('file_ktp')) {
+            $file = $request->file('file_ktp');
+            $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_ktp = $nama_file;
+        }
+
+        if ($request->hasFile('file_foto')) {
+            $file = $request->file('file_foto');
+            $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Yudisium/' . $request->id_student;
+            $file->move($tujuan_upload, $nama_file);
+            $bap->file_foto = $nama_file;
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Yudisium berhasil ditambahkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function put_penangguhan_yudisium(Request $request, $id)
+    {
+        $bap = Yudisium::find($id);
+        $bap->id_student = Auth::user()->id_user;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->tmpt_lahir = $request->tmpt_lahir;
+        $bap->tgl_lahir = $request->tgl_lahir;
+        $bap->nik = $request->nik;
+        $bap->created_by = Auth::user()->name;
+
+        if ($bap->file_ijazah) {
+            if ($request->hasFile('file_ijazah')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_ijazah);
+                $file = $request->file('file_ijazah');
+                $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ijazah = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_ijazah')) {
+                $file = $request->file('file_ijazah');
+                $nama_file = 'File Ijazah' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ijazah = $nama_file;
+            }
+        }
+
+        if ($bap->file_ktp) {
+            if ($request->hasFile('file_ktp')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_ktp);
+                $file = $request->file('file_ktp');
+                $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ktp = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_ktp')) {
+                $file = $request->file('file_ktp');
+                $nama_file = 'File KTP' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_ktp = $nama_file;
+            }
+        }
+
+        if ($bap->file_foto) {
+            if ($request->hasFile('file_foto')) {
+                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_foto);
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_foto = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_foto')) {
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_foto = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Data Yudisium berhasil diedit')->autoclose(3500);
+        return redirect()->back();
     }
 }
