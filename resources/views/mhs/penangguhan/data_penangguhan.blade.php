@@ -145,7 +145,8 @@
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
                                     @elseif ($item->validasi_dsn_pa == 'SUDAH' && $item->validasi_kaprodi == 'SUDAH' && $item->validasi_baak == 'SUDAH')
                                         @if ($item->id_penangguhan_kategori == 1)
-                                            <a href="{{ url('penangguhan_krs') }}" class="btn btn-info btn-xs">KRS</a>
+                                            <a href="penangguhan_krs/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-info btn-xs">KRS</a>
                                         @elseif($item->id_penangguhan_kategori == 2)
 
                                         @elseif($item->id_penangguhan_kategori == 3)

@@ -693,7 +693,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::put('put_penangguhan/{id}', 'MhsController@put_penangguhan');
 
     //link penangguhan
-    Route::get('penangguhan_krs', 'PenangguhanController@penangguhan_krs');
+    Route::get('penangguhan_krs/{id}', 'PenangguhanController@penangguhan_krs');
     Route::post('input_krs_penangguhan', 'PenangguhanController@input_krs_penangguhan');
     Route::post('save_penangguhan_krs', 'PenangguhanController@save_penangguhan_krs');
 });

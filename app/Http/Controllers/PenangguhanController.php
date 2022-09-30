@@ -5,85 +5,105 @@ namespace App\Http\Controllers;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Prodi;
 use App\Student;
+use App\Waktu_krs;
 use App\Periode_tipe;
 use App\Periode_tahun;
 use App\Student_record;
 use App\Kurikulum_master;
 use App\Kurikulum_transaction;
+use App\Penangguhan_trans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PenangguhanController extends Controller
 {
-    public function penangguhan_krs()
+    public function penangguhan_krs($id)
     {
-        $id = Auth::user()->id_user;
-        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $waktu_krs = Waktu_krs::where('status', 1)->first();
 
-        $data_mhs = Student::leftJoin('prodi', (function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        }))
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->where('student.idstudent', $id)
-            ->select(
-                'student.idstudent',
-                'student.nama',
-                'student.nim',
-                'kelas.kelas',
-                'prodi.prodi',
-                'prodi.konsentrasi',
-                'student.idangkatan',
-                'student.idstatus',
-                'student.kodeprodi',
-                'student.intake'
-            )
-            ->first();
+        if ($waktu_krs == null) {
 
-        $idperiodetahun = $thn->id_periodetahun;
-        $idperiodetipe = $tp->id_periodetipe;
-        $periodetahun = $thn->periode_tahun;
-        $periodetipe = $tp->periode_tipe;
+            alert()->error('Maaf KRS Belum dibuka', 'Silahkan menghubungi BAAK');
+            return redirect()->back();
+        } elseif ($waktu_krs->status == 1) {
+            $ids = Auth::user()->id_user;
+            $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+            $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        //data KRS yang diambil
-        $data_krs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->where('student_record.id_student', $id)
-            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-            ->where('student_record.status', 'TAKEN')
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('student_record.remark', 'student_record.id_studentrecord', 'student_record.tanggal_krs', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama')
-            ->orderBy('kurikulum_periode.id_hari', 'ASC')
-            ->orderBy('kurikulum_periode.id_jam', 'ASC')
-            ->get();
+            $dt_penangguhan = Penangguhan_trans::where('id_penangguhan_trans', $id)
+                ->where('id_periodetahun', $thn->id_periodetahun)
+                ->where('id_periodetipe', $tp->id_periodetipe)
+                ->first();
+            if ($dt_penangguhan == null) {
+                alert()->error('Maaf Periode KRS Sudah Berakhir', 'Silahkan menghubungi BAAK');
+                return redirect()->back();
+            } else {
 
-        //cek sks dari KRS
-        $sks_krs = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $id)
-            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-            ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-            ->get();
+                $data_mhs = Student::leftJoin('prodi', (function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                }))
+                    ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                    ->where('student.idstudent', $ids)
+                    ->select(
+                        'student.idstudent',
+                        'student.nama',
+                        'student.nim',
+                        'kelas.kelas',
+                        'prodi.prodi',
+                        'prodi.konsentrasi',
+                        'student.idangkatan',
+                        'student.idstatus',
+                        'student.kodeprodi',
+                        'student.intake'
+                    )
+                    ->first();
 
-        //jumlah SKS
-        $sks = 0;
-        foreach ($sks_krs as $keysks) {
-            $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+                $idperiodetahun = $thn->id_periodetahun;
+                $idperiodetipe = $tp->id_periodetipe;
+                $periodetahun = $thn->periode_tahun;
+                $periodetipe = $tp->periode_tipe;
+
+                //data KRS yang diambil
+                $data_krs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                    ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                    ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+                    ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+                    ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
+                    ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+                    ->where('student_record.id_student', $ids)
+                    ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                    ->where('student_record.status', 'TAKEN')
+                    ->where('kurikulum_periode.status', 'ACTIVE')
+                    ->select('student_record.remark', 'student_record.id_studentrecord', 'student_record.tanggal_krs', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama')
+                    ->orderBy('kurikulum_periode.id_hari', 'ASC')
+                    ->orderBy('kurikulum_periode.id_jam', 'ASC')
+                    ->get();
+
+                //cek sks dari KRS
+                $sks_krs = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                    ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                    ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+                    ->where('student_record.id_student', $ids)
+                    ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                    ->where('student_record.status', 'TAKEN')
+                    ->select('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+                    ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+                    ->get();
+
+                //jumlah SKS
+                $sks = 0;
+                foreach ($sks_krs as $keysks) {
+                    $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+                }
+
+                return view('mhs/penangguhan/penangguhan_krs', compact('data_krs', 'sks_krs', 'data_mhs', 'idperiodetahun', 'idperiodetipe', 'periodetahun', 'periodetipe', 'sks'));
+            }
         }
-
-        return view('mhs/penangguhan/penangguhan_krs', compact('data_krs', 'sks_krs', 'data_mhs', 'idperiodetahun', 'idperiodetipe', 'periodetahun', 'periodetipe', 'sks'));
     }
 
     public function input_krs_penangguhan(Request $request)
