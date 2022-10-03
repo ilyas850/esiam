@@ -71,37 +71,51 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="3%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="5%">Semester</th>
-                            <th width="5%">Kode</th>
-                            <th width="16%">Matakuliah</th>
-                            <th width="4%">Hari</th>
-                            <th width="3%">Jam</th>
-                            <th width="8%">Ruangan</th>
-                            <th width="2%">SKST</th>
-                            <th width="2%">SKSP</th>
-                            <th width="18%">Dosen</th>
-                            <th width="4%">Aksi </th>
+                            <th>
+                                <center>Semester</center>
+                            </th>
+                            <th>
+                                <center>Kode</center>
+                            </th>
+                            <th>
+                                <center>Matakuliah</center>
+                            </th>
+                            <th>
+                                <center>Hari</center>
+                            </th>
+                            <th>
+                                <center>Jam</center>
+                            </th>
+                            <th>
+                                <center>Ruangan</center>
+                            </th>
+                            <th>
+                                <center>SKS (T/P)</center>
+                            </th>
+                            <th>
+                                <center>Dosen</center>
+                            </th>
+                            <th>
+                                <center>Aksi</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($val as $item)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $item->semester }}</td>
-                                <td>{{ $item->kode }}</td>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $item->semester }}</td>
+                                <td align="center">{{ $item->kode }}</td>
                                 <td>{{ $item->makul }}</td>
-                                <td>{{ $item->hari }}</td>
-                                <td>{{ $item->jam }}</td>
-                                <td>{{ $item->nama_ruangan }}</td>
+                                <td align="center">{{ $item->hari }}</td>
+                                <td align="center">{{ $item->jam }}</td>
+                                <td align="center">{{ $item->nama_ruangan }}</td>
                                 <td>
-                                    <center>{{ $item->akt_sks_teori }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->akt_sks_praktek }}</center>
+                                    <center>{{ $item->akt_sks_teori }} / {{ $item->akt_sks_praktek }}</center>
                                 </td>
                                 <td>{{ $item->nama }}</td>
                                 <td>

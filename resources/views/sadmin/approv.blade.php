@@ -78,9 +78,7 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>
-                                    <center>
-                                        {{ $app->prodi }}
-                                    </center>
+                                    {{ $app->prodi }}
                                 </td>
                                 <td>
                                     <center>

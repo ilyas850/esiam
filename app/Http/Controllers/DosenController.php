@@ -276,33 +276,9 @@ class DosenController extends Controller
         $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student.active', 1)
-            ->where('dosen_pembimbing.id_dosen', $ids)
-            ->where('dosen_pembimbing.status', 'ACTIVE')
-            ->select('dosen_pembimbing.id_student', 'student.nama', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'kelas.kelas')
-            ->get();
+        $data_mhs = DB::select('CALL validasi_krs(' . $ids . ')');
 
-        $bim = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
-            ->leftjoin('student_record', 'dosen_pembimbing.id_student', '=', 'student_record.id_student')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
-            ->where('dosen_pembimbing.id_dosen', $ids)
-            ->where('student.active', 1)
-            ->where('student_record.status', 'TAKEN')
-            ->select(DB::raw('count(student_record.id_student) as jml_krs'), 'student_record.remark', 'student_record.id_student')
-            ->groupBy('student_record.remark', 'student_record.id_student')
-            ->get();
-
-        return view('dosen/validasi_krs', ['mhs' => $mhs, 'bim' => $bim, 'tahun' => $tahun, 'tipe' => $tipe]);
+        return view('dosen/validasi_krs', ['mhs' => $data_mhs, 'tahun' => $tahun, 'tipe' => $tipe]);
     }
 
     public function cek_krs($id)

@@ -51,7 +51,7 @@
                                 </center>
                             </th>
                             <th>
-                                <center>Status KRS</center>
+                                <center>Validasi</center>
                             </th>
                             <th>
                                 <center>Aksi</center>
@@ -83,31 +83,25 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @foreach ($bim as $item)
-                                            @if ($key->id_student == $item->id_student)
-                                                {{ $item->jml_krs }}
-                                            @endif
-                                        @endforeach
+                                        {{ $key->jml_krs }}
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @foreach ($bim as $item)
-                                            @if ($key->id_student == $item->id_student)
-                                                @if ($item->remark == 1)
-                                                    <span class="badge bg-yellow">Sudah divalidasi</span>
-                                                @elseif ($item->remark == 0)
-                                                    <form action="{{ url('krs_validasi') }}" method="post">
-                                                        <input type="hidden" name="id_student"
-                                                            value="{{ $item->id_student }}">
-                                                        <input type="hidden" name="remark" value="1">
-                                                        {{ csrf_field() }}
-                                                        <button type="submit" class="btn btn-success btn-xs"
-                                                            data-toggle="tooltip" data-placement="right">Validasi</button>
-                                                    </form>
-                                                @endif
+                                        @if ($key->jml_krs == 0)
+                                        @elseif($key->jml_krs > 0)
+                                            @if ($key->remark == 1)
+                                                <span class="badge bg-yellow">Sudah divalidasi</span>
+                                            @elseif ($key->remark == 0)
+                                                <form action="{{ url('krs_validasi') }}" method="post">
+                                                    <input type="hidden" name="id_student" value="{{ $key->id_student }}">
+                                                    <input type="hidden" name="remark" value="1">
+                                                    {{ csrf_field() }}
+                                                    <button type="submit" class="btn btn-success btn-xs"
+                                                        data-toggle="tooltip" data-placement="right">Validasi</button>
+                                                </form>
                                             @endif
-                                        @endforeach
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
