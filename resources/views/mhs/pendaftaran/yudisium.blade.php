@@ -86,15 +86,14 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tempat Lahir</label>
-                                <input type="text" class="form-control" name="tmpt_lahir"
-                                    value="{{ $data->tmpt_lahir }}" readonly>
+                                <input type="text" class="form-control" name="tmpt_lahir" value="{{ $data->tmpt_lahir }}"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tanggal Lahir</label>
-                                <input type="text" class="form-control" value="{{ $tgllahir }}"
-                                    readonly>
+                                <input type="text" class="form-control" value="{{ $tgllahir }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -160,8 +159,8 @@
 
                             @if ($data->validasi == 'BELUM')
                                 <button class="btn btn-success" data-toggle="modal"
-                                    data-target="#modalUpdateYudisium{{ $data->id_yudisium }}"
-                                    title="klik untuk edit"><i class="fa fa-edit"></i> Edit</button>
+                                    data-target="#modalUpdateYudisium{{ $data->id_yudisium }}" title="klik untuk edit"><i
+                                        class="fa fa-edit"></i> Edit</button>
                             @else
                                 <button type="button" class="btn btn-warning" data-toggle="modal"
                                     data-target="#modal-warning">
@@ -189,8 +188,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="modalUpdateYudisium{{ $data->id_yudisium }}" tabindex="-1"
-                aria-hidden="true">
+            <div class="modal fade" id="modalUpdateYudisium{{ $data->id_yudisium }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

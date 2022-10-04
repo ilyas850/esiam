@@ -54,7 +54,7 @@ class DataNilaiKHSExport implements FromView, ShouldAutoSize
                                     ->where('kurikulum_periode.id_periodetipe', $this->tp)
                                     ->where('kurikulum_periode.id_prodi', $this->prd)
                                     ->where('student_record.status', 'TAKEN')
-                                    ->where('student.kodeprodi', $this->kd)
+                                    // ->where('student.kodeprodi', $this->kd)
                                     ->where('student.active', 1)
                                     ->select(DB::raw('DISTINCT(student_record.id_kurtrans)'),'prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks_hasil'))
                                     ->get()
