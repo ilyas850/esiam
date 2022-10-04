@@ -52,8 +52,9 @@ class AdminPraustaController extends Controller
             })
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->leftjoin('prausta_master_waktu', function ($join) {
-                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+            ->join('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')
+                    ->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
                     ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
             })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
@@ -61,6 +62,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->where('prausta_master_waktu.tipe_prausta', 'PKL')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
             ->where('student.active', 1)
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
@@ -162,7 +164,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
             ->where('prausta_master_waktu.tipe_prausta', 'SEMPRO')
-
+            ->where('prausta_master_waktu.status', 'ACTIVE')
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
@@ -277,6 +279,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
             ->where('prausta_master_waktu.tipe_prausta', 'TA')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
