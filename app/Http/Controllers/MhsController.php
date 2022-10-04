@@ -3462,7 +3462,9 @@ class MhsController extends Controller
                                     if (($cek_kuis_dospeng_ta_2) > 0) {
                                         $data = Yudisium::where('id_student', $id)->first();
 
-                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data'));
+                                        $tgllahir = $data->tgl_lahir->isoFormat('D MMMM Y');
+
+                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data', 'tgllahir'));
                                     } else {
                                         alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
                                         return redirect('home');

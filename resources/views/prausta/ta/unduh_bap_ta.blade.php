@@ -30,7 +30,6 @@
             </td>
         </tr>
     </table>
-    
 
     <table width="100%">
         <tr>
@@ -121,7 +120,7 @@
                 @if ($data->nilai_huruf == 'A' or $data->nilai_huruf == 'B+' or $data->nilai_huruf == 'B' or $data->nilai_huruf == 'C+' or $data->nilai_huruf == 'C')
                     <h3>LULUS / <s>TIDAK LULUS</s></h3>
                 @elseif($data->nilai_huruf == 'D' or $data->nilai_huruf == 'E')
-                    <h3> <s style="height: 10px">LULUS</s> / TIDAK LULUS</h3>
+                    <h3> <s style="height: 30px">LULUS</s> / TIDAK LULUS</h3>
                 @endif
 
             </td>
@@ -136,14 +135,14 @@
         </tr>
     </table>
     
-    <table width="100%" height="100%" border="1">
-        <tr height="90px">
-            <td align="center" width="3%">NO <br></td>
-            <td align="center" width="10%">KOMPONEN</td>
-            <td align="center" width="20%">NAMA</td>
-            <td align="center" width="10%">TANDA TANGAN</td>
-        </tr>
+    <table width="100%" border="1">
         <tr>
+            <td align="center" width="5%">NO</td>
+            <td align="center" width="15%">KOMPONEN</td>
+            <td align="center" width="50%">NAMA</td>
+            <td align="center" width="20%">TANDA TANGAN</td>
+        </tr>
+        <tr height="100%">
             <td align="center">1</td>
             <td>Pembimbing</td>
             <td style="font-size:85%">
@@ -153,17 +152,17 @@
             </td>
             <td></td>
         </tr>
-        <tr>
+        <tr height="100%">
             <td align="center">2</td>
             <td>Penguji I</td>
             <td style="font-size:85%">
                 @if ($dospem != null)
-                    {{ $dospeng1->nama }}, {{ $dospeng1->akademik }}
+                    {{ $dospeng1->nama }}, {{ $dospeng1->akademik }} 
                 @endif
             </td>
             <td></td>
         </tr>
-        <tr>
+        <tr height="100%">
             <td align="center">3</td>
             <td>Penguji II</td>
             <td style="font-size:85%">

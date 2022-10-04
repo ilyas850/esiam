@@ -93,7 +93,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tanggal Lahir</label>
-                                <input type="date" class="form-control" name="tgl_lahir" value="{{ $data->tgl_lahir }}"
+                                <input type="text" class="form-control" value="{{ $tgllahir }}"
                                     readonly>
                             </div>
                         </div>
