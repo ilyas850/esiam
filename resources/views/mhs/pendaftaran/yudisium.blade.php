@@ -93,7 +93,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tanggal Lahir</label>
-                                <input type="text" class="form-control" value="{{ $tgllahir }}" readonly>
+                                <input type="text" class="form-control" value="{{ $data->tgl_lahir->isoFormat('D MMMM Y') }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-3">

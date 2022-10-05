@@ -3274,7 +3274,7 @@ class MhsController extends Controller
     public function yudisium()
     {
         $id = Auth::user()->id_user;
-        dd($id);
+       
         $data_mhs = Student::leftJoin('prodi', (function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
                 ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
@@ -3461,10 +3461,10 @@ class MhsController extends Controller
 
                                     if (($cek_kuis_dospeng_ta_2) > 0) {
                                         $data = Yudisium::where('id_student', $id)->first();
-                                        dd($data);
-                                        $tgllahir = $data->tgl_lahir->isoFormat('D MMMM Y');
+                                       
+                                        // $tgllahir = $data->tgl_lahir->isoFormat('D MMMM Y');
 
-                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data', 'tgllahir'));
+                                        return view('mhs/pendaftaran/yudisium', compact('id', 'data'));
                                     } else {
                                         alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
                                         return redirect('home');
