@@ -3274,7 +3274,7 @@ class MhsController extends Controller
     public function yudisium()
     {
         $id = Auth::user()->id_user;
-
+        dd($id);
         $data_mhs = Student::leftJoin('prodi', (function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
                 ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
@@ -3461,7 +3461,7 @@ class MhsController extends Controller
 
                                     if (($cek_kuis_dospeng_ta_2) > 0) {
                                         $data = Yudisium::where('id_student', $id)->first();
-
+                                        dd($data);
                                         $tgllahir = $data->tgl_lahir->isoFormat('D MMMM Y');
 
                                         return view('mhs/pendaftaran/yudisium', compact('id', 'data', 'tgllahir'));

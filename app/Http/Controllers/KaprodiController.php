@@ -8085,8 +8085,8 @@ class KaprodiController extends Controller
         ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
         ->whereIn('student.kodeprodi', [25, 22])
         ->where('student.active', 1)
-        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
-        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi')
+        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan',)
         ->get();
     } else {
       $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
@@ -8098,8 +8098,8 @@ class KaprodiController extends Controller
         ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
         ->whereIn('prodi.kodeprodi', [$prodi->kodeprodi])
         ->where('student.active', 1)
-        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
-        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi')
+        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan',)
         ->get();
     }
 
