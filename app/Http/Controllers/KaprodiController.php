@@ -8074,7 +8074,7 @@ class KaprodiController extends Controller
       ->where('id_dosen', $iddosen)
       ->select('prodi.kodeprodi')
       ->first();
-    if ($prodi->kodeprodi == 25 or $prodi->kodeprodi == 22) {
+    if ($prodi->kodeprodi == 25) {
       $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
         ->leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
         ->leftjoin('prodi', function ($join) {
@@ -8082,7 +8082,20 @@ class KaprodiController extends Controller
         })
         ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
         ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-        ->whereIn('prodi.kodeprodi', [22, 25])
+        ->whereIn('prodi.kodeprodi', [25])
+        ->where('student.active', 1)
+        ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'), 'jenis_kegiatan.deskripsi')
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', 'jenis_kegiatan.deskripsi')
+        ->get();
+    } elseif ($prodi->kodeprodi == 22) {
+      $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+        ->leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+        ->leftjoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        ->whereIn('prodi.kodeprodi', [22])
         ->where('student.active', 1)
         ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'), 'jenis_kegiatan.deskripsi')
         ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', 'sertifikat.validasi', 'jenis_kegiatan.deskripsi')

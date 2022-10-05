@@ -162,6 +162,32 @@ class SadminController extends Controller
 
     public function show_user()
     {
+        $data = Student::leftjoin('users', 'student.idstudent', '=', 'users.id_user')
+            ->leftjoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->select(
+                'users.id',
+                'users.id_user',
+                'users.username',
+                'users.deleted_at',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idstudent',
+                'users.role',
+                'angkatan.angkatan'
+            )
+            ->where('student.active', 1)
+            ->orderBy('student.idangkatan', 'DESC')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
         $usermhs = Student::leftJoin('passwords', 'user', '=', 'student.nim')
             ->leftJoin('users', 'username', '=', 'passwords.user')
             ->leftJoin('prodi', function ($join) {
@@ -169,13 +195,28 @@ class SadminController extends Controller
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->select('users.id', 'users.id_user', 'users.username', 'users.deleted_at', 'passwords.pwd', 'student.nim', 'student.nama', 'kelas.kelas', 'prodi.prodi', 'student.idstudent', 'users.role', 'angkatan.angkatan')
+            ->select(
+                'users.id',
+                'users.id_user',
+                'users.username',
+                'users.deleted_at',
+                'passwords.pwd',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idstudent',
+                'users.role',
+                'angkatan.angkatan'
+            )
             ->where('student.active', 1)
             ->orderBy('student.idangkatan', 'DESC')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        return view('sadmin/data_user', ['users' => $usermhs]);
+        return view('sadmin/data_user', ['users' => $data]);
     }
 
     public function saveuser_mhs(Request $request)
@@ -196,6 +237,26 @@ class SadminController extends Controller
 
         Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
         return redirect('show_user');
+    }
+
+    public function save_generate_user(Request $request)
+    {
+        $student = $request->student;
+        $jml_student = count($student);
+
+        for ($i = 0; $i < $jml_student; $i++) {
+            $id_stud = $student[$i];
+
+            $cek_user = User::where('id_user', $id_stud)->get();
+            dd($cek_user);
+            if (count($cek_user) == 0) {
+                # code...
+            }
+
+            $mhs = Student::where('idstudent', $id_stud)->first();
+
+            dd($mhs);
+        }
     }
 
     public function resetuser(Request $request)
