@@ -248,15 +248,30 @@ class SadminController extends Controller
             $id_stud = $student[$i];
 
             $cek_user = User::where('id_user', $id_stud)->get();
-            dd($cek_user);
+
             if (count($cek_user) == 0) {
-                # code...
+                $dt = Student::where('idstudent', $id_stud)->first();
+
+                $users = new User();
+                $users->id_user = $id_stud;
+                $users->name = $dt->nama;
+                $users->password = bcrypt($dt->nim);
+                $users->role = 4;
+                $users->username = $dt->nim;
+                $users->save();
+            } elseif (count($cek_user) > 0) {
+                $mhs = User::where('id_user', $id_stud)->first();
+
+                $id = $mhs->id;
+                $user = User::find($id);
+                $user->role = 4;
+                $user->password = bcrypt($mhs->username);
+                $user->save();
             }
-
-            $mhs = Student::where('idstudent', $id_stud)->first();
-
-            dd($mhs);
         }
+
+        Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
+        return redirect('show_user');
     }
 
     public function resetuser(Request $request)
