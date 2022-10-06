@@ -245,7 +245,8 @@ class KaprodiController extends Controller
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
       ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
       ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->leftjoin('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->leftjoin('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->select(
         'student.idstudent',
         'student.nama',
@@ -254,6 +255,7 @@ class KaprodiController extends Controller
         'angkatan.angkatan',
         'kelas.kelas',
         'prodi.prodi',
+        'periode_tahun.periode_tahun',
         'periode_tipe.periode_tipe'
       )
       ->whereIn('student_record.id_studentrecord', (function ($query) {
@@ -267,7 +269,7 @@ class KaprodiController extends Controller
       // ->where('student_record.status', 'TAKEN')
       ->get();
 
-    return view('kaprodi/master/mhs_bim', ['mhs' => $p]);
+    return view('kaprodi/master/mhs_bim', ['mhs' => $k]);
   }
 
   public function record_nilai($id)
