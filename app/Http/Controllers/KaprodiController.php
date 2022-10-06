@@ -46,6 +46,8 @@ use App\Sertifikat;
 use App\Pedoman_akademik;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
+use App\Yudisium;
+use App\Wisuda;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -8304,5 +8306,74 @@ class KaprodiController extends Controller
 
     Alert::success('', 'Berhasil')->autoclose(3500);
     return redirect()->back();
+  }
+
+  public function master_yudisium_kprd()
+  {
+    $iddosen = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iddosen)
+      ->select('prodi.kodeprodi')
+      ->first();
+
+    if ($prodi->kodeprodi == 25 or $prodi->kodeprodi == 22) {
+      $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+        ->leftJoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->where('student.active', 1)
+        ->whereIn('student.kodeprodi', [25, 22])
+        ->select('yudisium.id_yudisium', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'yudisium.nik', 'student.nim', 'prodi.prodi', 'yudisium.id_student', 'yudisium.file_ijazah', 'yudisium.file_ktp', 'yudisium.file_foto', 'yudisium.validasi')
+        ->orderBy('student.nim', 'ASC')
+        ->get();
+    } else {
+      $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+        ->leftJoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->where('student.active', 1)
+        ->whereIn('student.kodeprodi', [$prodi->kodeprodi])
+        ->select('yudisium.id_yudisium', 'yudisium.nama_lengkap', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'yudisium.nik', 'student.nim', 'prodi.prodi', 'yudisium.id_student', 'yudisium.file_ijazah', 'yudisium.file_ktp', 'yudisium.file_foto', 'yudisium.validasi')
+        ->orderBy('student.nim', 'ASC')
+        ->get();
+    }
+
+
+    return view('kaprodi/perkuliahan/master_yudisium', compact('data'));
+  }
+
+  public function master_wisuda_kprd()
+  {
+    $iddosen = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iddosen)
+      ->select('prodi.kodeprodi')
+      ->first();
+
+    if ($prodi->kodeprodi == 25 or $prodi->kodeprodi == 22) {
+      $data = Wisuda::join('student', 'wisuda.id_student', '=', 'student.idstudent')
+        ->leftjoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->where('student.active', 1)
+        ->whereIn('student.kodeprodi', [25, 22])
+        ->select('wisuda.id_wisuda', 'wisuda.nama_lengkap', 'wisuda.nim', 'wisuda.tahun_lulus', 'wisuda.ukuran_toga', 'wisuda.no_hp', 'wisuda.email', 'wisuda.nik', 'wisuda.alamat_ktp', 'wisuda.alamat_domisili', 'wisuda.nama_ayah', 'wisuda.nama_ibu', 'wisuda.no_hp_ayah', 'wisuda.no_hp_ibu', 'wisuda.alamat_ortu', 'wisuda.status_vaksin', 'wisuda.file_vaksin', 'wisuda.npwp', 'wisuda.validasi', 'wisuda.id_student', 'wisuda.id_prodi', 'prodi.prodi', 'kelas.kelas')
+        ->get();
+    } else {
+      $data = Wisuda::join('student', 'wisuda.id_student', '=', 'student.idstudent')
+        ->leftjoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->where('student.active', 1)
+        ->whereIn('student.kodeprodi', [$prodi->kodeprodi])
+        ->select('wisuda.id_wisuda', 'wisuda.nama_lengkap', 'wisuda.nim', 'wisuda.tahun_lulus', 'wisuda.ukuran_toga', 'wisuda.no_hp', 'wisuda.email', 'wisuda.nik', 'wisuda.alamat_ktp', 'wisuda.alamat_domisili', 'wisuda.nama_ayah', 'wisuda.nama_ibu', 'wisuda.no_hp_ayah', 'wisuda.no_hp_ibu', 'wisuda.alamat_ortu', 'wisuda.status_vaksin', 'wisuda.file_vaksin', 'wisuda.npwp', 'wisuda.validasi', 'wisuda.id_student', 'wisuda.id_prodi', 'prodi.prodi', 'kelas.kelas')
+        ->get();
+    }
+
+    return view('kaprodi/perkuliahan/master_wisuda', compact('data', 'prodi'));
   }
 }

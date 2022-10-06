@@ -61,6 +61,8 @@
                         diampu</span></a></li>
             <li><a href="{{ url('soal_uts_kprd') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
             <li><a href="{{ url('soal_uas_kprd') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li>
+            <li><a href="{{ url('master_yudisium_kprd') }}"><i class="fa fa-circle-o"></i> Yudisium</a></li>
+            <li><a href="{{ url('master_wisuda_kprd') }}"><i class="fa fa-circle-o"></i> Wisuda</a></li>
         </ul>
     </li>
 

@@ -1103,6 +1103,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('penangguhan_mhs_prodi', 'KaprodiController@penangguhan_mhs_prodi');
     Route::get('val_penangguhan_prodi/{id}', 'KaprodiController@val_penangguhan_prodi');
     Route::get('batal_val_penangguhan_prodi/{id}', 'KaprodiController@batal_val_penangguhan_prodi');
+
+    //master yudisium 
+    Route::get('master_yudisium_kprd', 'KaprodiController@master_yudisium_kprd');
+    Route::get('master_wisuda_kprd', 'KaprodiController@master_wisuda_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
