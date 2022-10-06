@@ -5,7 +5,7 @@
     <li><a href="{{ url('sop_dsn_kprd') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-database"></i> <span>Master Data</span>
+            <i class="fa fa-database"></i> <span>Master Mahasiswa</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -15,34 +15,57 @@
             </li>
             <li><a href="{{ url('mhs_bim_kprd') }}"><i class="fa fa-circle-o"></i> <span>Mahasiswa
                         Bimbingan</span></a></li>
-            <li><a href="{{ url('data_ipk_kprd') }}"><i class="fa fa-circle-o"></i> Data IPK Mahasiswa Aktif</a>
+            <li><a href="{{ url('data_ipk_kprd') }}"><i class="fa fa-circle-o"></i> IPK Mahasiswa Aktif</a>
             </li>
             <li><a href="{{ url('nilai_mhs_kprd') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a>
             </li>
-            <li><a href="{{ url('rekap_perkuliahan_kprd') }}"><i class="fa fa-circle-o"></i> Rekap
-                    Perkuliahan</a></li>
+
             <li><a href="{{ url('record_pembayaran_mahasiswa_kprd') }}"><i class="fa fa-circle-o"></i>Pembayaran
                     Mahasiswa</a></li>
             <li><a href="{{ url('soal_uts_kprd') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
             <li><a href="{{ url('soal_uas_kprd') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li>
         </ul>
     </li>
-    <li><a href="{{ url('val_krs_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a>
-
-    <li><a href="{{ url('val_kurikulum_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
-                Kurikulum</span></a>
-    </li>
-    <li><a href="{{ url('val_sertifikat_kprd') }}"><i class="fa fa-check-square"></i> <span>Validasi
-                Sertifikat</span></a>
-    </li>
-    <li><a href="{{ url('makul_diampu_kprd') }}"><i class="fa  fa-users"></i> <span>Matakuliah
-                diampu</span></a></li>
-    <li><a href="{{ url('history_makul_kprd') }}"><i class="fa  fa-list"></i> <span>History Matakuliah
-                diampu</span></a></li>
 
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-list"></i> <span>PraUSTA</span>
+            <i class="fa fa-database"></i> <span>Master Validasi</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('val_krs_kprd') }}"><i class="fa fa-circle-o"></i> <span>Validasi KRS</span></a>
+
+            <li><a href="{{ url('val_kurikulum_kprd') }}"><i class="fa fa-circle-o"></i> <span>Validasi
+                        Kurikulum</span></a>
+            </li>
+            <li><a href="{{ url('val_sertifikat_kprd') }}"><i class="fa fa-circle-o"></i> <span>Validasi
+                        Sertifikat</span></a>
+            </li>
+        </ul>
+    </li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master Perkuliahan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('rekap_perkuliahan_kprd') }}"><i class="fa fa-circle-o"></i> Rekap
+                    Perkuliahan</a></li>
+            <li><a href="{{ url('makul_diampu_kprd') }}"><i class="fa fa-circle-o"></i> <span>Matakuliah
+                        diampu</span></a></li>
+            <li><a href="{{ url('history_makul_kprd') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
+                        diampu</span></a></li>
+        </ul>
+    </li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master PraUSTA</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -114,8 +137,20 @@
             </li>
         </ul>
     </li>
-    <li><a href="{{ url('penangguhan_mhs_dsn_kprd') }}"><i class="fa fa-money"></i> <span>Penangguhan Mhs
-                Bimbingan</span></a></li>
-    <li><a href="{{ url('penangguhan_mhs_prodi') }}"><i class="fa fa-money"></i> <span>Penangguhan Mhs
-                Prodi</span></a></li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master Penangguhan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('penangguhan_mhs_dsn_kprd') }}"><i class="fa fa-circle-o"></i> <span>Mahasiswa
+                        Bimbingan</span></a></li>
+            <li><a href="{{ url('penangguhan_mhs_prodi') }}"><i class="fa fa-circle-o"></i> <span>Mahasiswa
+                        Prodi</span></a></li>
+        </ul>
+    </li>
+
 </ul>
