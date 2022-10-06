@@ -3612,7 +3612,8 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.validasi_baak',
                 'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
-                'prausta_trans_hasil.nilai_huruf'
+                'prausta_trans_hasil.nilai_huruf',
+                'prausta_setting_relasi.file_plagiarisme'
             )
             ->groupBy(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
@@ -3627,7 +3628,8 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
                 'prausta_trans_bimbingan.validasi_baak',
-                'prausta_trans_hasil.nilai_huruf'
+                'prausta_trans_hasil.nilai_huruf',
+                'prausta_setting_relasi.file_plagiarisme'
             )
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
