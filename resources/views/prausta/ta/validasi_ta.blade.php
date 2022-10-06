@@ -39,6 +39,9 @@
                                 <center>Laporan</center>
                             </th>
                             <th>
+                                <center>Plagiarisme</center>
+                            </th>
+                            <th>
                                 <center>Validasi</center>
                             </th>
                         </tr>
@@ -68,9 +71,24 @@
                                     <center>{{ $item->nilai_huruf }}</center>
                                 </td>
                                 <td>
-                                    <center><a
-                                            href="/File Laporan Revisi/{{ $item->idstudent }}/{{ $item->file_laporan_revisi }}"
-                                            target="_blank" style="font: white"> File Laporan</a></center>
+                                    <center>
+                                        @if ($item->file_laporan_revisi != null)
+                                            <a href="/File Laporan Revisi/{{ $item->idstudent }}/{{ $item->file_laporan_revisi }}"
+                                                target="_blank" style="font: white"> File </a>
+                                        @elseif($item->file_laporan_revisi == null)
+                                            Belum
+                                        @endif
+
+                                    </center>
+                                </td>
+                                <td align="center">
+                                    @if ($item->file_plagiarisme != null)
+                                        <a href="/File Plagiarisme/{{ $item->idstudent }}/{{ $item->file_plagiarisme }}"
+                                            target="_blank"> File</a>
+                                    @elseif($item->file_plagiarisme == null)
+                                        Belum
+                                    @endif
+
                                 </td>
                                 <td>
                                     <center>

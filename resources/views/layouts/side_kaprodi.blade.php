@@ -22,8 +22,7 @@
 
             <li><a href="{{ url('record_pembayaran_mahasiswa_kprd') }}"><i class="fa fa-circle-o"></i>Pembayaran
                     Mahasiswa</a></li>
-            <li><a href="{{ url('soal_uts_kprd') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
-            <li><a href="{{ url('soal_uas_kprd') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li>
+
         </ul>
     </li>
 
@@ -60,6 +59,8 @@
                         diampu</span></a></li>
             <li><a href="{{ url('history_makul_kprd') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
                         diampu</span></a></li>
+            <li><a href="{{ url('soal_uts_kprd') }}"><i class="fa fa-circle-o"></i> Soal UTS</a></li>
+            <li><a href="{{ url('soal_uas_kprd') }}"><i class="fa fa-circle-o"></i> Soal UAS</a></li>
         </ul>
     </li>
 
