@@ -73,8 +73,19 @@ class DosenController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->leftjoin('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->leftjoin('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->leftjoin('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->select('student.idstudent', 'student.nama', 'student.nim', 'student_record.tanggal_krs', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'periode_tipe.periode_tipe')
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'student_record.tanggal_krs',
+                'angkatan.angkatan',
+                'kelas.kelas',
+                'prodi.prodi',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe'
+            )
             ->whereIn('student_record.id_studentrecord', function ($query) {
                 $query
                     ->from('student_record')
@@ -85,7 +96,7 @@ class DosenController extends Controller
             ->where('dosen_pembimbing.id_dosen', $id)
             ->where('student_record.status', 'TAKEN')
             ->get();
-
+      
         return view('dosen/mhs_bim', ['mhs' => $k]);
     }
 
