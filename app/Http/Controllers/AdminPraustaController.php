@@ -82,7 +82,8 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.status',
-                'prausta_master_kode.batas_waktu'
+                'prausta_master_kode.batas_waktu',
+                'prausta_setting_relasi.tgl_pengajuan'
             )
             ->orderBy('student.nim', 'ASC')
             ->get();
@@ -183,7 +184,8 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.jam_selesai_sidang',
                 'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.status'
+                'prausta_setting_relasi.status',
+                'prausta_setting_relasi.tgl_pengajuan'
             )
             ->orderBy('student.nim', 'ASC')
             ->get();
@@ -298,7 +300,8 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.jam_selesai_sidang',
                 'prausta_setting_relasi.acc_seminar_sidang',
                 'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.status'
+                'prausta_setting_relasi.status',
+                'prausta_setting_relasi.tgl_pengajuan'
             )
             ->orderBy('student.nim', 'ASC')
             ->get();

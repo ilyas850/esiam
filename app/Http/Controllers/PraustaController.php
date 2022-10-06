@@ -354,7 +354,7 @@ class PraustaController extends Controller
                 'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->first();
-        
+
         $kategori = Prausta_master_kategori::join('prodi', 'prausta_master_kategori.id_prodi', '=', 'prodi.id_prodi')
             ->where('prodi.id_prodi', $data->id_prodi)->get();
 
@@ -501,10 +501,13 @@ class PraustaController extends Controller
             'file_draft_laporan' => 'mimes:pdf|max:5000',
         ]);
 
+        $date_now = date('Y-m-d');
+
         $id = $request->id_settingrelasi_prausta;
 
         $bap = Prausta_setting_relasi::find($id);
         $bap->acc_seminar_sidang = 'PENGAJUAN';
+        $bap->tgl_pengajuan = $date_now;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {
@@ -949,10 +952,13 @@ class PraustaController extends Controller
             'file_draft_laporan' => 'mimes:pdf|max:5000',
         ]);
 
+        $date_now = date('Y-m-d');
+
         $id = $request->id_settingrelasi_prausta;
 
         $bap = Prausta_setting_relasi::find($id);
         $bap->acc_seminar_sidang = 'PENGAJUAN';
+        $bap->tgl_pengajuan = $date_now;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {
@@ -1399,15 +1405,17 @@ class PraustaController extends Controller
 
     public function ajukan_sidang_ta(Request $request)
     {
-
         $this->validate($request, [
             'file_draft_laporan' => 'mimes:pdf|max:5000',
         ]);
+
+        $date_now = date('Y-m-d');
 
         $id = $request->id_settingrelasi_prausta;
 
         $bap = Prausta_setting_relasi::find($id);
         $bap->acc_seminar_sidang = 'PENGAJUAN';
+        $bap->tgl_pengajuan = $date_now;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {

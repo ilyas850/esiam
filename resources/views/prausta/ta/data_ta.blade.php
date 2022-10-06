@@ -6,7 +6,7 @@
 
 @section('content')
     <section class="content">
-        
+
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Data Tugas Akhir</h3>
@@ -24,11 +24,14 @@
                             <th colspan="2">
                                 <center>Tanggal PraUSTA</center>
                             </th>
+                            <th rowspan="2">
+                                <center>Tanggal Pengajuan</center>
+                            </th>
                             <th colspan="2">
                                 <center>Tanggal Sidang</center>
                             </th>
                             <th rowspan="2">Due Date</th>
-                            <th rowspan="2">Durasi</th>
+                            {{-- <th rowspan="2">Durasi</th> --}}
                             <th rowspan="2">
                                 <center>Jam Sidang</center>
                             </th>
@@ -59,7 +62,7 @@
                             <th>
                                 <center>Selesai</center>
                             </th>
-                           
+
                         </tr>
                     </thead>
                     <tbody>
@@ -74,37 +77,40 @@
                                 <td>{{ $key->set_waktu_awal }}</td>
                                 <td>{{ $key->set_waktu_akhir }}</td>
                                 <td>
+                                    {{ $key->tgl_pengajuan }}
+                                </td>
+                                <td>
                                     <center>{{ $key->tanggal_mulai }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->tanggal_selesai }}</center>
                                 </td>
                                 <td>
-                                    @if ($key->tanggal_selesai == null)
+                                    @if ($key->tgl_pengajuan == null)
                                         @if (floor((strtotime($key->set_waktu_akhir) - $akhir) / (60 * 60 * 24)) > 0)
                                             <span
                                                 class="label label-info">{{ floor((strtotime($key->set_waktu_akhir) - $akhir) / (60 * 60 * 24)) }}
                                                 hari lagi</span>
                                         @else
-                                            <span class="label label-danger">Expired (
+                                            <span class="label label-danger">EXP. (
                                                 {{ floor(($akhir - strtotime($key->set_waktu_akhir)) / (60 * 60 * 24)) }}
                                                 hari
                                                 )</span>
                                         @endif
-                                    @elseif(strtotime($key->tanggal_selesai) > strtotime($key->set_waktu_akhir))
+                                    @elseif(strtotime($key->tgl_pengajuan) > strtotime($key->set_waktu_akhir))
                                         <span class="label label-warning">Terlambat</span>
-                                    @elseif(strtotime($key->tanggal_selesai) < strtotime($key->set_waktu_akhir))
+                                    @elseif(strtotime($key->tgl_pengajuan) < strtotime($key->set_waktu_akhir))
                                         <span class="label label-success">Tepat waktu</span>
                                     @endif
                                 </td>
-                                <td>
+                                {{-- <td>
                                     @if ($key->tanggal_selesai == null)
                                         0
                                     @else
                                         {{ floor((strtotime($key->tanggal_selesai) - strtotime($key->tanggal_mulai)) / (60 * 60 * 24)) }}
                                     @endif
                                     hari
-                                </td>
+                                </td> --}}
                                 <td>
                                     <center>{{ $key->jam_mulai_sidang }} - {{ $key->jam_selesai_sidang }}</center>
                                 </td>
