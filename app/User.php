@@ -119,6 +119,15 @@ class User extends Authenticatable
         }
     }
 
+    public function isWadir3()
+    {
+        if ($this->role == 10) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function isPrausta()
     {
         if ($this->role == 11) {

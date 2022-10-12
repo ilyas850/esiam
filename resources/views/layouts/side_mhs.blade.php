@@ -107,6 +107,8 @@
     </li>
     <li><a href="{{ url('penangguhan_mhs') }}"><i class="fa fa-file"></i> <span>Penangguhan</span></a>
     </li>
+    <li><a href="{{ url('kritiksaran_mhs') }}"><i class="fa fa-file"></i> <span>Kritik & Saran</span></a>
+    </li>
     {{-- <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li> --}}
 
 </ul>

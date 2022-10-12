@@ -59,6 +59,8 @@ use App\Jenis_kegiatan;
 use App\Pengalaman;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
+use App\Kritiksaran_kategori;
+use App\Kritiksaran_transaction;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -5308,5 +5310,42 @@ class SadminController extends Controller
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function master_kategori_kritiksaran()
+    {
+        $data = Kritiksaran_kategori::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/kritiksaran/kategori', compact('data'));
+    }
+
+    public function simpan_kategori_kritiksaran(Request $request)
+    {
+        $ang = new Kritiksaran_kategori();
+        $ang->kategori_kritiksaran = $request->kategori_kritiksaran;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Kritik & Saran berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_kategori_kritiksaran');
+    }
+
+    public function put_kategori_kritiksaran(Request $request, $id)
+    {
+        $ang = Kritiksaran_kategori::find($id);
+        $ang->kategori_kritiksaran = $request->kategori_kritiksaran;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Kritik & Saran berhasil diedit')->autoclose(3500);
+        return redirect('master_kategori_kritiksaran');
+    }
+
+    public function hapus_kategori_kritiksaran($id)
+    {
+        $akun = Kritiksaran_kategori::where('id_kategori_kritiksaran', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Master Kategori Kritik & Saran berhasil dihapus')->autoclose(3500);
+        return redirect('master_kategori_kritiksaran');
     }
 }

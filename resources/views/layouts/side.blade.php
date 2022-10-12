@@ -22,6 +22,9 @@
 @elseif (Auth::user()->role == 9)
     @include('layouts.side_admin_prodi')
 
+@elseif (Auth::user()->role == 10)
+    @include('layouts.side_wadir3')
+
 @elseif (Auth::user()->role == 11)
     @include('layouts.side_admin_prausta')
 

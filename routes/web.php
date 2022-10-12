@@ -358,6 +358,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('master_trans_penangguhan', 'SadminController@master_trans_penangguhan');
     Route::get('val_penangguhan_baak/{id}', 'SadminController@val_penangguhan_baak');
     Route::get('batal_val_penangguhan_baak/{id}', 'SadminController@batal_val_penangguhan_baak');
+
+    //master kritik dan saran
+    Route::get('master_kategori_kritiksaran', 'SadminController@master_kategori_kritiksaran');
+    Route::post('simpan_kategori_kritiksaran', 'SadminController@simpan_kategori_kritiksaran');
+    Route::put('put_kategori_kritiksaran/{id}', 'SadminController@put_kategori_kritiksaran');
+    Route::get('hapus_kategori_kritiksaran/{id}', 'SadminController@hapus_kategori_kritiksaran');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -707,6 +713,10 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('penangguhan_yudisium/{id}', 'PenangguhanController@penangguhan_yudisium');
     Route::post('save_penangguhan_yudisium', 'PenangguhanController@save_penangguhan_yudisium');
     Route::put('put_penangguhan_yudisium/{id}', 'PenangguhanController@put_penangguhan_yudisium');
+
+    Route::get('kritiksaran_mhs', 'MhsController@kritiksaran_mhs');
+    Route::post('post_kritiksaran', 'MhsController@post_kritiksaran');
+    Route::put('put_kritiksaran/{id}', 'MhsController@put_kritiksaran');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1104,9 +1114,12 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('val_penangguhan_prodi/{id}', 'KaprodiController@val_penangguhan_prodi');
     Route::get('batal_val_penangguhan_prodi/{id}', 'KaprodiController@batal_val_penangguhan_prodi');
 
-    //master yudisium 
+    //master yudisium
     Route::get('master_yudisium_kprd', 'KaprodiController@master_yudisium_kprd');
     Route::get('master_wisuda_kprd', 'KaprodiController@master_wisuda_kprd');
+
+    //KRS mahasiswa
+    Route::get('krs_mahasiswa_kprd', 'KaprodiController@krs_mahasiswa_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
@@ -1166,6 +1179,11 @@ Route::group(['middleware' => 'wadir1'], function () {
     //master pembayaran
     Route::get('rekap_pembayaran_mhs', 'Wadir1Controller@rekap_pembayaran_mhs');
     Route::get('detail_pembayaran_mhs/{id}', 'Wadir1Controller@detail_pembayaran_mhs');
+});
+
+Route::group(['middleware' => 'wadir3'], function () {
+    Route::get('data_kritiksaran', 'Wadir3Controller@data_kritiksaran');
+    Route::get('cek_kritiksaran/{id}', 'Wadir3Controller@cek_kritiksaran');
 });
 
 Route::group(['middleware' => 'prausta'], function () {

@@ -43,9 +43,9 @@
                                         <select class="form-control" name="wadir">
                                             <option>-pilih-</option>
                                             <option value="wadir1,7">Wadir 1</option>
-                                            <option value="wadir2,8">Wadir 2</option>
-                                            <option value="wadir3,9">Wadir 3</option>
-                                            <option value="wadir4,10">Wadir 4</option>
+                                            <option value="wadir2,12">Wadir 2</option>
+                                            <option value="wadir3,10">Wadir 3</option>
+                                            <option value="wadir4,13">Wadir 4</option>
                                         </select>
                                     </div>
                                 </div>

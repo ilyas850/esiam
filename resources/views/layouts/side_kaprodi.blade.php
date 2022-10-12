@@ -22,6 +22,8 @@
 
             <li><a href="{{ url('record_pembayaran_mahasiswa_kprd') }}"><i class="fa fa-circle-o"></i>Pembayaran
                     Mahasiswa</a></li>
+            <li><a href="{{ url('krs_mahasiswa_kprd') }}"><i class="fa fa-circle-o"></i>KRS
+                    Mahasiswa</a></li>
 
         </ul>
     </li>

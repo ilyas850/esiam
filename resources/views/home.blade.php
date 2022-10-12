@@ -339,6 +339,8 @@
             @include('layouts.bauk_home')
         @elseif (Auth::user()->role == 9)
             @include('layouts.adminprodi_home')
+        @elseif (Auth::user()->role == 10)
+            @include('layouts.wadir3_home')
         @elseif (Auth::user()->role == 11)
             @include('layouts.prausta_home')
         @endif

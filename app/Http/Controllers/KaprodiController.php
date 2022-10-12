@@ -8376,4 +8376,37 @@ class KaprodiController extends Controller
 
     return view('kaprodi/perkuliahan/master_wisuda', compact('data', 'prodi'));
   }
+
+  public function krs_mahasiswa_kprd()
+  {
+    $iddosen = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iddosen)
+      ->select('prodi.kodeprodi')
+      ->first();
+
+    $data = Student::join('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
+      ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+      ->where('student.kodeprodi', $prodi->kodeprodi)
+      ->whereIn('student.active', [1, 5])
+      ->select(
+        DB::raw('DISTINCT(student_record.id_student)'),
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'dosen.nama as nama_dsn',
+        'student_record.remark'
+      )
+      ->orderBy('student.nim', 'ASC')
+      ->get();
+    dd($data);
+  }
 }
