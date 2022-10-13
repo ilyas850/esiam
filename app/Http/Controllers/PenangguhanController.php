@@ -658,7 +658,7 @@ class PenangguhanController extends Controller
                                 if (($cek_kuis_dospeng_ta_2) > 0) {
                                     $data = Yudisium::where('id_student', $ids)->first();
 
-                                    return view('mhs/penangguhan/penangguhan_yudisium', compact('id', 'data'));
+                                    return view('mhs/penangguhan/penangguhan_yudisium', compact('id', 'data', 'ids'));
                                 } else {
                                     alert()->warning('Anda tidak dapat melakukan Pendaftaran Yudisium karena belum melakukan pengisian kuisioner dosen Penguji 2 TA')->autoclose(5000);
                                     return redirect('home');

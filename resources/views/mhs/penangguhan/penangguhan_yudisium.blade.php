@@ -19,7 +19,7 @@
         @if ($data == null)
             <form action="{{ url('save_penangguhan_yudisium') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
-                <input type="hidden" name="id_student" value="{{ $id }}">
+                <input type="hidden" name="id_student" value="{{ $ids }}">
                 <div class="box box-info">
                     <div class="box-header">
                         <h3 class="box-title">Form Data Diri</h3>
@@ -86,8 +86,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tempat Lahir</label>
-                                <input type="text" class="form-control" name="tmpt_lahir"
-                                    value="{{ $data->tmpt_lahir }}" readonly>
+                                <input type="text" class="form-control" name="tmpt_lahir" value="{{ $data->tmpt_lahir }}"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -159,8 +159,8 @@
                         <div class="col-md-4">
                             @if ($data->validasi == 'BELUM')
                                 <button class="btn btn-success" data-toggle="modal"
-                                    data-target="#modalUpdateYudisium{{ $data->id_yudisium }}"
-                                    title="klik untuk edit"><i class="fa fa-edit"></i> Edit</button>
+                                    data-target="#modalUpdateYudisium{{ $data->id_yudisium }}" title="klik untuk edit"><i
+                                        class="fa fa-edit"></i> Edit</button>
                             @else
                                 <button type="button" class="btn btn-warning" data-toggle="modal"
                                     data-target="#modal-warning">
@@ -188,8 +188,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="modalUpdateYudisium{{ $data->id_yudisium }}" tabindex="-1"
-                aria-hidden="true">
+            <div class="modal fade" id="modalUpdateYudisium{{ $data->id_yudisium }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
