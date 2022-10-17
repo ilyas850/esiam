@@ -355,7 +355,7 @@
                                                                                 <label>Tanggal Bimbingan</label>
                                                                                 <input type="date" class="form-control"
                                                                                     name="tanggal_bimbingan"
-                                                                                    value="{{ $key->tanggal_bimbingan }}">
+                                                                                    value="{{ $key->tanggal_bimbingan }}" required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label>Isi Bimbingan</label>

@@ -207,6 +207,15 @@
                                                 <input type="hidden" name="id_kurperiode"
                                                     value="{{ $item->id_kurperiode }}">
                                                 <div class="form-group">
+                                                    <label>Tipe Ujian</label>
+                                                    <select name="tipe_ujian_uts" class="form-control" required>
+                                                        <option value="{{$item->tipe_ujian_uts}}">{{$item->tipe_ujian_uts}}</option>
+                                                        <option value="TATAP MUKA">TATAP MUKA</option>
+                                                        <option value="TAKE HOME">TAKE HOME</option>
+                                                        <option value="PROJECT">PROJECT</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
                                                     <label>File Soal UTS</label>
                                                     <input type="file" class="form-control" name="soal_uts">
                                                     <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
@@ -230,6 +239,15 @@
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="id_kurperiode"
                                                     value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>Tipe Ujian</label>
+                                                    <select name="tipe_ujian_uas" class="form-control" required>
+                                                        <option value="{{$item->tipe_ujian_uas}}">{{$item->tipe_ujian_uas}}</option>
+                                                        <option value="TATAP MUKA">TATAP MUKA</option>
+                                                        <option value="TAKE HOME">TAKE HOME</option>
+                                                        <option value="PROJECT">PROJECT</option>
+                                                    </select>
+                                                </div>
                                                 <div class="form-group">
                                                     <label>File Soal UAS</label>
                                                     <input type="file" class="form-control" name="soal_uas">

@@ -2422,10 +2422,13 @@ class KaprodiController extends Controller
   public function val_soal_uts_kprd()
   {
     $iduser = Auth::user()->id_user;
-    $iddosen = Kaprodi::where('id_dosen', $iduser)
-      ->select('id_prodi')
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iduser)
+      ->select('prodi.kodeprodi')
       ->first();
-    $prodi = $iddosen->id_prodi;
+
+    $prodi = $prodi->kodeprodi;
 
     $tp = Periode_tipe::where('status', 'ACTIVE')->first();
     $tipe = $tp->id_periodetipe;
@@ -2433,20 +2436,60 @@ class KaprodiController extends Controller
     $thn = Periode_tahun::where('status', 'ACTIVE')->first();
     $tahun = $thn->id_periodetahun;
 
-    $soal = Bap::join('kurikulum_periode', 'bap.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+    $data = DB::select('CALL soal_ujian_uts_uas(?,?,?)', [$tahun, $tipe, $prodi]);
+
+    $dataa = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
+      ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
       ->where('kurikulum_periode.id_periodetipe', $tipe)
       ->where('kurikulum_periode.id_periodetahun', $tahun)
       ->where('kurikulum_periode.status', 'ACTIVE')
-      ->where('kurikulum_periode.id_prodi', $prodi)
-      ->where('bap.jenis_kuliah', 'UTS')
-      ->select('bap.id_bap', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'prodi.prodi', 'kelas.kelas', 'dosen.nama', 'bap.file_materi_kuliah', 'dosen.iddosen', 'bap.id_kurperiode')
+      ->where('prodi.kodeprodi', $prodi)
+      ->select(
+        'kurikulum_periode.id_kurperiode',
+        'matakuliah.kode',
+        'matakuliah.makul',
+        'prodi.prodi',
+        'kelas.kelas',
+        'semester.semester',
+        'soal_ujian.soal_uts',
+        'soal_ujian.validasi_uts',
+        'soal_ujian.tipe_ujian_uts',
+        'soal_ujian.komentar_uts',
+        'dosen.nama'
+      )
+      ->orderBy('prodi.prodi', 'asc')
+      ->orderBy('kelas.kelas', 'asc')
+      ->orderBy('matakuliah.kode', 'asc')
       ->get();
 
-    return view('kaprodi/master/cek_soal_uts', compact('soal'));
+
+    return view('kaprodi/master/cek_soal_uts', compact('data'));
+  }
+
+  public function komentar_soal_uts(Request $request, $id)
+  {
+    $prd = Soal_ujian::find($id);
+    $prd->komentar_uts = $request->komentar_uts;
+    $prd->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function val_soal_uts($id)
+  {
+    $val = Soal_ujian::find($id);
+    $val->validasi_uts = 'SUDAH';
+    $val->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
   }
 
   public function soal_uas_kprd()

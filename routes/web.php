@@ -971,6 +971,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     //master soal
     Route::get('val_soal_uts_kprd', 'KaprodiController@val_soal_uts_kprd');
+    Route::put('komentar_soal_uts/{id}', 'KaprodiController@komentar_soal_uts');
+    Route::get('val_soal_uts/{id}', 'KaprodiController@val_soal_uts');
     Route::get('soal_uas_kprd', 'KaprodiController@soal_uas_kprd');
 
     //cek rekapan perkuliahan

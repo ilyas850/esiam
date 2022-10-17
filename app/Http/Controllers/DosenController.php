@@ -4900,6 +4900,7 @@ class DosenController extends Controller
                 $info = new Soal_ujian();
                 $info->id_kurperiode = $gabungan->id_kurperiode;
                 $info->created_by = Auth::user()->name;
+                $info->tipe_ujian_uts = $request->tipe_ujian_uts;
 
                 if ($i == 0) {
                     if ($request->hasFile('soal_uts')) {
@@ -5037,6 +5038,7 @@ class DosenController extends Controller
                 $info = new Soal_ujian();
                 $info->id_kurperiode = $gabungan->id_kurperiode;
                 $info->created_by = Auth::user()->name;
+                $info->tipe_ujian_uas = $request->tipe_ujian_uas;
 
                 if ($i == 0) {
                     if ($request->hasFile('soal_uas')) {
