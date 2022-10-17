@@ -61,6 +61,7 @@ use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
 use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
+use App\Kalender_akademik;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -5347,5 +5348,81 @@ class SadminController extends Controller
 
         Alert::success('', 'Master Kategori Kritik & Saran berhasil dihapus')->autoclose(3500);
         return redirect('master_kategori_kritiksaran');
+    }
+
+    public function master_kalender_akademik()
+    {
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        $data = Kalender_akademik::join('periode_tahun', 'kalender_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->where('kalender_akademik.status', 'ACTIVE')
+            ->get();
+
+        return view('sadmin/masterakademik/master_kalender_akademik', compact('data', 'thn'));
+    }
+
+    public function save_kalender_akademik(Request $request)
+    {
+        $this->validate($request, [
+            'deskripsi' => 'required',
+            'file' => 'mimes:jpeg,jpg,pdf,png|max:10000',
+            'id_periodetahun' => 'required',
+        ]);
+
+        $pedoman = new Kalender_akademik();
+        $pedoman->deskripsi = $request->deskripsi;
+        $pedoman->id_periodetahun = $request->id_periodetahun;
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $nama_file = time() . '_' . $file->getClientOriginalName();
+            $tujuan_upload = 'Kalender Akademik';
+            $file->move($tujuan_upload, $nama_file);
+            $pedoman->file = $nama_file;
+        }
+
+        $pedoman->save();
+        Alert::success('', 'Kalender akademik berhasil ditambahkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function put_kalender_akademik(Request $request, $id)
+    {
+        $info = Kalender_akademik::find($id);
+        $info->deskripsi = $request->deskripsi;
+        $info->id_periodetahun = $request->id_periodetahun;
+
+        if ($info->file) {
+            if ($request->hasFile('file')) {
+                File::delete('Kalender Akademik/' . $info->file);
+                $file = $request->file('file');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Kalender Akademik';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Kalender Akademik';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        }
+
+        $info->save();
+
+        Alert::success('', 'Kalender Akademik berhasil diedit')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function hapus_kalender_akademik($id)
+    {
+        Kalender_akademik::where('id_kalender', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Kalender Akademik berhasil dihapus')->autoclose(3500);
+        return redirect()->back();
     }
 }

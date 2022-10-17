@@ -13,6 +13,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="/master_kalender_akademik"><i class="fa fa-circle-o"></i> Kalender Akademik</a></li>
             <li><a href="/master_kurikulum_standar"><i class="fa fa-circle-o"></i> Kurikulum Standar</a></li>
             <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Angkatan</a></li>
             <li><a href="/master_bom"><i class="fa fa-circle-o"></i> BOM (Bill of Makul)</a></li>
@@ -25,7 +26,7 @@
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
             <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
-            <li><a href="/standar_pendidikan_nasional"><i class="fa fa-circle-o"></i> Standar Operasional Prosedur
+            <li><a href="/standar_pendidikan_nasional"><i class="fa fa-circle-o"></i> S.O.P
                 </a></li>
             <li><a href="/jenis_kegiatan"><i class="fa fa-circle-o"></i> Jenis Kegiatan
                 </a></li>

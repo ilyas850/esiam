@@ -364,6 +364,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('simpan_kategori_kritiksaran', 'SadminController@simpan_kategori_kritiksaran');
     Route::put('put_kategori_kritiksaran/{id}', 'SadminController@put_kategori_kritiksaran');
     Route::get('hapus_kategori_kritiksaran/{id}', 'SadminController@hapus_kategori_kritiksaran');
+
+    //kalender akademik
+    Route::get('master_kalender_akademik', 'SadminController@master_kalender_akademik');
+    Route::post('save_kalender_akademik', 'SadminController@save_kalender_akademik');
+    Route::put('put_kalender_akademik/{id}', 'SadminController@put_kalender_akademik');
+    Route::get('hapus_kalender_akademik/{id}', 'SadminController@hapus_kalender_akademik');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -964,7 +970,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('cek_nilai_mhs_kprd/{id}', 'KaprodiController@cek_nilai_mhs_kprd');
 
     //master soal
-    Route::get('soal_uts_kprd', 'KaprodiController@soal_uts_kprd');
+    Route::get('val_soal_uts_kprd', 'KaprodiController@val_soal_uts_kprd');
     Route::get('soal_uas_kprd', 'KaprodiController@soal_uas_kprd');
 
     //cek rekapan perkuliahan
