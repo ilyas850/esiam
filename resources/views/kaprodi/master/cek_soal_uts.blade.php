@@ -24,6 +24,9 @@
                                 <center>Matakuliah</center>
                             </th>
                             <th>
+                                <center>Dosen</center>
+                            </th>
+                            <th>
                                 <center>Program Studi</center>
                             </th>
                             <th>
@@ -54,6 +57,7 @@
                                     <center>{{ $item->kode }}</center>
                                 </td>
                                 <td>{{ $item->makul }}</td>
+                                <td>{{ $item->nama }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>
@@ -78,7 +82,6 @@
                                         @else
                                             {{ $item->tipe_ujian_uts }}
                                         @endif
-
                                     </center>
                                 </td>
                                 <td>
@@ -103,7 +106,7 @@
                                         @if ($item->soal_uts == null)
                                             <span class="badge bg-yellow">Belum</span>
                                         @else
-                                            @if ($item->validasi_uts == 'BELUM')
+                                            @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
                                                 <a href="/val_soal_uts/{{ $item->id_soal }}"
                                                     class="btn btn-info btn-xs">Validasi</a>
                                             @elseif ($item->validasi_uts == 'SUDAH')

@@ -746,7 +746,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::post('save_nilai_AKHIR', 'DosenluarController@save_nilai_AKHIR');
     Route::get('change_pass_dsn_luar/{id}', 'DosenluarController@change_dsnluar');
     Route::put('pwd_dsn_luar/{id}', 'DosenluarController@store_pwd_dsn_luar');
-    Route::post('export_xlsnilai_dsn', 'DosenluarController@export_xlsnilai');
+    Route::get('export_xlsnilai_dsn/{id}', 'DosenluarController@export_xlsnilai');
 
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_luar', 'DosenluarController@filter_makul_diampu_dsn_luar');
@@ -775,7 +775,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('print_jurnal_dsn/{id}', 'DosenluarController@print_jurnal');
 
     //unduh pdf
-    Route::post('unduh_pdf_nilai_dsn', 'DosenluarController@unduh_pdf_nilai');
+    Route::get('unduh_pdf_nilai_dsn/{id}', 'DosenluarController@unduh_pdf_nilai');
     Route::get('download_absensi_dsn/{id}', 'DosenluarController@download_absensi');
     Route::get('download_jurnal_dsn/{id}', 'DosenluarController@download_jurnal');
 

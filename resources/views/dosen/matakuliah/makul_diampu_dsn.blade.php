@@ -101,12 +101,12 @@
                             <th>
                                 <center>Entri (Nilai/BAP)</center>
                             </th>
-                            {{-- <th>
-                                <center>BAP</center>
-                            </th> --}}
                             <th>
                                 <center>Export</center>
                             </th>
+                            {{-- <th>
+                                <center>BAP</center>
+                            </th> --}}
                             {{-- <th>
                                 <center>PDF</center>
                             </th> --}}
@@ -164,7 +164,7 @@
                                     </center>
                                 </td>
                                 <td align="center">
-                                    @if ($item->validasi_uts == 'BELUM')
+                                    @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
                                         @if ($item->komentar_uts == null)
                                         @else
                                             <a class="btn btn-danger btn-xs" data-toggle="modal"

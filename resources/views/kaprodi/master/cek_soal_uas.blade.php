@@ -24,6 +24,9 @@
                                 <center>Matakuliah</center>
                             </th>
                             <th>
+                                <center>Dosen</center>
+                            </th>
+                            <th>
                                 <center>Program Studi</center>
                             </th>
                             <th>
@@ -54,6 +57,7 @@
                                     <center>{{ $item->kode }}</center>
                                 </td>
                                 <td>{{ $item->makul }}</td>
+                                <td>{{ $item->nama }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>
@@ -95,7 +99,6 @@
                                                         class="fa fa-eye "></i> Lihat</a>
                                             @endif
                                         @endif
-
                                     </center>
                                 </td>
                                 <td>
