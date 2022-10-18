@@ -92,16 +92,16 @@
                                 <center>Soal</center>
                             </th>
                             <th>
-                                <center>Nilai</center>
+                                <center>Ket. UTS</center>
                             </th>
                             <th>
-                                <center>BAP</center>
+                                <center>Ket. UAS</center>
                             </th>
                             <th>
-                                <center>Excel</center>
+                                <center>Entri (Nilai/BAP)</center>
                             </th>
                             <th>
-                                <center>PDF</center>
+                                <center>Export</center>
                             </th>
                         </tr>
                     </thead>
@@ -141,7 +141,7 @@
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                 target="_blank" style="font: white"> UTS</a>
                                         @endif
-                                        
+
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
@@ -158,40 +158,49 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}"
-                                            class="btn btn-info btn-xs"><i class="fa fa-pencil"
-                                                title="Klik untuk entri nilai"> Entri</i></a>
+                                        @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
+                                            @if ($item->komentar_uts == null)
+                                            @else
+                                                <a class="btn btn-danger btn-xs" data-toggle="modal"
+                                                    data-target="#modalTambahKomentarUts{{ $item->id_soal }}">Komentar</a>
+                                            @endif
+                                        @elseif ($item->validasi_uts == 'SUDAH')
+                                            <span class="badge bg-blue">Valid</span>
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="entri_bap_kprd/{{ $item->id_kurperiode }}"
-                                            class="btn btn-warning btn-xs">
-                                            <i class="fa fa-pencil" title="Klik untuk entri nilai"> Entri</i></a>
+                                        @if ($item->validasi_uas == 'BELUM' or $item->validasi_uas == null)
+                                            @if ($item->komentar_uas == null)
+                                            @else
+                                                <a class="btn btn-danger btn-xs" data-toggle="modal"
+                                                    data-target="#modalTambahKomentarUas{{ $item->id_soal }}">Komentar</a>
+                                            @endif
+                                        @elseif ($item->validasi_uas == 'SUDAH')
+                                            <span class="badge bg-blue">Valid</span>
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="{{ url('export_xlsnilai_kprd') }}" method="post">
-                                            {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
-                                            <button type="submit" class="btn btn-success btn-xs"><i
-                                                    class="fa fa-file-excel-o" title="Klik untuk export nilai">
-                                                    Export</i></button>
-                                        </form>
+                                        <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
+                                            title="Klik untuk entri nilai">Nilai</a>
+                                        <a href="entri_bap_kprd/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
+                                            title="Klik untuk entri nilai">
+                                            BAP</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <form class="" action="{{ url('unduh_pdf_nilai_kprd') }}" method="post">
-                                            {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
-                                            <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
-                                                    title="Klik untuk export nilai">
-                                                    Export</i></button>
-                                        </form>
+                                        <a href="/export_xlsnilai_kprd/{{ $item->id_kurperiode }}"
+                                            class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"
+                                                title="Klik untuk export nilai .xls">
+                                            </i></a>
+                                        <a href="/unduh_pdf_nilai_kprd/{{ $item->id_kurperiode }}"
+                                            class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
+                                                title="Klik untuk export nilai .pdf">
+                                            </i></a>
                                     </center>
                                 </td>
                             </tr>
@@ -208,6 +217,16 @@
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="id_kurperiode"
                                                     value="{{ $item->id_kurperiode }}">
+                                                <div class="form-group">
+                                                    <label>Tipe Ujian</label>
+                                                    <select name="tipe_ujian_uts" class="form-control" required>
+                                                        <option value="{{ $item->tipe_ujian_uts }}">
+                                                            {{ $item->tipe_ujian_uts }}</option>
+                                                        <option value="TATAP MUKA">TATAP MUKA</option>
+                                                        <option value="TAKE HOME">TAKE HOME</option>
+                                                        <option value="PROJECT">PROJECT</option>
+                                                    </select>
+                                                </div>
                                                 <div class="form-group">
                                                     <label>File Soal UTS</label>
                                                     <input type="file" class="form-control" name="soal_uts">
@@ -233,12 +252,56 @@
                                                 <input type="hidden" name="id_kurperiode"
                                                     value="{{ $item->id_kurperiode }}">
                                                 <div class="form-group">
+                                                    <label>Tipe Ujian</label>
+                                                    <select name="tipe_ujian_uas" class="form-control" required>
+                                                        <option value="{{ $item->tipe_ujian_uas }}">
+                                                            {{ $item->tipe_ujian_uas }}</option>
+                                                        <option value="TATAP MUKA">TATAP MUKA</option>
+                                                        <option value="TAKE HOME">TAKE HOME</option>
+                                                        <option value="PROJECT">PROJECT</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
                                                     <label>File Soal UAS</label>
                                                     <input type="file" class="form-control" name="soal_uas">
                                                     <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalTambahKomentarUts{{ $item->id_soal }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentarUts" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="komentar_uts" cols="20" rows="10"> {{ $item->komentar_uts }} </textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalTambahKomentarUas{{ $item->id_soal }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentarUas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="komentar_uas" cols="20" rows="10"> {{ $item->komentar_uas }} </textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Tutup</button>
                                         </div>
                                     </div>
                                 </div>

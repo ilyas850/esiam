@@ -947,9 +947,9 @@ class KaprodiController extends Controller
     return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur, 'nilai' => $nilai]);
   }
 
-  public function export_xlsnilai(Request $request)
+  public function export_xlsnilai($id)
   {
-    $id = $request->id_kurperiode;
+    // $id = $request->id_kurperiode;
 
     $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -969,9 +969,9 @@ class KaprodiController extends Controller
     return Excel::download(new DataNilaiExport($id), $nama_file);
   }
 
-  public function unduh_pdf_nilai(Request $request)
+  public function unduh_pdf_nilai($id)
   {
-    $id = $request->id_kurperiode;
+    // $id = $request->id_kurperiode;
 
     $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -6031,6 +6031,7 @@ class KaprodiController extends Controller
         $info = new Soal_ujian();
         $info->id_kurperiode = $gabungan->id_kurperiode;
         $info->created_by = Auth::user()->name;
+        $info->tipe_ujian_uts = $request->tipe_ujian_uts;
 
         if ($i == 0) {
           if ($request->hasFile('soal_uts')) {
@@ -6069,6 +6070,7 @@ class KaprodiController extends Controller
 
         $id = $cek->id_soal;
         $info = Soal_ujian::find($id);
+        $info->tipe_ujian_uts = $request->tipe_ujian_uts;
 
         if ($i == 0) {
           if ($info->soal_uts) {
@@ -6169,6 +6171,7 @@ class KaprodiController extends Controller
         $info = new Soal_ujian();
         $info->id_kurperiode = $gabungan->id_kurperiode;
         $info->created_by = Auth::user()->name;
+        $info->tipe_ujian_uas = $request->tipe_ujian_uas;
 
         if ($i == 0) {
           if ($request->hasFile('soal_uas')) {
@@ -6207,6 +6210,7 @@ class KaprodiController extends Controller
 
         $id = $cek->id_soal;
         $info = Soal_ujian::find($id);
+        $info->tipe_ujian_uas = $request->tipe_ujian_uas;
 
         if ($i == 0) {
           if ($info->soal_uas) {

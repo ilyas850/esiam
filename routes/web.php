@@ -904,8 +904,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //matakuliah diampu dosen
     Route::get('makul_diampu_kprd', 'KaprodiController@makul_diampu_dsn');
     Route::get('cekmhs_dsn_kprd/{id}', 'KaprodiController@cekmhs_dsn');
-    Route::post('export_xlsnilai_kprd', 'KaprodiController@export_xlsnilai');
-    Route::post('unduh_pdf_nilai_kprd', 'KaprodiController@unduh_pdf_nilai');
+    Route::get('export_xlsnilai_kprd/{id}', 'KaprodiController@export_xlsnilai');
+    Route::get('unduh_pdf_nilai_kprd/{id}', 'KaprodiController@unduh_pdf_nilai');
 
     //filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_kprd', 'KaprodiController@filter_makul_diampu_kprd');
