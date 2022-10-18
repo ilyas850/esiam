@@ -1,49 +1,146 @@
 @extends('layouts.master')
 
 @section('side')
-
-  @include('layouts.side')
-
+    @include('layouts.side')
 @endsection
 
 @section('content')
-  <section class="content">
-    <div class="box box-info">
-      <div class="box-header">
-          <h3 class="box-title">Data Soal UAS</h3>
-      </div>
-      <div class="box-body">
-        <table id="example1" class="table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Kode/Matakuliah</th>
-              <th>SKS</th>
-              <th>Prodi</th>
-              <th>Kelas</th>
-              <th>Dosen</th>
-              <th>Soal UTS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php $no=1; ?>
-            @foreach ($soal as $key)
-              <tr>
-                <td><center>{{$no++}}</center></td>
-                <td>{{$key->kode}}/{{$key->makul}}</td>
-                <td><center>{{$key->akt_sks_teori + $key->akt_sks_praktek}}</center></td>
-                <td><center>{{$key->prodi}}</center></td>
-                <td><center>{{$key->kelas}}</center></td>
-                <td><center>{{$key->nama}}</center></td>
-                <td><center>
-                  <a href="/File_BAP/{{$key->iddosen}}/{{$key->id_kurperiode}}/Materi Kuliah/{{$key->file_materi_kuliah}}" target="_blank" class="btn btn-info btn-xs">Lihat</a>
-                  
-                </center></td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+    <section class="content">
+        <div class="box box-info">
+            <div class="box-header">
+                <h3 class="box-title">Data Soal UAS</h3>
+            </div>
+            <div class="box-body">
+                <table id="example8" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Kode </center>
+                            </th>
+                            <th>
+                                <center>Matakuliah</center>
+                            </th>
+                            <th>
+                                <center>Program Studi</center>
+                            </th>
+                            <th>
+                                <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>Soal UAS</center>
+                            </th>
+                            <th>
+                                <center>Tipe Ujian</center>
+                            </th>
+                            <th>
+                                <center>Komentar</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($data as $item)
+                            <tr>
+                                <td>
+                                    <center>{{ $no++ }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $item->kode }}</center>
+                                </td>
+                                <td>{{ $item->makul }}</td>
+                                <td>
+                                    <center>{{ $item->prodi }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $item->kelas }}</center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($item->soal_uas == null)
+                                            <span class="badge bg-yellow">Belum</span>
+                                        @else
+                                            <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                                target="_blank" style="font: white">File</a>
+                                        @endif
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($item->tipe_ujian_uas == null)
+                                            <span class="badge bg-yellow">Belum</span>
+                                        @else
+                                            {{ $item->tipe_ujian_uas }}
+                                        @endif
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($item->soal_uas == null)
+                                            <span class="badge bg-yellow">Belum</span>
+                                        @else
+                                            @if ($item->komentar_uas == null)
+                                                <button class="btn btn-info btn-xs" data-toggle="modal"
+                                                    data-target="#modalTambahKomentar{{ $item->id_soal }}">Tambah</button>
+                                            @else
+                                                <a class="btn btn-success btn-xs" data-toggle="modal"
+                                                    data-target="#modalTambahKomentar{{ $item->id_soal }}"> <i
+                                                        class="fa fa-eye "></i> Lihat</a>
+                                            @endif
+                                        @endif
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($item->soal_uas == null)
+                                            <span class="badge bg-yellow">Belum</span>
+                                        @elseif ($item->soal_uas != null)
+                                            @if ($item->validasi_uas == 'BELUM' or $item->validasi_uas == null)
+                                                <a href="/val_soal_uas/{{ $item->id_soal }}"
+                                                    class="btn btn-info btn-xs">Validasi</a>
+                                            @elseif ($item->validasi_uas == 'SUDAH')
+                                                <span class="badge bg-blue">Sudah</span>
+                                            @endif
+                                        @endif
+                                    </center>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="modalTambahKomentar{{ $item->id_soal }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/komentar_soal_uas/{{ $item->id_soal }}" method="post"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="komentar_uas" cols="20" rows="10"> {{ $item->komentar_uas }} </textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 @endsection

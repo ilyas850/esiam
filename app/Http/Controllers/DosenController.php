@@ -580,9 +580,9 @@ class DosenController extends Controller
         return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 
-    public function export_xlsnilai(Request $request)
+    public function export_xlsnilai($id)
     {
-        $id = $request->id_kurperiode;
+        // $id = $request->id_kurperiode;
 
         $keymk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -4939,6 +4939,7 @@ class DosenController extends Controller
 
                 $id = $cek->id_soal;
                 $info = Soal_ujian::find($id);
+                $info->tipe_ujian_uts = $request->tipe_ujian_uts;
 
                 if ($i == 0) {
                     if ($info->soal_uts) {
@@ -5077,6 +5078,7 @@ class DosenController extends Controller
 
                 $id = $cek->id_soal;
                 $info = Soal_ujian::find($id);
+                $info->tipe_ujian_uas = $request->tipe_ujian_uas;
 
                 if ($i == 0) {
                     if ($info->soal_uas) {

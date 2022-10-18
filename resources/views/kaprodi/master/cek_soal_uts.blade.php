@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Soal UTS dan UAS</h3>
+                <h3 class="box-title">Data Soal UTS</h3>
             </div>
             <div class="box-body">
                 <table id="example8" class="table table-bordered table-striped">

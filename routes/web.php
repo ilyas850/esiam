@@ -412,7 +412,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
     Route::get('cekmhs_dsn/{id}', 'DosenController@cekmhs_dsn');
     Route::get('cekmhs_dsn_his/{id}', 'DosenController@cekmhs_dsn_his');
-    Route::post('export_xlsnilai', 'DosenController@export_xlsnilai');
+    Route::get('export_xlsnilai/{id}', 'DosenController@export_xlsnilai');
     Route::get('view_bap_his/{id}', 'DosenController@view_bap_his');
     Route::get('view_history_bap/{id}', 'DosenController@view_history_bap');
     Route::get('sum_absen_his/{id}', 'DosenController@sum_absen_his');
@@ -969,10 +969,14 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('nilai_mhs_kprd', 'KaprodiController@nilai_mhs_kprd');
     Route::get('cek_nilai_mhs_kprd/{id}', 'KaprodiController@cek_nilai_mhs_kprd');
 
-    //master soal
+    //master validasi soal UTS dan UAS
     Route::get('val_soal_uts_kprd', 'KaprodiController@val_soal_uts_kprd');
     Route::put('komentar_soal_uts/{id}', 'KaprodiController@komentar_soal_uts');
     Route::get('val_soal_uts/{id}', 'KaprodiController@val_soal_uts');
+
+    Route::get('val_soal_uas_kprd', 'KaprodiController@val_soal_uas_kprd');
+    Route::put('komentar_soal_uas/{id}', 'KaprodiController@komentar_soal_uas');
+    Route::get('val_soal_uas/{id}', 'KaprodiController@val_soal_uas');
     Route::get('soal_uas_kprd', 'KaprodiController@soal_uas_kprd');
 
     //cek rekapan perkuliahan
