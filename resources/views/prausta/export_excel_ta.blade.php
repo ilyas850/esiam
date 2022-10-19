@@ -39,16 +39,10 @@
                 <center>Tanggal Sidang</center>
             </th>
             <th>
-                <center>Jam Mulai Sidang</center>
-            </th>
-            <th>
-                <center>Jam Selesai Sidang</center>
+                <center>Jam Sidang</center>
             </th>
             <th>
                 <center>Ruang</center>
-            </th>
-            <th>
-                <center>Kategori PraUSTA</center>
             </th>
         </tr>
     </thead>
@@ -89,16 +83,10 @@
                     <center>{{ $item->tanggal_selesai }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->jam_mulai_sidang }}</center>
-                </td>
-                <td>
-                    <center>{{ $item->jam_selesai_sidang }}</center>
+                    <center>{{ $item->jam_mulai_sidang }} - {{ $item->jam_selesai_sidang }}</center>
                 </td>
                 <td>
                     <center>{{ $item->ruangan }}</center>
-                </td>
-                <td>
-                    <center>{{ $item->kategori }}</center>
                 </td>
             </tr>
         @endforeach
