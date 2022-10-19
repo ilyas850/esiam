@@ -81,7 +81,7 @@
 
                                                         <form action="{{ url('saveuser_mhs') }}" method="post">
                                                             <input type="hidden" name="role" value="4">
-                                                            <input type="hidden" name="id_user"
+                                                            <input type="hidden" name="student"
                                                                 value="{{ $item->idstudent }}">
                                                             <input type="hidden" name="username"
                                                                 value="{{ $item->nim }}">

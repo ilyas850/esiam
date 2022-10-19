@@ -226,7 +226,7 @@ class SadminController extends Controller
     public function saveuser_mhs(Request $request)
     {
         $users = new User();
-        $users->id_user = $request->id_user;
+        $users->id_user = $request->student;
         $users->name = $request->name;
         $users->password = bcrypt($request->username);
         $users->role = $request->role;
@@ -234,7 +234,7 @@ class SadminController extends Controller
         $users->save();
 
         $sadmin = new Password();
-        $sadmin->id_user = $request->id_user;
+        $sadmin->id_user = $request->student;
         $sadmin->user = $request->username;
         $sadmin->pwd = $request->username;
         $sadmin->save();
