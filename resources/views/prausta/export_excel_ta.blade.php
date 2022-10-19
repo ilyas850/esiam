@@ -21,9 +21,6 @@
                 <center>Judul Tugas Akhir</center>
             </th>
             <th>
-                <center>Kategori PraUSTA</center>
-            </th>
-            <th>
                 <center>Dosen Pembimbing</center>
             </th>
             <th>
@@ -43,6 +40,9 @@
             </th>
             <th>
                 <center>Ruang</center>
+            </th>
+            <th>
+                <center>Kategori PraUSTA</center>
             </th>
         </tr>
     </thead>
@@ -65,9 +65,6 @@
                     <center>{{ $item->judul_prausta }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->kategori }}</center>
-                </td>
-                <td>
                     <center>{{ $item->dosen_pembimbing }}</center>
                 </td>
                 <td>
@@ -87,6 +84,9 @@
                 </td>
                 <td>
                     <center>{{ $item->ruangan }}</center>
+                </td>
+                <td>
+                    <center>{{ $item->kategori }}</center>
                 </td>
             </tr>
         @endforeach
