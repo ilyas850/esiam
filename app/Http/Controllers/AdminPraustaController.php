@@ -3339,7 +3339,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->where('student.kodeprodi', $kodeprodi)
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
-            ->whereNotNull('prausta_setting_relasi.tanggal_selesai')
+            ->whereNotNull('prausta_setting_relasi.tanggal_mulai')
             ->select(
                 'student.nama',
                 'student.nim',
@@ -3358,7 +3358,7 @@ class AdminPraustaController extends Controller
             )
             ->orderBy('student.nim', 'ASC')
             ->get();
-
+   
         $nama_file = 'Data Prakerin' . ' ' . $pro . ' ' . $ganti . ' ' . $tp . '.xlsx';
         return Excel::download(new DataPrakerinExport($id1, $id2, $kodeprodi), $nama_file);
     }

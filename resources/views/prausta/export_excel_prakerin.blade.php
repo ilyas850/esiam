@@ -13,7 +13,6 @@
             <th>
                 <center>Program Studi </center>
             </th>
-
             <th>
                 <center>Judul Prakerin</center>
             </th>
@@ -33,10 +32,7 @@
                 <center>Tanggal Seminar</center>
             </th>
             <th>
-                <center>Jam Mulai Seminar</center>
-            </th>
-            <th>
-                <center>Jam Selesai Seminar</center>
+                <center>Jam Seminar</center>
             </th>
             <th>
                 <center>Ruang</center>
@@ -74,13 +70,10 @@
                     <center>{{ $item->tanggal_mulai }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->tanggal_selesai }}</center>
+                    <center>{{ $item->tanggal_selesai }} </center>
                 </td>
                 <td>
-                    <center>{{ $item->jam_mulai_sidang }}</center>
-                </td>
-                <td>
-                    <center>{{ $item->jam_selesai_sidang }}</center>
+                    <center>{{ $item->jam_mulai_sidang }} - {{ $item->jam_selesai_sidang }}</center>
                 </td>
                 <td>
                     <center>{{ $item->ruangan }}</center>
