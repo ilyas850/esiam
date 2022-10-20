@@ -14,7 +14,7 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ $tk }} orang</h3>
-                <p>Mahasiswa Teknik Komputer</p>
+                <p>Mahasiswa Teknologi Rekayasa Perangkat Lunak</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person"></i>
