@@ -5425,4 +5425,29 @@ class SadminController extends Controller
         Alert::success('', 'Kalender Akademik berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
+
+    public function rekap_krs_angkatan()
+    {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        $tipe = Periode_tipe::all();
+
+        return view('sadmin/master_krs/rekap_krs_angkatan', compact('tahun', 'tipe'));
+    }
+
+    public function filter_rekap_krs_angkatan(Request $request)
+    {
+        $idtahun = $request->id_periodetahun;
+        $idtipe = $request->id_periodetipe;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $idtahun)->first();
+        $nama_tahun = $tahun->periode_tahun;
+
+        $tipe = Periode_tipe::where('id_periodetipe', $idtipe)->first();
+        $nama_tipe = $tipe->periode_tipe;
+
+        $data = DB::select('CALL rekap_krs_perangkatan(?,?)', [$idtahun, $idtipe]);
+        
+        return view('sadmin/master_krs/hasil_krs_perangkatan', compact('data', 'nama_tahun', 'nama_tipe'));
+    }
 }
