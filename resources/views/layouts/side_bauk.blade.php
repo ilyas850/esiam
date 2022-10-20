@@ -10,7 +10,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('kategori_penangguhan_bauk') }}"><i class="fa fa-circle-o"></i> <span>Penangguhan</span></a></li>
-            {{-- <li><a href="{{ url('data_penangguhan_bauk') }}"><i class="fa fa-circle-o"></i> <span>Penangguhan</span></a></li> --}}
+            <li><a href="{{ url('waktu_penangguhan') }}"><i class="fa fa-circle-o"></i> <span>Setting Penangguhan</span></a></li>
         </ul>
     </li>
 

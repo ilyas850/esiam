@@ -32,6 +32,16 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-xs-3">
+                            <label>Kelas</label>
+                            <select class="form-control" name="idkelas" required>
+                                <option value="all">Semua</option>
+                                @foreach ($kelas as $kls)
+                                    <option value="{{ $kls->idkelas }}">{{ $kls->kelas }}</option>
+                                @endforeach
+
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="box-footer">

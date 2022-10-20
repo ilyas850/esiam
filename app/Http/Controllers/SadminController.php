@@ -5432,13 +5432,18 @@ class SadminController extends Controller
 
         $tipe = Periode_tipe::all();
 
-        return view('sadmin/master_krs/rekap_krs_angkatan', compact('tahun', 'tipe'));
+        $kelas = Kelas::whereIn('idkelas', [1, 2, 3])
+            ->orderBy('kelas', 'ASC')
+            ->get();
+
+        return view('sadmin/master_krs/rekap_krs_angkatan', compact('tahun', 'tipe', 'kelas'));
     }
 
     public function filter_rekap_krs_angkatan(Request $request)
     {
         $idtahun = $request->id_periodetahun;
         $idtipe = $request->id_periodetipe;
+        $idkelas = $request->idkelas;
 
         $tahun = Periode_tahun::where('id_periodetahun', $idtahun)->first();
         $nama_tahun = $tahun->periode_tahun;
@@ -5446,8 +5451,17 @@ class SadminController extends Controller
         $tipe = Periode_tipe::where('id_periodetipe', $idtipe)->first();
         $nama_tipe = $tipe->periode_tipe;
 
-        $data = DB::select('CALL rekap_krs_perangkatan(?,?)', [$idtahun, $idtipe]);
-        
-        return view('sadmin/master_krs/hasil_krs_perangkatan', compact('data', 'nama_tahun', 'nama_tipe'));
+        if ($idkelas == 'all') {
+            $data = DB::select('CALL rekap_krs_perangkatan(?,?)', [$idtahun, $idtipe]);
+
+            return view('sadmin/master_krs/hasil_krs_perangkatan', compact('data', 'nama_tahun', 'nama_tipe'));
+        } else {
+            $kelas = Kelas::where('idkelas', $idkelas)->first();
+            $nama_kelas = $kelas->kelas;
+
+            $data = DB::select('CALL rekap_krs_perangkatan_kelas(?,?,?)', [$idtahun, $idtipe, $idkelas]);
+
+            return view('sadmin/master_krs/hasil_krs_perangkatan_kelas', compact('data', 'nama_tahun', 'nama_tipe', 'nama_kelas'));
+        }
     }
 }
