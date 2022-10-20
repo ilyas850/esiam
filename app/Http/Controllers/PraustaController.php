@@ -192,6 +192,7 @@ class PraustaController extends Controller
                     'prausta_setting_relasi.tempat_prausta',
                     'prausta_setting_relasi.file_draft_laporan',
                     'prausta_setting_relasi.validasi_baak',
+                    'prausta_setting_relasi.total_uang_saku',
                     'student.kodeprodi'
                 )
                 ->get();
@@ -508,6 +509,7 @@ class PraustaController extends Controller
         $bap = Prausta_setting_relasi::find($id);
         $bap->acc_seminar_sidang = 'PENGAJUAN';
         $bap->tgl_pengajuan = $date_now;
+        $bap->total_uang_saku = $request->total_uang_saku;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {
