@@ -1196,6 +1196,13 @@ Route::group(['middleware' => 'wadir1'], function () {
 Route::group(['middleware' => 'wadir3'], function () {
     Route::get('data_kritiksaran', 'Wadir3Controller@data_kritiksaran');
     Route::get('cek_kritiksaran/{id}', 'Wadir3Controller@cek_kritiksaran');
+
+    //master mahasiswa aktif
+    Route::get('master_mhs_aktif_wadir3', 'Wadir3Controller@master_mhs_aktif_wadir3');
+
+    //master sertifikat mahasiswa
+    Route::get('master_sertifikat_mhs_wadir3', 'Wadir3Controller@master_sertifikat_mhs_wadir3');
+    Route::get('cek_sertifikat_mhs/{id}', 'Wadir3Controller@cek_sertifikat_mhs');
 });
 
 Route::group(['middleware' => 'prausta'], function () {

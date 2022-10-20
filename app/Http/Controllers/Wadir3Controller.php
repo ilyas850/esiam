@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Student;
+use App\Sertifikat;
+use App\Jenis_kegiatan;
 use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use Illuminate\Http\Request;
@@ -48,8 +51,65 @@ class Wadir3Controller extends Controller
             )
             ->get();
 
-            $kat = Kritiksaran_kategori::where('id_kategori_kritiksaran', $id)->first();
+        $kat = Kritiksaran_kategori::where('id_kategori_kritiksaran', $id)->first();
 
         return view('wadir3/kritiksaran/cek_kritiksaran', compact('data', 'kat'));
+    }
+
+    public function master_mhs_aktif_wadir3()
+    {
+        $data = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.active', 1)
+            ->select('student.nim', 'student.nama', 'prodi.prodi', 'prodi.konsentrasi', 'kelas.kelas', 'angkatan.angkatan', 'student.nisn', 'student.intake')
+            ->orderBy('student.nim', 'ASC')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->get();
+
+        return view('wadir3/mahasiswa/mahasiswa_aktif', compact('data'));
+    }
+
+    public function master_sertifikat_mhs_wadir3()
+    {
+        $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.active', 1)
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
+            ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
+            ->orderBy('student.nim', 'ASC')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('kelas.kelas', 'ASC')
+            ->get();
+
+        return view('wadir3/mahasiswa/sertifikat_mhs', compact('data'));
+    }
+
+    public function cek_sertifikat_mhs($id)
+    {
+        $mhs = Student::leftjoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.idstudent', $id)
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi')
+            ->first();
+
+        $data = Sertifikat::leftjoin('jenis_kegiatan', 'sertifikat.id_jeniskegiatan', '=', 'jenis_kegiatan.id_jeniskegiatan')
+            ->where('sertifikat.id_student', $id)
+            ->select('sertifikat.*', 'jenis_kegiatan.deskripsi')
+            ->get();
+
+        $jenis = Jenis_kegiatan::where('status', 'ACTIVE')->get();
+
+        return view('wadir3/mahasiswa/cek_sertifikat_mhs', compact('mhs', 'data', 'jenis'));
     }
 }
