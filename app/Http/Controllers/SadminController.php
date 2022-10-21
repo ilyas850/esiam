@@ -1602,18 +1602,18 @@ class SadminController extends Controller
                 'yudisium.tgl_lahir',
                 'prodi.prodi',
                 'prausta_setting_relasi.judul_prausta',
-                'transkrip_final.no_transkrip_final',
-                'transkrip_final.no_ijazah',
-                'transkrip_final.tgl_yudisium',
-                'transkrip_final.tgl_wisuda'
+                'skpi.no_transkrip',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda'
             )
             ->first();
 
         $nama = strtoupper($item->nama_lengkap);
 
-        $yudisium = $item->tgl_yudisium;
+        $yudisium = $item->date_lulus;
 
-        $wisuda = $item->tgl_wisuda;
+        $wisuda = $item->date_wisuda;
 
         $pisahyudi = explode('-', $yudisium);
 
@@ -1677,10 +1677,10 @@ class SadminController extends Controller
                 'yudisium.tgl_lahir',
                 'prodi.prodi',
                 'prausta_setting_relasi.judul_prausta',
-                'transkrip_final.no_transkrip_final',
-                'transkrip_final.no_ijazah',
-                'transkrip_final.tgl_yudisium',
-                'transkrip_final.tgl_wisuda'
+                'skpi.no_transkrip',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda'
             )
             ->first();
 
@@ -1688,9 +1688,9 @@ class SadminController extends Controller
 
         $nama = strtoupper($item->nama_lengkap);
 
-        $yudisium = $item->tgl_yudisium;
+        $yudisium = $item->date_lulus;
 
-        $wisuda = $item->tgl_wisuda;
+        $wisuda = $item->date_wisuda;
 
         $pisahyudi = explode('-', $yudisium);
 
@@ -1743,7 +1743,7 @@ class SadminController extends Controller
         $template->setValue('idstudent', $item->idstudent);
         $template->setValue('nama', $nama);
         $template->setValue('no_ijazah', $item->no_ijazah);
-        $template->setValue('no_transkrip_final', $item->no_transkrip_final);
+        $template->setValue('no_transkrip_final', $item->no_transkrip);
         $template->setValue('nim', $item->nim);
         $template->setValue('tgllahir', $tgllahir);
         $template->setValue('tmptlahir', $item->tmpt_lahir);

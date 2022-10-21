@@ -38,7 +38,7 @@
             <td></td>
             <td>No. Transkrip</td>
             <td>:</td>
-            <td>{{ $item->no_transkrip_final }}</td>
+            <td>{{ $item->no_transkrip }}</td>
         </tr>
     </table>
     <table width="100%">
