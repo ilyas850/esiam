@@ -1500,13 +1500,13 @@ class SadminController extends Controller
                 'yudisium.tgl_lahir',
                 'prodi.prodi',
                 'prausta_setting_relasi.judul_prausta',
-                'transkrip_final.no_transkrip_final',
-                'transkrip_final.no_ijazah',
-                'transkrip_final.tgl_yudisium',
-                'transkrip_final.tgl_wisuda'
+                'skpi.no_transkrip',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda'
             )
             ->first();
-
+      
         // $mhs = Student::leftJoin('prodi', function ($join) {
         //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         // })
@@ -1536,9 +1536,9 @@ class SadminController extends Controller
 
         $nama = strtoupper($item->nama_lengkap);
 
-        $yudisium = $item->tgl_yudisium;
+        $yudisium = $item->date_lulus;
 
-        $wisuda = $item->tgl_wisuda;
+        $wisuda = $item->date_wisuda;
 
         $pisahyudi = explode('-', $yudisium);
 

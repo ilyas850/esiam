@@ -123,9 +123,7 @@ class EdomController extends Controller
     $kurtr = $request->id_kurtrans;
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
-
-
-
+  
     $cekedom = Edom_transaction::where('id_student', $request->id_student)
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('id_kurtrans', $request->id_kurtrans)

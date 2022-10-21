@@ -18,7 +18,7 @@
                     <tr>
                         <td width="17%">Nomor Transkrip</td>
                         <td>:</td>
-                        <td>{{ $item->no_transkrip_final }}</td>
+                        <td>{{ $item->no_transkrip }}</td>
                     </tr>
                     <tr>
                         <td>Nama</td>
