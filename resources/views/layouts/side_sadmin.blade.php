@@ -7,7 +7,7 @@
     </li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-th"></i> <span>Master Akademik</span>
+            <i class="fa fa-th"></i><span>Master Akademik</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -25,7 +25,8 @@
             <li><a href="/master_prodi"><i class="fa fa-circle-o"></i> Program Studi</a></li>
             <li><a href="/master_ruangan"><i class="fa fa-circle-o"></i> Ruang Kelas</a></li>
             <li><a href="/info"><i class="fa fa-circle-o"></i> Informasi</a></li>
-            <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman</a></li>
+            <li><a href="/pdm_aka"><i class="fa fa-circle-o"></i> Pedoman Umum</a></li>
+            <li><a href="/master_pedoman_khusus"><i class="fa fa-circle-o"></i> Pedoman Khusus</a></li>
             <li><a href="/standar_pendidikan_nasional"><i class="fa fa-circle-o"></i> S.O.P
                 </a></li>
             <li><a href="/jenis_kegiatan"><i class="fa fa-circle-o"></i> Jenis Kegiatan
@@ -99,7 +100,8 @@
             <li><a href="{{ url('data_krs') }}"><i class="fa fa-circle-o"></i> Data KRS</a></li>
             <li><a href="{{ url('summary_krs') }}"><i class="fa fa-circle-o"></i> Rekap KRS Per T.A.</a></li>
             <li><a href="{{ url('nilai_khs') }}"><i class="fa fa-circle-o"></i> Data Nilai KHS</a></li>
-            <li><a href="{{ url('rekap_krs_angkatan') }}"><i class="fa fa-circle-o"></i> Rekap KRS Per Angkatan</a></li>
+            <li><a href="{{ url('rekap_krs_angkatan') }}"><i class="fa fa-circle-o"></i> Rekap KRS Per Angkatan</a>
+            </li>
         </ul>
     </li>
     <li class="treeview">

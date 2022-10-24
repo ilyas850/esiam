@@ -8,6 +8,7 @@ use Alert;
 use App\Bap;
 use App\Pedoman;
 use App\Pedoman_akademik;
+use App\Pedoman_khusus;
 use App\Angkatan;
 use App\User;
 use App\Dosen;
@@ -5464,5 +5465,80 @@ class SadminController extends Controller
 
             return view('sadmin/master_krs/hasil_krs_perangkatan_kelas', compact('data', 'nama_tahun', 'nama_tipe', 'nama_kelas'));
         }
+    }
+
+    public function master_pedoman_khusus()
+    {
+        $tahun = Periode_tahun::all();
+        $data = Pedoman_khusus::join('periode_tahun', 'pedoman_khusus.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->where('pedoman_khusus.status', 'ACTIVE')
+            ->get();
+
+        return view('sadmin/pedoman/pedoman_khusus', compact('tahun', 'data'));
+    }
+
+    public function save_pedoman_khusus(Request $request)
+    {
+        $this->validate($request, [
+            'nama_pedoman' => 'required',
+            'file' => 'mimes:jpeg,jpg,pdf,png|max:10000',
+            'id_periodetahun' => 'required',
+        ]);
+
+        $pedoman = new Pedoman_khusus();
+        $pedoman->nama_pedoman = $request->nama_pedoman;
+        $pedoman->id_periodetahun = $request->id_periodetahun;
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $nama_file = time() . '_' . $file->getClientOriginalName();
+            $tujuan_upload = 'Pedoman Khusus';
+            $file->move($tujuan_upload, $nama_file);
+            $pedoman->file = $nama_file;
+        }
+
+        $pedoman->save();
+        Alert::success('', 'Pedoman khusus berhasil ditambahkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function put_pedoman_khusus(Request $request, $id)
+    {
+        $info = Pedoman_khusus::find($id);
+        $info->nama_pedoman = $request->nama_pedoman;
+        $info->id_periodetahun = $request->id_periodetahun;
+
+        if ($info->file) {
+            if ($request->hasFile('file')) {
+                File::delete('Pedoman Khusus/' . $info->file);
+                $file = $request->file('file');
+
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Pedoman Khusus';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $nama_file = time() . '_' . $file->getClientOriginalName();
+                $tujuan_upload = 'Pedoman Khusus';
+                $file->move($tujuan_upload, $nama_file);
+                $info->file = $nama_file;
+            }
+        }
+
+        $info->save();
+
+        Alert::success('', 'Pedoman berhasil diedit')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function hapus_pedoman_khusus($id)
+    {
+        Pedoman_khusus::where('id_pedomankhusus', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pedoman berhasil dihapus')->autoclose(3500);
+        return redirect()->back();
     }
 }

@@ -372,6 +372,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('save_kalender_akademik', 'SadminController@save_kalender_akademik');
     Route::put('put_kalender_akademik/{id}', 'SadminController@put_kalender_akademik');
     Route::get('hapus_kalender_akademik/{id}', 'SadminController@hapus_kalender_akademik');
+
+    //pedoman khusus
+    Route::get('master_pedoman_khusus', 'SadminController@master_pedoman_khusus');
+    Route::post('save_pedoman_khusus', 'SadminController@save_pedoman_khusus');
+    Route::put('put_pedoman_khusus/{id}', 'SadminController@put_pedoman_khusus');
+    Route::get('hapus_pedoman_khusus/{id}', 'SadminController@hapus_pedoman_khusus');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -528,6 +534,10 @@ Route::group(['middleware' => 'dosen'], function () {
     //pedoman akademik
     Route::get('pedoman_akademik_dsn_dlm', 'DosenController@pedoman_akademik_dsn_dlm');
     Route::get('download_pedoman_dsn_dlm/{id}', 'DosenController@download_pedoman_dsn_dlm');
+
+    //pedoman khusus
+    Route::get('pedoman_khusus_dsn_dlm', 'DosenController@pedoman_khusus_dsn_dlm');
+    Route::get('download_pedoman_khusus_dsn_dlm/{id}', 'DosenController@download_pedoman_khusus_dsn_dlm');
 
     //penangguhan mahasiswa
     Route::get('penangguhan_mhs_dsn', 'DosenController@penangguhan_mhs_dsn');
@@ -871,6 +881,10 @@ Route::group(['middleware' => 'dosenluar'], function () {
     //pedoman akademik
     Route::get('pedoman_akademik_dsn_luar', 'DosenluarController@pedoman_akademik_dsn_luar');
     Route::get('download_pedoman_dsn_luar/{id}', 'DosenluarController@download_pedoman_dsn_luar');
+
+    //pedoman khusus
+    Route::get('pedoman_khusus_dsn_luar', 'DosenluarController@pedoman_khusus_dsn_luar');
+    Route::get('download_pedoman_khusus_dsn_luar/{id}', 'DosenluarController@download_pedoman_khusus_dsn_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
@@ -1120,6 +1134,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //pedoman akademik
     Route::get('pedoman_akademik_dsn_kprd', 'KaprodiController@pedoman_akademik_dsn_kprd');
     Route::get('download_pedoman_dsn_kprd/{id}', 'KaprodiController@download_pedoman_dsn_kprd');
+
+    //pedoman khusus
+    Route::get('pedoman_khusus_dsn_kprd', 'KaprodiController@pedoman_khusus_dsn_kprd');
+    Route::get('download_pedoman_khusus_dsn_kprd/{id}', 'KaprodiController@download_pedoman_khusus_dsn_kprd');
 
     //penangguhan mahasiswa
     Route::get('penangguhan_mhs_dsn_kprd', 'KaprodiController@penangguhan_mhs_dsn_kprd');

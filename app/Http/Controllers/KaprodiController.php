@@ -44,6 +44,7 @@ use App\Setting_nilai;
 use App\Standar;
 use App\Sertifikat;
 use App\Pedoman_akademik;
+use App\Pedoman_khusus;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
 use App\Yudisium;
@@ -8192,6 +8193,24 @@ class KaprodiController extends Controller
     }
     //PDF file is stored under project/public/download/info.pdf
     $file = 'pedoman/' . $keyped->file;
+    return Response::download($file);
+  }
+
+  public function pedoman_khusus_dsn_kprd()
+  {
+    $data = Pedoman_khusus::join('periode_tahun', 'pedoman_khusus.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->where('pedoman_khusus.status', 'ACTIVE')
+      ->get();
+
+    return view('kaprodi/pedoman_khusus', compact('data'));
+  }
+
+  public function download_pedoman_khusus_dsn_kprd($id)
+  {
+    $ped = Pedoman_khusus::where('id_pedomankhusus', $id)->first();
+
+    //PDF file is stored under project/public/download/info.pdf
+    $file = 'Pedoman Khusus/' . $ped->file;
     return Response::download($file);
   }
 

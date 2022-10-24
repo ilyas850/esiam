@@ -48,6 +48,7 @@ use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
+use App\Pedoman_khusus;
 use App\Soal_ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -5753,6 +5754,24 @@ class DosenController extends Controller
         }
         //PDF file is stored under project/public/download/info.pdf
         $file = 'pedoman/' . $keyped->file;
+        return Response::download($file);
+    }
+
+    public function pedoman_khusus_dsn_dlm()
+    {
+        $data = Pedoman_khusus::join('periode_tahun', 'pedoman_khusus.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->where('pedoman_khusus.status', 'ACTIVE')
+            ->get();
+
+        return view('dosen/pedoman_khusus', compact('data'));
+    }
+
+    public function download_pedoman_khusus_dsn_dlm($id)
+    {
+        $ped = Pedoman_khusus::where('id_pedomankhusus', $id)->first();
+        
+        //PDF file is stored under project/public/download/info.pdf
+        $file = 'Pedoman Khusus/' . $ped->file;
         return Response::download($file);
     }
 
