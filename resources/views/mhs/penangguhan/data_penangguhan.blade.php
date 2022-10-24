@@ -11,14 +11,31 @@
                 <h3 class="box-title">Data Penangguhan</h3>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <button type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#addsertifikat">
-                            Input Data Penangguhan
-                        </button>
+                @if ($status_penangguhan->status == 0 or $status_penangguhan->status == null)
+                    <div class="form-group">
+                        <div class="callout callout-warning">
+                            <p>Waktu Penangguhan Belum dibuka</p>
+                        </div>
                     </div>
-                </div>
-                <br>
+                @else
+                    <div class="form-group">
+                        <div class="callout callout-info">
+                            <p>{{ $status_penangguhan->waktu_awal->isoFormat('D MMMM Y') }} s/d
+                                {{ $status_penangguhan->waktu_akhir->isoFormat('D MMMM Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <button type="button" class="btn btn-success mr-5" data-toggle="modal"
+                                data-target="#addsertifikat">
+                                Input Data Penangguhan
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                @endif
+
+
                 <div class="modal fade" id="addsertifikat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
@@ -143,6 +160,10 @@
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateSertifikat{{ $item->id_penangguhan_trans }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                        <a class="btn btn-danger btn-xs"
+                                            href="/batal_penangguhan/{{ $item->id_penangguhan_trans }}"
+                                            onclick="return confirm('anda yakin akan mebatalkan ini ?')"><i
+                                                class="fa fa-trash"></i></a>
                                     @elseif ($item->validasi_dsn_pa == 'SUDAH' && $item->validasi_kaprodi == 'SUDAH' && $item->validasi_baak == 'SUDAH')
                                         @if ($item->id_penangguhan_kategori == 1)
                                             <a href="penangguhan_krs/{{ $item->id_penangguhan_trans }}"

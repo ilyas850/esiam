@@ -5772,6 +5772,7 @@ class DosenController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('dosen_pembimbing.id_dosen', $id)
+            ->where('penangguhan_master_trans.status', 'ACTIVE')
             ->select(
                 'student.nama',
                 'student.nim',

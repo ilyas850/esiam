@@ -56,7 +56,7 @@
             <td><span style="font-size:65%">: {{ $item->nim }}</span></td>
         </tr>
         <tr>
-            <td><span style="font-size:65%">Program Pendiidkan</span></td>
+            <td><span style="font-size:65%">Program Pendidikan</span></td>
             <td><span style="font-size:65%">: DIPLOMA III (D-III)</span></td>
         </tr>
         <tr>

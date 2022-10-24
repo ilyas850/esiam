@@ -709,6 +709,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('penangguhan_mhs', 'MhsController@penangguhan_mhs');
     Route::post('post_penangguhan', 'MhsController@post_penangguhan');
     Route::put('put_penangguhan/{id}', 'MhsController@put_penangguhan');
+    Route::get('batal_penangguhan/{id}', 'MhsController@batal_penangguhan');
 
     //link penangguhan
     Route::get('penangguhan_krs/{id}', 'PenangguhanController@penangguhan_krs');
@@ -721,6 +722,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('penangguhan_yudisium/{id}', 'PenangguhanController@penangguhan_yudisium');
     Route::post('save_penangguhan_yudisium', 'PenangguhanController@save_penangguhan_yudisium');
     Route::put('put_penangguhan_yudisium/{id}', 'PenangguhanController@put_penangguhan_yudisium');
+    
 
     Route::get('kritiksaran_mhs', 'MhsController@kritiksaran_mhs');
     Route::post('post_kritiksaran', 'MhsController@post_kritiksaran');
@@ -1360,6 +1362,11 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::put('put_tunggakan/{id}', 'BaukController@put_tunggakan');
     Route::get('val_penangguhan_bauk/{id}', 'BaukController@val_penangguhan_bauk');
     Route::get('batal_val_penangguhan_bauk/{id}', 'BaukController@batal_val_penangguhan_bauk');
+
+    //waktu penangguhan
+    Route::get('waktu_penangguhan', 'BaukController@waktu_penangguhan');
+    Route::post('simpan_waktu_penangguhan', 'BaukController@simpan_waktu_penangguhan');
+    Route::post('edit_time_penangguhan', 'BaukController@edit_time_penangguhan');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

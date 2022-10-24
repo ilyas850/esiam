@@ -8233,6 +8233,7 @@ class KaprodiController extends Controller
         'penangguhan_master_trans.validasi_baak',
         'penangguhan_master_trans.id_penangguhan_trans'
       )
+      ->where('penangguhan_master_trans.status', 'ACTIVE')
       ->orderBy('student.nim')
       ->get();
 
@@ -8298,6 +8299,7 @@ class KaprodiController extends Controller
         'penangguhan_master_trans.validasi_baak',
         'penangguhan_master_trans.id_penangguhan_trans'
       )
+      ->where('penangguhan_master_trans.status', 'ACTIVE')
       ->orderBy('student.nim')
       ->get();
 

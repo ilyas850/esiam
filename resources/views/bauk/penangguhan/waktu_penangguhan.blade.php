@@ -8,70 +8,62 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <span class="fa fa-calendar-check-o"></span>
-                <h3 class="box-title"><b>Pengisian EDOM Periode @foreach ($tahun as $key)
-                            @if ($key->status == 'ACTIVE')
-                                {{ $key->periode_tahun }}
-                            @endif
-                        @endforeach
-                        @foreach ($tipe as $key)
-                            @if ($key->status == 'ACTIVE')
-                                {{ $key->periode_tipe }}
-                            @endif
-                        @endforeach
+                <h3 class="box-title"><b>Waktu Penangguhan Periode
+                        {{ $tahun->periode_tahun }} - {{ $tipe->periode_tipe }}
                     </b></h3>
             </div>
             <div class="box-body">
-                @if ($edom->status == 0)
-                    <form class="form" role="form" method="POST" action="{{ url('simpanedom') }}">
+                @if ($data->status == 0 or $data->status == null)
+                    <form class="form" role="form" method="POST" action="{{ url('simpan_waktu_penangguhan') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <label>Atur Waktu Awal pengisian EDOM:</label>
+                                    <label>Waktu Awal Penangguhan:</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
-                                        <input type="text" class="form-control" value="{{ $now }}" disabled>
+                                        <input type="date" class="form-control" value="{{ $now }}" disabled>
 
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <label>Atur Waktu Akhir pengisian EDOM:</label>
+                                    <label>Waktu Akhir Penangguhan:</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
-                                        <input type="text" class="form-control" id="datepicker" name="waktu_akhir"
-                                            required>
+                                        <input type="date" class="form-control" name="waktu_akhir" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <input type="hidden" name="status" value="1">
                         <input type="hidden" name="waktu_awal" value="{{ $now }}">
-                        <input type="hidden" name="id" value="{{ $edom->id }}">
+                        <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
                         <button type="submit" class="btn btn-info btn-lg btn-block">
-                            Pengisian EDOM Dimulai
+                            Simpan Waktu Penangguhan
                         </button>
                     </form>
-                @elseif ($edom->status == 1)
-                    <form class="form" role="form" method="POST" action="{{ url('edit_time_edom') }}">
+                @elseif ($data->status == 1)
+                    <form class="form" role="form" method="POST" action="{{ url('edit_time_penangguhan') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label>Hentikan Waktu Pengisian EDOM:</label>
+                            <label>Waktu Penangguhan:</label>
                             <div class="input-group">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
                                 <input type="text" class="form-control pull-right"
-                                    value="{{ $edom->waktu_awal }} sampai {{ $edom->waktu_akhir }}" readonly>
+                                    value="{{ $data->waktu_awal }} sampai {{ $data->waktu_akhir }}" readonly>
                             </div>
                         </div>
-                        <input type="hidden" name="status" value="0">
-                        <input type="hidden" name="id" value="{{ $edom->id }}">
+                        <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
                         <button type="button" class="btn btn-warning btn-lg btn-block" data-toggle="modal"
-                            data-target=".bs-example-modal-sm">Penutupan Pengisian EDOM</button>
+                            data-target=".bs-example-modal-sm">Penutupan Waktu Penangguhan</button>
+
+
                         <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog"
                             aria-labelledby="mySmallModalLabel">
                             <div class="modal-dialog" role="document">
@@ -82,7 +74,8 @@
                                         <h4 class="modal-title" id="myModalLabel">Peringatan</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Apakah anda yakin akan memberhentikan pengisian EDOM yang sedang berjalan ?</p>
+                                        <p>Apakah anda yakin akan memberhentikan waktu Penangguhan yang sedang berjalan ?
+                                        </p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
@@ -91,28 +84,28 @@
                                 </div>
                             </div>
                         </div>
+                    </form>
                 @endif
-                </form>
             </div>
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
                 <span class="glyphicon glyphicon-info-sign"></span>
-                <h3 class="box-title">Informasi Pengisian EDOM</h3>
+                <h3 class="box-title">Countdown Penangguhan</h3>
             </div>
             <div class="box-body">
                 <div id="waktumundur">
-                    @if ($edom->status != 0)
+                    @if ($data->status != 0)
                         <span id="countdown"></span>
                     @else
-                        Belum ada info pengisian EDOM
+                        Waktu Penangguhan belum dibuka
                     @endif
                 </div>
             </div>
 
             <script type='text/javascript'>
                 //<![CDATA[
-                var target_date = new Date("{{ $edom->waktu_akhir }}").getTime();
+                var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
                 var days, hours, minutes, seconds;
                 var countdown = document.getElementById("countdown");
                 setInterval(function() {
@@ -126,7 +119,7 @@
                     seconds = parseInt(seconds_left % 60);
                     countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
                         " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
-                        " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Pengisian EDOM</span>";
+                        " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
                 }, 1000);
                 //]]>
             </script>

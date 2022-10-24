@@ -12,6 +12,7 @@ use App\Kuliah_tipe;
 use App\User;
 use App\Dosen;
 use App\Kelas;
+use App\Waktu;
 use App\Prodi;
 use App\Student;
 use App\Informasi;
@@ -3911,6 +3912,8 @@ class MhsController extends Controller
 
     public function penangguhan_mhs()
     {
+        $status_penangguhan = Waktu::where('tipe_waktu', 3)->first();
+
         $id = Auth::user()->id_user;
 
         $kategori_penangguhan = Penangguhan_kategori::where('status', 'ACTIVE')->get();
@@ -3936,9 +3939,10 @@ class MhsController extends Controller
                 'penangguhan_master_trans.validasi_baak',
                 'penangguhan_master_trans.id_penangguhan_trans'
             )
+            ->where('penangguhan_master_trans.status', 'ACTIVE')
             ->get();
 
-        return view('mhs/penangguhan/data_penangguhan', compact('data', 'kategori_penangguhan'));
+        return view('mhs/penangguhan/data_penangguhan', compact('data', 'kategori_penangguhan', 'status_penangguhan'));
     }
 
     public function post_penangguhan(Request $request)
@@ -3972,6 +3976,14 @@ class MhsController extends Controller
         $new->save();
 
         Alert::success('', 'Penangguhan berhasil diedit')->autoclose(3500);
+        return redirect('penangguhan_mhs');
+    }
+
+    public function batal_penangguhan($id)
+    {
+        Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Penangguhan berhasil dihapus')->autoclose(3500);
         return redirect('penangguhan_mhs');
     }
 

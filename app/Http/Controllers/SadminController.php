@@ -1506,7 +1506,7 @@ class SadminController extends Controller
                 'skpi.date_wisuda'
             )
             ->first();
-      
+
         // $mhs = Student::leftJoin('prodi', function ($join) {
         //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         // })
@@ -5292,6 +5292,7 @@ class SadminController extends Controller
                 'penangguhan_master_trans.validasi_baak',
                 'penangguhan_master_trans.id_penangguhan_trans'
             )
+
             ->get();
 
         return view('sadmin/penangguhan/data_penangguhan', compact('data'));

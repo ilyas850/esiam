@@ -36,6 +36,7 @@
                                                     <option></option>
                                                     <option value="1">Yudisium</option>
                                                     <option value="2">Wisuda</option>
+                                                    <option value="3">Penangguhan</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -108,6 +109,8 @@
                                         Yudisium
                                     @elseif($item->tipe_waktu == 2)
                                         Wisuda
+                                    @elseif($item->tipe_waktu == 3)
+                                        Penangguhan
                                     @endif
                                 </td>
                                 <td>{{ $item->deskripsi }}</td>
