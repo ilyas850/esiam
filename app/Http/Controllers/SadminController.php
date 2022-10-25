@@ -4378,9 +4378,22 @@ class SadminController extends Controller
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->leftjoin('transkrip_final', 'yudisium.id_student', '=', 'transkrip_final.id_student')
+            ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
             ->where('student.active', 1)
             ->where('yudisium.id_yudisium', $id)
-            ->select('yudisium.nama_lengkap', 'student.nim', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'yudisium.nik', 'prodi.prodi', 'prodi.study_year', 'prodi.kodeprodi', 'transkrip_final.no_ijazah', 'transkrip_final.tgl_yudisium', 'transkrip_final.tgl_wisuda')
+            ->select(
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'yudisium.nik',
+                'prodi.prodi',
+                'prodi.study_year',
+                'prodi.kodeprodi',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda'
+            )
             ->first();
 
         //no ijazah
@@ -4416,16 +4429,16 @@ class SadminController extends Controller
             $gelar = 'Sarjana Terapan Komputer (S.Tr.Kom.)';
         }
 
-        if ($data_mhs->tgl_yudisium == null) {
+        if ($data_mhs->date_lulus == null) {
             $yudisium = '2001-01-01';
-        } elseif ($data_mhs->tgl_yudisium != null) {
-            $yudisium = $data_mhs->tgl_yudisium;
+        } elseif ($data_mhs->date_lulus != null) {
+            $yudisium = $data_mhs->date_lulus;
         }
 
-        if ($data_mhs->tgl_wisuda == null) {
+        if ($data_mhs->date_wisuda == null) {
             $wisuda = '2001-01-01';
-        } elseif ($data_mhs->tgl_wisuda != null) {
-            $wisuda = $data_mhs->tgl_wisuda;
+        } elseif ($data_mhs->date_wisuda != null) {
+            $wisuda = $data_mhs->date_wisuda;
         }
 
         $pisahyudi = explode('-', $yudisium);
