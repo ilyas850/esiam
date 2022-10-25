@@ -3078,9 +3078,9 @@ class SadminController extends Controller
         if ($prodi == 24) {
             $pathTemplate = new TemplateProcessor('word-template/template SKPI FA.docx');
         } elseif ($prodi == 22) {
-            # code...
+            $pathTemplate = new TemplateProcessor('word-template/template SKPI TK.docx');
         } elseif ($prodi == 23) {
-            # code...
+            $pathTemplate = new TemplateProcessor('word-template/template SKPI TI.docx');
         }
 
         $template = $pathTemplate;
