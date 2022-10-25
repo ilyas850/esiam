@@ -104,7 +104,16 @@ class EdomController extends Controller
         ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
         ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
         ->where('student_record.status', 'TAKEN')
-        ->select('matakuliah.makul', 'matakuliah.kode', 'kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', DB::raw('MAX(student_record.id_kurtrans) as id_kurtrans'), DB::raw('MAX(student_record.id_kurperiode) as id_kurperiode'), 'dosen.nama')
+        ->select(
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'kurikulum_periode.id_makul',
+          'kurikulum_periode.id_dosen',
+          'student_record.id_student',
+          DB::raw('MAX(student_record.id_kurtrans) as id_kurtrans'),
+          DB::raw('MAX(student_record.id_kurperiode) as id_kurperiode'),
+          'dosen.nama'
+        )
         ->groupBy('matakuliah.makul', 'matakuliah.kode', 'kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', 'dosen.nama')
         ->get();
 
@@ -123,7 +132,7 @@ class EdomController extends Controller
     $kurtr = $request->id_kurtrans;
     $mk = $request->id_makul;
     $dsn = $request->id_dosen;
-  
+
     $cekedom = Edom_transaction::where('id_student', $request->id_student)
       ->where('id_kurperiode', $request->id_kurperiode)
       ->where('id_kurtrans', $request->id_kurtrans)
@@ -146,8 +155,6 @@ class EdomController extends Controller
         $nama_dsn = $dosen->nama;
         $akademik = $dosen->akademik;
       }
-
-
 
       $edm = Edom_master::where('id_edom', 1)->get();
 
