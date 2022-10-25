@@ -3207,7 +3207,7 @@ class SadminController extends Controller
 
         for ($i = 0; $i < count($pengalaman); $i++) {
             $pengalaman[$i]->nama_pt = str_replace('&', 'dan', $pengalaman[$i]->nama_pt);
-
+            $pengalaman[$i]->posisi = str_replace('&', 'dan', $pengalaman[$i]->posisi);
             $peng = [
                 'nama_pt' => $pengalaman[$i]->nama_pt,
                 'posisi' => $pengalaman[$i]->posisi,
