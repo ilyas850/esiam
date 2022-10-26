@@ -18,11 +18,14 @@
     <style>
         html,
         body {
-            background-color: #fff;
-            color: #636b6f;
+            background-image: url('images/404.png');
+            /* background-color: #fff; */
+            /* color: #636b6f; */
             font-family: 'Raleway', sans-serif;
-            font-weight: 100;
-            height: 100vh;
+            /* font-weight: 100; */
+            height: auto;
+            background-size: 100% 100%;
+            width: 100%;
             margin: 0;
         }
 
@@ -84,7 +87,7 @@
         @endif
 
         <div class="content">
-            <img src="{{ asset('images/404 rev1.png') }}" alt="" width="1000px" height="660px">
+            {{-- <img src="{{ asset('images/419.png') }}" alt="" width="1000px" height="660px"> --}}
         </div>
     </div>
 </body>
