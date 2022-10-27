@@ -254,6 +254,7 @@
                                                         <option value="TATAP MUKA">TATAP MUKA</option>
                                                         <option value="TAKE HOME">TAKE HOME</option>
                                                         <option value="PROJECT">PROJECT</option>
+                                                        <option value="PRAKTIKUM">PRAKTIKUM</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
@@ -288,6 +289,7 @@
                                                         <option value="TATAP MUKA">TATAP MUKA</option>
                                                         <option value="TAKE HOME">TAKE HOME</option>
                                                         <option value="PROJECT">PROJECT</option>
+                                                        <option value="PRAKTIKUM">PRAKTIKUM</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">

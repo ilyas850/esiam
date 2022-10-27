@@ -12,6 +12,10 @@ Route::post('/daftar', 'MhsController@daftar');
 
 Route::get('login_adm', 'AdminController@login');
 
+Route::get('forgot_password', function(){
+return view('auth.lupa');
+});
+
 Route::group(['middleware' => 'sadmin'], function () {
     //master akademik
     Route::get('master_angkatan', 'SadminController@master_angkatan');
