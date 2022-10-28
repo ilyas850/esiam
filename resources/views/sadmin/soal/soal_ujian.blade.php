@@ -79,7 +79,7 @@
                                                     href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                     target="_blank" style="font: white"> File</a>
                                             @else
-                                            <span class="badge bg-green"><i class="fa fa-check"></i></span>
+                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
                                                 <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                     target="_blank" style="font: white"> File</a>
                                             @endif
@@ -92,8 +92,15 @@
                                         @if ($item->soal_uas == null)
                                             Belum
                                         @else
-                                            <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
-                                                target="_blank" style="font: white"> File</a>
+                                            @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
+                                                <span class="badge bg-yellow"><i class="fa fa-close"></i></span>
+                                                <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                                    target="_blank" style="font: white"> File</a>
+                                            @else
+                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
+                                                <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                                    target="_blank" style="font: white"> File</a>
+                                            @endif
                                         @endif
                                     </center>
                                 </td>
