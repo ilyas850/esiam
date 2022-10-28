@@ -4224,7 +4224,7 @@ class SadminController extends Controller
 
     public function soal_uts_uas()
     {
-        $data = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+        $data1 = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -4240,6 +4240,8 @@ class SadminController extends Controller
             ->orderBy('kelas.kelas', 'asc')
             ->orderBy('matakuliah.kode', 'asc')
             ->get();
+
+        $data = DB::select('CALL soal_ujian');
 
         return view('sadmin/soal/soal_ujian', compact('data'));
     }

@@ -14,29 +14,41 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>
+                            <th rowspan="2">
                                 <center>No</center>
                             </th>
-                            <th>
-                                <center>Dosen </center>
-                            </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Kode/Matakuliah</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Program Studi</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Kelas</center>
                             </th>
+                            <th rowspan="2">
+                                <center>Dosen</center>
+                            </th>
+                            <th colspan="2">
+                                <center> UTS</center>
+                            </th>
+                            <th colspan="2">
+                                <center> UAS</center>
+                            </th>
+                        </tr>
+                        <tr>
                             <th>
-                                <center>Semester</center>
+                                <center>Soal</center>
                             </th>
                             <th>
-                                <center>Id Absen</center>
+                                <center>Sifat Ujian</center>
                             </th>
-                            <th>Soal UTS</th>
-                            <th>Soal UAS</th>
+                            <th>
+                                <center>Soal</center>
+                            </th>
+                            <th>
+                                <center>Sifat Ujian</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,10 +58,7 @@
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
-                                <td>
-                                    {{ $item->nama }}
-                                </td>
-                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
+                                <td>{{ $item->makul }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>
@@ -57,33 +66,38 @@
                                     <center>{{ $item->kelas }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->semester }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->id_kurperiode }} </center>
+                                    {{ $item->nama }}
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->soal_uts == null)
-                                            Belum ada
-                                        @else
-                                            <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
-                                                target="_blank" style="font: white"> Soal UTS</a>
-                                        @endif
 
+                                        @if ($item->soal_uts == null)
+                                            Belum
+                                        @else
+                                            @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
+                                                <span class="badge bg-yellow"><i class="fa fa-close"></i></span><a
+                                                    href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                                    target="_blank" style="font: white"> File</a>
+                                            @else
+                                            <span class="badge bg-green"><i class="fa fa-check"></i></span>
+                                                <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                                    target="_blank" style="font: white"> File</a>
+                                            @endif
+                                        @endif
                                     </center>
                                 </td>
+                                <td>{{ $item->tipe_ujian_uts }}</td>
                                 <td>
                                     <center>
                                         @if ($item->soal_uas == null)
-                                            Belum ada
+                                            Belum
                                         @else
                                             <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
-                                                target="_blank" style="font: white"> Soal UAS</a>
+                                                target="_blank" style="font: white"> File</a>
                                         @endif
-
                                     </center>
                                 </td>
+                                <td>{{ $item->tipe_ujian_uas }}</td>
                             </tr>
                         @endforeach
                     </tbody>
