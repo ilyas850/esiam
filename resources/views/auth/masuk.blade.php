@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 order-md-2">
-                    <img src="{{ asset('dsg_login/images/undraw_file_sync_ot38.png') }}" alt="Image" class="img-fluid">
+                    <img src="{{ asset('dsg_login/images/login 1.png') }}" alt="Image" class="img-fluid">
                 </div>
                 <div class="col-md-6 contents">
                     <div class="row justify-content-center">
