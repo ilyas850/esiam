@@ -209,10 +209,11 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     //filter rekap perkuliahan
     Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');
+    Route::post('filter_jadwal_perkuliahan', 'SadminController@filter_jadwal_perkuliahan');
 
     //jadwa; perkuliahan
     Route::get('jadwal_perkuliahan', 'SadminController@jadwal_perkuliahan');
-    
+
     //visi misi
     Route::get('visimisi', 'SadminController@visimisi');
     Route::get('add_visimisi', 'SadminController@add_visimisi');
