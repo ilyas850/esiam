@@ -112,6 +112,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_perkuliahan') }}"><i class="fa fa-circle-o"></i> Jadwal Perkuliahan</a>
+            </li>
             <li><a href="{{ url('rekap_perkuliahan') }}"><i class="fa fa-circle-o"></i> Rekap Perkuliahan</a>
             </li>
         </ul>

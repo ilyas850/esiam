@@ -5575,4 +5575,22 @@ class SadminController extends Controller
         Alert::success('', 'Pedoman berhasil dihapus')->autoclose(3500);
         return redirect()->back();
     }
+
+    public function jadwal_perkuliahan()
+    {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tipe = Periode_tipe::all();
+
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $idtipe = $tp->id_periodetipe;
+        $namaperiodetipe = $tp->periode_tipe;
+
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $idtahun = $thn->id_periodetahun;
+        $namaperiodetahun = $thn->periode_tahun;
+
+        $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
+
+        return view('sadmin/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
 }
