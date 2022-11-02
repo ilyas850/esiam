@@ -36,7 +36,7 @@
     </li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-list"></i> <span>Matakuliah</span>
+            <i class="fa fa-list"></i> <span>Pengajaran</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -45,7 +45,7 @@
             <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa fa-circle-o"></i> <span>Matakuliah
                         diampu</span></a>
             </li>
-            <li><a href="{{ url('history_makul_dsn') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
+            <li><a href="{{ url('history_makul_dsn') }}"><i class="fa fa-circle-o"></i> <span>History MK
                         diampu</span></a></li>
         </ul>
     </li>
