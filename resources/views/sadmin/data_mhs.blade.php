@@ -7,7 +7,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Export KRS Mahasiswa</h3>
+                <h3 class="box-title">Export Data Mahasiswa</h3>
             </div>
             <form class="form" role="form" action="{{ url('export_xls_data_mhs') }}" method="POST">
                 {{ csrf_field() }}
