@@ -1,9 +1,22 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">Menu Kaprodi</li>
     <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
-    <li><a href="{{ url('pedoman_akademik_dsn_kprd') }}"><i class="fa fa-book"></i> <span>Pedoman Umum</span></a></li>
-    <li><a href="{{ url('pedoman_khusus_dsn_kprd') }}"><i class="fa fa-book"></i> <span>Pedoman Khusus</span></a></li>
-    <li><a href="{{ url('sop_dsn_kprd') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Pedoman & SOP</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('pedoman_akademik_dsn_kprd') }}"><i class="fa fa-circle-o"></i> <span>Pedoman
+                        Umum</span></a></li>
+            <li><a href="{{ url('pedoman_khusus_dsn_kprd') }}"><i class="fa fa-circle-o"></i> <span>Pedoman
+                        Khusus</span></a></li>
+            <li><a href="{{ url('sop_dsn_kprd') }}"><i class="fa fa-circle-o"></i> <span>S.O.P</span></a></li>
+        </ul>
+    </li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-database"></i> <span>Master Mahasiswa</span>
@@ -63,7 +76,7 @@
                         diampu</span></a></li>
             <li><a href="{{ url('history_makul_kprd') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
                         diampu</span></a></li>
-            
+
             <li><a href="{{ url('master_yudisium_kprd') }}"><i class="fa fa-circle-o"></i> Yudisium</a></li>
             <li><a href="{{ url('master_wisuda_kprd') }}"><i class="fa fa-circle-o"></i> Wisuda</a></li>
         </ul>
@@ -77,6 +90,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_prausta_kprd') }}"><i class="fa fa-circle-o"></i> Jadwal PraUSTA</a></li>
             <li class="treeview">
                 <a href="#"><i class="fa fa-circle-o"></i> Pembimbing
                     <span class="pull-right-container">
@@ -104,7 +118,8 @@
                     <li><a href="{{ url('penguji_ta_kprd') }}"><i class="fa fa-circle-o"></i> TA</a></li>
                 </ul>
             </li>
-            <li class="treeview">
+            
+            {{-- <li class="treeview">
                 <a href="#">
                     <i class="fa fa-circle-o"></i> <span>Jadwal</span>
                     <span class="pull-right-container">
@@ -119,7 +134,7 @@
                     <li><a href="{{ url('jadwal_sidang_ta_kprd') }}"><i class="fa fa-circle-o"></i> Sidang TA</a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-circle-o"></i> <span>Monitoring</span>

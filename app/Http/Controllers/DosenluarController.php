@@ -4090,6 +4090,45 @@ class DosenluarController extends Controller
         return redirect('penguji_ta_dsnlr');
     }
 
+    public function jadwal_prausta_dsn_luar()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where(function ($query) use ($id) {
+                $query
+                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+                    ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
+                    ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
+            })
+            ->where('student.active', 1)
+            ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.ruangan'
+            )
+            ->orderBy('tanggal_selesai', 'DESC')
+            ->get();
+
+        return view('dosenluar/prausta/jadwal_prausta', compact('data'));
+    }
+
     public function jadwal_seminar_prakerin_luar()
     {
         $id = Auth::user()->id_user;
