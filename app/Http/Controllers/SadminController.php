@@ -69,6 +69,7 @@ use App\Exports\DataNilaiKHSExport;
 use App\Exports\DataKRSMhsExport;
 use App\Exports\DataPrakerinExport;
 use App\Exports\DataAkmMhsExport;
+use App\Exports\DataMhsExportAngkatan;
 use App\Imports\ImportMicrosoftUser;
 use App\Wisuda;
 use Illuminate\Http\Request;
@@ -152,6 +153,8 @@ class SadminController extends Controller
 
     public function show_mhs()
     {
+        $angkatan = Angkatan::all();
+
         $mhs = Student::leftJoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
@@ -161,7 +164,18 @@ class SadminController extends Controller
             ->select('student.nim', 'student.nama', 'prodi.prodi', 'prodi.konsentrasi', 'kelas.kelas', 'angkatan.angkatan', 'student.nisn', 'student.intake')
             ->get();
 
-        return view('sadmin/data_mhs', ['mhss' => $mhs]);
+        return view('sadmin/data_mhs', ['mhss' => $mhs, 'angkatan' => $angkatan]);
+    }
+
+    public function export_xls_data_mhs(Request $request)
+    {
+        $idangkatan = $request->idangkatan;
+
+        $angkatan = Angkatan::where('idangkatan', $idangkatan)->first();
+
+        $nama_file = 'Data Mahasiswa Angkatan' . ' ' . $angkatan->angkatan . '.xlsx';
+
+        return Excel::download(new DataMhsExportAngkatan($idangkatan), $nama_file);
     }
 
     public function show_user()

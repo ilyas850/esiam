@@ -5,16 +5,50 @@
             <i class="fa fa-dashboard"></i> <span>Halaman Utama</span>
         </a>
     </li>
-    <li><a href="{{ url('pedoman_akademik_dsn_dlm') }}"><i class="fa fa-book"></i> <span>Pedoman Umum</span></a></li>
-    <li><a href="{{ url('pedoman_khusus_dsn_dlm') }}"><i class="fa fa-book"></i> <span>Pedoman Khusus</span></a></li>
-    <li><a href="{{ url('sop_dsn_dlm') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
-    <li><a href="{{ url('mhs_bim') }}"><i class="fa fa-users"></i> <span>Mahasiswa Bimbingan</span></a></li>
-    <li><a href="{{ url('val_krs') }}"><i class="fa fa-check-square"></i> <span>Validasi KRS</span></a></li>
-
-    <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa  fa-users"></i> <span>Matakuliah diampu</span></a>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Pedoman & SOP</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('pedoman_akademik_dsn_dlm') }}"><i class="fa fa-circle-o"></i> <span>Pedoman
+                        Umum</span></a></li>
+            <li><a href="{{ url('pedoman_khusus_dsn_dlm') }}"><i class="fa fa-circle-o"></i> <span>Pedoman
+                        Khusus</span></a></li>
+            <li><a href="{{ url('sop_dsn_dlm') }}"><i class="fa fa-circle-o"></i> <span>S.O.P</span></a></li>
+        </ul>
     </li>
-    <li><a href="{{ url('history_makul_dsn') }}"><i class="fa  fa-list"></i> <span>History Matakuliah
-                diampu</span></a></li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Mahasiswa Bimbingan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('mhs_bim') }}"><i class="fa fa-circle-o"></i> <span>Daftar Mahasiswa</span></a></li>
+            <li><a href="{{ url('val_krs') }}"><i class="fa fa-circle-o"></i> <span>Validasi KRS</span></a></li>
+            <li><a href="{{ url('penangguhan_mhs_dsn') }}"><i class="fa fa-circle-o"></i> <span>Penangguhan </span></a>
+            </li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Matakuliah</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa fa-circle-o"></i> <span>Matakuliah
+                        diampu</span></a>
+            </li>
+            <li><a href="{{ url('history_makul_dsn') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
+                        diampu</span></a></li>
+        </ul>
+    </li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>PraUSTA</span>
@@ -23,6 +57,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_prausta_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal PraUSTA</a></li>
             <li><a href="{{ url('pembimbing_pkl') }}"><i class="fa fa-circle-o"></i> Pembimbing PKL</a></li>
             <li><a href="{{ url('pembimbing_sempro') }}"><i class="fa fa-circle-o"></i> Pembimbing SEMPRO</a></li>
             <li><a href="{{ url('pembimbing_ta') }}"><i class="fa fa-circle-o"></i> Pembimbing TA</a></li>
@@ -31,7 +66,7 @@
             <li><a href="{{ url('penguji_ta') }}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
         </ul>
     </li>
-    <li class="treeview">
+    {{-- <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>Jadwal PraUSTA</span>
             <span class="pull-right-container">
@@ -45,8 +80,8 @@
                     Proposal</a></li>
             <li><a href="{{ url('jadwal_sidang_ta_dlm') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
         </ul>
-    </li>
-    <li><a href="{{ url('penangguhan_mhs_dsn') }}"><i class="fa fa-money"></i> <span>Penangguhan Mhs Bimbingan</span></a></li>
+    </li> --}}
+
     {{-- <li><a href="{{ url('upload_soal_dsn_dlm') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
     </li> --}}
 

@@ -74,6 +74,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('change_pass/{id}', 'SadminController@change');
     Route::put('pwd_adm/{id}', 'SadminController@store_new_pass');
     Route::get('show_mhs', 'SadminController@show_mhs');
+    Route::post('export_xls_data_mhs', 'SadminController@export_xls_data_mhs');
 
     //master user pengguna mahasiswa
     Route::get('show_user', 'SadminController@show_user');
@@ -522,6 +523,8 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('jadwal_seminar_prakerin_dlm', 'DosenController@jadwal_seminar_prakerin_dlm');
     Route::get('jadwal_seminar_proposal_dlm', 'DosenController@jadwal_seminar_proposal_dlm');
     Route::get('jadwal_sidang_ta_dlm', 'DosenController@jadwal_sidang_ta_dlm');
+
+    Route::get('jadwal_prausta_dsn_dlm', 'DosenController@jadwal_prausta_dsn_dlm');
 
     //upload soal
     Route::get('upload_soal_dsn_dlm', 'DosenController@upload_soal_dsn_dlm');

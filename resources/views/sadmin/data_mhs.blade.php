@@ -5,6 +5,32 @@
 @endsection
 @section('content')
     <section class="content">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Export KRS Mahasiswa</h3>
+            </div>
+            <form class="form" role="form" action="{{ url('export_xls_data_mhs') }}" method="POST">
+                {{ csrf_field() }}
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-6">
+                            <label for="">Angkatan</label>
+                            <select class="form-control" name="idangkatan" required>
+                                <option></option>
+                                @foreach ($angkatan as $angk)
+                                    <option value="{{ $angk->idangkatan }}">{{ $angk->angkatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success">Export Xls</button>
+                </div>
+            </form>
+        </div>
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">Data Mahasiswa Politeknik META Industri</h3>

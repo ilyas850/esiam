@@ -37,7 +37,7 @@
                         <select class="form-control" name="id_prodi" required>
                             <option></option>
                             @foreach ($prodi as $prd)
-                                <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }} - {{ $prd->konsentrasi }}
+                                <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}
                                 </option>
                             @endforeach
                         </select>

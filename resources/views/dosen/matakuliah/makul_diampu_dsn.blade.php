@@ -172,6 +172,7 @@
                                         @endif
                                     @elseif ($item->validasi_uts == 'SUDAH')
                                         <span class="badge bg-blue">Valid</span>
+                                        <span class="badge bg-green"><i class="fa fa-check"></i></span>
                                     @endif
                                 </td>
                                 <td align="center">

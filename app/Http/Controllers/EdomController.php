@@ -279,7 +279,10 @@ class EdomController extends Controller
   {
     $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
     $periodetipe = Periode_tipe::orderBy('id_periodetipe', 'DESC')->get();
-    $prodi = Prodi::orderBy('id_prodi', 'DESC')->get();
+    $prodi = Prodi::select('kodeprodi', 'prodi')
+      ->groupBy('kodeprodi', 'prodi')
+      ->orderBy('kodeprodi', 'DESC')
+      ->get();
 
     return view('sadmin/edom/master_edom', compact('periodetahun', 'periodetipe', 'prodi'));
   }
@@ -293,15 +296,15 @@ class EdomController extends Controller
 
     $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
     $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
-    $prodi = Prodi::where('id_prodi', $idprodi)->first();
+    $prodii = Prodi::where('kodeprodi', $idprodi)->first();
 
     $thn = $periodetahun->periode_tahun;
     $tp = $periodetipe->periode_tipe;
-    $prd = $prodi->prodi;
+    $prd = $prodii->prodi;
 
     if ($tipe == 'by_makul') {
 
-      $data = DB::select('CALL edom_by_makul(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
 
       return view('sadmin/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe', 'idprodi'));
     } elseif ($tipe == 'by_dosen') {
@@ -330,7 +333,7 @@ class EdomController extends Controller
   {
     $idkurperiode = $request->id_kurperiode;
 
-    $data = DB::select('CALL detail_edom_makul(?)', array($idkurperiode));
+    $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
 
     $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
