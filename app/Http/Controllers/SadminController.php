@@ -4049,11 +4049,11 @@ class SadminController extends Controller
     {
         $idperiodetahun = $request->id_periodetahun;
         $idperiodetipe = $request->id_periodetipe;
-        $idprodi = $request->id_prodi;
+        $idprodi = $request->kodeprodi;
         $periodetahun = $request->periodetahun;
         $periodetipe = $request->periodetipe;
 
-        $dosen = Prodi::where('id_prodi', $idprodi)->first();
+        $dosen = Prodi::where('kodeprodi', $idprodi)->first();
         $nama_prodi = $dosen->prodi;
 
         $data = DB::select('CALL detail_kuisioner_bauk(?,?,?)', [$idperiodetahun, $idperiodetipe, $idprodi]);
