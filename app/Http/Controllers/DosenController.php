@@ -5309,67 +5309,119 @@ class DosenController extends Controller
 
             $sisadaftar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 18)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 1)
+                        ->orWhere('bayar.iditem', 18);
+                })
                 ->sum('bayar.bayar');
 
             $sisaawal = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 19)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 2)
+                        ->orWhere('bayar.iditem', 19);
+                })
                 ->sum('bayar.bayar');
 
             $sisadsp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 20)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 3)
+                        ->orWhere('bayar.iditem', 20);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp1 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 21)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 4)
+                        ->orWhere('bayar.iditem', 21);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp2 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 22)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 5)
+                        ->orWhere('bayar.iditem', 22);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp3 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 23)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 6)
+                        ->orWhere('bayar.iditem', 23);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp4 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 24)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 7)
+                        ->orWhere('bayar.iditem', 24);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp5 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 25)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 8)
+                        ->orWhere('bayar.iditem', 25);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp6 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 26)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 9)
+                        ->orWhere('bayar.iditem', 26);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp7 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 27)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 10)
+                        ->orWhere('bayar.iditem', 27);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp8 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 28)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 11)
+                        ->orWhere('bayar.iditem', 28);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp9 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 29)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 12)
+                        ->orWhere('bayar.iditem', 29);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp10 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 30)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 13)
+                        ->orWhere('bayar.iditem', 30);
+                })
                 ->sum('bayar.bayar');
 
             $sisaspp11 = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
@@ -5394,12 +5446,20 @@ class DosenController extends Controller
 
             $sisaprakerin = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 35)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 36)
+                        ->orWhere('bayar.iditem', 35);
+                })
                 ->sum('bayar.bayar');
 
             $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                 ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 37)
+                ->where(function ($query) {
+                    $query
+                        ->where('bayar.iditem', 14)
+                        ->orWhere('bayar.iditem', 37);
+                })
                 ->sum('bayar.bayar');
 
             $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
