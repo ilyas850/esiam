@@ -37,6 +37,7 @@
                                                     <option value="1">Yudisium</option>
                                                     <option value="2">Wisuda</option>
                                                     <option value="3">Penangguhan</option>
+                                                    <option value="4">Beasiswa</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -111,6 +112,8 @@
                                         Wisuda
                                     @elseif($item->tipe_waktu == 3)
                                         Penangguhan
+                                    @elseif($item->tipe_waktu == 4)
+                                        Beasiswa
                                     @endif
                                 </td>
                                 <td>{{ $item->deskripsi }}</td>

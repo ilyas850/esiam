@@ -103,15 +103,61 @@ class BaukController extends Controller
 
     public function edit_time_penangguhan(Request $request)
     {
-       
         $id = $request->id_waktu;
-        
+
         $time_nya = Waktu::find($id);
-     
+
         $time_nya->status = '0';
         $time_nya->save();
 
         Alert::success('Penutupan Penangguhan', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function waktu_beasiswa()
+    {
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $now = date('Y-m-d');
+
+        $data = Waktu::where('tipe_waktu', 4)->first();
+
+        return view('bauk/beasiswa/waktu_beasiswa', compact('data', 'tahun', 'tipe', 'now'));
+    }
+
+    public function simpan_waktu_pengajuan_beasiswa(Request $request)
+    {
+        $cektgl = strtotime($request->waktu_akhir);
+        $cektglawal = strtotime('now');
+
+        if ($cektgl < $cektglawal) {
+            Alert::error('Maaf waktu yang anda atur salah', 'maaf');
+            return redirect()->back();
+        } else {
+            $id = $request->id_waktu;
+            $time_nya = Waktu::find($id);
+            $time_nya->waktu_awal = $request->waktu_awal;
+            $time_nya->waktu_akhir = $request->waktu_akhir;
+            $time_nya->status = $request->status;
+            $time_nya->save();
+
+            Alert::success('Pembukaan Pengajuan Beasiswa', 'Berhasil')->autoclose(3500);
+            return redirect()->back();
+        }
+    }
+
+    public function edit_time_pengajuan_beasiswa(Request $request)
+    {
+        $id = $request->id_waktu;
+
+        $time_nya = Waktu::find($id);
+
+        $time_nya->status = '0';
+        $time_nya->save();
+
+        Alert::success('Penutupan Pengajuan Beasiswa', 'Berhasil')->autoclose(3500);
         return redirect()->back();
     }
 }

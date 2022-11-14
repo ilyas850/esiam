@@ -748,6 +748,13 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('kritiksaran_mhs', 'MhsController@kritiksaran_mhs');
     Route::post('post_kritiksaran', 'MhsController@post_kritiksaran');
     Route::put('put_kritiksaran/{id}', 'MhsController@put_kritiksaran');
+
+    //data dosen
+    Route::get('dosen_mip', 'MhsController@dosen_mip');
+
+    //pengajuan beasiswa
+    Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
+    Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1400,6 +1407,11 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::get('waktu_penangguhan', 'BaukController@waktu_penangguhan');
     Route::post('simpan_waktu_penangguhan', 'BaukController@simpan_waktu_penangguhan');
     Route::post('edit_time_penangguhan', 'BaukController@edit_time_penangguhan');
+
+    //waktu beasiswa
+    Route::get('waktu_beasiswa', 'BaukController@waktu_beasiswa');
+    Route::post('simpan_waktu_pengajuan_beasiswa', 'BaukController@simpan_waktu_pengajuan_beasiswa');
+    Route::post('edit_time_pengajuan_beasiswa', 'BaukController@edit_time_pengajuan_beasiswa');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

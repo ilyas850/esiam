@@ -937,15 +937,15 @@ class KaprodiController extends Controller
     //cek mahasiswa
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $id)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('student_record.id_kurperiode', $id)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
+    // $kur = $ckstr->id_kurtrans;
 
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur, 'nilai' => $nilai]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'nilai' => $nilai]);
   }
 
   public function export_xlsnilai($id)
@@ -2573,15 +2573,15 @@ class KaprodiController extends Controller
     //cek mahasiswa
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $request->id_kurperiode)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $request->id_kurperiode)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
+    // $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
   }
 
   public function input_uts_kprd($id)
@@ -2675,13 +2675,13 @@ class KaprodiController extends Controller
     //cek mahasiswa
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $request->id_kurperiode)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $request->id_kurperiode)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
+    // $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
 
     return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
@@ -2778,13 +2778,13 @@ class KaprodiController extends Controller
     //cek mahasiswa
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $request->id_kurperiode)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $request->id_kurperiode)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
+    // $kur = $ckstr->id_kurtrans;
     $idkur = $request->id_kurperiode;
 
     return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
@@ -8091,16 +8091,16 @@ class KaprodiController extends Controller
 
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $idkur)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $idkur)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
-    $idkur = $idkur;
+    // $kur = $ckstr->id_kurtrans;
+    // $idkur = $idkur;
 
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'kur' => $kur, 'nilai' => $nilai]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'nilai' => $nilai]);
   }
 
   public function post_settingnilai_dsn_kprd(Request $request)
@@ -8126,17 +8126,17 @@ class KaprodiController extends Controller
 
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $idkur)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $idkur)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
-    $idkur = $idkur;
+    // $kur = $ckstr->id_kurtrans;
+    // $idkur = $idkur;
 
     Alert::success('Berhasil');
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
   }
 
   public function put_settingnilai_dsn_kprd(Request $request, $id)
@@ -8162,17 +8162,17 @@ class KaprodiController extends Controller
 
     $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
 
-    $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-      ->where('id_kurperiode', $idkur)
-      ->where('student_record.status', 'TAKEN')
-      ->select('student_record.id_kurtrans')
-      ->first();
+    // $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+    //   ->where('id_kurperiode', $idkur)
+    //   ->where('student_record.status', 'TAKEN')
+    //   ->select('student_record.id_kurtrans')
+    //   ->first();
 
-    $kur = $ckstr->id_kurtrans;
-    $idkur = $idkur;
+    // $kur = $ckstr->id_kurtrans;
+    // $idkur = $idkur;
 
     Alert::success('Berhasil');
-    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+    return view('kaprodi/matakuliah/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
   }
 
   public function sop_dsn_kprd()

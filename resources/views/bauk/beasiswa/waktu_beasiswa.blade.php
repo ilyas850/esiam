@@ -9,18 +9,18 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <span class="fa fa-calendar-check-o"></span>
-                <h3 class="box-title"><b>Waktu Penangguhan Periode
+                <h3 class="box-title"><b>Waktu Pengajuan Beasiswa Periode
                         {{ $tahun->periode_tahun }} - {{ $tipe->periode_tipe }}
                     </b></h3>
             </div>
             <div class="box-body">
                 @if ($data->status == 0 or $data->status == null)
-                    <form class="form" role="form" method="POST" action="{{ url('simpan_waktu_penangguhan') }}">
+                    <form class="form" role="form" method="POST" action="{{ url('simpan_waktu_pengajuan_beasiswa') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <label>Waktu Awal Penangguhan:</label>
+                                    <label>Waktu Awal Pengajuan Beasiswa:</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <label>Waktu Akhir Penangguhan:</label>
+                                    <label>Waktu Akhir Pengajuan Beasiswa:</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
@@ -44,11 +44,11 @@
                         <input type="hidden" name="waktu_awal" value="{{ $now }}">
                         <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
                         <button type="submit" class="btn btn-info btn-lg btn-block">
-                            Simpan Waktu Penangguhan
+                            Simpan Waktu Pengajuan Beasiswa
                         </button>
                     </form>
                 @elseif ($data->status == 1)
-                    <form class="form" role="form" method="POST" action="{{ url('edit_time_penangguhan') }}">
+                    <form class="form" role="form" method="POST" action="{{ url('edit_time_pengajuan_beasiswa') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label>Waktu Penangguhan:</label>
@@ -63,8 +63,6 @@
                         <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
                         <button type="button" class="btn btn-warning btn-lg btn-block" data-toggle="modal"
                             data-target=".bs-example-modal-sm">Penutupan Waktu Penangguhan</button>
-
-
                         <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog"
                             aria-labelledby="mySmallModalLabel">
                             <div class="modal-dialog" role="document">
@@ -75,7 +73,7 @@
                                         <h4 class="modal-title" id="myModalLabel">Peringatan</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Apakah anda yakin akan memberhentikan waktu Penangguhan yang sedang berjalan ?
+                                        <p>Apakah anda yakin akan memberhentikan waktu Pengajuan Beasiswa yang sedang berjalan ?
                                         </p>
                                     </div>
                                     <div class="modal-footer">
@@ -92,14 +90,14 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <span class="glyphicon glyphicon-info-sign"></span>
-                <h3 class="box-title">Countdown Penangguhan</h3>
+                <h3 class="box-title">Countdown Pengajuan Beasiswa</h3>
             </div>
             <div class="box-body">
                 <div id="waktumundur">
                     @if ($data->status != 0)
                         <span id="countdown"></span>
                     @else
-                        Waktu Penangguhan belum dibuka
+                        Waktu Pengajuan Beasiswa belum dibuka
                     @endif
                 </div>
             </div>
@@ -148,6 +146,5 @@
                 color: white
             }
         </style>
-
     </section>
 @endsection

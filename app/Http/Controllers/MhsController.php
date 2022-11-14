@@ -57,6 +57,7 @@ use App\Penangguhan_trans;
 use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use App\Konversi_itembayar;
+use App\Beasiswa_trans;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -4110,5 +4111,114 @@ class MhsController extends Controller
 
         Alert::success('', 'Kritik & Saran berhasil diedit')->autoclose(3500);
         return redirect('kritiksaran_mhs');
+    }
+
+    public function dosen_mip()
+    {
+        $data = Dosen::where('active', 1)
+            ->whereIn('idstatus', [1, 2])
+            ->orderBy('nama', 'ASC')
+            ->get();
+
+        return view('mhs/dosen/dosen_mip', compact('data'));
+    }
+
+    public function beasiswa_mhs()
+    {
+        $status_pengajuan = Waktu::where('tipe_waktu', 4)->first();
+
+        $id = Auth::user()->id_user;
+
+        $data = Beasiswa_trans::join('student', 'beasiswa_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('periode_tahun', 'beasiswa_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'beasiswa_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('semester', 'beasiswa_trans.id_semester', '=', 'semester.idsemester')
+            ->where('beasiswa_trans.id_student', $id)
+            ->where('beasiswa_trans.status', 'ACTIVE')
+            ->select(
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'student.tgllahir',
+                'student.tmptlahir',
+                'student.hp',
+                'student.email',
+                'beasiswa_trans.id_trans_beasiswa',
+                'semester.semester',
+                'beasiswa_trans.validasi_bauk',
+                'beasiswa_trans.validasi_wadir3',
+                'beasiswa_trans.status'
+            )
+            ->get();
+
+        return view('mhs/beasiswa/pengajuan_beasiswa', compact('data', 'status_pengajuan'));
+    }
+
+    public function pengajuan_beasiswa()
+    {
+        $id = Auth::user()->id_user;
+
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'student.tmptlahir',
+                'student.tgllahir',
+                'student.hp',
+                'student.email',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi'
+            )
+            ->first();
+
+        $idangkatan = $mhs->idangkatan;
+
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $sub_thn = substr($periode_tahun->periode_tahun, 6, 2);
+        $tp = $periode_tipe->id_periodetipe;
+        $smt = $sub_thn . $tp;
+        $angk = $idangkatan;
+
+        if ($smt % 2 != 0) {
+            if ($tp == 1) {
+                //ganjil
+                $a = (($smt + 10) - 1) / 10;
+                $b = $a - $idangkatan;
+                $c = ($b * 2) - 1;
+            } elseif ($tp == 3) {
+                //pendek
+                $a = (($smt + 10) - 3) / 10;
+                $b = $a - $idangkatan;
+                $c = ($b * 2) . '0' . '1';
+            }
+        } else {
+            $a = ($smt + 10 - 2) / 10;
+            $b = $a - $angk;
+            $c = $b * 2;
+        }
+
+        if ($tp == 1) {
+            # code...
+        }
+        dd($c);
+
+        return view('mhs/beasiswa/form_beasiswa', compact('mhs'));
     }
 }

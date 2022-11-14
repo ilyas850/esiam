@@ -77,9 +77,9 @@
                             <th>
                                 <center>Kelas</center>
                             </th>
-                            <th>
+                            {{-- <th>
                                 <center>Semester</center>
-                            </th>
+                            </th> --}}
                             <th>
                                 <center>Ruangan</center>
                             </th>
@@ -119,16 +119,16 @@
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
-                                <td>{{ $item->kode }} - {{ $item->makul }}</td>
+                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
                                 <td>
                                     <center>{{ $item->prodi }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $item->kelas }}</center>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <center>{{ $item->semester }}</center>
-                                </td>
+                                </td> --}}
                                 <td>{{ $item->nama_ruangan }}</td>
                                 <td>{{ $item->hari }}, {{ $item->jam }}</td>
                                 <td>

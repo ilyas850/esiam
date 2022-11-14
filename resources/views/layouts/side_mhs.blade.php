@@ -1,9 +1,31 @@
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MENU MAHASISWA</li>
     <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> <span>Halaman Utama</span></a></li>
-    <li><a href="{{ url('pedoman_akademik') }}"><i class="fa fa-book"></i> <span>Pedoman</span></a></li>
-    <li><a href="{{ url('sop') }}"><i class="fa fa-bookmark-o"></i> <span>S.O.P</span></a></li>
-    <li><a href="{{ url('dosbing') }}"><i class="fa fa-user"></i> <span>Dosen Pembimbing</span></a></li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Pedoman & SOP</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('pedoman_akademik') }}"><i class="fa fa-circle-o"></i> <span>Pedoman</span></a></li>
+            <li><a href="{{ url('sop') }}"><i class="fa fa-circle-o"></i> <span>S.O.P</span></a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Dosen</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('dosbing') }}"><i class="fa fa-circle-o"></i> <span>Dosen Pembimbing</span></a></li>
+            <li><a href="{{ url('dosen_mip') }}"><i class="fa fa-circle-o"></i> <span>Dosen MIP</span></a></li>
+        </ul>
+    </li>
+
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>Perkuliahan</span>
@@ -69,7 +91,7 @@
 
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-calendar-check-o"></i> <span>PraUSTA</span>
+            <i class="fa fa-list"></i> <span>PraUSTA</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -85,7 +107,7 @@
 
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-edit"></i> <span>Wisuda</span>
+            <i class="fa fa-list"></i> <span>Wisuda</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -97,7 +119,20 @@
             </li>
         </ul>
     </li>
-
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Pengajuan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('penangguhan_mhs') }}"><i class="fa fa-circle-o"></i> <span>Penangguhan</span></a>
+            </li>
+            <li><a href="{{ url('beasiswa_mhs') }}"><i class="fa fa-circle-o"></i> <span>Beasiswa</span></a>
+            </li>
+        </ul>
+    </li>
     <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner</span></a>
     </li>
     {{-- <li><a href="{{ url('nilai') }}"><i class="fa fa-file-text-o"></i> <span>Lihat Nilai</span></a></li> --}}
@@ -105,8 +140,7 @@
     </li>
     <li><a href="{{ url('pengalaman_kerja') }}"><i class="fa fa-file"></i> <span>Pengalaman Kerja</span></a>
     </li>
-    <li><a href="{{ url('penangguhan_mhs') }}"><i class="fa fa-file"></i> <span>Penangguhan</span></a>
-    </li>
+
     <li><a href="{{ url('kritiksaran_mhs') }}"><i class="fa fa-file"></i> <span>Kritik & Saran</span></a>
     </li>
     {{-- <li><a href="{{ url('keuangan') }}"><i class="fa fa-money"></i> <span>Keuangan</span></a></li> --}}
