@@ -99,7 +99,7 @@
                     <input type="hidden" name="id_kelas" value="{{ $kkls }}">
                     <input type="hidden" name="id_kurperiode" value="{{ $kuri }}">
                     {{-- <input class="btn btn-info" type="submit" name="submit" value="Simpan" onclick="unbind()" > --}}
-                    <button class="btn btn-info" type="submit" id="Btn" onclick="myFunction()">Simpan</button>
+                    <button class="btn btn-info" type="submit">Simpan</button>
                 </div>
             </form>
         </div>
