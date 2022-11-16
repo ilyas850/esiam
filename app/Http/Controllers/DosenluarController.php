@@ -994,7 +994,7 @@ class DosenluarController extends Controller
         $jmlabsen = count($absen);
 
         $cek_bap = Bap::where('id_bap', $id_bp)
-            ->select('id_bap', 'id_kurperiode', 'pertemuan')
+            ->select('id_bap', 'id_kurperiode', 'pertemuan', 'id_dosen')
             ->first();
 
         if ($absen != null) {
@@ -1014,6 +1014,7 @@ class DosenluarController extends Controller
 
                 $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
                     ->where('pertemuan', $cek_bap->pertemuan)
+                    ->where('id_dosen', $cek_bap->id_dosen)
                     ->where('status', 'ACTIVE')
                     ->select('id_bap')
                     ->first();
@@ -1044,6 +1045,7 @@ class DosenluarController extends Controller
 
                     $bap = Bap::join('absensi_mahasiswa', 'bap.id_bap', '=', 'absensi_mahasiswa.id_bap')
                         ->where('bap.id_kurperiode', $idkelas->id_kurperiode)
+                        ->where('bap.id_dosen', $cek_bap->id_dosen)
                         ->where('bap.pertemuan', $cek_bap->pertemuan)
                         ->where('absensi_mahasiswa.id_studentrecord', $abs)
                         ->where('bap.id_bap', $idkelas->id_bap)
@@ -1060,6 +1062,7 @@ class DosenluarController extends Controller
 
                 $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
                     ->where('pertemuan', $cek_bap->pertemuan)
+                    ->where('id_dosen', $cek_bap->id_dosen)
                     ->where('status', 'ACTIVE')
                     ->select('id_bap')
                     ->first();
@@ -1108,7 +1111,7 @@ class DosenluarController extends Controller
         $absr = $request->abs;
 
         $cek_bap = Bap::where('id_bap', $id_bp)
-            ->select('id_bap', 'id_kurperiode', 'pertemuan')
+            ->select('id_bap', 'id_kurperiode', 'pertemuan', 'id_dosen')
             ->first();
 
         if ($absen != null) {
@@ -1173,6 +1176,7 @@ class DosenluarController extends Controller
 
             $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
                 ->where('pertemuan', $cek_bap->pertemuan)
+                ->where('id_dosen', $cek_bap->id_dosen)
                 ->where('status', 'ACTIVE')
                 ->select('id_bap')
                 ->first();
@@ -4998,7 +5002,7 @@ class DosenluarController extends Controller
     public function download_pedoman_khusus_dsn_luar($id)
     {
         $ped = Pedoman_khusus::where('id_pedomankhusus', $id)->first();
-        
+
         //PDF file is stored under project/public/download/info.pdf
         $file = 'Pedoman Khusus/' . $ped->file;
         return Response::download($file);
