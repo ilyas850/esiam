@@ -235,6 +235,8 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="/setting_waktu"><i class="fa fa-circle-o"></i>Setting Waktu</a></li>
+            <li><a href="/setting_ujian"><i class="fa fa-circle-o"></i>Setting Ujian</a></li>
+            <li><a href="/setting_pengawas"><i class="fa fa-circle-o"></i>Setting Pengawas</a></li>
         </ul>
     </li>
 </ul>

@@ -71,6 +71,7 @@ use App\Exports\DataPrakerinExport;
 use App\Exports\DataAkmMhsExport;
 use App\Exports\DataMhsExportAngkatan;
 use App\Imports\ImportMicrosoftUser;
+use App\Ujian_transaction;
 use App\Wisuda;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -5624,5 +5625,83 @@ class SadminController extends Controller
         $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
 
         return view('sadmin/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function setting_pengawas()
+    {
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tipe = Periode_tipe::all();
+
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        $kelas = Kelas::orderBy('kelas', 'asc')->get();
+
+        return view('sadmin/setting/pengawas', compact('tahun', 'tipe', 'prodi', 'kelas'));
+    }
+
+    public function filter_pengawas_ujian(Request $request)
+    {
+        $personalia = Wrkpersonalia::where('wrkpersonalia.active', 1)
+            ->select('wrkpersonalia.nama as nama');
+
+        $dosen = Dosen::where('dosen.active', 1)
+            ->select('dosen.nama')
+            ->union($personalia)
+            ->orderBy('nama', 'ASC')
+            ->get();
+
+        $idtahun = $request->id_periodetahun;
+        $idtipe = $request->id_periodetipe;
+        $jenis_ujian = $request->jenis_ujian;
+        $kodeprodi = $request->kodeprodi;
+        $idkelas = $request->idkelas;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $idtahun)->first();
+        $tipe = Periode_tipe::where('id_periodetipe', $idtipe)->first();
+        $prodi = Prodi::where('kodeprodi', $kodeprodi)->first();
+        $kelas = Kelas::where('idkelas', $idkelas)->first();
+
+        $data = DB::select('CALL filter_pengawas_ujian(?,?,?,?,?)', [$idkelas, $idtahun, $idtipe, $jenis_ujian, $kodeprodi]);
+
+        return view('sadmin/setting/filter_pengawas', compact('dosen', 'data', 'tahun', 'tipe', 'prodi', 'kelas', 'jenis_ujian', 'kodeprodi'));
+    }
+
+    public function save_pengawas_ujian(Request $request)
+    {
+        $pengawas = $request->pengawas;
+        $idtahun = $request->id_periodetahun;
+        $idtipe = $request->id_periodetipe;
+        $jenis_ujian = $request->jenis_ujian;
+        $idkelas = $request->idkelas;
+        $kodeprodi = $request->kodeprodi;
+
+        $jml_pengawas = count($pengawas);
+
+        for ($i = 0; $i < $jml_pengawas; $i++) {
+            $pengawas_ujian = $pengawas[$i];
+
+            if ($pengawas_ujian != null) {
+
+                $hsl = explode(',', $pengawas_ujian, 4);
+                $nama_pengawas = $hsl[0];
+                $idmakul = $hsl[1];
+                $idjam = $hsl[2];
+                $idruangan = $hsl[3];
+
+                Ujian_transaction::where('id_periodetahun', $idtahun)
+                    ->where('id_periodetipe', $idtipe)
+                    ->where('jenis_ujian', $jenis_ujian)
+                    ->where('id_kelas', $idkelas)
+                    ->where('id_makul', $idmakul)
+                    ->where('id_jam', $idjam)
+                    ->where('id_ruangan', $idruangan)
+                    ->update(['aktual_pengawas' => $nama_pengawas]);
+            }
+        }
+
+        return $this->filter_pengawas_ujian($request, $idtahun, $idtipe, $jenis_ujian, $idkelas, $kodeprodi);
     }
 }

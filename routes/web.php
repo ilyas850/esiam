@@ -387,6 +387,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('save_pedoman_khusus', 'SadminController@save_pedoman_khusus');
     Route::put('put_pedoman_khusus/{id}', 'SadminController@put_pedoman_khusus');
     Route::get('hapus_pedoman_khusus/{id}', 'SadminController@hapus_pedoman_khusus');
+
+    //setting ujian
+    Route::get('setting_pengawas', 'SadminController@setting_pengawas');
+    Route::post('filter_pengawas_ujian', 'SadminController@filter_pengawas_ujian');
+    Route::post('save_pengawas_ujian', 'SadminController@save_pengawas_ujian');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
