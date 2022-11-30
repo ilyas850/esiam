@@ -5698,10 +5698,85 @@ class SadminController extends Controller
                     ->where('id_makul', $idmakul)
                     ->where('id_jam', $idjam)
                     ->where('id_ruangan', $idruangan)
-                    ->update(['aktual_pengawas' => $nama_pengawas]);
+                    ->update([
+                        'aktual_pengawas' => $nama_pengawas,
+                        'data_origin' => 'eSIAM'
+                    ]);
             }
         }
 
         return $this->filter_pengawas_ujian($request, $idtahun, $idtipe, $jenis_ujian, $idkelas, $kodeprodi);
+    }
+
+    public function setting_ujian()
+    {
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tipe = Periode_tipe::all();
+
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        $kelas = Kelas::orderBy('kelas', 'asc')->get();
+
+        return view('sadmin/setting/jadwal_ujian', compact('tahun', 'tipe', 'prodi', 'kelas'));
+    }
+
+    public function filter_jadwal_ujian(Request $request)
+    {
+        $idtahun = $request->id_periodetahun;
+        $idtipe = $request->id_periodetipe;
+        $jenis_ujian = $request->jenis_ujian;
+        $kodeprodi = $request->kodeprodi;
+        $idkelas = $request->idkelas;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $idtahun)->first();
+        $tipe = Periode_tipe::where('id_periodetipe', $idtipe)->first();
+        $prodi = Prodi::where('kodeprodi', $kodeprodi)->first();
+        $kelas = Kelas::where('idkelas', $idkelas)->first();
+
+        $data = DB::select('CALL filter_jadwal_ujian(?,?,?,?)', [$idtahun, $idtipe, $idkelas, $kodeprodi]);
+
+        return view('sadmin/setting/filter_jadwal_ujian', compact('data', 'tahun', 'tipe', 'prodi', 'kelas', 'jenis_ujian', 'kodeprodi'));
+    }
+
+    public function save_jadwal_ujian(Request $request)
+    {
+        $idtahun = $request->id_periodetahun;
+        $idtipe = $request->id_periodetipe;
+        $jenis_ujian = $request->jenis_ujian;
+        $kodeprodi = $request->kodeprodi;
+        $idkelas = $request->idkelas;
+
+        $data = $request->data;
+        $tanggal = $request->tanggal_ujian;
+        $idtipeujian = $request->id_tipeujian;
+
+        $jml_data = count($data);
+
+        for ($i = 0; $i < $jml_data; $i++) {
+            $hasil = $data[$i];
+            $hsl = explode(',', $hasil, 4);
+            $idmakul = $hsl[0];
+            $idhari = $hsl[1];
+            $idjam = $hsl[2];
+            $idruangan = $hsl[3];
+
+            $cek = Kurikulum_periode::where('id_periodetahun', $idtahun)
+                ->where('id_periodetipe', $idtipe)
+                ->where('id_makul', $idmakul)
+                ->where('id_hari', $idhari)
+                ->where('id_jam', $idjam)
+                ->where('id_ruangan', $idruangan)
+                ->get();
+
+            $jml_cek = count($cek);
+
+            for ($i = 0; $i < $jml_cek; $i++) {
+                $hasil_cek = $cek[$i];
+                dd($hasil_cek);
+            }
+        }
     }
 }

@@ -392,6 +392,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('setting_pengawas', 'SadminController@setting_pengawas');
     Route::post('filter_pengawas_ujian', 'SadminController@filter_pengawas_ujian');
     Route::post('save_pengawas_ujian', 'SadminController@save_pengawas_ujian');
+
+    Route::get('setting_ujian', 'SadminController@setting_ujian');
+    Route::post('filter_jadwal_ujian', 'SadminController@filter_jadwal_ujian');
+    Route::post('save_jadwal_ujian', 'SadminController@save_jadwal_ujian');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
