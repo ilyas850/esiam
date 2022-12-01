@@ -760,7 +760,7 @@ class DosenController extends Controller
         $jml = count($jmlnil);
 
         for ($i = 0; $i < $jml; $i++) {
-            $idstu = $request->id_student[$i];
+            $idstu = $jumlahid[$i];
             $pisah = explode(',', $idstu, 2);
             $stu = $pisah[0];
             $kur = $pisah[1];
@@ -773,7 +773,7 @@ class DosenController extends Controller
             $banyak = count($cekid);
 
             $nilai = $request->nilai_UTS[$i];
-            $id_kur = $request->id_studentrecord[$i];
+            $id_kur = $jmlids[$i];
             $ceknl = $nilai;
 
             if ($banyak == 1) {
@@ -808,14 +808,17 @@ class DosenController extends Controller
 
         for ($j = 0; $j < $jml_kelas; $j++) {
             $gabungan = $kelas_gabungan[$j];
-
+            
             $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $gabungan->id_kurperiode)->first();
+            
             Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
                 ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
                 ->where('jenis_ujian', 'UTS')
-                ->where('id_prodi', $request->id_prodi)
+                // ->where('id_prodi', $request->id_prodi)
                 ->where('id_kelas', $request->id_kelas)
                 ->where('id_makul', $request->id_makul)
+                ->where('id_jam', $id_kurperiode->id_jam)
+                ->where('id_ruangan', $id_kurperiode->id_ruangan)
                 ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
         }
 
@@ -915,9 +918,11 @@ class DosenController extends Controller
             Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
                 ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
                 ->where('jenis_ujian', 'UAS')
-                ->where('id_prodi', $request->id_prodi)
+                // ->where('id_prodi', $request->id_prodi)
                 ->where('id_kelas', $request->id_kelas)
                 ->where('id_makul', $request->id_makul)
+                ->where('id_jam', $id_kurperiode->id_jam)
+                ->where('id_ruangan', $id_kurperiode->id_ruangan)
                 ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
         }
 

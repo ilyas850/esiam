@@ -353,9 +353,11 @@ class DosenluarController extends Controller
             Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
                 ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
                 ->where('jenis_ujian', 'UTS')
-                ->where('id_prodi', $request->id_prodi)
+                // ->where('id_prodi', $request->id_prodi)
                 ->where('id_kelas', $request->id_kelas)
                 ->where('id_makul', $request->id_makul)
+                ->where('id_jam', $id_kurperiode->id_jam)
+                ->where('id_ruangan', $id_kurperiode->id_ruangan)
                 ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
         }
 
@@ -463,9 +465,11 @@ class DosenluarController extends Controller
             Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
                 ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
                 ->where('jenis_ujian', 'UAS')
-                ->where('id_prodi', $request->id_prodi)
+                // ->where('id_prodi', $request->id_prodi)
                 ->where('id_kelas', $request->id_kelas)
                 ->where('id_makul', $request->id_makul)
+                ->where('id_jam', $id_kurperiode->id_jam)
+                ->where('id_ruangan', $id_kurperiode->id_ruangan)
                 ->update(['aktual_pengoreksi' => Auth::user()->name, 'data_origin' => 'eSIAM']);
         }
 
