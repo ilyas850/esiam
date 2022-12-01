@@ -33,7 +33,7 @@ class DataMhsExportAngkatan implements FromView, ShouldAutoSize
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
                 ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
                 ->where('student.idangkatan', $this->angk)
-                ->select('kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'prodi.prodi')
+                ->select('kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'prodi.prodi', 'student.idstudent')
                 ->orderBy('student.nim', 'ASC')
                 ->orderBy('student.idangkatan', 'ASC')
                 ->get()

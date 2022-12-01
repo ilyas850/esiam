@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th><center>No</center></th>
+            <th><center>Id</center></th>
             <th><center>NIM</center></th>
             <th><center>Nama Mahasiswa</center></th>
             <th><center>Program Studi</center></th>
@@ -14,6 +15,7 @@
         @foreach ($val as $key)
             <tr>
                 <td><center>{{$i++}}</center></td>
+                <td><center>{{$key->idstudent}}</center></td>
                 <td><center>{{$key->nim}}</center></td>
                 <td>{{$key->nama}}</td>
                 <td><center>{{$key->prodi}}</center></td>
