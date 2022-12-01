@@ -835,10 +835,10 @@ class DosenController extends Controller
             ->select('student_record.id_kurtrans')
             ->first();
 
-        $kur = $ckstr->id_kurtrans;
+        // $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur,  'nilai' => $nilai]);
     }
 
     public function input_uas_dsn($id)
@@ -938,10 +938,10 @@ class DosenController extends Controller
             ->select('student_record.id_kurtrans')
             ->first();
 
-        $kur = $ckstr->id_kurtrans;
+        // $kur = $ckstr->id_kurtrans;
         $idkur = $request->id_kurperiode;
 
-        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur,  'nilai' => $nilai]);
     }
 
     public function input_akhir_dsn($id)
@@ -5795,11 +5795,11 @@ class DosenController extends Controller
             ->select('student_record.id_kurtrans')
             ->first();
 
-        $kur = $ckstr->id_kurtrans;
+        // $kur = $ckstr->id_kurtrans;
         $idkur = $idkur;
 
         Alert::success('Berhasil');
-        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
     }
 
     public function put_settingnilai_dsn_dlm(Request $request, $id)
