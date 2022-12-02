@@ -57,19 +57,33 @@
                                     <td align="center">
                                         <input type="hidden" name="data[]"
                                             value="{{ $item->id_makul }},{{ $item->id_hari }},{{ $item->id_jam }},{{ $item->id_ruangan }}">
-                                        <input type="date" name="tanggal_ujian[]" class="form-control">
+
+                                        @foreach ($period as $p)
+                                            @if (strtoupper($p->format('l')) == $item->hari)
+                                                {{ Carbon\Carbon::parse($p->format('l, Y-m-d'))->formatLocalized('%d %B %Y') }}
+                                                <input type="hidden" name="tanggal_ujian[]"
+                                                    value="{{ $p->format('Y-m-d') }}">
+                                            @endif
+                                        @endforeach
                                     </td>
                                     <td align="center">{{ $item->jam }}</td>
                                     <td align="center">{{ $item->nama_ruangan }}</td>
                                     <td align="center">
-                                        <select name="id_tipeujian[]" class="form-control">
-                                            <option></option>
-                                            <option value="1">Teori</option>
-                                            <option value="2">Praktikum</option>
-                                            <option value="3">Teori+Praktikum</option>
-                                        </select>
+                                        @if ($item->akt_sks_teori != 0 && $item->akt_sks_praktek == 0)
+                                            <input type="hidden" name="id_tipeujian[]" value="1">Teori
+                                        @elseif ($item->akt_sks_teori == 0 && $item->akt_sks_praktek != 0)
+                                            <input type="hidden" name="id_tipeujian[]" value="2">Praktikum
+                                        @elseif ($item->akt_sks_teori != 0 && $item->akt_sks_praktek != 0)
+                                            <input type="hidden" name="id_tipeujian[]" value="3">Teori + Praktikum
+                                        @endif
                                     </td>
-                                    <td align="center">{{ $item->tipe_ujian_uts }}</td>
+                                    <td align="center">
+                                        @if ($jenis_ujian == 'UTS')
+                                            {{ $item->tipe_ujian_uts }}
+                                        @elseif($jenis_ujian == 'UTS')
+                                            {{ $item->tipe_ujian_uas }}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <input type="hidden" name="id_periodetahun" value="{{ $tahun->id_periodetahun }}">
                                 <input type="hidden" name="id_periodetipe" value="{{ $tipe->id_periodetipe }}">

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use PDF;
 use File;
 use Alert;
+use DateTime;
+use DatePeriod;
+use DateInterval;
 use App\Bap;
 use App\Pedoman;
 use App\Pedoman_akademik;
@@ -5112,6 +5115,44 @@ class SadminController extends Controller
         return redirect()->back();
     }
 
+    public function put_waktu(Request $request, $id)
+    {
+        $kpr = Waktu::find($id);
+        $kpr->tipe_waktu = $request->tipe_waktu;
+        $kpr->deskripsi = $request->deskripsi;
+        $kpr->waktu_awal = $request->waktu_awal;
+        $kpr->waktu_akhir = $request->waktu_akhir;
+        $kpr->updated_by = Auth::user()->name;
+        $kpr->save();
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function hapus_waktu($id)
+    {
+        Waktu::where('id_waktu', $id)->delete();
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function nonaktifkan_waktu($id)
+    {
+        Waktu::where('id_waktu', $id)->update(['status' => '0']);
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function aktifkan_waktu($id)
+    {
+        Waktu::where('id_waktu', $id)->update(['status' => '1']);
+
+        Alert::success('Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
     public function tutup_yudisium($id)
     {
         Waktu::where('id_waktu', $id)->update([
@@ -5720,14 +5761,36 @@ class SadminController extends Controller
 
         $kelas = Kelas::orderBy('kelas', 'asc')->get();
 
-        return view('sadmin/setting/jadwal_ujian', compact('tahun', 'tipe', 'prodi', 'kelas'));
+        $tipe_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $data = DB::select('CALL jadwal_ujian(?,?)', [$tahun->id_periodetahun, $tipe_aktif->id_periodetipe]);
+
+        return view('sadmin/setting/jadwal_ujian', compact('tahun', 'tipe_aktif', 'tipe', 'prodi', 'kelas', 'data'));
     }
 
     public function filter_jadwal_ujian(Request $request)
     {
+        $jenis_ujian = $request->jenis_ujian;
+
+        if ($jenis_ujian == 'UTS') {
+            $jns = 5;
+        } elseif ($jenis_ujian == 'UAS') {
+            $jns = 6;
+        }
+
+        $tanggal = Waktu::where('tipe_waktu', $jns)
+            ->where('status', 1)
+            ->first();
+
+        $period = new DatePeriod(
+            new DateTime($tanggal->waktu_awal),
+            new DateInterval('P1D'),
+            new DateTime($tanggal->waktu_akhir)
+        );
+
         $idtahun = $request->id_periodetahun;
         $idtipe = $request->id_periodetipe;
-        $jenis_ujian = $request->jenis_ujian;
+
         $kodeprodi = $request->kodeprodi;
         $idkelas = $request->idkelas;
 
@@ -5738,11 +5801,12 @@ class SadminController extends Controller
 
         $data = DB::select('CALL filter_jadwal_ujian(?,?,?,?)', [$idtahun, $idtipe, $idkelas, $kodeprodi]);
 
-        return view('sadmin/setting/filter_jadwal_ujian', compact('data', 'tahun', 'tipe', 'prodi', 'kelas', 'jenis_ujian', 'kodeprodi'));
+        return view('sadmin/setting/filter_jadwal_ujian', compact('data', 'tahun', 'tipe', 'prodi', 'kelas', 'jenis_ujian', 'kodeprodi', 'period'));
     }
 
     public function save_jadwal_ujian(Request $request)
     {
+
         $idtahun = $request->id_periodetahun;
         $idtipe = $request->id_periodetipe;
         $jenis_ujian = $request->jenis_ujian;
@@ -5773,10 +5837,25 @@ class SadminController extends Controller
 
             $jml_cek = count($cek);
 
-            for ($i = 0; $i < $jml_cek; $i++) {
-                $hasil_cek = $cek[$i];
-                dd($hasil_cek);
+            for ($j = 0; $j < $jml_cek; $j++) {
+                $hasil_cek = $cek[$j];
+                
+                $new = new Ujian_transaction;
+                $new->id_periodetahun = $idtahun;
+                $new->id_periodetipe = $idtipe;
+                $new->jenis_ujian = $jenis_ujian;
+                $new->id_prodi = $hasil_cek->id_prodi;
+                $new->id_kelas = $hasil_cek->id_kelas;
+                $new->id_makul = $idmakul;
+                $new->tanggal_ujian = $tanggal[$j];
+                $new->id_jam = $hasil_cek->id_jam;
+                $new->id_ruangan = $hasil_cek->id_ruangan;
+                $new->id_tipeujian = $idtipeujian[$j];
+                $new->data_origin = 'eSIAM';
+                $new->save();
             }
         }
+
+        return redirect('setting_ujian');
     }
 }

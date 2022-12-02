@@ -342,6 +342,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     //setting waktu
     Route::get('setting_waktu', 'SadminController@setting_waktu');
     Route::post('post_waktu', 'SadminController@post_waktu');
+    Route::put('put_waktu/{id}', 'SadminController@put_waktu');
+    Route::get('hapus_waktu/{id}', 'SadminController@hapus_waktu');
+    Route::get('nonaktifkan_waktu/{id}', 'SadminController@nonaktifkan_waktu');
+    Route::get('aktifkan_waktu/{id}', 'SadminController@aktifkan_waktu');
 
     //master standar pendidikan nasional
     Route::get('standar_pendidikan_nasional', 'SadminController@standar_pendidikan_nasional');

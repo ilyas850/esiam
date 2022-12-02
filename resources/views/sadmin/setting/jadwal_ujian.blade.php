@@ -63,5 +63,61 @@
                 </div>
             </form>
         </div>
+
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Jadwal Ujian <b>{{ $tahun->periode_tahun }} - {{ $tipe_aktif->periode_tipe }}</b>
+                </h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-condensed" id="example8">
+                    <thead>
+                        <tr>
+                            <th>
+                                <center>No</center>
+                            </th>
+                            <th>
+                                <center>Jenis Ujian</center>
+                            </th>
+                            <th>
+                                <center>Matakuliah </center>
+                            </th>
+                            <th>
+                                <center>Prodi</center>
+                            </th>
+                            <th>
+                                <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>Tipe Ujian</center>
+                            </th>
+                            <th>
+                                <center>Ruangan</center>
+                            </th>
+                            <th>
+                                <center>Jam</center>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($data as $item)
+                            <tr>
+                                <td>
+                                    <center>{{ $no++ }}</center>
+                                </td>
+                                <td align="center">{{ $item->jenis_ujian }}</td>
+                                <td>{{ $item->makul }}</td>
+                                <td>{{ $item->prodi }}</td>
+                                <td align="center">{{ $item->kelas }}</td>
+                                <td align="center">{{ $item->tipe_ujian }}</td>
+                                <td align="center">{{ $item->nama_ruangan }}</td>
+                                <td align="center">{{ $item->jam }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 @endsection

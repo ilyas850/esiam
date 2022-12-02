@@ -10,5 +10,5 @@ class Waktu extends Model
 
   protected $primaryKey = 'id_waktu';
 
-  protected $dates = ['waktu_awal', 'waktu_akhir'];
+  // protected $dates = ['waktu_awal', 'waktu_akhir'];
 }
