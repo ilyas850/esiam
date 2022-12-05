@@ -8,6 +8,7 @@ use App\Penangguhan_trans;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Waktu;
+use App\Prausta_setting_relasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -159,5 +160,22 @@ class BaukController extends Controller
 
         Alert::success('Penutupan Pengajuan Beasiswa', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function uang_saku_pkl()
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.active', 1)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+            ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.total_uang_saku')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('bauk/mahasiswa/uang_saku', compact('data'));
     }
 }

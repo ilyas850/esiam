@@ -1425,6 +1425,9 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::get('waktu_beasiswa', 'BaukController@waktu_beasiswa');
     Route::post('simpan_waktu_pengajuan_beasiswa', 'BaukController@simpan_waktu_pengajuan_beasiswa');
     Route::post('edit_time_pengajuan_beasiswa', 'BaukController@edit_time_pengajuan_beasiswa');
+
+    //uang saku mahasiswa
+    Route::get('uang_saku_pkl', 'BaukController@uang_saku_pkl');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
