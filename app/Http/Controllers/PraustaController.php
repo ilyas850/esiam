@@ -190,6 +190,7 @@ class PraustaController extends Controller
                     'prausta_setting_relasi.dosen_pembimbing',
                     'prausta_setting_relasi.judul_prausta',
                     'prausta_setting_relasi.tempat_prausta',
+                    'prausta_setting_relasi.tempat_prausta2',
                     'prausta_setting_relasi.file_draft_laporan',
                     'prausta_setting_relasi.validasi_baak',
                     'prausta_setting_relasi.total_uang_saku',
@@ -324,6 +325,7 @@ class PraustaController extends Controller
         $prd = Prausta_setting_relasi::find($id);
         $prd->judul_prausta = $request->judul_prausta;
         $prd->tempat_prausta = $request->tempat_prausta;
+        $prd->tempat_prausta2 = $request->tempat_prausta2;
         $prd->updated_by = Auth::user()->name;
         $prd->save();
 

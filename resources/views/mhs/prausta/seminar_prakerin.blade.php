@@ -67,17 +67,24 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Judul PKL</label>
-                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta" readonly>{{ $usta->judul_prausta }}</textarea>
+                                            <textarea class="form-control" rows="4" cols="60" name="judul_prausta" readonly>{{ $usta->judul_prausta }}</textarea>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Tempat PKL</label>
+                                            <label>Tempat PKL 1</label>
                                             <input type="text" class="form-control" value="{{ $usta->tempat_prausta }}"
                                                 name="tempat_prausta" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Tempat PKL 2</label>
+                                            <input type="text" class="form-control" value="{{ $usta->tempat_prausta2 }}"
+                                                name="tempat_prausta2" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -165,9 +172,14 @@
                                                         <textarea class="form-control" name="judul_prausta" rows="3" cols="60" required> {{ $usta->judul_prausta }}</textarea>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>Tempat PKL</label>
+                                                        <label>Tempat PKL 1</label>
                                                         <input type="text" class="form-control" name="tempat_prausta"
                                                             value="{{ $usta->tempat_prausta }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tempat PKL 2</label>
+                                                        <input type="text" class="form-control" name="tempat_prausta2"
+                                                            value="{{ $usta->tempat_prausta2 }}" required>
                                                     </div>
                                                     <input type="hidden" name="updated_by"
                                                         value="{{ Auth::user()->name }}">
