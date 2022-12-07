@@ -309,7 +309,7 @@ class EdomController extends Controller
       return view('sadmin/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe', 'idprodi'));
     } elseif ($tipe == 'by_dosen') {
 
-      $data = DB::select('CALL edom_by_dosen(?,?)', array($idperiodetahun, $idperiodetipe));
+      $data = DB::select('CALL edom_by_dosen_new(?,?)', array($idperiodetahun, $idperiodetipe));
 
       return view('sadmin/edom/report_edom_by_dosen', compact('data', 'thn', 'tp', 'idperiodetahun', 'idperiodetipe'));
     }
@@ -360,7 +360,7 @@ class EdomController extends Controller
     $tp = $periodetipe->periode_tipe;
     $prd = $prodi->prodi;
 
-    $data = DB::select('CALL edom_by_makul(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+    $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
 
     $pdf = PDF::loadView('sadmin/edom/pdf_report_edom_makul', compact('data', 'thn', 'tp', 'prd'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Matakuliah' . ' ' . $thn . ' ' . $tp . ' ' . $prd . '.pdf');
@@ -377,7 +377,7 @@ class EdomController extends Controller
     $thn = $periodetahun->periode_tahun;
     $tp = $periodetipe->periode_tipe;
 
-    $data = DB::select('CALL edom_by_dosen(?,?)', array($idperiodetahun, $idperiodetipe));
+    $data = DB::select('CALL edom_by_dosen_new(?,?)', array($idperiodetahun, $idperiodetipe));
 
     $pdf = PDF::loadView('sadmin/edom/pdf_report_edom_dosen', compact('data', 'thn', 'tp'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Dosen' . ' ' . $thn . ' ' . $tp . '.pdf');
@@ -387,7 +387,7 @@ class EdomController extends Controller
   {
     $idkurperiode = $request->id_kurperiode;
 
-    $data = DB::select('CALL detail_edom_makul(?)', array($idkurperiode));
+    $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
 
     $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')

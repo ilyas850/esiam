@@ -4182,11 +4182,13 @@ class MhsController extends Controller
                 'prodi.prodi',
                 'student.idangkatan',
                 'student.idstatus',
-                'student.kodeprodi'
+                'student.kodeprodi',
+                'student.intake'
             )
             ->first();
 
         $idangkatan = $mhs->idangkatan;
+        $intake = $mhs->intake;
 
         $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -4196,28 +4198,63 @@ class MhsController extends Controller
         $smt = $sub_thn . $tp;
         $angk = $idangkatan;
 
+        // if ($smt % 2 != 0) {
+        //     if ($tp == 1) {
+        //         //ganjil
+        //         $a = (($smt + 10) - 1) / 10;
+        //         $b = $a - $idangkatan;
+        //         $c = ($b * 2) - 1;
+        //     } elseif ($tp == 3) {
+        //         //pendek
+        //         $a = (($smt + 10) - 3) / 10;
+        //         $b = $a - $idangkatan;
+        //         $c = ($b * 2) . '0' . '1';
+        //     }
+        // } else {
+        //     $a = ($smt + 10 - 2) / 10;
+        //     $b = $a - $angk;
+        //     $c = $b * 2;
+        // }
+
         if ($smt % 2 != 0) {
             if ($tp == 1) {
                 //ganjil
                 $a = (($smt + 10) - 1) / 10;
                 $b = $a - $idangkatan;
-                $c = ($b * 2) - 1;
-            } elseif ($tp == 3) {
-                //pendek
-                $a = (($smt + 10) - 3) / 10;
-                $b = $a - $idangkatan;
-                $c = ($b * 2) . '0' . '1';
+
+                if ($intake == 2) {
+                    $c = ($b * 2) - 1 - 1;
+                } elseif ($intake == 1) {
+                    $c = ($b * 2) - 1;
+                }
             }
         } else {
-            $a = ($smt + 10 - 2) / 10;
-            $b = $a - $angk;
-            $c = $b * 2;
+            //genap
+            $a = (($smt + 10) - 2) / 10;
+            $b = $a - $idangkatan;
+            if ($intake == 2) {
+                $c = $b * 2 - 1;
+            } elseif ($intake == 1) {
+                $c = $b * 2;
+            }
         }
 
-        if ($tp == 1) {
-            # code...
+        $ipk = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
+            ->where('student_record.id_student', $id)
+            ->where('kurikulum_master.remark', $intake)
+            ->where('kurikulum_transaction.id_semester', $c - 1)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+            ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+            ->get();
+
+        $sks = 0;
+        foreach ($ipk as $ips) {
+            $sks += $ips->akt_sks_teori + $ips->akt_sks_praktek;
         }
-        dd($c);
 
         return view('mhs/beasiswa/form_beasiswa', compact('mhs'));
     }

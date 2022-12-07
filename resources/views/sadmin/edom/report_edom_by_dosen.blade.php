@@ -113,7 +113,7 @@
                                     <center>
                                         <form action="detail_edom_dosen" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
+                                            <input type="hidden" name="id_dosen" value="{{ $item->iddosen }}">
                                             <input type="hidden" name="nama" value="{{ $item->nama }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
@@ -130,7 +130,7 @@
                                     <center>
                                         <form action="download_detail_edom_dosen" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
+                                            <input type="hidden" name="id_dosen" value="{{ $item->iddosen }}">
                                             <input type="hidden" name="nama" value="{{ $item->nama }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">

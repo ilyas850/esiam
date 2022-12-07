@@ -20,13 +20,14 @@
                 @else
                     <div class="form-group">
                         <div class="callout callout-info">
-                            <p>{{ $status_pengajuan->waktu_awal->isoFormat('D MMMM Y') }} s/d
-                                {{ $status_pengajuan->waktu_akhir->isoFormat('D MMMM Y') }}</p>
+                            <p>{{ Carbon\Carbon::parse($status_pengajuan->waktu_awal)->formatLocalized('%d %B %Y') }} s/d
+                                {{ Carbon\Carbon::parse($status_pengajuan->waktu_akhir)->formatLocalized('%d %B %Y') }}</p>
+
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-2">
-                            
+
                             <a href="{{ url('pengajuan_beasiswa') }}" class="btn btn-success">Pengajuan Beasiswa</a>
                         </div>
                     </div>
