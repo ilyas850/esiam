@@ -141,7 +141,7 @@ class DosenluarController extends Controller
     {
         $iddsn = Auth::user()->id_user;
 
-        $mkul = DB::select('CALL history_makul_diampu(?)', [$iddsn]);
+        $mkul = DB::select('CALL history_makul_diampu_new(?)', [$iddsn]);
 
         return view('dosenluar/history_makul_dsn', ['makul' => $mkul]);
     }
