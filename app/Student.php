@@ -14,5 +14,5 @@ class Student extends Model
 
   protected $dates = ['tgllahir'];
 
-  protected $dateFormat = 'Y-m-d H:i';
+  // protected $dateFormat = 'Y-m-d H:i';
 }

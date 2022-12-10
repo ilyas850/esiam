@@ -1492,10 +1492,11 @@ class MhsController extends Controller
 
     public function simpanfoto(Request $request, $id)
     {
+        
         $this->validate($request, [
             'foto' => 'required|mimes:jpeg,jpg|max:500',
         ]);
-
+       
         $foto = Student::find($id);
 
         if ($foto->foto) {
