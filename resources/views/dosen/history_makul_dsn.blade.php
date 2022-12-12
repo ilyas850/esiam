@@ -87,7 +87,6 @@
                                     @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
                                         {{ $item->jml }}
                                     @endif
-
                                 </td>
                                 <td>
                                     <center>

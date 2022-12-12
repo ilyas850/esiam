@@ -73,7 +73,19 @@
                                     <center>{{ $item->semester }}</center>
                                 </td>
                                 <td>{{ $item->periode_tahun }} {{ $item->periode_tipe }}</td>
-                                <td align="center">{{ $item->nilai_edom }}</td>
+                                <td align="center">
+                                    @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                        {{ $item->nilai_edom }}
+                                    @elseif($item->id_periodetahun > 6)
+                                        {{ $item->nilai_edom }}
+                                    @elseif($item->id_periodetahun < 6)
+                                        {{ $item->jml }}
+                                    @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 1)
+                                        {{ $item->jml }}
+                                    @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
+                                        {{ $item->jml }}
+                                    @endif
+                                </td>
                                 <td>
                                     <center>
                                         <a href="cekmhs_dsn_his_kprd/{{ $item->id_kurperiode }}"
