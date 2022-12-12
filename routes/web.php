@@ -1220,6 +1220,10 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::get('rekap_nilai_mhs', 'ProdiController@rekap_nilai_mhs');
     Route::post('filter_rekap_nilai_mhs', 'ProdiController@filter_rekap_nilai_mhs');
     Route::get('cek_rekap_nilai_mhs/{id}', 'ProdiController@cek_rekap_nilai_mhs');
+
+    //jadwal perkuliahan
+    Route::get('jadwal_kuliah_prodi', 'ProdiController@jadwal_kuliah_prodi');
+    Route::post('filter_jadwal_perkuliahan_prodi', 'ProdiController@filter_jadwal_perkuliahan_prodi');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

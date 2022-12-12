@@ -39,4 +39,15 @@
             <li><a href="{{ url('rekap_nilai_mhs') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master Perkuliahan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_kuliah_prodi') }}"><i class="fa fa-circle-o"></i> Jadwal Perkuliahan</a></li>
+        </ul>
+    </li>
 </ul>

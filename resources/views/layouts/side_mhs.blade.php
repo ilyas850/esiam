@@ -86,6 +86,9 @@
                     </li>
                 </ul>
             </li>
+            <li><a href="{{ url('bim_perwalian') }}"><i class="fa fa-circle-o"></i> <span>Bimbingan
+                        Perwalian</span></a>
+            </li>
         </ul>
     </li>
 

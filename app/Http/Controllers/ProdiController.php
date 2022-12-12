@@ -1140,4 +1140,40 @@ class ProdiController extends Controller
 
     return view('adminprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'nama'));
   }
+
+  public function jadwal_kuliah_prodi()
+  {
+    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tipe = Periode_tipe::all();
+
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+    $idtipe = $tp->id_periodetipe;
+    $namaperiodetipe = $tp->periode_tipe;
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+    $idtahun = $thn->id_periodetahun;
+    $namaperiodetahun = $thn->periode_tahun;
+
+    $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
+
+    return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+  }
+
+  public function filter_jadwal_perkuliahan_prodi(Request $request)
+  {
+    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tipe = Periode_tipe::all();
+
+    $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+    $idtipe = $tp->id_periodetipe;
+    $namaperiodetipe = $tp->periode_tipe;
+
+    $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+    $idtahun = $thn->id_periodetahun;
+    $namaperiodetahun = $thn->periode_tahun;
+
+    $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
+
+    return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+  }
 }
