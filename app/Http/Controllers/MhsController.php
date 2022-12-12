@@ -58,6 +58,7 @@ use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use App\Konversi_itembayar;
 use App\Beasiswa_trans;
+use App\Perwalian_trans_bimbingan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -1492,11 +1493,11 @@ class MhsController extends Controller
 
     public function simpanfoto(Request $request, $id)
     {
-        
+
         $this->validate($request, [
             'foto' => 'required|mimes:jpeg,jpg|max:500',
         ]);
-       
+
         $foto = Student::find($id);
 
         if ($foto->foto) {
@@ -4258,5 +4259,10 @@ class MhsController extends Controller
         }
 
         return view('mhs/beasiswa/form_beasiswa', compact('mhs'));
+    }
+
+    public function bim_perwalian()
+    {
+        # code...
     }
 }

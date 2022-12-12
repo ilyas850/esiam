@@ -73,7 +73,7 @@
                                     <center>{{ $item->semester }}</center>
                                 </td>
                                 <td>{{ $item->periode_tahun }} {{ $item->periode_tipe }}</td>
-                                <td align="center">
+                                <td align="right">
                                     @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
                                         {{ $item->nilai_edom }}
                                     @elseif($item->id_periodetahun > 6)

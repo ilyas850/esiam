@@ -768,6 +768,9 @@ Route::group(['middleware' => 'mhs'], function () {
     //pengajuan beasiswa
     Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
     Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
+
+    //bimbingan perwalian 
+    Route::get('bim_perwalian', 'MhsController@bim_perwalian');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
