@@ -567,6 +567,10 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('penangguhan_mhs_dsn', 'DosenController@penangguhan_mhs_dsn');
     Route::get('val_penangguhan_dsn_pa/{id}', 'DosenController@val_penangguhan_dsn_pa');
     Route::get('batal_val_penangguhan_dsn_pa/{id}', 'DosenController@batal_val_penangguhan_dsn_pa');
+
+    //cek bimbingan perwalian
+    Route::get('cek_bim_perwalian/{id}', 'DosenController@cek_bim_perwalian');
+    Route::get('val_bim_perwalian/{id}', 'DosenController@val_bim_perwalian');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -771,6 +775,9 @@ Route::group(['middleware' => 'mhs'], function () {
 
     //bimbingan perwalian 
     Route::get('bim_perwalian', 'MhsController@bim_perwalian');
+    Route::post('post_bim_pa', 'MhsController@post_bim_pa');
+    Route::put('edit_bimbingan_perwalian/{id}', 'MhsController@edit_bimbingan_perwalian');
+    route::get('hapus_bim_perwalian/{id}', 'MhsController@hapus_bim_perwalian');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

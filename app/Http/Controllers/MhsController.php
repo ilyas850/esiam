@@ -4263,6 +4263,67 @@ class MhsController extends Controller
 
     public function bim_perwalian()
     {
-        # code...
+        $id = Auth::user()->id_user;
+
+        $dsn_pa = Dosen_pembimbing::where('id_student', $id)->first();
+
+        $data = Perwalian_trans_bimbingan::join('dosen_pembimbing', 'perwalian_trans_bimbingan.id_dosbim_pa', '=', 'dosen_pembimbing.id')
+            ->join('periode_tahun', 'perwalian_trans_bimbingan.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'perwalian_trans_bimbingan.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('dosen_pembimbing.id_student', $id)
+            ->where('perwalian_trans_bimbingan.status', 'ACTIVE')
+            ->select(
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'perwalian_trans_bimbingan.id_transbim_perwalian',
+                'dosen_pembimbing.id',
+                'perwalian_trans_bimbingan.tanggal_bimbingan',
+                'perwalian_trans_bimbingan.isi_bimbingan',
+                'perwalian_trans_bimbingan.status',
+                'perwalian_trans_bimbingan.validasi'
+            )
+            ->get();
+
+        return view('mhs/perkuliahan/bimbingan_perwalian', compact('data', 'dsn_pa'));
+    }
+
+    public function post_bim_pa(Request $request)
+    {
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $ang = new Perwalian_trans_bimbingan();
+        $ang->id_dosbim_pa = $request->id_dosbim_pa;
+        $ang->id_periodetahun = $periode_tahun->id_periodetahun;
+        $ang->id_periodetipe = $periode_tipe->id_periodetipe;
+        $ang->tanggal_bimbingan = $request->tanggal_bimbingan;
+        $ang->isi_bimbingan = $request->isi_bimbingan;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Data Bimbingan berhasil ditambahkan')->autoclose(3500);
+        return redirect('bim_perwalian');
+    }
+
+    public function edit_bimbingan_perwalian(Request $request, $id)
+    {
+        $ang = Perwalian_trans_bimbingan::find($id);
+        $ang->tanggal_bimbingan = $request->tanggal_bimbingan;
+        $ang->isi_bimbingan = $request->isi_bimbingan;
+        $ang->updated_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Data Bimbingan berhasil diedit')->autoclose(3500);
+        return redirect('bim_perwalian');
+    }
+
+    public function hapus_bim_perwalian($id)
+    {
+        Perwalian_trans_bimbingan::where('id_transbim_perwalian', $id)->update([
+            'status' => 'NOT ACTIVE'
+        ]);
+
+        Alert::success('', 'Data Bimbingan berhasil dihapus')->autoclose(3500);
+        return redirect('bim_perwalian');
     }
 }

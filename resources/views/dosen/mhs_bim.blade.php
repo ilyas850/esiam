@@ -95,12 +95,15 @@
                                     <center>
                                         <a class="btn btn-info btn-xs" href="/record_nilai/{{ $key->idstudent }}"> <i
                                                 class="fa fa-list" title="Klik untuk cek nilai"></i></a>
-                                        <a class="btn btn-success btn-xs"
+                                        <a class="btn btn-warning btn-xs"
                                             href="/record_pembayaran_mhs/{{ $key->idstudent }}"><i class="fa fa-money"
                                                 title="Klik untuk cek pembayaran"></i></a>
-                                        <a class="btn btn-warning btn-xs"
+                                        <a class="btn btn-danger btn-xs"
                                             href="/cek_makul_mengulang/{{ $key->idstudent }}"><i class="fa fa-repeat"
                                                 title="Klik untuk cek matakuliah mengulang"></i></a>
+                                        <a class="btn btn-success btn-xs"
+                                            href="/cek_bim_perwalian/{{ $key->idstudent }}"><i class="fa fa-wechat"
+                                                title="Klik untuk cek bimbingan perwalian"></i></a>
                                     </center>
                                 </td>
                             </tr>

@@ -46,6 +46,7 @@ use App\Standar;
 use App\Pedoman_akademik;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
+use App\Perwalian_trans_bimbingan;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Pedoman_khusus;
@@ -808,9 +809,9 @@ class DosenController extends Controller
 
         for ($j = 0; $j < $jml_kelas; $j++) {
             $gabungan = $kelas_gabungan[$j];
-            
+
             $id_kurperiode = Kurikulum_periode::where('id_kurperiode', $gabungan->id_kurperiode)->first();
-            
+
             Ujian_transaction::where('id_periodetahun', $id_kurperiode->id_periodetahun)
                 ->where('id_periodetipe', $id_kurperiode->id_periodetipe)
                 ->where('jenis_ujian', 'UTS')
@@ -5939,6 +5940,31 @@ class DosenController extends Controller
     public function batal_val_penangguhan_dsn_pa($id)
     {
         Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['validasi_dsn_pa' => 'BELUM']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function cek_bim_perwalian($id)
+    {
+        $data = Perwalian_trans_bimbingan::join('dosen_pembimbing', 'perwalian_trans_bimbingan.id_dosbim_pa', '=', 'dosen_pembimbing.id')
+            ->join('periode_tahun', 'perwalian_trans_bimbingan.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'perwalian_trans_bimbingan.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('dosen_pembimbing.id_student', $id)
+            ->where('perwalian_trans_bimbingan.status', 'ACTIVE')
+            ->select(
+                'perwalian_trans_bimbingan.*',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe'
+            )
+            ->get();
+
+        return view('dosen/mhs/perwalian', compact('data'));
+    }
+
+    public function val_bim_perwalian($id)
+    {
+        Perwalian_trans_bimbingan::where('id_transbim_perwalian', $id)->update(['validasi' => 'SUDAH']);
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
