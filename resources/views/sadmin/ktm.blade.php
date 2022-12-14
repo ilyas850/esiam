@@ -66,7 +66,7 @@
 
 <body>
     <div class="container">
-        <h1>Cara Menampilkan teks di atas gambar</h1>
+        <h1>KTM Mahaisiswa</h1>
         <div class="pembungkus">
             @if ($mhs->foto == null)
                 <img class="foto" height="167px" width="133px" src="{{ public_path('adminlte/img/default.jpg') }}">
