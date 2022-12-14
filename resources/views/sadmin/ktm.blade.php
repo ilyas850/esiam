@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Cara Menampilkan teks di atas gambar </title>
+    <title>KTM Mahasiswa</title>
     <style type="text/css">
         body
 
@@ -61,7 +61,6 @@
             font-size: 24px;
 
         }
-
     </style>
 </head>
 
@@ -70,11 +69,9 @@
         <h1>Cara Menampilkan teks di atas gambar</h1>
         <div class="pembungkus">
             @if ($mhs->foto == null)
-                <img class="foto" height="167px" width="133px"
-                    src="{{ public_path('adminlte/img/default.jpg') }}">
+                <img class="foto" height="167px" width="133px" src="{{ public_path('adminlte/img/default.jpg') }}">
             @elseif ($mhs->foto != null)
-                <img class="foto" height="167px" width="133px"
-                    src="{{ public_path('foto_mhs/' . $mhs->foto) }}">
+                <img class="foto" height="167px" width="133px" src="{{ public_path('foto_mhs/' . $mhs->foto) }}">
             @endif
 
             <center><img height="539px" width="856px" src="images/KTM 2020 1_page-0002.jpg"></center>
