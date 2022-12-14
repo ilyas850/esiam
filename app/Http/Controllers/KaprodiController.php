@@ -8529,7 +8529,7 @@ class KaprodiController extends Controller
 
   public function cek_krs_all_kprd($id)
   {
-    //data mahasiswa
+    //data mahasiswa krs
     $data_mhs = Student::leftJoin('prodi', function ($join) {
       $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
     })
