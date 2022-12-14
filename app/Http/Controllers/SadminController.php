@@ -1086,7 +1086,7 @@ class SadminController extends Controller
         //return view('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
         //return PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
         $pdf = PDF::loadView('sadmin/ktm', ['mhs' => $mhs, 'hs' => $hs])->setPaper('a4', 'landscape');
-        return $pdf->download('KTM_' . $mhs->nim . '_' . $mhs->nama . '.pdf');
+        return $pdf->download('KTM' . ' ' . $mhs->nim . ' ' . $mhs->nama . '.pdf');
     }
 
     public function nilai_khs()
