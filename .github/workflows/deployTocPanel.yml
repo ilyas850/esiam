@@ -14,6 +14,6 @@ jobs:
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        ftp-server: ${{ secrets.ESIAM_FTP_SERVER }}
-        ftp-username: ${{ secrets.ESIAM_FTP_USERNAME }}
-        ftp-password: ${{ secrets.ESIAM_FTP_PASSWORD }}
+        server: ${{ secrets.ESIAM_FTP_SERVER }}
+        username: ${{ secrets.ESIAM_FTP_USERNAME }}
+        password: ${{ secrets.ESIAM_FTP_PASSWORD }}
