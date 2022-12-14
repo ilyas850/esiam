@@ -1017,19 +1017,24 @@ class SadminController extends Controller
 
     public function data_ktm()
     {
-        $ang = Angkatan::all();
-        $prd = Prodi::all();
+        $prd = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
         $kls = Kelas::all();
-        $cekangk = Student::where('active', 1)
-            ->select(DB::raw('DISTINCT(idangkatan)'))
+        $cekangk = Student::join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('student.active', 1)
+            ->select(DB::raw('DISTINCT(student.idangkatan)'), 'angkatan.angkatan')
+            ->orderBy('angkatan.angkatan', 'DESC')
             ->get();
 
-        return view('sadmin/cek_data_ktm', ['cekangk' => $cekangk, 'ang' => $ang, 'prd' => $prd, 'kls' => $kls]);
+        return view('sadmin/cek_data_ktm', ['cekangk' => $cekangk, 'prd' => $prd, 'kls' => $kls]);
     }
 
     public function view_ktm(Request $request)
     {
-        $mhs = Student::join('prodi', 'prodi.kodeprodi', '=', 'student.kodeprodi')
+        $mhs = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
             ->join('angkatan', 'angkatan.idangkatan', '=', 'student.idangkatan')
             ->join('kelas', 'kelas.idkelas', '=', 'student.idstatus')
             ->where('student.idangkatan', $request->idangkatan)
@@ -1047,11 +1052,36 @@ class SadminController extends Controller
             ->where('student.idstudent', $id)
             ->first();
 
-        $thn = $mhs->idangkatan;
-        $ttl = $thn + 3;
-        $t1 = $ttl - 1;
+        if ($mhs->kodeprodi == 23 or $mhs->kodeprodi == 24) {
+            if ($mhs->intake == 1) {
+                $thn = $mhs->idangkatan;
+                $ttl = $thn + 3;
+                $t1 = $ttl - 1;
 
-        $hs = '20' . $t1 . '-' . '20' . $ttl;
+                $hs = '20' . $t1 . '-' . '20' . $ttl . ' ' . 'GENAP';
+            } elseif ($mhs->intake == 2) {
+                $thn = $mhs->idangkatan;
+                $ttl = $thn + 4;
+                $t1 = $ttl - 1;
+
+                $hs = '20' . $t1 . '-' . '20' . $ttl . ' ' . 'GANJIL';
+            }
+        } elseif ($mhs->kodeprodi == 25) {
+            if ($mhs->intake == 1) {
+                $thn = $mhs->idangkatan;
+                $ttl = $thn + 4;
+                $t1 = $ttl - 1;
+
+                $hs = '20' . $t1 . '-' . '20' . $ttl . ' ' . 'GENAP';
+            } elseif ($mhs->intake == 2) {
+                $thn = $mhs->idangkatan;
+                $ttl = $thn + 5;
+                $t1 = $ttl - 1;
+
+                $hs = '20' . $t1 . '-' . '20' . $ttl . ' ' . 'GANJIL';
+            }
+        }
+
 
         //return view('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
         //return PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('sadmin/ktm', ['mhs'=>$keymhs, 'prd'=>$prd]);
@@ -5839,7 +5869,7 @@ class SadminController extends Controller
 
             for ($j = 0; $j < $jml_cek; $j++) {
                 $hasil_cek = $cek[$j];
-                
+
                 $new = new Ujian_transaction;
                 $new->id_periodetahun = $idtahun;
                 $new->id_periodetipe = $idtipe;

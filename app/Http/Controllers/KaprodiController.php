@@ -8522,27 +8522,48 @@ class KaprodiController extends Controller
       ->select('prodi.kodeprodi')
       ->first();
 
-    $data = Student::join('prodi', function ($join) {
+    $data = DB::select('CALL cek_krs_prodi(' . $prodi->kodeprodi . ')');
+
+    return view('kaprodi/master/cek_krs_mhs_prodi', compact('data'));
+  }
+
+  public function cek_krs_all_kprd($id)
+  {
+    //data mahasiswa
+    $data_mhs = Student::leftJoin('prodi', function ($join) {
       $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
     })
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-      ->join('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
-      ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
-      ->where('student.kodeprodi', $prodi->kodeprodi)
-      ->whereIn('student.active', [1, 5])
+      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+      ->where('student.idstudent', $id)
+      ->first();
+
+    //data krs diambil
+    $data = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->leftjoin('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->where('student_record.status', 'TAKEN')
+      ->where('student_record.id_student', $id)
+      ->where('kurikulum_periode.status', 'ACTIVE')
       ->select(
-        DB::raw('DISTINCT(student_record.id_student)'),
-        'student.nama',
-        'student.nim',
-        'prodi.prodi',
-        'kelas.kelas',
-        'angkatan.angkatan',
-        'dosen.nama as nama_dsn',
-        'student_record.remark'
+        'semester.semester',
+        'matakuliah.kode',
+        'matakuliah.makul',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek',
+        'dosen.nama',
+        'student_record.remark',
+        'student_record.id_student',
+        'student_record.id_studentrecord'
       )
-      ->orderBy('student.nim', 'ASC')
+      ->orderBy('semester.semester', 'ASC')
+      ->orderBy('matakuliah.kode', 'ASC')
       ->get();
-    dd($data);
+
+    return view('kaprodi/master/cek_krs_mhs', compact('data_mhs', 'data'));
   }
 }
