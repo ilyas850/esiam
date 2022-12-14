@@ -8566,4 +8566,9 @@ class KaprodiController extends Controller
 
     return view('kaprodi/master/cek_krs_mhs', compact('data_mhs', 'data'));
   }
+
+  public function FunctionName()
+  {
+    # code...
+  }
 }
