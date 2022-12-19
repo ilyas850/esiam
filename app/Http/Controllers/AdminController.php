@@ -11,8 +11,4 @@ class AdminController extends Controller
         # code...
     }
 
-    public function FunctionName(Type $var = null)
-    {
-        # code...
-    }
 }
