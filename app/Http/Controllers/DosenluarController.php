@@ -367,16 +367,9 @@ class DosenluarController extends Controller
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
         $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
-
-        $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->where('id_kurperiode', $request->id_kurperiode)
-            ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_kurtrans')
-            ->first();
-
-        $kur = $ckstr->id_kurtrans;
+        
         $idkur = $request->id_kurperiode;
-        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'kur' => $kur, 'nilai' => $nilai]);
+        return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
     }
 
     public function input_uas($id)
