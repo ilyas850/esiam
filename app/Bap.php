@@ -9,4 +9,6 @@ class Bap extends Model
     protected $table = 'bap';
 
     protected $primaryKey = 'id_bap';
+
+    protected $dates = ['tanggal'];
 }
