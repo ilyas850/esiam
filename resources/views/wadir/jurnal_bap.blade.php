@@ -55,7 +55,7 @@
                                 <center>No</center>
                             </th>
                             <th>
-                                <center>Tanggal </center>
+                                <center>Tanggal</center>
                             </th>
                             <th>
                                 <center>Jam</center>

@@ -21,7 +21,7 @@
 
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Approve Dosen Pembimbing</h3>
+                <h3 class="box-title">Data Approve KRS Dosen Pembimbing</h3>
             </div>
             <div class="box-body">
                 <div class="row">
@@ -41,15 +41,10 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4px">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th>
-                                <center>Program Studi</center>
-                            </th>
-                            <th width="10%">
-                                <center>Kelas</center>
-                            </th>
+
                             <th>
                                 <center>NIM</center>
                             </th>
@@ -57,16 +52,22 @@
                                 <center>Nama Mahasiswa</center>
                             </th>
                             <th>
+                                <center>Program Studi</center>
+                            </th>
+                            <th>
+                                <center>Kelas</center>
+                            </th>
+                            <th>
                                 <center>Angkatan</center>
                             </th>
-                            <th width="20%">
+                            <th>
                                 <center>Dosen Pembimbing</center>
                             </th>
                             <th>
-                                <center>Status KRS</center>
+                                <center>Status</center>
                             </th>
                             <th>
-                                <center></center>
+                                <center>Aksi</center>
                             </th>
                         </tr>
                     </thead>
@@ -77,6 +78,11 @@
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
+
+                                <td>
+                                    <center>{{ $app->nim }}</center>
+                                </td>
+                                <td>{{ $app->nama }}</td>
                                 <td>
                                     {{ $app->prodi }}
                                 </td>
@@ -85,10 +91,6 @@
                                         {{ $app->kelas }}
                                     </center>
                                 </td>
-                                <td>
-                                    <center>{{ $app->nim }}</center>
-                                </td>
-                                <td>{{ $app->nama }}</td>
                                 <td>
                                     <center>
                                         {{ $app->angkatan }}
@@ -99,16 +101,26 @@
                                 <td>
                                     <center>
                                         @if ($app->remark == 1)
-                                            <span class="badge bg-green">Sudah divalidasi</span>
-                                        @else
-                                            <span class="badge bg-yellow">Belum divalidasi</span>
+                                            <span class="badge bg-green">Valid</span>
+                                        @elseif ($app->remark == 0 or $app->remark == null)
+                                            <span class="badge bg-yellow">Belum</span>
                                         @endif
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a class="btn btn-info btn-xs" href="/cek_krs_admin/{{ $app->id_student }}">Cek
-                                            KRS</a>
+                                        @if ($app->remark == 1)
+                                            <a class="btn btn-danger btn-xs" href="/batal_krs_admin/{{ $app->id_student }}"
+                                                title="Klik untuk batal validasi"><i class="fa fa-close"></i>
+                                            </a>
+                                        @elseif($app->remark == 0)
+                                            <a class="btn btn-success btn-xs"
+                                                href="/batal_krs_admin/{{ $app->id_student }}"
+                                                title="Klik untuk validasi"><i class="fa fa-check"></i>
+                                            </a>
+                                        @endif
+                                        <a class="btn btn-info btn-xs" href="/cek_krs_admin/{{ $app->id_student }}"
+                                            title="Klik untuk cek KRS"><i class="fa fa-eye"></i></a>
                                     </center>
                                 </td>
                             </tr>

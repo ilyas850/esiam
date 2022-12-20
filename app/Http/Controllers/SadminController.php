@@ -5898,6 +5898,7 @@ class SadminController extends Controller
                 $new->id_ruangan = $hasil_cek->id_ruangan;
                 $new->id_tipeujian = $idtipeujian[$j];
                 $new->data_origin = 'eSIAM';
+                $new->status = 'ACTIVE';
                 $new->save();
             }
         }
