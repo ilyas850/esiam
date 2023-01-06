@@ -77,19 +77,19 @@
                                 <center>No</center>
                             </th>
                             <th>
-                                <center>Jenis Ujian</center>
-                            </th>
-                            <th>
-                                <center>Matakuliah </center>
-                            </th>
-                            <th>
                                 <center>Prodi</center>
                             </th>
                             <th>
                                 <center>Kelas</center>
                             </th>
                             <th>
-                                <center>Tipe Ujian</center>
+                                <center>Ujian</center>
+                            </th>
+                            <th>
+                                <center>Tanggal</center>
+                            </th>
+                            <th>
+                                <center>Matakuliah </center>
                             </th>
                             <th>
                                 <center>Ruangan</center>
@@ -97,22 +97,26 @@
                             <th>
                                 <center>Jam</center>
                             </th>
+                            <th>
+                                <center>Tipe</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($data as $item)
                             <tr>
-                                <td>
-                                    <center>{{ $no++ }}</center>
+                                <td align="center">
+                                    {{ $no++ }}
                                 </td>
-                                <td align="center">{{ $item->jenis_ujian }}</td>
-                                <td>{{ $item->makul }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td align="center">{{ $item->kelas }}</td>
-                                <td align="center">{{ $item->tipe_ujian }}</td>
+                                <td align="center">{{ $item->jenis_ujian }}</td>
+                                <td align="center">{{ $item->tanggal_ujian }}</td>
+                                <td>{{ $item->makul }}</td>
                                 <td align="center">{{ $item->nama_ruangan }}</td>
                                 <td align="center">{{ $item->jam }}</td>
+                                <td align="center">{{ $item->tipe_ujian }}</td>
                             </tr>
                         @endforeach
                     </tbody>

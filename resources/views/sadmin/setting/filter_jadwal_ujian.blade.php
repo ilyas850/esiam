@@ -24,7 +24,7 @@
                                     <center>Matakuliah </center>
                                 </th>
                                 <th>
-                                    <center>Jenis Ujian</center>
+                                    <center>Ujian</center>
                                 </th>
                                 <th>
                                     <center>Tanggal</center>
@@ -36,10 +36,10 @@
                                     <center>Ruangan</center>
                                 </th>
                                 <th>
-                                    <center>Tipe Ujian</center>
+                                    <center>Tipe</center>
                                 </th>
                                 <th>
-                                    <center>Jenis Ujian</center>
+                                    <center>Jenis</center>
                                 </th>
                             </tr>
                         </thead>

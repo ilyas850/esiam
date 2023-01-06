@@ -69,8 +69,7 @@
                 <th><span style="font-size:80%">No</span></th>
                 <th><span style="font-size:80%">Jadwal Ujian </span></th>
                 <th><span style="font-size:80%">Waktu Ujian</span></th>
-                <th><span style="font-size:80%">Kode MK</span></th>
-                <th><span style="font-size:80%">Matakuliah</span></th>
+                <th><span style="font-size:80%">Kode / Matakuliah</span></th>
                 <th><span style="font-size:80%">Ruangan</span></th>
                 <th><span style="font-size:80%">Ttd <br> Pengawas</span></th>
             </tr>
@@ -85,12 +84,10 @@
                             {{ Carbon\Carbon::parse($item->tanggal_ujian)->formatLocalized('%A, %d %B %Y') }}</span>
                     </td>
                     <td align="center">
-                        <span style="font-size:80%">{{ $item->jam }} -
-                            {{ date('H:i', strtotime($item->jam) + 60 * 100) }}
+                        <span style="font-size:80%">{{ $item->jam }}
                         </span>
                     </td>
-                    <td align="center"><span style="font-size:80%">{{ $item->kode }}</span></td>
-                    <td><span style="font-size:80%">{{ $item->makul }}</span></td>
+                    <td><span style="font-size:80%">{{ $item->kode }} / {{ $item->makul }}</span></td>
                     <td align="center"><span style="font-size:80%">{{ $item->nama_ruangan }}</span></td>
                     <td></td>
                 </tr>

@@ -45,22 +45,25 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Jadwal Ujian</th>
-                            <th>Waktu Ujian</th>
-                            <th>Kode</th>
-                            <th>Matakuliah</th>
+                            <th>
+                                <center> Jadwal Ujian</center>
+                            </th>
+                            <th>
+                                <center>Waktu Ujian</center>
+                            </th>
+                            <th>Kode / Matakuliah</th>
                             <th>Ruangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data_uts as $item)
                             <tr>
-                                <td>
+                                <td align="center">
                                     {{ Carbon\Carbon::parse($item->tanggal_ujian)->formatLocalized('%A, %d %B %Y') }}
                                 </td>
-                                <td>{{ $item->jam }} - {{ date('H:i', strtotime($item->jam) + 60 * 100) }}</td>
-                                <td>{{ $item->kode }}</td>
-                                <td>{{ $item->makul }}</td>
+                                <td align="center">{{ $item->jam }} </td>
+
+                                <td>{{ $item->kode }} / {{ $item->makul }}</td>
                                 <td>{{ $item->nama_ruangan }}</td>
                             </tr>
                         @endforeach

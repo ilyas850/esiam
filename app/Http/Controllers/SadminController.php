@@ -5852,7 +5852,6 @@ class SadminController extends Controller
 
     public function save_jadwal_ujian(Request $request)
     {
-
         $idtahun = $request->id_periodetahun;
         $idtipe = $request->id_periodetipe;
         $jenis_ujian = $request->jenis_ujian;
@@ -5885,7 +5884,7 @@ class SadminController extends Controller
 
             for ($j = 0; $j < $jml_cek; $j++) {
                 $hasil_cek = $cek[$j];
-
+                
                 $new = new Ujian_transaction;
                 $new->id_periodetahun = $idtahun;
                 $new->id_periodetipe = $idtipe;
@@ -5893,7 +5892,7 @@ class SadminController extends Controller
                 $new->id_prodi = $hasil_cek->id_prodi;
                 $new->id_kelas = $hasil_cek->id_kelas;
                 $new->id_makul = $idmakul;
-                $new->tanggal_ujian = $tanggal[$j];
+                $new->tanggal_ujian = $tanggal[$i];
                 $new->id_jam = $hasil_cek->id_jam;
                 $new->id_ruangan = $hasil_cek->id_ruangan;
                 $new->id_tipeujian = $idtipeujian[$j];
