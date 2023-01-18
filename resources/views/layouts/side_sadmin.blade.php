@@ -39,6 +39,18 @@
     </li>
     <li class="treeview">
         <a href="#">
+            <i class="fa fa-th"></i><span>Master Konversi</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/master_konversi"><i class="fa fa-circle-o"></i> Konversi</a></li>
+            <li><a href="/master_konversi_makul"><i class="fa fa-circle-o"></i> Konversi Matakuliah</a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
             <i class="fa fa-th"></i> <span>Master Mahasiswa</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>

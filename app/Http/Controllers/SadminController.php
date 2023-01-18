@@ -66,6 +66,7 @@ use App\Penangguhan_trans;
 use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use App\Kalender_akademik;
+use App\Konversi_makul;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -5879,12 +5880,12 @@ class SadminController extends Controller
                 ->where('id_jam', $idjam)
                 ->where('id_ruangan', $idruangan)
                 ->get();
-
+               
             $jml_cek = count($cek);
 
             for ($j = 0; $j < $jml_cek; $j++) {
                 $hasil_cek = $cek[$j];
-                
+
                 $new = new Ujian_transaction;
                 $new->id_periodetahun = $idtahun;
                 $new->id_periodetipe = $idtipe;
@@ -5898,10 +5899,52 @@ class SadminController extends Controller
                 $new->id_tipeujian = $idtipeujian[$j];
                 $new->data_origin = 'eSIAM';
                 $new->status = 'ACTIVE';
+            
                 $new->save();
             }
         }
 
+        
         return redirect('setting_ujian');
+    }
+
+    public function master_konversi()
+    {
+        $kurikulum = Kurikulum_master::whereIn('remark', [1, 2])->get();
+
+        $tahun = Periode_tahun::join('kurikulum_periode', 'periode_tahun.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')
+            ->select(DB::raw('DISTINCT(periode_tahun.id_periodetahun)'), 'periode_tahun.periode_tahun')
+            ->orderBy('periode_tahun', 'desc')
+            ->get();
+
+        $tipe = Periode_tipe::all();
+
+        $angkatan = Angkatan::join('kurikulum_transaction', 'angkatan.idangkatan', '=', 'kurikulum_transaction.id_angkatan')
+            ->select(DB::raw('DISTINCT(angkatan.idangkatan)'), 'angkatan.angkatan')
+            ->orderBy('angkatan.angkatan', 'desc')
+            ->get();
+
+        $prodi = Prodi::select('id_prodi', 'kodeprodi', 'prodi', 'konsentrasi')
+            ->get();
+
+        return view('sadmin/konversi/filter_konversi', compact('kurikulum', 'tahun', 'tipe', 'angkatan', 'prodi'));
+    }
+
+    public function master_konversi_makul()
+    {
+        $data = Konversi_makul::join('matakuliah', 'konversi_makul.id_makul_awal', '=', 'matakuliah.idmakul')
+            ->select('matakuliah.kode', 'matakuliah.makul')
+            ->get();
+
+        $makul = Matakuliah::where('active', 1)->get();
+
+        return view('sadmin/konversi/konversi_makul', compact('data', 'makul'));
+    }
+
+    public function tambah_konversi_makul()
+    {
+        $makul = Matakuliah::where('active', 1)->get();
+
+        return view('sadmin/konversi/tambah_konversi');
     }
 }

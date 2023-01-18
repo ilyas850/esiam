@@ -20,8 +20,9 @@
                 @else
                     <div class="form-group">
                         <div class="callout callout-info">
-                            <p>{{ $status_penangguhan->waktu_awal->isoFormat('D MMMM Y') }} s/d
-                                {{ $status_penangguhan->waktu_akhir->isoFormat('D MMMM Y') }}</p>
+                            <p> {{ date('l, d F Y', strtotime($status_penangguhan->waktu_awal)) }} s/d
+                                {{ date('l, d F Y', strtotime($status_penangguhan->waktu_akhir)) }}
+                            </p>
                         </div>
                     </div>
                     <div class="row">

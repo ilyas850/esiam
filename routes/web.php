@@ -400,6 +400,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('setting_ujian', 'SadminController@setting_ujian');
     Route::post('filter_jadwal_ujian', 'SadminController@filter_jadwal_ujian');
     Route::post('save_jadwal_ujian', 'SadminController@save_jadwal_ujian');
+
+    //master konversi
+    Route::get('master_konversi', 'SadminController@master_konversi');
+    Route::get('master_konversi_makul', 'SadminController@master_konversi_makul');
+    Route::get('tambah_konversi_makul', 'SadminController@tambah_konversi_makul');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
