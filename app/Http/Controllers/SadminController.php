@@ -3446,7 +3446,7 @@ class SadminController extends Controller
             ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
             ->first();
 
-        $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+        $kartu_uas = DB::select('CALL kartu_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
@@ -3466,7 +3466,7 @@ class SadminController extends Controller
         $m = $bulan[date('m')];
         $y = date('Y');
 
-        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uas_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
+        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uas_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'kartu_uas', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
         return $pdf->download('Kartu UAS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $periodetahun . ' ' . $periodetipe . ')' . '.pdf');
     }
 
