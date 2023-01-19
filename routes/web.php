@@ -1429,7 +1429,9 @@ Route::group(['middleware' => 'prausta'], function () {
 });
 
 Route::group(['middleware' => 'bauk'], function () {
+    //data penangguhan
     Route::get('kategori_penangguhan_bauk', 'BaukController@kategori_penangguhan_bauk');
+    Route::post('pilih_ta_penangguhan', 'BaukController@pilih_ta_penangguhan');
 
     Route::get('data_penangguhan_bauk/{id}', 'BaukController@data_penangguhan_bauk');
     Route::put('put_tunggakan/{id}', 'BaukController@put_tunggakan');

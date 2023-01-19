@@ -1825,7 +1825,7 @@ class MhsController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-601', 'TI-601', 'TK-601'])
+            ->whereIn('matakuliah.kode', ['FA-601', 'TI-601', 'TK-601', 'FA-5001', 'TI-5001'])
             ->where('student_record.id_student', $ids)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
@@ -1839,7 +1839,7 @@ class MhsController extends Controller
         } elseif ($hasil_krs > 0) {
             //cek nilai dan file seminar prakerin
             $cekdata_bim = Prausta_setting_relasi::where('prausta_setting_relasi.id_student', $ids)
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select('prausta_setting_relasi.id_dosen_pembimbing')
                 ->get();
@@ -1855,7 +1855,7 @@ class MhsController extends Controller
                             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                     }))
                     ->where('student.idstudent', $ids)
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
                     ->first();
 

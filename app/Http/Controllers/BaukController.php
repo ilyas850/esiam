@@ -16,13 +16,55 @@ class BaukController extends Controller
 {
     public function kategori_penangguhan_bauk()
     {
+        $tahun = Periode_tahun::join('penangguhan_master_trans', 'periode_tahun.id_periodetahun', '=', 'penangguhan_master_trans.id_periodetahun')
+            ->groupBy('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
+            ->select('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
+            ->get();
+
+        $tipe = Periode_tipe::all();
+
+        $thn_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tp_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
+
         $data = Penangguhan_kategori::leftjoin('penangguhan_master_trans', 'penangguhan_master_kategori.id_penangguhan_kategori', '=', 'penangguhan_master_trans.id_penangguhan_kategori')
+            ->leftjoin('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->leftjoin('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->select('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori', DB::raw('COUNT(penangguhan_master_trans.id_penangguhan_kategori) as jml_penangguhan'))
             ->where('penangguhan_master_trans.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $thn_aktif->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $tp_aktif->id_periodetipe)
             ->groupBy('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori')
             ->get();
 
-        return view('bauk/penangguhan/kategori_penangguhan', compact('data'));
+        return view('bauk/penangguhan/kategori_penangguhan', compact('data', 'thn_aktif', 'tp_aktif', 'tahun', 'tipe'));
+    }
+
+    public function pilih_ta_penangguhan(Request $request)
+    {
+
+        $tahun = Periode_tahun::join('penangguhan_master_trans', 'periode_tahun.id_periodetahun', '=', 'penangguhan_master_trans.id_periodetahun')
+            ->groupBy('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
+            ->select('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
+            ->get();
+
+        $tipe = Periode_tipe::all();
+
+        $thn_aktif = $request->id_periodetahun;
+        $tp_aktif = $request->id_periodetipe;
+
+        $data = Penangguhan_kategori::leftjoin('penangguhan_master_trans', 'penangguhan_master_kategori.id_penangguhan_kategori', '=', 'penangguhan_master_trans.id_penangguhan_kategori')
+            ->leftjoin('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->leftjoin('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->select('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori', DB::raw('COUNT(penangguhan_master_trans.id_penangguhan_kategori) as jml_penangguhan'))
+            ->where('penangguhan_master_trans.status', 'ACTIVE')
+            ->where('periode_tahun.id_periodetahun', $thn_aktif)
+            ->where('periode_tipe.id_periodetipe', $tp_aktif)
+            ->groupBy('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori')
+            ->get();
+
+        return view('bauk/penangguhan/kategori_penangguhan', compact('data', 'thn_aktif', 'tp_aktif', 'tahun', 'tipe'));
     }
 
     public function data_penangguhan_bauk($id)

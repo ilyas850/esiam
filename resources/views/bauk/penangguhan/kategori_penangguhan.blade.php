@@ -10,9 +10,38 @@
             <div class="col-md-6">
                 <div class="box box-info">
                     <div class="box-header">
-                        <h3 class="box-title">Kategori Penangguhan</h3>
+                        <h3 class="box-title">Kategori Penangguhan <b> {{ $thn_aktif->periode_tahun }} -
+                                {{ $tp_aktif->periode_tipe }}</b></h3>
                     </div>
                     <div class="box-body">
+                        <form class="form" role="form" action="{{ url('pilih_ta_penangguhan') }}" method="POST">
+                            {{ csrf_field() }}
+                            <div class="row">
+                                <div class="col-xs-5">
+                                    <label>Periode tahun</label>
+                                    <select class="form-control" name="id_periodetahun" required>
+                                        <option></option>
+                                        @foreach ($tahun as $key)
+                                            <option value="{{ $key->id_periodetahun }}">
+                                                {{ $key->periode_tahun }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>Periode tipe</label>
+                                    <select class="form-control" name="id_periodetipe" required>
+                                        <option></option>
+                                        @foreach ($tipe as $tipee)
+                                            <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-info ">Tampilkan</button>
+                        </form>
+                        <br>
                         <table id="example8" class="table table-bordered table-striped">
                             <thead>
                                 <tr>

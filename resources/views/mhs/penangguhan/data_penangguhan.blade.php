@@ -23,7 +23,6 @@
                             <p> {{ Carbon\Carbon::parse($status_penangguhan->waktu_awal)->formatLocalized('%A, %d %B %Y') }}
                                 s/d
                                 {{ Carbon\Carbon::parse($status_penangguhan->waktu_akhir)->formatLocalized('%A, %d %B %Y') }}
-
                             </p>
                         </div>
                     </div>
