@@ -3031,8 +3031,17 @@ class MhsController extends Controller
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 82) / 100 - $total_semua_dibayar;
         }
 
+        $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+            ->first();
 
-
+        $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+        
+        return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
 
 
         if ($cekbyr == 0 or $cekbyr < 1) {
@@ -3099,15 +3108,15 @@ class MhsController extends Controller
 
                             if (count($cek_kuis_perpus) > 0) {
 
-                                $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                    ->where('student_record.id_student', $id)
-                                    ->where('student_record.status', 'TAKEN')
-                                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-                                    ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-                                    ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
-                                    ->first();
+                                // $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                                //     ->where('student_record.id_student', $id)
+                                //     ->where('student_record.status', 'TAKEN')
+                                //     ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                //     ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+                                //     ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+                                //     ->first();
 
-                                $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+                                // $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
                                 return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
                             } elseif (count($cek_kuis_perpus) == 0) {
@@ -3131,7 +3140,7 @@ class MhsController extends Controller
                 return redirect('home');
             }
         } else {
-            Alert::warning('Maaf anda tidak dapat mendownload Kartu Ujian UTS karena keuangan Anda belum memenuhi syarat');
+            Alert::warning('Maaf anda tidak dapat mendownload Kartu Ujian UAS karena keuangan Anda belum memenuhi syarat');
             return redirect('home');
         }
     }
@@ -3224,7 +3233,9 @@ class MhsController extends Controller
             ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
             ->first();
 
-        $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+        //$data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+
+        $kartu_uas = DB::select('CALL kartu_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
         $bulan = [
             '01' => 'Januari',
@@ -3244,7 +3255,7 @@ class MhsController extends Controller
         $m = $bulan[date('m')];
         $y = date('Y');
 
-        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uas_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
+        $pdf = PDF::loadView('mhs/ujian/unduh_kartu_uas_pdf', compact('periodetahun', 'periodetipe', 'datamhs', 'kartu_uas', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
         return $pdf->download('Kartu UAS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $periodetahun . ' ' . $periodetipe . ')' . '.pdf');
     }
 

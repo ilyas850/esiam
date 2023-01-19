@@ -6,7 +6,6 @@
     tr.b {
         line-height: 80px;
     }
-
 </style>
 
 <body>
@@ -67,16 +66,18 @@
 
             <tr>
                 <th><span style="font-size:80%">No</span></th>
-                <th><span style="font-size:80%">Jadwal Ujian </span></th>
-                <th><span style="font-size:80%">Waktu Ujian</span></th>
+                <th><span style="font-size:80%">Jadwal </span></th>
+                <th><span style="font-size:80%">Waktu</span></th>
                 <th><span style="font-size:80%">Kode / Matakuliah</span></th>
                 <th><span style="font-size:80%">Ruangan</span></th>
+                <th><span style="font-size:80%">Ket. <br> Absen</span></th>
+                <th><span style="font-size:80%">Ttd <br> Dosen Pengampu</span></th>
                 <th><span style="font-size:80%">Ttd <br> Pengawas</span></th>
             </tr>
         </thead>
         <tbody>
             <?php $no = 1; ?>
-            @foreach ($data_uts as $item)
+            @foreach ($kartu_uas as $item)
                 <tr>
                     <td align="center"><span style="font-size:80%">{{ $no++ }}</span></td>
                     <td>
@@ -87,8 +88,36 @@
                         <span style="font-size:80%">{{ $item->jam }}
                         </span>
                     </td>
-                    <td><span style="font-size:80%">{{ $item->kode }} / {{ $item->makul }}</span></td>
+                    <td><span style="font-size:80%">{{ $item->makul }}</span></td>
                     <td align="center"><span style="font-size:80%">{{ $item->nama_ruangan }}</span></td>
+                    <td align="center"><span style="font-size:80%">
+                            @if ($item->id_kelas == 1)
+                                @if ($item->total_tdk_hadir > 3)
+                                    Tidak Memenuhi
+                                @elseif($item->total_tdk_hadir <= 3)
+                                    Memenuhi
+                                @endif
+                            @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                @if ($item->total_tdk_hadir > 4)
+                                    Tidak Memenuhi
+                                @elseif($item->total_tdk_hadir <= 4)
+                                    Memenuhi
+                                @endif
+                            @endif
+                        </span></td>
+                    <td align="center">
+                        @if ($item->id_kelas == 1)
+                            @if ($item->total_tdk_hadir > 3)
+                            @elseif($item->total_tdk_hadir <= 3)
+                                -
+                            @endif
+                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                            @if ($item->total_tdk_hadir > 4)
+                            @elseif($item->total_tdk_hadir <= 4)
+                                -
+                            @endif
+                        @endif
+                    </td>
                     <td></td>
                 </tr>
             @endforeach
@@ -102,8 +131,9 @@
             <br>
             <span style="font-size: 80%">- Membawa Kartu Ujian </span><br>
             <span style="font-size: 80%">- Memakai Jas Almamater</span> <br>
-            <span style="font-size: 80%">- Membawa Kartu Tanda Mahasiswa</span>
-
+            <span style="font-size: 80%">- Membawa Kartu Tanda Mahasiswa</span><br>
+            <span style="font-size: 80%">- Bagi yang tidak memenuhi absen silahkan menghubungi <br> dosen pengampu untuk
+                mendapatkan ijin mengikuti ujian</span>
         </td>
         <td width="40%">
             <table width="100%">

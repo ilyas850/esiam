@@ -40,29 +40,33 @@
                 </table>
             </div>
             <div class="box-body">
-                <a class="btn btn-warning" href="{{ url('unduh_kartu_uas') }}">Unduh Kartu UAS</a>
-
+                <a class="btn btn-success" href="{{ url('unduh_kartu_uas') }}">Unduh Kartu UAS</a>
+                <br><br>
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>
-                                <center> Jadwal Ujian</center>
+                                <center>No.</center>
                             </th>
                             <th>
-                                <center>Waktu Ujian</center>
+                                Jadwal Ujian
+                            </th>
+                            <th>
+                                Waktu Ujian
                             </th>
                             <th>Kode / Matakuliah</th>
                             <th>Ruangan</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $no = 1; ?>
                         @foreach ($data_uts as $item)
                             <tr>
-                                <td align="center">
+                                <td align="center">{{ $no++ }}</td>
+                                <td>
                                     {{ Carbon\Carbon::parse($item->tanggal_ujian)->formatLocalized('%A, %d %B %Y') }}
                                 </td>
-                                <td align="center">{{ $item->jam }} </td>
-
+                                <td>{{ $item->jam }} </td>
                                 <td>{{ $item->kode }} / {{ $item->makul }}</td>
                                 <td>{{ $item->nama_ruangan }}</td>
                             </tr>
