@@ -20,8 +20,10 @@
                 @else
                     <div class="form-group">
                         <div class="callout callout-info">
-                            <p> {{ date('l, d F Y', strtotime($status_penangguhan->waktu_awal)) }} s/d
-                                {{ date('l, d F Y', strtotime($status_penangguhan->waktu_akhir)) }}
+                            <p> {{ Carbon\Carbon::parse($status_penangguhan->waktu_awal)->formatLocalized('%A, %d %B %Y') }}
+                                s/d
+                                {{ Carbon\Carbon::parse($status_penangguhan->waktu_akhir)->formatLocalized('%A, %d %B %Y') }}
+
                             </p>
                         </div>
                     </div>
