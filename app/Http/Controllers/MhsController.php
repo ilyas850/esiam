@@ -3031,18 +3031,7 @@ class MhsController extends Controller
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 82) / 100 - $total_semua_dibayar;
         }
 
-        $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->where('student_record.id_student', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-            ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
-            ->first();
-
-        $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
         
-        return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
-
 
         if ($cekbyr == 0 or $cekbyr < 1) {
             //cek jumlah matakuliah diambil
@@ -3108,15 +3097,15 @@ class MhsController extends Controller
 
                             if (count($cek_kuis_perpus) > 0) {
 
-                                // $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                                //     ->where('student_record.id_student', $id)
-                                //     ->where('student_record.status', 'TAKEN')
-                                //     ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-                                //     ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-                                //     ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
-                                //     ->first();
+                                $data_kelas = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                                    ->where('student_record.id_student', $id)
+                                    ->where('student_record.status', 'TAKEN')
+                                    ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+                                    ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+                                    ->select(DB::raw('DISTINCT(kurikulum_periode.id_kelas)'))
+                                    ->first();
 
-                                // $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
+                                $data_uts = DB::select('CALL jadwal_uas(?,?,?,?,?)', [$id, $thn->id_periodetahun, $tp->id_periodetipe, $data_kelas->id_kelas, $idprodi]);
 
                                 return view('mhs/ujian/kartu_uas', compact('periodetahun', 'periodetipe', 'datamhs', 'data_uts'));
                             } elseif (count($cek_kuis_perpus) == 0) {
