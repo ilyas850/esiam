@@ -51,23 +51,43 @@ class BaukController extends Controller
 
         $tipe = Periode_tipe::all();
 
-        $thn_aktif = $request->id_periodetahun;
-        $tp_aktif = $request->id_periodetipe;
+        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
 
         $data = Penangguhan_kategori::leftjoin('penangguhan_master_trans', 'penangguhan_master_kategori.id_penangguhan_kategori', '=', 'penangguhan_master_trans.id_penangguhan_kategori')
             ->leftjoin('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->leftjoin('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->select('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori', DB::raw('COUNT(penangguhan_master_trans.id_penangguhan_kategori) as jml_penangguhan'))
             ->where('penangguhan_master_trans.status', 'ACTIVE')
-            ->where('periode_tahun.id_periodetahun', $thn_aktif)
-            ->where('periode_tipe.id_periodetipe', $tp_aktif)
+            ->where('periode_tahun.id_periodetahun', $thn_aktif->id_periodetahun)
+            ->where('periode_tipe.id_periodetipe', $tp_aktif->id_periodetipe)
             ->groupBy('penangguhan_master_kategori.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori')
             ->get();
 
         return view('bauk/penangguhan/kategori_penangguhan', compact('data', 'thn_aktif', 'tp_aktif', 'tahun', 'tipe'));
     }
 
-    public function data_penangguhan_bauk($id)
+    public function data_penangguhan_bauk(Request $request)
+    {
+        $data = Penangguhan_trans::join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
+            ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('student', 'penangguhan_master_trans.id_student', '=', 'student.idstudent')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('penangguhan_master_trans.status', 'ACTIVE')
+            ->where('penangguhan_master_trans.id_penangguhan_kategori', $request->id_penangguhan_kategori)
+            ->where('penangguhan_master_trans.id_periodetahun', $request->id_periodetahun)
+            ->where('penangguhan_master_trans.id_periodetipe', $request->id_periodetipe)
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'penangguhan_master_trans.id_periodetahun', 'penangguhan_master_trans.id_periodetipe', 'penangguhan_master_trans.id_student', 'penangguhan_master_trans.id_penangguhan_kategori', 'penangguhan_master_kategori.kategori', 'penangguhan_master_trans.total_tunggakan', 'penangguhan_master_trans.rencana_bayar', 'penangguhan_master_trans.alasan', 'penangguhan_master_trans.validasi_kaprodi', 'penangguhan_master_trans.validasi_dsn_pa', 'penangguhan_master_trans.validasi_bauk', 'penangguhan_master_trans.validasi_baak', 'penangguhan_master_trans.id_penangguhan_trans')
+            ->get();
+
+        return view('bauk/penangguhan/data_penangguhan', compact('data'));
+    }
+
+    public function data_penangguhan_bauk1($id)
     {
         $data = Penangguhan_trans::join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
             ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')

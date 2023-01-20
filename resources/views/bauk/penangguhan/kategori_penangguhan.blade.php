@@ -67,8 +67,21 @@
                                         <td>{{ $item->kategori }}</td>
                                         <td align="center">{{ $item->jml_penangguhan }}</td>
                                         <td align="center">
-                                            <a href="data_penangguhan_bauk/{{ $item->id_penangguhan_kategori }}"
-                                                class="btn btn-info btn-xs">Cek</a>
+                                            <form action="{{ url('data_penangguhan_bauk') }}" method="POST">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="id_penangguhan_kategori"
+                                                    value="{{ $item->id_penangguhan_kategori }}">
+                                                <input type="hidden" name="id_periodetahun"
+                                                    value="{{ $thn_aktif->id_periodetahun }}">
+                                                <input type="hidden" name="id_periodetipe"
+                                                    value="{{ $tp_aktif->id_periodetipe }}">
+                                                <button type="submit" class="btn btn-info btn-xs">
+                                                    Cek Data
+                                                </button>
+                                            </form>
+
+                                            {{-- <a href="data_penangguhan_bauk/{{ $item->id_penangguhan_kategori }}"
+                                                class="btn btn-info btn-xs">Cek</a> --}}
                                         </td>
                                     </tr>
                                 @endforeach
