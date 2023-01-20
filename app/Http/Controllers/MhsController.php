@@ -2992,48 +2992,48 @@ class MhsController extends Controller
             ->sum('bayar.bayar');
 
         if ($c == 1) {
-            $cekbyr = $daftar + $awal + ($spp1 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
         } elseif ($c == 2) {
-            $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + ($spp2 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
         } elseif ($c == '201') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
         } elseif ($c == 3) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
         } elseif ($c == 4) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
         } elseif ($c == '401') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
         } elseif ($c == 5) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
         } elseif ($c == 6) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
         } elseif ($c == '601') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
         } elseif ($c == 7) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 - $total_semua_dibayar;
         } elseif ($c == 8) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
         } elseif ($c == '801') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
         } elseif ($c == 9) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + ($spp9 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 - $total_semua_dibayar;
         } elseif ($c == 10) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
         } elseif ($c == '1001') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
         } elseif ($c == 11) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + ($spp11 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 - $total_semua_dibayar;
         } elseif ($c == 12) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + ($spp12 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 - $total_semua_dibayar;
         } elseif ($c == 13) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + ($spp13 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 - $total_semua_dibayar;
         } elseif ($c == 14) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 82) / 100 - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
         }
 
         
 
-        if ($cekbyr == 0 or $cekbyr < 1) {
+        if ($cekbyr == 0 or $cekbyr < 100) {
             //cek jumlah matakuliah diambil
             $records = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->where('student_record.id_student', $id)
