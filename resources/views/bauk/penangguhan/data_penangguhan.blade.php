@@ -8,7 +8,8 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Penangguhan</h3>
+                <h3 class="box-title">Data Penangguhan {{ $kategori->kategori }} <b> {{ $thn_aktif->periode_tahun }} -
+                        {{ $tp_aktif->periode_tipe }}</b></h3>
             </div>
             <div class="box-body">
                 <table id="example8" class="table table-bordered table-striped">
@@ -94,11 +95,36 @@
                                 <td>{{ $item->alasan }}</td>
                                 <td align="center">
                                     @if ($item->validasi_bauk == 'BELUM')
-                                        <a href="/val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-info btn-xs">Validasi</a>
+                                        <form action="{{ url('val_penangguhan_bauk') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id_penangguhan_trans"
+                                                value="{{ $item->id_penangguhan_trans }}">
+                                            <input type="hidden" name="id_penangguhan_kategori"
+                                                value="{{ $kategori->id_penangguhan_kategori }}">
+                                            <input type="hidden" name="id_periodetahun"
+                                                value="{{ $thn_aktif->id_periodetahun }}">
+                                            <input type="hidden" name="id_periodetipe"
+                                                value="{{ $tp_aktif->id_periodetipe }}">
+                                            <button type="submit" class="btn btn-info btn-xs">Validasi</button>
+                                        </form>
+                                        {{-- <a href="/val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-info btn-xs">Validasi</a> --}}
                                     @elseif ($item->validasi_bauk == 'SUDAH')
-                                        <a href="/batal_val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-warning btn-xs">Batal</a>
+                                        <form action="{{ url('batal_val_penangguhan_bauk') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id_penangguhan_trans"
+                                                value="{{ $item->id_penangguhan_trans }}">
+                                            <input type="hidden" name="id_penangguhan_kategori"
+                                                value="{{ $kategori->id_penangguhan_kategori }}">
+                                            <input type="hidden" name="id_periodetahun"
+                                                value="{{ $thn_aktif->id_periodetahun }}">
+                                            <input type="hidden" name="id_periodetipe"
+                                                value="{{ $tp_aktif->id_periodetipe }}">
+                                            <button type="submit" class="btn btn-warning btn-xs">Batal</button>
+                                        </form>
+
+                                        {{-- <a href="/batal_val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-warning btn-xs">Batal</a> --}}
                                     @endif
                                 </td>
                                 <td align="center">
@@ -140,6 +166,12 @@
                                                     <input type="number" class="form-control" name="total_tunggakan"
                                                         value="{{ $item->total_tunggakan }}" required>
                                                 </div>
+                                                <input type="hidden" name="id_penangguhan_kategori"
+                                                    value="{{ $kategori->id_penangguhan_kategori }}">
+                                                <input type="hidden" name="id_periodetahun"
+                                                    value="{{ $thn_aktif->id_periodetahun }}">
+                                                <input type="hidden" name="id_periodetipe"
+                                                    value="{{ $tp_aktif->id_periodetipe }}">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>
                                                 <button type="submit" class="btn btn-primary">Simpan

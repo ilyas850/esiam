@@ -1436,8 +1436,10 @@ Route::group(['middleware' => 'bauk'], function () {
     // Route::get('data_penangguhan_bauk/{id}', 'BaukController@data_penangguhan_bauk');
     Route::post('data_penangguhan_bauk', 'BaukController@data_penangguhan_bauk');
     Route::put('put_tunggakan/{id}', 'BaukController@put_tunggakan');
-    Route::get('val_penangguhan_bauk/{id}', 'BaukController@val_penangguhan_bauk');
-    Route::get('batal_val_penangguhan_bauk/{id}', 'BaukController@batal_val_penangguhan_bauk');
+    // Route::get('val_penangguhan_bauk/{id}', 'BaukController@val_penangguhan_bauk');
+    Route::post('val_penangguhan_bauk', 'BaukController@val_penangguhan_bauk');
+    // Route::get('batal_val_penangguhan_bauk/{id}', 'BaukController@batal_val_penangguhan_bauk');
+    Route::post('batal_val_penangguhan_bauk', 'BaukController@batal_val_penangguhan_bauk');
 
     //waktu penangguhan
     Route::get('waktu_penangguhan', 'BaukController@waktu_penangguhan');
