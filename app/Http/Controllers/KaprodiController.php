@@ -8583,8 +8583,20 @@ class KaprodiController extends Controller
     return view('kaprodi/master/cek_krs_mhs', compact('data_mhs', 'data'));
   }
 
-  public function FunctionName()
+  public function total_mhs_matkul()
   {
-    # code...
+    $iddosen = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iddosen)
+      ->select('prodi.kodeprodi')
+      ->first();
+
+    $thn_aktif = Periode_tahun::where('status',  'ACTIVE')->first();
+    $tp_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $data = DB::select('CALL jml_mhs_permatkul(?,?,?)', [$prodi->kodeprodi, $thn_aktif->id_periodetahun, $tp_aktif->id_periodetipe]);
+
+    return view('kaprodi/perkuliahan/total_mhs_matkul', compact('data', 'thn_aktif', 'tp_aktif'));
   }
 }

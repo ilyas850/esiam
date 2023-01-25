@@ -76,7 +76,8 @@
                         diampu</span></a></li>
             <li><a href="{{ url('history_makul_kprd') }}"><i class="fa fa-circle-o"></i> <span>History Matakuliah
                         diampu</span></a></li>
-
+            <li><a href="{{ url('total_mhs_matkul') }}"><i class="fa fa-circle-o"></i> <span>Total Mahasiswa Per
+                        Matkul</span></a></li>
             <li><a href="{{ url('master_yudisium_kprd') }}"><i class="fa fa-circle-o"></i> Yudisium</a></li>
             <li><a href="{{ url('master_wisuda_kprd') }}"><i class="fa fa-circle-o"></i> Wisuda</a></li>
         </ul>
@@ -118,7 +119,7 @@
                     <li><a href="{{ url('penguji_ta_kprd') }}"><i class="fa fa-circle-o"></i> TA</a></li>
                 </ul>
             </li>
-            
+
             {{-- <li class="treeview">
                 <a href="#">
                     <i class="fa fa-circle-o"></i> <span>Jadwal</span>

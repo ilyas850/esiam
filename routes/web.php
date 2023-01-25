@@ -1205,6 +1205,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //KRS mahasiswa
     Route::get('krs_mahasiswa_kprd', 'KaprodiController@krs_mahasiswa_kprd');
     Route::get('cek_krs_all_kprd/{id}', 'KaprodiController@cek_krs_all_kprd');
+
+    //total mahasiswa per matakuliah
+    Route::get('total_mhs_matkul', 'KaprodiController@total_mhs_matkul');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
