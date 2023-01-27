@@ -324,7 +324,18 @@ class EdomController extends Controller
     $periodetipe = $request->periodetipe;
     $nama = $request->nama;
 
-    $data = DB::select('CALL detail_edom_dosen(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    }
+
 
     return view('sadmin/edom/detail_edom_dosen', compact('data', 'nama', 'periodetahun', 'periodetipe'));
   }
@@ -419,7 +430,17 @@ class EdomController extends Controller
     $periodetipe = $request->periodetipe;
     $nama = $request->nama;
 
-    $data = DB::select('CALL detail_edom_dosen(?,?,?)', array($iddosen, $idperiodetahun, $idperiodetipe));
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    }
 
     $pdf = PDF::loadView('sadmin/edom/pdf_detail_report_edom_dosen', compact('data', 'periodetahun', 'periodetipe', 'nama'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
