@@ -408,6 +408,7 @@ class EdomController extends Controller
     return $pdf->download('Report EDOM Dosen' . ' ' . $thn . ' ' . $tp . '.pdf');
   }
 
+  //download detail edom
   public function download_detail_edom_makul(Request $request)
   {
     $idkurperiode = $request->id_kurperiode;
