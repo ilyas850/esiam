@@ -370,6 +370,7 @@ class EdomController extends Controller
     return view('sadmin/edom/detail_edom_makul', compact('data', 'data_mk'));
   }
 
+  //download report edom PDF
   public function download_report_edom_by_makul(Request $request)
   {
     $idperiodetahun = $request->id_periodetahun;
