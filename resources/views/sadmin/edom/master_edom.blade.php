@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-xs-6">
                         <label>Prodi</label>
-                        <select class="form-control" name="id_prodi" required>
+                        <select class="form-control" name="kodeprodi" required>
                             <option></option>
                             @foreach ($prodi as $prd)
                                 <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}

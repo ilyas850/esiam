@@ -87,25 +87,103 @@
                     </td>
                     <td>
                         <center>
-                            <span style="font-size:85%"> {{ $item->nilai_edom }}</span>
+                            <span style="font-size:85%">
+                                @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                    {{ $item->nilai_edom }}
+                                @elseif($item->id_periodetahun > 6)
+                                    {{ $item->nilai_edom }}
+                                @elseif($item->id_periodetahun < 6)
+                                    {{ $item->nilai_edom_old }}
+                                @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 1)
+                                    {{ $item->nilai_edom_old }}
+                                @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
+                                    {{ $item->nilai_edom_old }}
+                                @endif
+                            </span>
                         </center>
                     </td>
                     <td>
                         <center><span style="font-size:85%">
-                                @if ($item->nilai_edom >= 80)
-                                    A
-                                @elseif ($item->nilai_edom >= 75)
-                                    B+
-                                @elseif ($item->nilai_edom >= 70)
-                                    B
-                                @elseif ($item->nilai_edom >= 65)
-                                    C+
-                                @elseif ($item->nilai_edom >= 60)
-                                    C
-                                @elseif ($item->nilai_edom >= 50)
-                                    D
-                                @elseif ($item->nilai_edom >= 0)
-                                    E
+                                @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                    @if ($item->nilai_edom >= 80)
+                                        A
+                                    @elseif ($item->nilai_edom >= 75)
+                                        B+
+                                    @elseif ($item->nilai_edom >= 70)
+                                        B
+                                    @elseif ($item->nilai_edom >= 65)
+                                        C+
+                                    @elseif ($item->nilai_edom >= 60)
+                                        C
+                                    @elseif ($item->nilai_edom >= 50)
+                                        D
+                                    @elseif ($item->nilai_edom >= 0)
+                                        E
+                                    @endif
+                                @elseif($item->id_periodetahun > 6)
+                                    @if ($item->nilai_edom >= 80)
+                                        A
+                                    @elseif ($item->nilai_edom >= 75)
+                                        B+
+                                    @elseif ($item->nilai_edom >= 70)
+                                        B
+                                    @elseif ($item->nilai_edom >= 65)
+                                        C+
+                                    @elseif ($item->nilai_edom >= 60)
+                                        C
+                                    @elseif ($item->nilai_edom >= 50)
+                                        D
+                                    @elseif ($item->nilai_edom >= 0)
+                                        E
+                                    @endif
+                                @elseif($item->id_periodetahun < 6)
+                                    @if ($item->nilai_edom_old >= 80)
+                                        A
+                                    @elseif ($item->nilai_edom_old >= 75)
+                                        B+
+                                    @elseif ($item->nilai_edom_old >= 70)
+                                        B
+                                    @elseif ($item->nilai_edom_old >= 65)
+                                        C+
+                                    @elseif ($item->nilai_edom_old >= 60)
+                                        C
+                                    @elseif ($item->nilai_edom_old >= 50)
+                                        D
+                                    @elseif ($item->nilai_edom_old >= 0)
+                                        E
+                                    @endif
+                                @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 1)
+                                    @if ($item->nilai_edom_old >= 80)
+                                        A
+                                    @elseif ($item->nilai_edom_old >= 75)
+                                        B+
+                                    @elseif ($item->nilai_edom_old >= 70)
+                                        B
+                                    @elseif ($item->nilai_edom_old >= 65)
+                                        C+
+                                    @elseif ($item->nilai_edom_old >= 60)
+                                        C
+                                    @elseif ($item->nilai_edom_old >= 50)
+                                        D
+                                    @elseif ($item->nilai_edom_old >= 0)
+                                        E
+                                    @endif
+                                @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
+                                    @if ($item->nilai_edom_old >= 80)
+                                        A
+                                    @elseif ($item->nilai_edom_old >= 75)
+                                        B+
+                                    @elseif ($item->nilai_edom_old >= 70)
+                                        B
+                                    @elseif ($item->nilai_edom_old >= 65)
+                                        C+
+                                    @elseif ($item->nilai_edom_old >= 60)
+                                        C
+                                    @elseif ($item->nilai_edom_old >= 50)
+                                        D
+                                    @elseif ($item->nilai_edom_old >= 0)
+                                        E
+                                    @endif
                                 @endif
                             </span>
                         </center>

@@ -291,7 +291,7 @@ class EdomController extends Controller
   {
     $idperiodetahun = $request->id_periodetahun;
     $idperiodetipe = $request->id_periodetipe;
-    $idprodi = $request->id_prodi;
+    $idprodi = $request->kodeprodi;
     $tipe = $request->tipe_laporan;
 
     $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
@@ -343,8 +343,21 @@ class EdomController extends Controller
   public function detail_edom_makul(Request $request)
   {
     $idkurperiode = $request->id_kurperiode;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
 
-    $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    }
+
 
     $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
@@ -361,11 +374,11 @@ class EdomController extends Controller
   {
     $idperiodetahun = $request->id_periodetahun;
     $idperiodetipe = $request->id_periodetipe;
-    $idprodi = $request->id_prodi;
+    $idprodi = $request->kodeprodi;
 
     $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
     $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
-    $prodi = Prodi::where('id_prodi', $idprodi)->first();
+    $prodi = Prodi::where('kodeprodi', $idprodi)->first();
 
     $thn = $periodetahun->periode_tahun;
     $tp = $periodetipe->periode_tipe;
@@ -397,8 +410,20 @@ class EdomController extends Controller
   public function download_detail_edom_makul(Request $request)
   {
     $idkurperiode = $request->id_kurperiode;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
 
-    $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    }
 
     $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')

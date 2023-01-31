@@ -24,7 +24,7 @@
             <div class="box-body">
                 <form action="{{ url('download_report_edom_by_makul') }}" method="POST">
                     {{ csrf_field() }}
-                    <input type="hidden" name="id_prodi" value="{{ $idprodi }}">
+                    <input type="hidden" name="kodeprodi" value="{{ $idprodi }}">
                     <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                     <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                     <input type="hidden" name="periodetahun" value="{{ $thn }}">
@@ -97,25 +97,101 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{ $item->nilai_edom }}
+                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                            {{ $item->nilai_edom }}
+                                        @elseif($item->id_periodetahun > 6)
+                                            {{ $item->nilai_edom }}
+                                        @elseif($item->id_periodetahun < 6)
+                                            {{ $item->nilai_edom_old }}
+                                        @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 1)
+                                            {{ $item->nilai_edom_old }}
+                                        @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
+                                            {{ $item->nilai_edom_old }}
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->nilai_edom >= 80)
-                                            A
-                                        @elseif ($item->nilai_edom >= 75)
-                                            B+
-                                        @elseif ($item->nilai_edom >= 70)
-                                            B
-                                        @elseif ($item->nilai_edom >= 65)
-                                            C+
-                                        @elseif ($item->nilai_edom >= 60)
-                                            C
-                                        @elseif ($item->nilai_edom >= 50)
-                                            D
-                                        @elseif ($item->nilai_edom >= 0)
-                                            E
+                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                            @if ($item->nilai_edom >= 80)
+                                                A
+                                            @elseif ($item->nilai_edom >= 75)
+                                                B+
+                                            @elseif ($item->nilai_edom >= 70)
+                                                B
+                                            @elseif ($item->nilai_edom >= 65)
+                                                C+
+                                            @elseif ($item->nilai_edom >= 60)
+                                                C
+                                            @elseif ($item->nilai_edom >= 50)
+                                                D
+                                            @elseif ($item->nilai_edom >= 0)
+                                                E
+                                            @endif
+                                        @elseif($item->id_periodetahun > 6)
+                                            @if ($item->nilai_edom >= 80)
+                                                A
+                                            @elseif ($item->nilai_edom >= 75)
+                                                B+
+                                            @elseif ($item->nilai_edom >= 70)
+                                                B
+                                            @elseif ($item->nilai_edom >= 65)
+                                                C+
+                                            @elseif ($item->nilai_edom >= 60)
+                                                C
+                                            @elseif ($item->nilai_edom >= 50)
+                                                D
+                                            @elseif ($item->nilai_edom >= 0)
+                                                E
+                                            @endif
+                                        @elseif($item->id_periodetahun < 6)
+                                            @if ($item->nilai_edom_old >= 80)
+                                                A
+                                            @elseif ($item->nilai_edom_old >= 75)
+                                                B+
+                                            @elseif ($item->nilai_edom_old >= 70)
+                                                B
+                                            @elseif ($item->nilai_edom_old >= 65)
+                                                C+
+                                            @elseif ($item->nilai_edom_old >= 60)
+                                                C
+                                            @elseif ($item->nilai_edom_old >= 50)
+                                                D
+                                            @elseif ($item->nilai_edom_old >= 0)
+                                                E
+                                            @endif
+                                        @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 1)
+                                            @if ($item->nilai_edom_old >= 80)
+                                                A
+                                            @elseif ($item->nilai_edom_old >= 75)
+                                                B+
+                                            @elseif ($item->nilai_edom_old >= 70)
+                                                B
+                                            @elseif ($item->nilai_edom_old >= 65)
+                                                C+
+                                            @elseif ($item->nilai_edom_old >= 60)
+                                                C
+                                            @elseif ($item->nilai_edom_old >= 50)
+                                                D
+                                            @elseif ($item->nilai_edom_old >= 0)
+                                                E
+                                            @endif
+                                        @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
+                                            @if ($item->nilai_edom_old >= 80)
+                                                A
+                                            @elseif ($item->nilai_edom_old >= 75)
+                                                B+
+                                            @elseif ($item->nilai_edom_old >= 70)
+                                                B
+                                            @elseif ($item->nilai_edom_old >= 65)
+                                                C+
+                                            @elseif ($item->nilai_edom_old >= 60)
+                                                C
+                                            @elseif ($item->nilai_edom_old >= 50)
+                                                D
+                                            @elseif ($item->nilai_edom_old >= 0)
+                                                E
+                                            @endif
                                         @endif
                                     </center>
                                 </td>
@@ -124,8 +200,9 @@
                                         <form action="detail_edom_makul" method="POST">
                                             {{ csrf_field() }}
 
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
+                                            <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             {{-- <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
                                             <input type="hidden" name="nama" value="{{ $item->nama }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
@@ -141,8 +218,9 @@
                                     <center>
                                         <form action="download_detail_edom_makul" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode"
-                                                value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
+                                            <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
 
                                             <button type="submit" class="btn btn-danger btn-xs">PDF</button>
                                         </form>
