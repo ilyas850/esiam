@@ -8599,4 +8599,6 @@ class KaprodiController extends Controller
 
     return view('kaprodi/perkuliahan/total_mhs_matkul', compact('data', 'thn_aktif', 'tp_aktif'));
   }
+
+  //test remote
 }
