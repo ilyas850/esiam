@@ -2943,7 +2943,7 @@ class MhsController extends Controller
         $biaya = Biaya::where('idangkatan', $idangkatan)
             ->where('idstatus', $idstatus)
             ->where('kodeprodi', $kodeprodi)
-            ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14')
+            ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14' , 'prakerin')
             ->first();
 
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
@@ -2966,6 +2966,7 @@ class MhsController extends Controller
             $spp12 = $biaya->spp12 - ($biaya->spp12 * $cek_bea->spp12) / 100;
             $spp13 = $biaya->spp13 - ($biaya->spp13 * $cek_bea->spp13) / 100;
             $spp14 = $biaya->spp14 - ($biaya->spp14 * $cek_bea->spp14) / 100;
+            $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cek_bea->prakerin)) / 100);
         } elseif ($cek_bea == null) {
             $daftar = $biaya->daftar;
             $awal = $biaya->awal;
@@ -2984,6 +2985,7 @@ class MhsController extends Controller
             $spp12 = $biaya->spp12;
             $spp13 = $biaya->spp13;
             $spp14 = $biaya->spp14;
+            $prakerin = $biaya->prakerin;
         }
 
         //total pembayaran kuliah
@@ -3004,7 +3006,11 @@ class MhsController extends Controller
         } elseif ($c == '401') {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
         } elseif ($c == 5) {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+            if ($kodeprodi == 23 or $kodeprodi == 24) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $prakerin - $total_semua_dibayar;
+            } elseif ($kodeprodi == 25) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+            }
         } elseif ($c == 6) {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
         } elseif ($c == '601') {
@@ -3031,7 +3037,6 @@ class MhsController extends Controller
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
         }
 
-        
 
         if ($cekbyr == 0 or $cekbyr < 100) {
             //cek jumlah matakuliah diambil

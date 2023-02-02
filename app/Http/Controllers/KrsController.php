@@ -192,7 +192,7 @@ class KrsController extends Controller
       $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
-     
+
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {

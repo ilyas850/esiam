@@ -55,7 +55,6 @@
                 <table id="example6" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-
                             <th rowspan="2">
                                 <center>Pertemuan</center>
                             </th>
