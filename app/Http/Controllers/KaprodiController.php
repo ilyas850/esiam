@@ -8603,6 +8603,6 @@ class KaprodiController extends Controller
   //test remote
   public function FunctionName()
   {
-    # code...
+    dd('inii');
   }
 }
