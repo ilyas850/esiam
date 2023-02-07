@@ -14,7 +14,6 @@ jobs:
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
-        # ftp-server: ${{ secrets.ESIAM_FTP_SERVER }}
-        ftp-server: sftp://sftp.student.politeknikmeta.ac.id
+        ftp-server: ${{ secrets.ESIAM_FTP_SERVER }}
         ftp-username: ${{ secrets.ESIAM_FTP_USERNAME }}
         ftp-password: ${{ secrets.ESIAM_FTP_PASSWORD }}
