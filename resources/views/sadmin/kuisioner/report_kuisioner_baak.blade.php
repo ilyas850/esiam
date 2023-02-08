@@ -122,7 +122,7 @@
                                     <center>
                                         <form action="{{ url('detail_kuisioner_baak') }}" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_prodi" value="{{ $item->id_prodi }}">
+                                            <input type="hidden" name="kodeprodi" value="{{ $item->kodeprodi }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
@@ -136,7 +136,7 @@
                                     <center>
                                         <form action="{{ url('download_detail_kuisioner_baak') }}" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_prodi" value="{{ $item->id_prodi }}">
+                                            <input type="hidden" name="kodeprodi" value="{{ $item->kodeprodi }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
