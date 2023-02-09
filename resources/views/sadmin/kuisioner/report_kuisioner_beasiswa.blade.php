@@ -122,12 +122,11 @@
                                     <center>
                                         <form action="{{ url('detail_kuisioner_beasiswa') }}" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_prodi" value="{{ $item->id_prodi }}">
+                                            <input type="hidden" name="kodeprodi" value="{{ $item->kodeprodi }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
                                             <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
-
                                             <button type="submit" class="btn btn-success btn-xs">Detail</button>
                                         </form>
                                     </center>
@@ -136,12 +135,11 @@
                                     <center>
                                         <form action="{{ url('download_detail_kuisioner_beasiswa') }}" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_prodi" value="{{ $item->id_prodi }}">
+                                            <input type="hidden" name="kodeprodi" value="{{ $item->kodeprodi }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             <input type="hidden" name="periodetahun" value="{{ $namaperiodetahun }}">
                                             <input type="hidden" name="periodetipe" value="{{ $namaperiodetipe }}">
-
                                             <button type="submit" class="btn btn-danger btn-xs">PDF</button>
                                         </form>
                                     </center>
