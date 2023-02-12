@@ -193,6 +193,7 @@ class KrsController extends Controller
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
 
+        //test lagi
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
