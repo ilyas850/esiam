@@ -844,7 +844,7 @@ class DosenController extends Controller
 
     public function input_uas_dsn($id)
     {
-        //cek mahasiswa
+        //cek mahasiswa untuk input nilai
         $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
 
         $keymkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
