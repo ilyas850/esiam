@@ -500,6 +500,25 @@ class DosenController extends Controller
         }
     }
 
+    public function batal_krs_validasi(Request $request)
+    {
+        $id = $request->id_student;
+
+        Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.id_student', $id)
+            ->update(['student_record.remark' => $request->remark]);
+
+        Alert::success('', 'KRS berhasil dibatalkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
     public function change($id)
     {
         return view('dosen/change_pwd', ['dsn' => $id]);
@@ -601,9 +620,9 @@ class DosenController extends Controller
         return Excel::download(new DataNilaiExport($id), $nama_file);
     }
 
-    public function unduh_pdf_nilai(Request $request)
+    public function unduh_pdf_nilai($id)
     {
-        $id = $request->id_kurperiode;
+        // $id = $request->id_kurperiode;
 
         $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')

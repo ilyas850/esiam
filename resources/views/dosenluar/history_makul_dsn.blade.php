@@ -105,12 +105,16 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <form class="" action="{{ url('unduh_pdf_nilai_dsn') }}" method="post">
+                                        {{-- <form class="" action="{{ url('unduh_pdf_nilai_dsn') }}" method="post">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
                                             <button type="submit" class="btn btn-danger btn-xs"
                                                 title="klik untuk unduh ke pdf"><i class="fa fa-file-pdf-o"></i></button>
-                                        </form>
+                                        </form> --}}
+                                        <a href="/unduh_pdf_nilai_dsn/{{ $item->id_kurperiode }}"
+                                            class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
+                                                title="Klik untuk export nilai .pdf">
+                                            </i></a>
 
                                     </center>
                                 </td>

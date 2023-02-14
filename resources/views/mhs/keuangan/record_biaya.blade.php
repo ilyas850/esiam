@@ -41,9 +41,11 @@
                                             {{ $key->item }}
 
                                         </td>
-                                        <td align="center">{{ $key->tanggal }}</td>
+                                        <td align="center">
+                                            {{ Carbon\Carbon::parse($key->tanggal)->formatLocalized('%d %B %Y') }}
+                                        </td>
                                         <td align="center">{{ $key->nokuit }}</td>
-                                        <td align="right">@currency($key->bayar)</td>
+                                        <td align="right"> @currency((float) $key->bayar)</td>
                                     </tr>
                                 @endforeach
                                 <tr>

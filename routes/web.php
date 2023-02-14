@@ -424,6 +424,9 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('change_pwd_dsn/{id}', 'DosenController@change');
     Route::put('pwd_dsn/{id}', 'DosenController@store_pwd_dsn');
 
+    //batal validasi krs
+    Route::post('batal_krs_validasi', 'DosenController@batal_krs_validasi');
+
     //matakuliah diampu dosen
     Route::get('makul_diampu_dsn', 'DosenController@makul_diampu_dsn');
     Route::get('input_kat_dsn/{id}', 'DosenController@input_kat_dsn');
@@ -472,7 +475,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('print_jurnal/{id}', 'DosenController@print_jurnal');
 
     //unduh pdf
-    Route::post('unduh_pdf_nilai', 'DosenController@unduh_pdf_nilai');
+    Route::get('unduh_pdf_nilai/{id}', 'DosenController@unduh_pdf_nilai');
     Route::get('download_absensi/{id}', 'DosenController@download_absensi');
     Route::get('download_jurnal/{id}', 'DosenController@download_jurnal');
 
@@ -963,6 +966,9 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('cek_krs_kprd/{id}', 'KaprodiController@cek_krs');
     Route::post('savekrs_new_kprd', 'KaprodiController@savekrs_new');
     Route::post('hapuskrsmhs_kprd', 'KaprodiController@hapuskrsmhs');
+
+    //batal validasi krs
+    Route::post('batal_krs_validasi_kprd', 'KaprodiController@batal_krs_validasi_kprd');
 
     //cek matakuliah mengulang
     Route::get('cek_makul_mengulang_kprd/{id}', 'KaprodiController@cek_makul_mengulang_kprd');

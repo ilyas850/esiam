@@ -95,7 +95,14 @@
                                         @foreach ($bim as $item)
                                             @if ($key->id_student == $item->id_student)
                                                 @if ($item->remark == 1)
-                                                    <span class="badge bg-yellow">Sudah divalidasi</span>
+                                                    <form action="{{ url('batal_krs_validasi_kprd') }}" method="post">
+                                                        <input type="hidden" name="id_student"
+                                                            value="{{ $key->id_student }}">
+                                                        <input type="hidden" name="remark" value="0">
+                                                        {{ csrf_field() }}
+                                                        <button type="submit" class="btn btn-danger btn-xs"
+                                                            data-toggle="tooltip" data-placement="right">Batal</button>
+                                                    </form>
                                                 @elseif ($item->remark == 0)
                                                     <form class="" action="{{ url('krs_validasi_kprd') }}"
                                                         method="post">

@@ -195,35 +195,35 @@ class KrsController extends Controller
 
         //test lagi
       if ($c == 1) {
-        $cekbyr = ($daftar + $awal + ($spp1 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + ($spp1 * 20 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
         $cekbyr = ($daftar + $awal + ($dsp * 50 / 100) + $spp1 + ($spp2 * 16.5 / 100)) - $total_semua_dibayar;
       } elseif ($c == 2) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + ($spp2 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1) - $total_semua_dibayar;
       } elseif ($c == '201') {
         $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + ($spp2 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 3) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2) - $total_semua_dibayar;
       } elseif ($c == 4) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3) - $total_semua_dibayar;
       } elseif ($c == '401') {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 5) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 16.5 / 100)) + ($prakerin * 75 / 100) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4) + ($prakerin * 75 / 100) - $total_semua_dibayar;
       } elseif ($c == 6) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5) - $total_semua_dibayar;
       } elseif ($c == '601') {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 7) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6) - $total_semua_dibayar;
       } elseif ($c == 8) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7) - $total_semua_dibayar;
       } elseif ($c == '801') {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 9) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + ($spp9 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8) - $total_semua_dibayar;
       } elseif ($c == 10) {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 16.5 / 100)) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9) - $total_semua_dibayar;
       } elseif ($c == '1001') {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 82 / 100)) - $total_semua_dibayar;
       } elseif ($c == 11) {
@@ -497,6 +497,7 @@ class KrsController extends Controller
             ->where('kurikulum_periode.id_kelas', $idstatus)
             ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
             ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_semester', $c)
             ->where('kurikulum_transaction.id_semester', $c)
             ->where('kurikulum_transaction.id_angkatan', $idangkatan)
             ->where('kurikulum_periode.status', 'ACTIVE')
@@ -514,6 +515,7 @@ class KrsController extends Controller
             ->where('kurikulum_periode.id_kelas', $idstatus)
             ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
             ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+            ->where('kurikulum_periode.id_semester', $c)
             ->where('kurikulum_transaction.id_semester', $c)
             ->where('kurikulum_transaction.id_angkatan', $idangkatan)
             ->where('kurikulum_periode.status', 'ACTIVE')
@@ -575,6 +577,7 @@ class KrsController extends Controller
           ->where('kurikulum_periode.id_kelas', $idstatus)
           ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
           ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_semester', $c)
           ->where('kurikulum_transaction.id_semester', $c)
           ->where('kurikulum_transaction.id_angkatan', $idangkatan)
           ->where('kurikulum_periode.status', 'ACTIVE')
@@ -592,6 +595,7 @@ class KrsController extends Controller
           ->where('kurikulum_periode.id_kelas', $idstatus)
           ->where('kurikulum_transaction.id_prodi', $value->id_prodi)
           ->where('kurikulum_periode.id_prodi', $value->id_prodi)
+          ->where('kurikulum_periode.id_semester', $c)
           ->where('kurikulum_transaction.id_semester', $c)
           ->where('kurikulum_transaction.id_angkatan', $idangkatan)
           ->where('kurikulum_periode.status', 'ACTIVE')

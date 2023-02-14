@@ -115,10 +115,7 @@
                                     <th>Jam</th>
                                     <th>Ruangan</th>
                                     <th>
-                                        <center>SKST</center>
-                                    </th>
-                                    <th>
-                                        <center>SKSP</center>
+                                        <center>SKS (T/P)</center>
                                     </th>
                                     <th>Dosen</th>
                                     <th> </th>
@@ -153,10 +150,7 @@
                                         <td>{{ $item->jam }}</td>
                                         <td>{{ $item->nama_ruangan }}</td>
                                         <td>
-                                            <center>{{ $item->akt_sks_teori }}</center>
-                                        </td>
-                                        <td>
-                                            <center>{{ $item->akt_sks_praktek }}</center>
+                                            <center>{{ $item->akt_sks_teori }}/{{ $item->akt_sks_praktek }}</center>
                                         </td>
                                         <td>{{ $item->nama }}</td>
                                         <td>
