@@ -118,6 +118,7 @@
                                             </i></a>
                                     </center>
                                 </td>
+                                
                                 <td>
                                     <center>
                                         <a href="view_bap_his_kprd/{{ $item->id_kurperiode }}"
