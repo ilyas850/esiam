@@ -75,41 +75,41 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="3%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="5%">Semester</th>
-                            <th width="5%">Kode</th>
-                            <th width="16%">Matakuliah</th>
-                            <th width="4%">Hari</th>
-                            <th width="3%">Jam</th>
-                            <th width="8%">Ruangan</th>
-                            <th width="2%">SKST</th>
-                            <th width="2%">SKSP</th>
-                            <th width="18%">Dosen</th>
-                            <th width="4%">Aksi </th>
+                            <th>
+                                <center>Semester</center>
+                            </th>
+                            <th>Matakuliah</th>
+                            <th>Hari</th>
+                            <th>
+                                <center>Jam</center>
+                            </th>
+                            <th>Ruangan</th>
+                            <th>
+                                <center>SKS (T/P)</center>
+                            </th>
+                            <th>Dosen</th>
+                            <th>
+                                <center>Aksi</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($val as $item)
                             <tr>
-                                <td>{{ $no++ }}</td>
+                                <td align="center">{{ $no++ }}</td>
 
-                                <td>{{ $item->semester }}</td>
-                                <td>{{ $item->kode }} </td>
-                                <td>{{ $item->makul }}</td>
+                                <td align="center">{{ $item->semester }}</td>
+                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
                                 <td> {{ $item->hari }}</td>
-                                <td> {{ $item->jam }}</td>
+                                <td align="center"> {{ $item->jam }}</td>
                                 <td>{{ $item->nama_ruangan }}</td>
                                 <td>
                                     <center>
-                                        {{ $item->akt_sks_teori }}
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        {{ $item->akt_sks_praktek }}
+                                        {{ $item->akt_sks_teori }}/{{ $item->akt_sks_praktek }}
                                     </center>
                                 </td>
                                 <td>{{ $item->nama }}</td>
@@ -122,8 +122,8 @@
                                                 <input type="hidden" name="id_student" value="{{ $item->idstudent }}">
                                                 <input type="hidden" name="remark" value="0">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-danger btn-xs" title="klik untuk batal"
-                                                    data-toggle="tooltip" data-placement="right"
+                                                <button type="submit" class="btn btn-danger btn-xs"
+                                                    title="klik untuk batal" data-toggle="tooltip" data-placement="right"
                                                     onclick="return confirm('apakah anda yakin akan membatalkan matakuliah ini?')">Batal</button>
                                             </form>
                                         @elseif ($item->remark == 0)

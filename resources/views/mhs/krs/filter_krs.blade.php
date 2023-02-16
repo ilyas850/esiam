@@ -108,12 +108,19 @@
                                     <th>
                                         <center>Tanggal KRS</center>
                                     </th>
-                                    <th>Semester</th>
-                                    <th>Kode</th>
+                                    <th>
+                                        <center>Semester</center>
+                                    </th>
                                     <th>Matakuliah</th>
-                                    <th>Hari</th>
-                                    <th>Jam</th>
-                                    <th>Ruangan</th>
+                                    <th>
+                                        <center>Hari</center>
+                                    </th>
+                                    <th>
+                                        <center>Jam</center>
+                                    </th>
+                                    <th>
+                                        <center>Ruangan</center>
+                                    </th>
                                     <th>
                                         <center>SKS (T/P)</center>
                                     </th>
@@ -129,10 +136,9 @@
                                                 {{ $item->tanggal_krs }}
                                             </center>
                                         </td>
-                                        <td>{{ $item->semester }} </td>
-                                        <td>{{ $item->kode }}</td>
-                                        <td>{{ $item->makul }}</td>
-                                        <td>
+                                        <td align="center">{{ $item->semester }} </td>
+                                        <td>{{ $item->kode }}/{{ $item->makul }}</td>
+                                        <td align="center">
                                             @if ($item->hari == 'MONDAY')
                                                 SENIN
                                             @elseif($item->hari == 'TUESDAY')
@@ -147,8 +153,8 @@
                                                 SABTU
                                             @endif
                                         </td>
-                                        <td>{{ $item->jam }}</td>
-                                        <td>{{ $item->nama_ruangan }}</td>
+                                        <td align="center">{{ $item->jam }}</td>
+                                        <td align="center">{{ $item->nama_ruangan }}</td>
                                         <td>
                                             <center>{{ $item->akt_sks_teori }}/{{ $item->akt_sks_praktek }}</center>
                                         </td>
