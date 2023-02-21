@@ -235,7 +235,6 @@ class ProdiController extends Controller
 
   public function save_dsn_bim_sempro_ta(Request $request)
   {
-
     $dosen = $request->iddosen;
 
     // $idms1 = $request->id_masterkode_prausta1;
@@ -283,8 +282,7 @@ class ProdiController extends Controller
             ->where('status', 'ACTIVE')
             ->update([
               'id_dosen_pembimbing' => $id2,
-              'dosen_pembimbing' => $id3,
-              'id_masterkode_prausta' => $kode->id_masterkode_prausta
+              'dosen_pembimbing' => $id3
             ]);
         }
       }
@@ -330,8 +328,7 @@ class ProdiController extends Controller
             ->where('status', 'ACTIVE')
             ->update([
               'id_dosen_pembimbing' => $id2,
-              'dosen_pembimbing' => $id3,
-              'id_masterkode_prausta' => $kode1->id_masterkode_prausta
+              'dosen_pembimbing' => $id3
             ]);
         }
       }
