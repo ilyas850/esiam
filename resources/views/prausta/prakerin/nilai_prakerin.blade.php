@@ -12,8 +12,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_nilai_prakerin_use_prodi') }}"
-                        method="POST">
+                    <form class="form" role="form" action="{{ url('filter_nilai_prakerin_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="id_prodi" required>
@@ -96,13 +95,13 @@
                                     <center>{{ $key->kelas }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_1 }}</center>
+                                    <center>{{ number_format($key->nilai_1, 0) }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_2 }}</center>
+                                    <center>{{ number_format($key->nilai_2, 0) }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_3 }}</center>
+                                    <center>{{ number_format($key->nilai_3, 0) }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>
