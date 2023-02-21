@@ -66,6 +66,7 @@ class DosenluarController extends Controller
         $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
         $tp = Periode_tipe::all();
 
+
         $makul = DB::select('CALL matakuliah_diampu_dosen(?,?,?)', [$idperiodetahun, $idperiodetipe, $iddsn]);
 
         return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
@@ -367,7 +368,7 @@ class DosenluarController extends Controller
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
         $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
-        
+
         $idkur = $request->id_kurperiode;
         return view('dosenluar/list_mhs', ['ck' => $kelas_gabungan, 'ids' => $idkur, 'nilai' => $nilai]);
     }
@@ -770,8 +771,21 @@ class DosenluarController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->where('kuliah_transaction.id_dosen', $id_dosen)
-            ->select('kuliah_transaction.payroll_check', 'bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            // ->where('kuliah_transaction.id_dosen', $id_dosen)
+            ->select(
+                'kuliah_transaction.payroll_check',
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir'
+            )
             ->orderBy('bap.id_bap', 'ASC')
             ->get();
 

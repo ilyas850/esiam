@@ -755,6 +755,40 @@ class SadminController extends Controller
         return view('sadmin/approv', ['appr' => $appr]);
     }
 
+    public function validasi_krs_admin($id)
+    {
+        Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.id_student', $id)
+            ->update(['student_record.remark' => 1]);
+
+        Alert::success('', 'KRS berhasil divalidasi')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function batal_krs_admin($id)
+    {
+        Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.id_student', $id)
+            ->update(['student_record.remark' => 0]);
+
+        Alert::success('', 'KRS berhasil dibatalkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
     public function cek_krs($id)
     {
         $datamhs = Student::leftJoin('prodi', function ($join) {
@@ -828,6 +862,36 @@ class SadminController extends Controller
             ->get();
 
         return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $krs, 'val' => $val]);
+    }
+
+    public function cek_makul_mengulang_admin($id)
+    {
+        $id_dsn = Auth::user()->id_user;
+
+        $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+            ->join('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+
+            ->where('student.idstudent', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('student.active', [1, 5])
+            ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+            ->get();
+
+        if (count($data) > 0) {
+            return view('dosen/mhs/makul_mengulang', compact('data'));
+        } else {
+            Alert::warning('Mahasiswa ini tidak ada matakuliah mengulang');
+            return redirect('approve_krs');
+        }
     }
 
     public function batalkrsmhs(Request $request)
@@ -5881,7 +5945,7 @@ class SadminController extends Controller
                 ->where('id_jam', $idjam)
                 ->where('id_ruangan', $idruangan)
                 ->get();
-               
+
             $jml_cek = count($cek);
 
             for ($j = 0; $j < $jml_cek; $j++) {
@@ -5900,12 +5964,12 @@ class SadminController extends Controller
                 $new->id_tipeujian = $idtipeujian[$j];
                 $new->data_origin = 'eSIAM';
                 $new->status = 'ACTIVE';
-            
+
                 $new->save();
             }
         }
 
-        
+
         return redirect('setting_ujian');
     }
 

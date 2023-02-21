@@ -3,5 +3,8 @@
         "c:\\xampp\\htdocs\\esiam": {
             "preferredRemoteName": "gitlab"
         }
-    }
+    },
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

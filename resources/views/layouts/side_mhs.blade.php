@@ -25,7 +25,6 @@
             <li><a href="{{ url('dosen_mip') }}"><i class="fa fa-circle-o"></i> <span>Dosen MIP</span></a></li>
         </ul>
     </li>
-
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>Perkuliahan</span>

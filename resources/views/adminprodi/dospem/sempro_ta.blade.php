@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Setting Dosen Pembimbing Seminar Proposal</h3>
+                <h3 class="box-title">Setting Dosen Pembimbing Seminar Proposal dan Tugas Akhir</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('view_mhs_bim_sempro_ta') }}" method="POST">
@@ -28,7 +28,7 @@
                             <select class="form-control" name="kodeprodi" required>
                                 <option></option>
                                 @foreach ($prodi as $keyprd)
-                                    <option value="{{ $keyprd->kodeprodi }},{{ $keyprd->id_prodi }}">
+                                    <option value="{{ $keyprd->kodeprodi }}">
                                         {{ $keyprd->prodi }}</option>
                                 @endforeach
                             </select>
@@ -123,8 +123,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Nama Dosen Pembimbing Tugas
-                                                        Akhir</label>
+                                                    <label>Nama Dosen Pembimbing Tugas Akhir</label>
                                                     <select class="form-control" name="id_dosen_pembimbing_ta">
                                                         <option value="{{ $item->id_dsn_ta }},{{ $item->dospem_ta }}">
                                                             {{ $item->dospem_ta }}

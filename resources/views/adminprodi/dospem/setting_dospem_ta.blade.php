@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -18,16 +16,16 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr>
-                                <th width="1%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="10%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="30%">
+                                <th>
                                     <center>Nama Mahasiswa</center>
                                 </th>
-                                <th width="25%">
+                                <th>
                                     <center>Dosen Pembimbing</center>
                                 </th>
                             </tr>

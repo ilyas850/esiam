@@ -97,7 +97,8 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                        {{ $item->nilai_edom }}
+                                        {{-- @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
                                             {{ $item->nilai_edom }}
                                         @elseif($item->id_periodetahun > 6)
                                             {{ $item->nilai_edom }}
@@ -107,12 +108,27 @@
                                             {{ $item->nilai_edom_old }}
                                         @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
                                             {{ $item->nilai_edom_old }}
-                                        @endif
+                                        @endif --}}
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                        @if ($item->nilai_edom >= 80)
+                                            A
+                                        @elseif ($item->nilai_edom >= 75)
+                                            B+
+                                        @elseif ($item->nilai_edom >= 70)
+                                            B
+                                        @elseif ($item->nilai_edom >= 65)
+                                            C+
+                                        @elseif ($item->nilai_edom >= 60)
+                                            C
+                                        @elseif ($item->nilai_edom >= 50)
+                                            D
+                                        @elseif ($item->nilai_edom >= 0)
+                                            E
+                                        @endif
+                                        {{-- @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
                                             @if ($item->nilai_edom >= 80)
                                                 A
                                             @elseif ($item->nilai_edom >= 75)
@@ -192,7 +208,7 @@
                                             @elseif ($item->nilai_edom_old >= 0)
                                                 E
                                             @endif
-                                        @endif
+                                        @endif --}}
                                     </center>
                                 </td>
                                 <td>

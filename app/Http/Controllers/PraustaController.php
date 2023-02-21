@@ -580,14 +580,14 @@ class PraustaController extends Controller
         //cek id prausta
         $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('prausta_setting_relasi.id_student', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta'
             )
             ->first();
-
+dd($cekdata_prausta);
         if ($cekdata_prausta != null) {
             $idprausta = $cekdata_prausta->id_settingrelasi_prausta;
         }
@@ -615,7 +615,7 @@ class PraustaController extends Controller
         //cek pembimbing sempro
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('prausta_setting_relasi.id_student', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(

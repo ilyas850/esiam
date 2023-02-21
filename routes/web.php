@@ -153,6 +153,13 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('cek_krs_admin/{id}', 'SadminController@cek_krs');
     Route::post('batalkrsmhs', 'SadminController@batalkrsmhs');
 
+    //validasi krs by admin
+    Route::get('validasi_krs_admin/{id}', 'SadminController@validasi_krs_admin');
+    Route::get('batal_krs_admin/{id}', 'SadminController@batal_krs_admin');
+
+    //cek krs mengulang
+    Route::get('cek_makul_mengulang_admin/{id}', 'SadminController@cek_makul_mengulang_admin');
+
     //WADIR
     Route::get('wadir', 'SadminController@wadir');
     Route::post('post_wadir', 'SadminController@post_wadir');

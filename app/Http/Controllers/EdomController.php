@@ -304,7 +304,19 @@ class EdomController extends Controller
 
     if ($tipe == 'by_makul') {
 
-      $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+        $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun < 6) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun > 6) {
+        $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      }
+
+      // $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
 
       return view('sadmin/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe', 'idprodi'));
     } elseif ($tipe == 'by_dosen') {

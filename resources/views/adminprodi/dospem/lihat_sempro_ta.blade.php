@@ -16,16 +16,22 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr>
-                                <th width="1%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="10%">
-                                    <center>NIM </center>
+                                <th>
+                                    <center>NIM</center>
                                 </th>
-                                <th width="30%">
+                                <th>
                                     <center>Nama Mahasiswa</center>
                                 </th>
-                                <th width="25%">
+                                <th>
+                                    <center>Kelas</center>
+                                </th>
+                                <th>
+                                    <center>Konsentrasi</center>
+                                </th>
+                                <th>
                                     <center>Dosen Pembimbing</center>
                                 </th>
                             </tr>
@@ -41,22 +47,23 @@
                                         <center>{{ $keydsn->nim }}</center>
                                     </td>
                                     <td>{{ $keydsn->nama }}</td>
+                                    <td align="center">{{ $keydsn->kelas }}</td>
+                                    <td>{{ $keydsn->konsentrasi }}</td>
                                     <td>
-
                                         <center>
                                             <select name="iddosen[]">
                                                 <option></option>
                                                 @foreach ($dosen as $keyangk)
                                                     <option
-                                                        value="{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }}">
+                                                        value="{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }},{{ $keydsn->id_prodi }}">
                                                         {{ $keyangk->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </center>
                                     </td>
                                 </tr>
-                                <input type="hidden" name="id_masterkode_prausta1" value="{{ $kode1 }}">
-                                <input type="hidden" name="id_masterkode_prausta2" value="{{ $kode2 }}">
+                                {{-- <input type="hidden" name="id_masterkode_prausta1" value="{{ $kode1 }}">
+                                <input type="hidden" name="id_masterkode_prausta2" value="{{ $kode2 }}"> --}}
                             @endforeach
                         </tbody>
                     </table>

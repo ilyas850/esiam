@@ -115,12 +115,15 @@
                                             </a>
                                         @elseif($app->remark == 0)
                                             <a class="btn btn-success btn-xs"
-                                                href="/batal_krs_admin/{{ $app->id_student }}"
+                                                href="/validasi_krs_admin/{{ $app->id_student }}"
                                                 title="Klik untuk validasi"><i class="fa fa-check"></i>
                                             </a>
                                         @endif
                                         <a class="btn btn-info btn-xs" href="/cek_krs_admin/{{ $app->id_student }}"
                                             title="Klik untuk cek KRS"><i class="fa fa-eye"></i></a>
+                                        <a class="btn btn-warning btn-xs"
+                                            href="/cek_makul_mengulang_admin/{{ $app->id_student }}"><i class="fa fa-repeat"
+                                                title="Klik untuk cek matakuliah mengulang"></i></a>
                                     </center>
                                 </td>
                             </tr>
