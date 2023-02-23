@@ -1541,171 +1541,6 @@ class DosenController extends Controller
 
             return redirect('entri_bap/' . $id_kur)->with('success', 'Data Berhasil diupload');
         }
-
-        //kode lama
-        // $data = Kurikulum_periode::where('id_kurperiode', $request->id_kurperiode)->first();
-
-        // $sama = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-        //     ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-        //     ->where('periode_tahun.id_periodetahun', $data->id_periodetahun)
-        //     ->where('periode_tipe.id_periodetipe', $data->id_periodetipe)
-        //     ->where('kurikulum_periode.id_dosen', $data->id_dosen)
-        //     ->where('kurikulum_periode.id_jam', $data->id_jam)
-        //     ->where('kurikulum_periode.id_hari', $data->id_hari)
-        //     ->where('kurikulum_periode.status', 'ACTIVE')
-        //     ->select('kurikulum_periode.id_kurperiode')
-        //     ->get();
-
-        // $cek_bap = Bap::where('id_kurperiode', $request->id_kurperiode)
-        //     ->where('id_dosen', Auth::user()->id_user)
-        //     ->where('pertemuan', $request->pertemuan)
-        //     ->where('status', 'ACTIVE')
-        //     ->get();
-        // $jml_bap = count($cek_bap);
-        // if ($jml_bap > 0) {
-        //     Alert::error('Maaf pertemuan yang diinput sudah ada', 'maaf');
-        //     return redirect()->back();
-        // } elseif ($jml_bap == 0) {
-        //     $jml_id = count($sama);
-
-        //     for ($i = 0; $i < $jml_id; $i++) {
-        //         $tes = $sama[$i];
-        //         $d = $tes['id_kurperiode'];
-
-        //         $path_tatapmuka = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d . '/' . 'Kuliah Tatap Muka';
-
-        //         if (!File::exists($path_tatapmuka)) {
-        //             File::makeDirectory(public_path() . '/' . $path_tatapmuka, 0777, true);
-        //         }
-
-        //         $path_materikuliah = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d . '/' . 'Materi Kuliah';
-
-        //         if (!File::exists($path_materikuliah)) {
-        //             File::makeDirectory($path_materikuliah);
-        //         }
-
-        //         $path_tugaskuliah = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d . '/' . 'Tugas Kuliah';
-
-        //         if (!File::exists($path_tugaskuliah)) {
-        //             File::makeDirectory($path_tugaskuliah);
-        //         }
-
-        //         $bap = new Bap();
-        //         $bap->id_kurperiode = $d;
-        //         $bap->id_dosen = Auth::user()->id_user;
-        //         $bap->pertemuan = $request->pertemuan;
-        //         $bap->tanggal = $request->tanggal;
-        //         $bap->jam_mulai = $request->jam_mulai;
-        //         $bap->jam_selsai = $request->jam_selsai;
-        //         $bap->jenis_kuliah = $request->jenis_kuliah;
-        //         $bap->id_tipekuliah = $request->id_tipekuliah;
-        //         $bap->metode_kuliah = $request->metode_kuliah;
-        //         $bap->materi_kuliah = $request->materi_kuliah;
-        //         $bap->media_pembelajaran = $request->media_pembelajaran;
-
-        //         if ($i == 0) {
-        //             if ($request->hasFile('file_kuliah_tatapmuka')) {
-        //                 $file = $request->file('file_kuliah_tatapmuka');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Kuliah Tatap Muka';
-        //                 $file->move($tujuan_upload, $nama_file);
-        //                 $bap->file_kuliah_tatapmuka = $nama_file;
-        //             }
-
-        //             if ($request->hasFile('file_materi_kuliah')) {
-        //                 $file = $request->file('file_materi_kuliah');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Materi Kuliah';
-        //                 $file->move($tujuan_upload, $nama_file);
-        //                 $bap->file_materi_kuliah = $nama_file;
-        //             }
-
-        //             if ($request->hasFile('file_materi_tugas')) {
-        //                 $file = $request->file('file_materi_tugas');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d . '/' . 'Tugas Kuliah';
-        //                 $file->move($tujuan_upload, $nama_file);
-        //                 $bap->file_materi_tugas = $nama_file;
-        //             }
-        //         } elseif ($i > 0) {
-        //             if ($request->hasFile('file_kuliah_tatapmuka')) {
-        //                 $tes1 = $sama[0];
-        //                 $d1 = $tes1['id_kurperiode'];
-        //                 $file = $request->file('file_kuliah_tatapmuka');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Kuliah Tatap Muka';
-
-        //                 $tes2 = $sama[$i];
-        //                 $d2 = $tes2['id_kurperiode'];
-
-        //                 $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Kuliah Tatap Muka';
-
-        //                 $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-        //                 File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-        //                 $bap->file_kuliah_tatapmuka = $nama_file1;
-        //             }
-
-        //             if ($request->hasFile('file_materi_kuliah')) {
-        //                 $tes1 = $sama[0];
-        //                 $d1 = $tes1['id_kurperiode'];
-        //                 $file = $request->file('file_materi_kuliah');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Materi Kuliah';
-
-        //                 $tes2 = $sama[$i];
-        //                 $d2 = $tes2['id_kurperiode'];
-
-        //                 $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Materi Kuliah';
-
-        //                 $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-        //                 File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-        //                 $bap->file_materi_kuliah = $nama_file1;
-        //             }
-
-        //             if ($request->hasFile('file_materi_tugas')) {
-        //                 $tes1 = $sama[0];
-        //                 $d1 = $tes1['id_kurperiode'];
-        //                 $file = $request->file('file_materi_tugas');
-        //                 $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-        //                 $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $d1 . '/' . 'Tugas Kuliah';
-
-        //                 $tes2 = $sama[$i];
-        //                 $d2 = $tes2['id_kurperiode'];
-
-        //                 $path = 'File_BAP' . '/' . Auth::user()->id_user . '/' . $d2 . '/' . 'Tugas Kuliah';
-
-        //                 $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-        //                 File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-        //                 $bap->file_materi_tugas = $nama_file1;
-        //             }
-        //         }
-
-        //         $bap->save();
-
-        //         $users = DB::table('bap')
-        //             ->limit(1)
-        //             ->orderByDesc('id_bap')
-        //             ->first();
-
-        //         $kuliah = new Kuliah_transaction();
-        //         $kuliah->id_kurperiode = $d;
-        //         $kuliah->id_dosen = Auth::user()->id_user;
-        //         $kuliah->id_tipekuliah = $request->id_tipekuliah;
-        //         $kuliah->tanggal = $request->tanggal;
-        //         $kuliah->akt_jam_mulai = $request->jam_mulai;
-        //         $kuliah->akt_jam_selesai = $request->jam_selsai;
-        //         $kuliah->id_bap = $users->id_bap;
-        //         $kuliah->save();
-        //     }
-
-        //     return redirect('entri_bap/' . $d)->with('success', 'Data Berhasil diupload');
-        // }
     }
 
     public function entri_absen($id)
@@ -1719,118 +1554,62 @@ class DosenController extends Controller
 
         $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idp]);
 
-        //cek mahasiswa
-        $cks1 = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $idp)
-            ->where('student_record.status', 'TAKEN')
-            ->select('angkatan.angkatan', 'kelas.kelas', 'prodi.prodi', 'student_record.id_kurtrans', 'student_record.id_student', 'student_record.id_studentrecord', 'student.nama', 'student.nim')
-            ->orderBy('student.nim', 'ASC')
-            ->get();
-
         return view('dosen/absensi', ['absen' => $kelas_gabungan, 'idk' => $idp, 'id' => $id]);
     }
 
     public function save_absensi(Request $request)
     {
         $id_record = $request->id_studentrecord;
-        $jmlrecord = count($id_record);
 
         $id_kur = $request->id_kurperiode;
 
         $id_bp = $request->id_bap;
 
         $absen = $request->absensi;
-        $jmlabsen = count($absen);
 
         $cek_bap = Bap::where('id_bap', $id_bp)
+            ->where('status', 'ACTIVE')
             ->select('id_bap', 'id_kurperiode', 'pertemuan', 'id_dosen')
             ->first();
 
-        if ($absen != null) {
-            $cek_kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$id_kur]);
+        $cek_kelas_gabungan1 = DB::select('CALL kelas_gabungan_new(?)', [$id_kur]);
+        $jml_kls_gabungan = count($cek_kelas_gabungan1);
 
-            $jml_kelas_gabungan = count($cek_kelas_gabungan);
+        for ($z = 0; $z < $jml_kls_gabungan; $z++) {
+            $kls_gabungan = $cek_kelas_gabungan1[$z];
 
-            //looping entri absen semua
-            for ($i = 0; $i < $jml_kelas_gabungan; $i++) {
-                $kelas = $cek_kelas_gabungan[$i];
+            $id_kurpe = $kls_gabungan->id_kurperiode;
 
-                $id_kurperiode = $kelas->id_kurperiode;
+            $absensi_mahasiswa = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id_kurpe]);
+            $jml_absensi = count($absensi_mahasiswa);
 
-                $absen_mahasiswa = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id_kurperiode]);
+            $get_id_bap = Bap::where('id_kurperiode', $id_kurpe)
+                ->where('id_dosen', $cek_bap->id_dosen)
+                ->where('pertemuan', $cek_bap->pertemuan)
+                ->where('status', 'ACTIVE')
+                ->select('id_bap')
+                ->first();
 
-                $jml_mhs = count($absen_mahasiswa);
+            for ($y = 0; $y < $jml_absensi; $y++) {
+                $get_idrecord = $absensi_mahasiswa[$y];
+                $get_absensi = $absen[$y];
 
-                $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
-                    ->where('pertemuan', $cek_bap->pertemuan)
-                    ->where('id_dosen', $cek_bap->id_dosen)
-                    ->where('status', 'ACTIVE')
-                    ->select('id_bap')
-                    ->first();
-
-                for ($j = 0; $j < $jml_mhs; $j++) {
-                    $kurperiode = $absen_mahasiswa[$j];
-
-                    $abs = new Absensi_mahasiswa();
-                    $abs->id_bap = $cek_idbap_gabungan->id_bap;
-                    $abs->id_studentrecord = $kurperiode->id_studentrecord;
-                    $abs->save();
-                }
+                $abs = new Absensi_mahasiswa();
+                $abs->id_bap = $get_id_bap->id_bap;
+                $abs->id_studentrecord = $get_idrecord->id_studentrecord;
+                $abs->absensi = $get_absensi;
+                $abs->save();
             }
 
-            //looping untuk entri mahasiswa yang hadir
-            for ($i = 0; $i < $jmlabsen; $i++) {
-                $abs = $request->absensi[$i];
+            $jml_hadir = Absensi_mahasiswa::where('id_bap', $get_id_bap->id_bap)
+                ->where('absensi', 'ABSEN')
+                ->count();
+            $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $get_id_bap->id_bap)
+                ->whereIn('absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
+                ->count();
 
-                $cek_idstudentrecord = Student_record::where('id_studentrecord', $abs)
-                    ->select('id_studentrecord', 'id_kurperiode')
-                    ->first();
-
-                $cek_kelas = DB::select('CALL kelas_gabungan_prodi_kelas(?,?)', [$cek_idstudentrecord->id_kurperiode, $cek_bap->pertemuan]);
-                $jml_kelas = count($cek_kelas);
-
-                for ($l = 0; $l < $jml_kelas; $l++) {
-                    $idkelas = $cek_kelas[$l];
-
-                    $bap = Bap::join('absensi_mahasiswa', 'bap.id_bap', '=', 'absensi_mahasiswa.id_bap')
-                        ->where('bap.id_kurperiode', $idkelas->id_kurperiode)
-                        ->where('bap.id_dosen', $cek_bap->id_dosen)
-                        ->where('bap.pertemuan', $cek_bap->pertemuan)
-                        ->where('absensi_mahasiswa.id_studentrecord', $abs)
-                        ->where('bap.id_bap', $idkelas->id_bap)
-                        ->where('bap.status', 'ACTIVE')
-                        ->update(['absensi_mahasiswa.absensi' => 'ABSEN']);
-                }
-            }
-
-            //looping untuk jumlah mahasiswa dari dan tidak
-            for ($h = 0; $h < $jml_kelas_gabungan; $h++) {
-                $kelas = $cek_kelas_gabungan[$h];
-
-                $id_kurperiode = $kelas->id_kurperiode;
-
-                $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
-                    ->where('pertemuan', $cek_bap->pertemuan)
-                    ->where('id_dosen', $cek_bap->id_dosen)
-                    ->where('status', 'ACTIVE')
-                    ->select('id_bap')
-                    ->first();
-
-                $jml_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
-                    ->where('absensi', 'ABSEN')
-                    ->count();
-                $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
-                    ->where('absensi', 'HADIR')
-                    ->count();
-
-                $bp = Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['hadir' => $jml_hadir]);
-                $bp = Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['tidak_hadir' => $jml_tdk_hadir]);
-            }
+            Bap::where('id_bap', $get_id_bap->id_bap)->update(['hadir' => $jml_hadir]);
+            Bap::where('id_bap', $get_id_bap->id_bap)->update(['tidak_hadir' => $jml_tdk_hadir]);
         }
 
         return redirect('entri_bap/' . $id_kur);
@@ -1851,100 +1630,140 @@ class DosenController extends Controller
 
     public function save_edit_absensi(Request $request)
     {
-        //id BAP
+        #id BAP
         $id_bp = $request->id_bap;
 
-        // cek bap yang sama
+        #cek bap yang sama
         $bap_gabungan = DB::select('CALL bap_gabungan(?)', [$id_bp]);
         $jml_bap_gabungan = count($bap_gabungan);
 
-        //jumlah yang masuk/absen
+        #jumlah yang masuk/absen
         $absen = $request->absensi;
+        $jmlabsen = count($absen);
 
-        //jumlah yang sebelumnya tidak masuk
+        #jumlah yang sebelumnya tidak masuk
         $absr = $request->abs;
 
         $cek_bap = Bap::where('id_bap', $id_bp)
             ->select('id_bap', 'id_kurperiode', 'pertemuan', 'id_dosen')
             ->first();
 
-        if ($absen != null) {
-            //looping untuk edit semua absen jadi HADIR
-            for ($i = 0; $i < $jml_bap_gabungan; $i++) {
-                $id_bap_gabungan = $bap_gabungan[$i];
-                $get_id_bap = $id_bap_gabungan->id_bap;
+        for ($m = 0; $m < $jml_bap_gabungan; $m++) {
+            $get_id_bap = $bap_gabungan[$m];
+            $id_bap_found = $get_id_bap->id_bap;
 
-                Absensi_mahasiswa::where('id_bap', $get_id_bap)->update(['absensi' => 'HADIR']);
-            }
+            for ($n = 0; $n < $jmlabsen; $n++) {
+                $get_id_student = $absen[$n];
+                $idst = explode(',', $get_id_student, 2);
+                $tra = $idst[0];
+                $trs = $idst[1];
+                $cek_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
+                    ->where('id_studentrecord', $tra)
+                    ->get();
 
-            $jmlabsen = count($absen);
-            for ($i = 0; $i < $jmlabsen; $i++) {
-                $abs = $request->absensi[$i];
-
-                $idabsen = DB::select('CALL absensi_gabungan_prodi_kelas(?)', [$abs]);
-                $jml_idabsen = count($idabsen);
-
-                for ($j = 0; $j < $jml_idabsen; $j++) {
-                    $id_absensi = $idabsen[$j];
-
-                    Absensi_mahasiswa::where('id_absensi', $id_absensi->id_absensi)->update(['absensi' => 'ABSEN']);
-                }
-            }
-        } elseif ($absen == null) {
-            for ($i = 0; $i < $jml_bap_gabungan; $i++) {
-                $id_bap_gabungan = $bap_gabungan[$i];
-                $get_id_bap = $id_bap_gabungan->id_bap;
-
-                Absensi_mahasiswa::where('id_bap', $get_id_bap)->update(['absensi' => 'HADIR']);
-            }
-        }
-
-        if ($absr != null) {
-            $jml_mhs = count($absr);
-            for ($i = 0; $i < $jml_mhs; $i++) {
-                $studentrecord = $absr[$i];
-                $cek_idstudentrecord = Student_record::where('id_studentrecord', $studentrecord)->first();
-                $cek_idkurperiode = $cek_idstudentrecord->id_kurperiode;
-
-                $cek_bap_id = DB::select('CALL kelas_gabungan_prodi_kelas(?,?)', [$cek_idkurperiode, $cek_bap->pertemuan]);
-                $jml_bap_id = count($cek_bap_id);
-                for ($l = 0; $l < $jml_bap_id; $l++) {
-                    $bap_fix = $cek_bap_id[$l];
+                if (count($cek_hadir) == 0) {
 
                     $abs = new Absensi_mahasiswa();
-                    $abs->id_bap = $bap_fix->id_bap;
-                    $abs->id_studentrecord = $studentrecord;
-                    $abs->absensi = 'ABSEN';
+                    $abs->id_bap = $id_bap_found;
+                    $abs->id_studentrecord = $tra;
+                    $abs->absensi = $trs;
                     $abs->save();
+                } elseif (count($cek_hadir) > 0) {
+
+                    Absensi_mahasiswa::where('id_bap', $id_bap_found)
+                        ->where('id_studentrecord', $tra)
+                        ->update(['absensi' => $trs]);
                 }
             }
-        }
 
-        $cek_kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$cek_bap->id_kurperiode]);
-        $jml_kelas_gabungan = count($cek_kelas_gabungan);
-
-        for ($h = 0; $h < $jml_kelas_gabungan; $h++) {
-            $kelas = $cek_kelas_gabungan[$h];
-
-            $id_kurperiode = $kelas->id_kurperiode;
-
-            $cek_idbap_gabungan = Bap::where('id_kurperiode', $kelas->id_kurperiode)
-                ->where('pertemuan', $cek_bap->pertemuan)
-                ->where('id_dosen', $cek_bap->id_dosen)
-                ->where('status', 'ACTIVE')
-                ->select('id_bap')
-                ->first();
-
-            $jml_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
+            $jml_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
                 ->where('absensi', 'ABSEN')
                 ->count();
-            $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
-                ->where('absensi', 'HADIR')
+            $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
+                ->whereIn('absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
                 ->count();
 
-            $bp = Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['hadir' => $jml_hadir]);
-            $bp = Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['tidak_hadir' => $jml_tdk_hadir]);
+            Bap::where('id_bap', $id_bap_found)->update(['hadir' => $jml_hadir]);
+            Bap::where('id_bap', $id_bap_found)->update(['tidak_hadir' => $jml_tdk_hadir]);
         }
+
+        // if ($absen != null) {
+        //     #looping untuk edit semua absen jadi HADIR
+        //     for ($i = 0; $i < $jml_bap_gabungan; $i++) {
+        //         $id_bap_gabungan = $bap_gabungan[$i];
+        //         $get_id_bap = $id_bap_gabungan->id_bap;
+
+        //         Absensi_mahasiswa::where('id_bap', $get_id_bap)->update(['absensi' => 'HADIR']);
+        //     }
+
+
+        //     for ($i = 0; $i < $jmlabsen; $i++) {
+        //         $abs = $request->absensi[$i];
+
+        //         $idabsen = DB::select('CALL absensi_gabungan_prodi_kelas(?)', [$abs]);
+        //         $jml_idabsen = count($idabsen);
+
+        //         for ($j = 0; $j < $jml_idabsen; $j++) {
+        //             $id_absensi = $idabsen[$j];
+
+        //             Absensi_mahasiswa::where('id_absensi', $id_absensi->id_absensi)->update(['absensi' => 'ABSEN']);
+        //         }
+        //     }
+        // } elseif ($absen == null) {
+        //     for ($i = 0; $i < $jml_bap_gabungan; $i++) {
+        //         $id_bap_gabungan = $bap_gabungan[$i];
+        //         $get_id_bap = $id_bap_gabungan->id_bap;
+
+        //         Absensi_mahasiswa::where('id_bap', $get_id_bap)->update(['absensi' => 'HADIR']);
+        //     }
+        // }
+
+        // if ($absr != null) {
+        //     $jml_mhs = count($absr);
+        //     for ($i = 0; $i < $jml_mhs; $i++) {
+        //         $studentrecord = $absr[$i];
+        //         $cek_idstudentrecord = Student_record::where('id_studentrecord', $studentrecord)->first();
+        //         $cek_idkurperiode = $cek_idstudentrecord->id_kurperiode;
+
+        //         $cek_bap_id = DB::select('CALL kelas_gabungan_prodi_kelas(?,?)', [$cek_idkurperiode, $cek_bap->pertemuan]);
+        //         $jml_bap_id = count($cek_bap_id);
+        //         for ($l = 0; $l < $jml_bap_id; $l++) {
+        //             $bap_fix = $cek_bap_id[$l];
+
+        //             $abs = new Absensi_mahasiswa();
+        //             $abs->id_bap = $bap_fix->id_bap;
+        //             $abs->id_studentrecord = $studentrecord;
+        //             $abs->absensi = 'ABSEN';
+        //             $abs->save();
+        //         }
+        //     }
+        // }
+
+        // $cek_kelas_gabungan = DB::select('CALL kelas_gabungan_new(?)', [$cek_bap->id_kurperiode]);
+        // $jml_kelas_gabungan = count($cek_kelas_gabungan);
+
+        // for ($h = 0; $h < $jml_kelas_gabungan; $h++) {
+        //     $kelas = $cek_kelas_gabungan[$h];
+
+        //     $id_kurperiode = $kelas->id_kurperiode;
+
+        //     $cek_idbap_gabungan = Bap::where('id_kurperiode', $id_kurperiode)
+        //         ->where('pertemuan', $cek_bap->pertemuan)
+        //         ->where('id_dosen', $cek_bap->id_dosen)
+        //         ->where('status', 'ACTIVE')
+        //         ->select('id_bap')
+        //         ->first();
+
+        //     $jml_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
+        //         ->where('absensi', 'ABSEN')
+        //         ->count();
+        //     $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $cek_idbap_gabungan->id_bap)
+        //         ->whereIn('absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
+        //         ->count();
+
+        //     Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['hadir' => $jml_hadir]);
+        //     Bap::where('id_bap', $cek_idbap_gabungan->id_bap)->update(['tidak_hadir' => $jml_tdk_hadir]);
+        // }
 
         $id_kur = $cek_bap->id_kurperiode;
 

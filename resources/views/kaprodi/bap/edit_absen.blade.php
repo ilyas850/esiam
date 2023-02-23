@@ -30,7 +30,7 @@
                 <div class="box-body">
                     <div class="form-group">
                         <div class="callout callout-warning">
-                            <p>Remark : Centang untuk mahasiswa yang hadir</p>
+                            <p>Remark : Pilih sesuai aktual kehadiran</p>
                         </div>
                     </div>
                     <table class="table table-bordered table-striped">
@@ -81,30 +81,35 @@
                                         <center>
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
-                                            @if ($item->absensi == 'HADIR')
-                                                <input type="checkbox" name="absensi[]"
-                                                    value="{{ $item->id_absensi }}">
-                                            @elseif ($item->absensi == 'ABSEN')
-                                                <input type="checkbox" name="absensi[]"
-                                                    value="{{ $item->id_absensi }}" checked>
-                                            @elseif($item->absensi == null)
-                                                <input type="checkbox" name="abs[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                            @endif
-
+                                            <select name="absensi[]" class="form-control" required>
+                                                @if ($item->absensi == 'ABSEN')
+                                                    <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
+                                                @elseif($item->absensi == 'IZIN')
+                                                    <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>
+                                                @elseif($item->absensi == 'SAKIT')
+                                                    <option value="{{ $item->id_studentrecord }},SAKIT">Sakit</option>
+                                                @elseif($item->absensi == 'ALFA')
+                                                    <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
+                                                @elseif($item->absensi == null)
+                                                    <option></option>
+                                                @endif
+                                                <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
+                                                <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>
+                                                <option value="{{ $item->id_studentrecord }},SAKIT">Sakit</option>
+                                                <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
+                                            </select>
                                         </center>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <br>
-                    <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
+                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
                         class="btn btn-warning">
                     <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                        class="btn btn-warning">
-                    <input class="btn btn-info full-right" type="submit" name="submit" value="Simpan">
+                        class="btn btn-warning"> --}}
+                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
                 </div>
             </form>
         </div>

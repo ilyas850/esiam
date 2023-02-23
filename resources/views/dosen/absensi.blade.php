@@ -22,7 +22,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Absensi Mahasiswa</h3>
+                <h3 class="box-title">Absensi Mahasiswa</h3>
             </div>
             <form action="{{ url('save_absensi') }}" method="post">
                 {{ csrf_field() }}
@@ -31,7 +31,7 @@
                 <div class="box-body">
                     <div class="form-group">
                         <div class="callout callout-warning">
-                            <p>Remark : Centang untuk mahasiswa yang hadir</p>
+                            <p>Remark : Pilih sesuai aktual kehadiran</p>
                         </div>
                     </div>
                     <table class="table table-bordered table-striped">
@@ -82,8 +82,14 @@
                                         <center>
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
-                                            <input type="checkbox" name="absensi[]"
-                                                value="{{ $item->id_studentrecord }}">
+                                            {{-- <input type="checkbox" name="absensi[]"
+                                                value="{{ $item->id_studentrecord }}"> --}}
+                                            <select name="absensi[]" class="form-control">
+                                                <option value="ABSEN">Hadir</option>
+                                                <option value="IZIN">Izin</option>
+                                                <option value="SAKIT">Sakit</option>
+                                                <option value="ALFA">Alfa</option>
+                                            </select>
                                         </center>
                                     </td>
 
@@ -92,11 +98,11 @@
                         </tbody>
                     </table>
                     <br>
-                    <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
-                        class="btn btn-warning">
+                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
+                        class="btn btn-success">
                     <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                        class="btn btn-warning">
-                    <input class="btn btn-info full-right" type="submit" name="submit" value="Simpan">
+                        class="btn btn-warning"> --}}
+                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
                 </div>
             </form>
         </div>

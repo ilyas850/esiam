@@ -77,7 +77,12 @@
                                         <center>
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
-                                            <input type="checkbox" name="absensi[]" value="{{ $item->id_studentrecord }}">
+                                            <select name="absensi[]" class="form-control">
+                                                <option value="ABSEN">Hadir</option>
+                                                <option value="IZIN">Izin</option>
+                                                <option value="SAKIT">Sakit</option>
+                                                <option value="ALFA">Alfa</option>
+                                            </select>
                                         </center>
                                     </td>
 
@@ -85,12 +90,12 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <br>
-                    <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
+                    <br><br>
+                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
                         class="btn btn-warning">
                     <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                        class="btn btn-warning">
-                    <input class="btn btn-info full-right" type="submit" name="submit" value="Simpan">
+                        class="btn btn-warning"> --}}
+                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
                 </div>
             </form>
         </div>
