@@ -1039,7 +1039,7 @@ class PraustaController extends Controller
         //cek id prausta
         $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.id_student', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -1066,7 +1066,7 @@ class PraustaController extends Controller
         //cek nilai dan file sempro
         $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_student', $id)
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
                 'prausta_setting_relasi.file_draft_laporan',
@@ -1081,7 +1081,7 @@ class PraustaController extends Controller
         //cek pembimbing tugas akhir
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.id_student', $id)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -1135,7 +1135,7 @@ class PraustaController extends Controller
                     }))
                     ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                     ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                     ->where('prausta_setting_relasi.id_student', $id)
                     ->where('prausta_setting_relasi.status', 'ACTIVE')
                     ->select(
@@ -1228,7 +1228,7 @@ class PraustaController extends Controller
                         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
                             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                     }))
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                     ->where('prausta_setting_relasi.id_student', $id)
                     //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
                     ->where('prausta_setting_relasi.status', 'ACTIVE')
@@ -1245,13 +1245,13 @@ class PraustaController extends Controller
                     ->get();
 
                 $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                     ->where('prausta_setting_relasi.id_student', $id)
                     ->where('prausta_setting_relasi.status', 'ACTIVE')
                     ->count();
 
                 $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                     ->where('prausta_setting_relasi.id_student', $id)
                     ->where('prausta_setting_relasi.status', 'ACTIVE')
                     ->limit(1)
