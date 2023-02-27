@@ -541,7 +541,7 @@ class PraustaController extends Controller
     public function simpan_draft_prakerin(Request $request)
     {
         $this->validate($request, [
-            'file_laporan_revisi' => 'mimes:pdf|max:5000',
+            'file_laporan_revisi' => 'mimes:pdf|max:6000',
         ]);
 
         $id = $request->id_settingrelasi_prausta;
