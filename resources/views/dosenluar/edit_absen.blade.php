@@ -90,6 +90,8 @@
                                                     <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
                                                 @elseif($item->absensi == null)
                                                     <option></option>
+                                                @elseif($item->absensi == 'HADIR')
+                                                    <option value="{{ $item->id_studentrecord }},HADIR"></option>
                                                 @endif
                                                 <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
                                                 <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>

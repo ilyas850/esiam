@@ -1209,7 +1209,7 @@ class SadminController extends Controller
         $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
             ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->where('kurikulum_periode.id_periodetipe', $idtipe)

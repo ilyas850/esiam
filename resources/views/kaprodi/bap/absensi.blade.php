@@ -83,6 +83,7 @@
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
                                             <select name="absensi[]" class="form-control">
+                                                <option value="HADIR"></option>
                                                 <option value="ABSEN">Hadir</option>
                                                 <option value="IZIN">Izin</option>
                                                 <option value="SAKIT">Sakit</option>
