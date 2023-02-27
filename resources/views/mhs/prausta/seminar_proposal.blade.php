@@ -38,8 +38,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Program Studi</label>
-                                            <input type="text" class="form-control" value="{{ $data->prodi }}"
-                                                readonly>
+                                            <input type="text" class="form-control" value="{{ $data->prodi }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -99,15 +98,15 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Dosen Penguji 1</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->dosen_penguji_1 }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->dosen_penguji_1 }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Dosen Penguji 2</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->dosen_penguji_2 }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->dosen_penguji_2 }}"
+                                                readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -115,8 +114,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Tanggal Seminar Proposal</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->tanggal_selesai }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->tanggal_selesai }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -258,12 +257,22 @@
                                                 <br><br>
                                                 <thead>
                                                     <tr>
-                                                        <th>No</th>
-                                                        <th>Tanggal Bimbingan</th>
+                                                        <th>
+                                                            <center>No</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Tanggal Bimbingan</center>
+                                                        </th>
                                                         <th>Uraian Bimbingan</th>
-                                                        <th>Komentar Bimbingan</th>
-                                                        <th>Validasi</th>
-                                                        <th>File</th>
+                                                        <th>
+                                                            <center>Komentar Bimbingan</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Validasi</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>File</center>
+                                                        </th>
                                                         <th>
                                                             <center>Aksi</center>
                                                         </th>
@@ -273,41 +282,35 @@
                                                     <?php $no = 1; ?>
                                                     @foreach ($bim as $key)
                                                         <tr>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $key->tanggal_bimbingan }}</td>
+                                                            <td align="center">{{ $no++ }}</td>
+                                                            <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                                             <td>{{ $key->remark_bimbingan }}</td>
-                                                            <td>
-                                                                <center>
-                                                                    @if ($key->komentar_bimbingan == null)
-                                                                        <span class="badge bg-yellow">BELUM</span>
-                                                                    @else
-                                                                        <a class="btn btn-success btn-xs"
-                                                                            data-toggle="modal"
-                                                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">
-                                                                            <i class="fa fa-eye "></i> Lihat</a>
-                                                                    @endif
-                                                                </center>
+                                                            <td align="center">
+                                                                @if ($key->komentar_bimbingan == null)
+                                                                    <span class="badge bg-yellow">BELUM</span>
+                                                                @else
+                                                                    <a class="btn btn-success btn-xs" data-toggle="modal"
+                                                                        data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">
+                                                                        <i class="fa fa-eye "></i> Lihat</a>
+                                                                @endif
                                                             </td>
-                                                            <td>
+                                                            <td align="center">
                                                                 @if ($key->validasi == 'BELUM')
                                                                     <span class="badge bg-yellow">BELUM</span>
                                                                 @elseif($key->validasi == 'SUDAH')
                                                                     <span class="badge bg-blue">Sudah</span>
                                                                 @endif
                                                             </td>
-                                                            <td>
+                                                            <td align="center">
                                                                 @if ($key->file_bimbingan == null)
                                                                 @elseif ($key->file_bimbingan != null)
                                                                     <a href="/File Bimbingan SEMPRO/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                         target="_blank"> File bimbingan</a>
                                                                 @endif
                                                             </td>
-                                                            <td>
-                                                                <center>
-                                                                    <button class="btn btn-primary btn-xs"
-                                                                        data-toggle="modal"
-                                                                        data-target="#modalUpdatebimbingan{{ $key->id_transbimb_prausta }}">Update</button>
-                                                                </center>
+                                                            <td align="center">
+                                                                <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                                                    data-target="#modalUpdatebimbingan{{ $key->id_transbimb_prausta }}">Update</button>
                                                             </td>
                                                         </tr>
                                                         <div class="modal fade"
@@ -350,7 +353,8 @@
                                                                                 <label>Tanggal Bimbingan</label>
                                                                                 <input type="date" class="form-control"
                                                                                     name="tanggal_bimbingan"
-                                                                                    value="{{ $key->tanggal_bimbingan }}" required>
+                                                                                    value="{{ $key->tanggal_bimbingan }}"
+                                                                                    required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label>Isi Bimbingan</label>
@@ -622,8 +626,7 @@
 
                                                     <div class="info-box-content">
                                                         <span class="info-box-text">Pembimbing</span>
-                                                        <span
-                                                            class="info-box-number">{{ $data->dosen_pembimbing }}</span>
+                                                        <span class="info-box-number">{{ $data->dosen_pembimbing }}</span>
 
                                                         <div class="progress">
                                                             <div class="progress-bar" style="width: 70%"></div>
