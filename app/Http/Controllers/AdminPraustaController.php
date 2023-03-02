@@ -146,7 +146,7 @@ class AdminPraustaController extends Controller
 
     public function data_sempro()
     {
-        $akhir = time(); // Waktu sekarang
+        $akhir = time(); #Waktu sekarang
 
         $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
@@ -192,50 +192,6 @@ class AdminPraustaController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-
-
-        $data1 = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->Join('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->leftjoin('prausta_master_waktu', function ($join) {
-                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
-                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
-            })
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-            ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('student_record.status', 'TAKEN')
-            ->where('student.active', 1)
-            // ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316, 430])
-            ->where('prausta_master_waktu.tipe_prausta', 'SEMPRO')
-            ->where('prausta_master_waktu.status', 'ACTIVE')
-            ->select(
-                'prausta_setting_relasi.id_settingrelasi_prausta',
-                'prausta_master_kode.kode_prausta',
-                'prausta_master_kode.nama_prausta',
-                'student.idstudent',
-                'student.nama',
-                'student.nim',
-                'prausta_setting_relasi.dosen_pembimbing',
-                'prausta_setting_relasi.dosen_penguji_1',
-                'prausta_setting_relasi.dosen_penguji_2',
-                'prausta_master_waktu.set_waktu_awal',
-                'prausta_master_waktu.set_waktu_akhir',
-                'prausta_setting_relasi.tanggal_mulai',
-                'prausta_setting_relasi.tanggal_selesai',
-                'prausta_setting_relasi.jam_mulai_sidang',
-                'prausta_setting_relasi.jam_selesai_sidang',
-                'prausta_setting_relasi.acc_seminar_sidang',
-                'prausta_setting_relasi.file_laporan_revisi',
-                'prausta_setting_relasi.status',
-                'prausta_setting_relasi.tgl_pengajuan'
-            )
-            ->orderBy('student.nim', 'ASC')
-            ->get();
 
         return view('prausta/sempro/data_sempro', compact('akhir', 'data'));
     }
@@ -618,7 +574,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
