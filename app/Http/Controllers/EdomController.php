@@ -287,6 +287,8 @@ class EdomController extends Controller
     return view('sadmin/edom/master_edom', compact('periodetahun', 'periodetipe', 'prodi'));
   }
 
+  
+
   public function report_edom(Request $request)
   {
     $idperiodetahun = $request->id_periodetahun;

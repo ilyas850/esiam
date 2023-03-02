@@ -1055,7 +1055,7 @@ class PraustaController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-601', 'TI-602', 'TK-602'])
+            ->whereIn('matakuliah.kode', ['FA-601', 'TI-602', 'TK-602', 'FA6003', 'TI-6001'])
             ->where('student_record.id_student', $id)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
