@@ -636,7 +636,7 @@ class PraustaController extends Controller
 
             if (count($cekdata) == null) {
 
-                Alert::error('Maaf Dosen Pembimbing Sempro anda belum di setting', 'MAAF !!');
+                Alert::error('Maaf Dosen Pembimbing Sempro anda belum di setting', 'Silahkan hubungi Prodi masing-masing !!');
                 return redirect('home');
             } elseif (count($cekdata) != null) {
 
