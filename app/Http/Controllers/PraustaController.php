@@ -627,177 +627,177 @@ class PraustaController extends Controller
                 'prausta_setting_relasi.id_dosen_pembimbing'
             )
             ->get();
-
+        
         if ($hasil_krs == 0) {
 
             Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
             return redirect('home');
         } elseif ($hasil_krs > 0) {
 
-            // if (count($cekdata) == null) {
+            if (count($cekdata) == null) {
 
-            //     Alert::error('Maaf Dosen Pembimbing Sempro anda belum di setting', 'MAAF !!');
-            //     return redirect('home');
-            // } elseif (count($cekdata) != null) {
+                Alert::error('Maaf Dosen Pembimbing Sempro anda belum di setting', 'MAAF !!');
+                return redirect('home');
+            } elseif (count($cekdata) != null) {
 
-            //     if ($cekdata_nilai == null) {
-            //         Alert::error('Maaf anda belum melakukan Upload Laporan Prakerin', 'MAAF !!');
-            //         return redirect('home');
-            //     } elseif ($cekdata_nilai->file_draft_laporan != null) {
+                if ($cekdata_nilai == null) {
+                    Alert::error('Maaf anda belum melakukan Upload Laporan Prakerin', 'MAAF !!');
+                    return redirect('home');
+                } elseif ($cekdata_nilai->file_draft_laporan != null) {
 
-            //         if ($cekdata_nilai->nilai_huruf == null) {
+                    if ($cekdata_nilai->nilai_huruf == null) {
 
-            //             Alert::error('Maaf nilai Prakerin anda belum dientri oleh dosen', 'MAAF !!');
-            //             return redirect('home');
-            //         } elseif ($cekdata_nilai->nilai_huruf != null) {
+                        Alert::error('Maaf nilai Prakerin anda belum dientri oleh dosen', 'MAAF !!');
+                        return redirect('home');
+                    } elseif ($cekdata_nilai->nilai_huruf != null) {
 
-            #data seminar proposal
-            $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->leftJoin('prodi', (function ($join) {
-                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-                }))
-                ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-                ->where('prausta_setting_relasi.id_student', $id)
-                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->select(
-                    'prausta_setting_relasi.file_laporan_revisi',
-                    'prausta_setting_relasi.file_draft_laporan',
-                    'prausta_setting_relasi.jam_selesai_sidang',
-                    'prausta_setting_relasi.jam_mulai_sidang',
-                    'prausta_setting_relasi.ruangan',
-                    'prausta_setting_relasi.tanggal_selesai',
-                    'prausta_setting_relasi.dosen_penguji_1',
-                    'prausta_setting_relasi.dosen_penguji_2',
-                    'prausta_setting_relasi.tanggal_mulai',
-                    'prausta_master_kategori.kategori',
-                    'prausta_setting_relasi.acc_seminar_sidang',
-                    'prausta_setting_relasi.id_settingrelasi_prausta',
-                    'student.nama',
-                    'student.nim',
-                    'prausta_master_kode.kode_prausta',
-                    'prausta_master_kode.nama_prausta',
-                    'prodi.prodi',
-                    'prausta_setting_relasi.dosen_pembimbing',
-                    'prausta_setting_relasi.judul_prausta',
-                    'prausta_setting_relasi.tempat_prausta',
-                    'prausta_setting_relasi.acc_judul_dospem',
-                    'prausta_setting_relasi.acc_judul_kaprodi',
-                    'prausta_setting_relasi.validasi_pembimbing',
-                    'prausta_setting_relasi.validasi_penguji_1',
-                    'prausta_setting_relasi.validasi_penguji_2',
-                    'prausta_setting_relasi.validasi_baak'
-                )
-                ->first();
+                        #data seminar proposal
+                        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                            ->leftJoin('prodi', (function ($join) {
+                                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                            }))
+                            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+                            ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
+                            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+                            ->where('prausta_setting_relasi.id_student', $id)
+                            ->where('prausta_setting_relasi.status', 'ACTIVE')
+                            ->select(
+                                'prausta_setting_relasi.file_laporan_revisi',
+                                'prausta_setting_relasi.file_draft_laporan',
+                                'prausta_setting_relasi.jam_selesai_sidang',
+                                'prausta_setting_relasi.jam_mulai_sidang',
+                                'prausta_setting_relasi.ruangan',
+                                'prausta_setting_relasi.tanggal_selesai',
+                                'prausta_setting_relasi.dosen_penguji_1',
+                                'prausta_setting_relasi.dosen_penguji_2',
+                                'prausta_setting_relasi.tanggal_mulai',
+                                'prausta_master_kategori.kategori',
+                                'prausta_setting_relasi.acc_seminar_sidang',
+                                'prausta_setting_relasi.id_settingrelasi_prausta',
+                                'student.nama',
+                                'student.nim',
+                                'prausta_master_kode.kode_prausta',
+                                'prausta_master_kode.nama_prausta',
+                                'prodi.prodi',
+                                'prausta_setting_relasi.dosen_pembimbing',
+                                'prausta_setting_relasi.judul_prausta',
+                                'prausta_setting_relasi.tempat_prausta',
+                                'prausta_setting_relasi.acc_judul_dospem',
+                                'prausta_setting_relasi.acc_judul_kaprodi',
+                                'prausta_setting_relasi.validasi_pembimbing',
+                                'prausta_setting_relasi.validasi_penguji_1',
+                                'prausta_setting_relasi.validasi_penguji_2',
+                                'prausta_setting_relasi.validasi_baak'
+                            )
+                            ->first();
+                       
+                        // data untuk keuangan
+                        $maha = Student::where('idstudent', $id)
+                            ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
+                            ->first();
 
-            // data untuk keuangan
-            $maha = Student::where('idstudent', $id)
-                ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
-                ->first();
+                        $idangkatan = $maha->idangkatan;
+                        $idstatus = $maha->idstatus;
+                        $kodeprodi = $maha->kodeprodi;
 
-            $idangkatan = $maha->idangkatan;
-            $idstatus = $maha->idstatus;
-            $kodeprodi = $maha->kodeprodi;
+                        $cek_study = Student::leftJoin('prodi', (function ($join) {
+                            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                        }))
+                            ->where('student.idstudent', $id)
+                            ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+                            ->first();
 
-            $cek_study = Student::leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
-                ->where('student.idstudent', $id)
-                ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
-                ->first();
+                        $biaya = Biaya::where('idangkatan', $idangkatan)
+                            ->where('idstatus', $idstatus)
+                            ->where('kodeprodi', $kodeprodi)
+                            ->select('seminar')
+                            ->first();
 
-            $biaya = Biaya::where('idangkatan', $idangkatan)
-                ->where('idstatus', $idstatus)
-                ->where('kodeprodi', $kodeprodi)
-                ->select('seminar')
-                ->first();
+                        //cek beasiswa mahasiswa
+                        $cb = Beasiswa::where('idstudent', $id)->first();
 
-            //cek beasiswa mahasiswa
-            $cb = Beasiswa::where('idstudent', $id)->first();
+                        if (($cb) != null) {
 
-            if (($cb) != null) {
+                            $seminar = $biaya->seminar - ($biaya->seminar * $cb->seminar) / 100;
+                        } elseif (($cb) == null) {
 
-                $seminar = $biaya->seminar - ($biaya->seminar * $cb->seminar) / 100;
-            } elseif (($cb) == null) {
+                            $seminar = $biaya->seminar;
+                        }
 
-                $seminar = $biaya->seminar;
+                        if ($cek_study->study_year == 3) {
+
+                            $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                ->where('kuitansi.idstudent', $id)
+                                ->where('bayar.iditem', 14)
+                                ->sum('bayar.bayar');
+                        } elseif ($cek_study->study_year == 4) {
+
+                            $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                                ->where('kuitansi.idstudent', $id)
+                                ->where('bayar.iditem', 37)
+                                ->sum('bayar.bayar');
+                        }
+
+                        $hasil_seminar = $sisaseminar - $seminar;
+
+                        if ($hasil_seminar == 0 or $hasil_seminar > 0) {
+                            $validasi = 'Sudah Lunas';
+                        } else {
+                            $validasi = 'Belum Lunas';
+                        }
+
+                        $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+                            ->leftJoin('prodi', (function ($join) {
+                                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                            }))
+                            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+                            ->where('prausta_setting_relasi.id_student', $id)
+                            //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
+                            ->where('prausta_setting_relasi.status', 'ACTIVE')
+                            ->select(
+                                'prausta_trans_bimbingan.id_transbimb_prausta',
+                                'prausta_trans_bimbingan.file_bimbingan',
+                                'prausta_trans_bimbingan.validasi',
+                                'prausta_trans_bimbingan.tanggal_bimbingan',
+                                'prausta_trans_bimbingan.remark_bimbingan',
+                                'prausta_trans_bimbingan.komentar_bimbingan',
+                                'prausta_trans_bimbingan.id_transbimb_prausta',
+                                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+                            )
+                            ->get();
+
+                        $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+                            ->where('prausta_setting_relasi.id_student', $id)
+                            ->where('prausta_setting_relasi.status', 'ACTIVE')
+                            ->count();
+
+                        $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+                            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+                            ->where('prausta_setting_relasi.id_student', $id)
+                            ->where('prausta_setting_relasi.status', 'ACTIVE')
+                            ->limit(1)
+                            ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
+                            ->first();
+
+                        //cek nilai dan file seminar prakerin
+                        $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+                            ->where('prausta_setting_relasi.id_student', $id)
+                            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+                            ->where('prausta_setting_relasi.status', 'ACTIVE')
+                            ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
+                            ->first();
+
+
+                        return view('mhs/prausta/seminar_proposal', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb', 'hasil_seminar', 'cekdata_nilai'));
+                    }
+                }
             }
-
-            if ($cek_study->study_year == 3) {
-
-                $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                    ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 14)
-                    ->sum('bayar.bayar');
-            } elseif ($cek_study->study_year == 4) {
-
-                $sisaseminar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                    ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 37)
-                    ->sum('bayar.bayar');
-            }
-
-            $hasil_seminar = $sisaseminar - $seminar;
-
-            if ($hasil_seminar == 0 or $hasil_seminar > 0) {
-                $validasi = 'Sudah Lunas';
-            } else {
-                $validasi = 'Belum Lunas';
-            }
-
-            $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->leftJoin('prodi', (function ($join) {
-                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-                }))
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-                ->where('prausta_setting_relasi.id_student', $id)
-                //->where('prausta_trans_bimbingan.id_settingrelasi_prausta', $idprausta)
-                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->select(
-                    'prausta_trans_bimbingan.id_transbimb_prausta',
-                    'prausta_trans_bimbingan.file_bimbingan',
-                    'prausta_trans_bimbingan.validasi',
-                    'prausta_trans_bimbingan.tanggal_bimbingan',
-                    'prausta_trans_bimbingan.remark_bimbingan',
-                    'prausta_trans_bimbingan.komentar_bimbingan',
-                    'prausta_trans_bimbingan.id_transbimb_prausta',
-                    'prausta_trans_bimbingan.id_settingrelasi_prausta'
-                )
-                ->get();
-
-            $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-                ->where('prausta_setting_relasi.id_student', $id)
-                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->count();
-
-            $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-                ->where('prausta_setting_relasi.id_student', $id)
-                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->limit(1)
-                ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
-                ->first();
-
-            //cek nilai dan file seminar prakerin
-            $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-                ->where('prausta_setting_relasi.id_student', $id)
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
-                ->where('prausta_setting_relasi.status', 'ACTIVE')
-                ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
-                ->first();
-
-
-            return view('mhs/prausta/seminar_proposal', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb', 'hasil_seminar', 'cekdata_nilai'));
         }
-        //         }
-        //     }
-        // }
     }
 
     public function put_proposal(Request $request, $id)
