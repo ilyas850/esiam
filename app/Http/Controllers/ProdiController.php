@@ -234,7 +234,7 @@ class ProdiController extends Controller
   }
 
   public function save_dsn_bim_sempro_ta(Request $request)
-  {
+  {dd($request);
     $dosen = $request->iddosen;
 
     // $idms1 = $request->id_masterkode_prausta1;

@@ -4770,15 +4770,46 @@ class SadminController extends Controller
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            // ->where('student.active', 1)
+            ->where('student.active', 1)
             ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
-            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
-            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281, 481])
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nama',
+                'student.nim',
+                'student.idstudent',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.validasi_baak',
+                'prausta_trans_bimbingan.validasi_baak',
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
+            ->groupBy(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nama',
+                'student.nim',
+                'student.idstudent',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.validasi_baak',
+                'prausta_trans_bimbingan.validasi_baak',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -4809,15 +4840,46 @@ class SadminController extends Controller
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            // ->where('student.active', 1)
+            ->where('student.active', 1)
             ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
             ->where('kurikulum_periode.id_periodetipe', $idperiodetipe)
             ->where('student_record.status', 'TAKEN')
-            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'prausta_trans_hasil.nilai_huruf')
-            ->groupBy('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'student.idstudent', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_baak', 'prausta_trans_bimbingan.validasi_baak', 'prausta_trans_hasil.nilai_huruf')
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281, 481])
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nama',
+                'student.nim',
+                'student.idstudent',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.validasi_baak',
+                'prausta_trans_bimbingan.validasi_baak',
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
+            ->groupBy(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nama',
+                'student.nim',
+                'student.idstudent',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.validasi_baak',
+                'prausta_trans_bimbingan.validasi_baak',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf'
+            )
             ->orderBy('student.nim', 'ASC')
             ->get();
 

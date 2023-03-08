@@ -31,6 +31,7 @@ use App\Kaprodi;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Prausta_master_waktu;
+use App\Kuliah_nilaihuruf;
 use DateTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,6 +41,78 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AdminPraustaController extends Controller
 {
+    public function filter_nilai_prausta(Request $request)
+    {
+        $id_tahun = $request->id_periodetahun;
+        $id_tipe = $request->id_periodetipe;
+        $kd_prodi = $request->kodeprodi;
+        $tp_prausta = $request->tipe_prausta;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $id_tahun)->first();
+        $tipe = Periode_tipe::where('id_periodetipe', $id_tipe)->first();
+        $prodi = Prodi::where('kodeprodi', $kd_prodi)->first();
+
+
+        if ($tp_prausta == 'PKL') {
+
+            $data = DB::select('CALL filter_nilai_pkl(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+
+            return view('prausta/filter/filter_nilai_pkl', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
+        } else {
+            $data = DB::select('CALL filter_nilai_sempro_ta(?,?,?)', [$id_tahun, $id_tipe, $kd_prodi]);
+
+            return view('prausta/filter/filter_nilai_sempro_ta', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
+        }
+    }
+
+    public function save_nilai_pkl_to_trans(Request $request)
+    {
+        $jml = count($request->nilai_AKHIR);
+
+        for ($i = 0; $i < $jml; $i++) {
+            $nilai = $request->nilai_AKHIR[$i];
+            $nilaiusta = explode(',', $nilai, 2);
+            $ids = $nilaiusta[0];
+            $nsta = $nilaiusta[1];
+
+            $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
+                ->where('status', 'ACTIVE')
+                ->select('nilai_indeks')
+                ->first();
+
+            Student_record::where('id_studentrecord', $ids)->update([
+                'nilai_AKHIR' => $nsta,
+                'nilai_ANGKA' => $angka->nilai_indeks
+            ]);
+        }
+        Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
+        return redirect('nilai_prausta');
+    }
+
+    public function save_nilai_sempro_ta_to_trans(Request $request)
+    {
+        $jml = count($request->nilai_AKHIR);
+
+        for ($i = 0; $i < $jml; $i++) {
+            $nilai = $request->nilai_AKHIR[$i];
+            $nilaiusta = explode(',', $nilai, 2);
+            $ids = $nilaiusta[0];
+            $nsta = $nilaiusta[1];
+
+            $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
+                ->where('status', 'ACTIVE')
+                ->select('nilai_indeks')
+                ->first();
+
+            Student_record::where('id_studentrecord', $ids)->update([
+                'nilai_AKHIR' => $nsta,
+                'nilai_ANGKA' => $angka->nilai_indeks
+            ]);
+        }
+        Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
+        return redirect('nilai_prausta');
+    }
+
     public function data_prakerin()
     {
         $akhir = time(); // Waktu sekarang
@@ -57,10 +130,10 @@ class AdminPraustaController extends Controller
                     ->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
                     ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
             })
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
-            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281, 481])
             ->where('prausta_master_waktu.tipe_prausta', 'PKL')
             ->where('prausta_master_waktu.status', 'ACTIVE')
             ->where('student.active', 1)
@@ -454,7 +527,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(

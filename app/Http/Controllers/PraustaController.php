@@ -19,6 +19,8 @@ use App\Kuliah_nilaihuruf;
 use App\Ruangan;
 use App\Student_record;
 use App\Kurikulum_jam;
+use App\Periode_tahun;
+use App\Periode_tipe;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
 use App\Prausta_trans_bimbingan;
@@ -42,11 +44,18 @@ class PraustaController extends Controller
             ->orderBy('kode_prausta', 'ASC')
             ->get();
 
-        $prodi = Prodi::all();
+        $prodi1 = Prodi::all();
 
         $angkatan = Angkatan::whereIn('idangkatan', [16, 17, 18, 19, 20, 21, 22])->get();
 
-        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan', 'list'));
+
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'desc')->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan', 'list', 'tahun', 'tipe'));
     }
 
     public function kode_prausta(Request $request)
@@ -627,7 +636,7 @@ class PraustaController extends Controller
                 'prausta_setting_relasi.id_dosen_pembimbing'
             )
             ->get();
-        
+
         if ($hasil_krs == 0) {
 
             Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
@@ -691,7 +700,7 @@ class PraustaController extends Controller
                                 'prausta_setting_relasi.validasi_baak'
                             )
                             ->first();
-                       
+
                         // data untuk keuangan
                         $maha = Student::where('idstudent', $id)
                             ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')

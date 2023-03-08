@@ -48,35 +48,38 @@
                 <table id="example1" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>
+                            <th rowspan="2">
                                 <center>No</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Mahasiswa/NIM</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Prodi</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Kelas</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Angkatan</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Jumlah Bimbingan</center>
                             </th>
-                            <th>
+                            <th colspan="2">
                                 <center>Nilai</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Laporan</center>
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 <center>Aksi</center>
                             </th>
                         </tr>
-
+                        <tr>
+                            <th>Angka</th>
+                            <th>Huruf</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
@@ -99,12 +102,22 @@
                                     <center>{{ $item->jml_bim }}</center>
                                 </td>
                                 <td>
+                                    <center>
+                                        @if ($item->nilai_1 == null)
+                                            {{ number_format(($item->nilai_1 + $item->nilai_2 + $item->nilai_3) / 2, 0) }}
+                                        @else
+                                            {{ number_format(($item->nilai_1 + $item->nilai_2 + $item->nilai_3) / 3, 0) }}
+                                        @endif
+
+                                    </center>
+                                </td>
+                                <td>
                                     <center>{{ $item->nilai_huruf }}</center>
                                 </td>
                                 <td>
                                     <center><a
                                             href="/File Laporan Revisi/{{ $item->idstudent }}/{{ $item->file_laporan_revisi }}"
-                                            target="_blank" style="font: white"> File Laporan</a></center>
+                                            target="_blank" style="font: white"> File</a></center>
                                 </td>
                                 <td>
                                     <center>

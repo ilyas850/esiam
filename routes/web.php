@@ -12,8 +12,8 @@ Route::post('/daftar', 'MhsController@daftar');
 
 Route::get('login_adm', 'AdminController@login');
 
-Route::get('forgot_password', function(){
-return view('auth.lupa');
+Route::get('forgot_password', function () {
+    return view('auth.lupa');
 });
 
 Route::group(['middleware' => 'sadmin'], function () {
@@ -775,7 +775,6 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('penangguhan_yudisium/{id}', 'PenangguhanController@penangguhan_yudisium');
     Route::post('save_penangguhan_yudisium', 'PenangguhanController@save_penangguhan_yudisium');
     Route::put('put_penangguhan_yudisium/{id}', 'PenangguhanController@put_penangguhan_yudisium');
-    
 
     Route::get('kritiksaran_mhs', 'MhsController@kritiksaran_mhs');
     Route::post('post_kritiksaran', 'MhsController@post_kritiksaran');
@@ -788,7 +787,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
     Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
 
-    //bimbingan perwalian 
+    //bimbingan perwalian
     Route::get('bim_perwalian', 'MhsController@bim_perwalian');
     Route::post('post_bim_pa', 'MhsController@post_bim_pa');
     Route::put('edit_bimbingan_perwalian/{id}', 'MhsController@edit_bimbingan_perwalian');
@@ -940,7 +939,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('pedoman_akademik_dsn_luar', 'DosenluarController@pedoman_akademik_dsn_luar');
     Route::get('download_pedoman_dsn_luar/{id}', 'DosenluarController@download_pedoman_dsn_luar');
 
-    //pedoman khusus
+    #pedoman khusus
     Route::get('pedoman_khusus_dsn_luar', 'DosenluarController@pedoman_khusus_dsn_luar');
     Route::get('download_pedoman_khusus_dsn_luar/{id}', 'DosenluarController@download_pedoman_khusus_dsn_luar');
 });
@@ -1302,6 +1301,11 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
     Route::post('save_nilai_prausta', 'PraustaController@save_nilai_prausta');
+
+    # nilai prausta
+    Route::post('filter_nilai_prausta', 'AdminPraustaController@filter_nilai_prausta');
+    Route::post('save_nilai_pkl_to_trans', 'AdminPraustaController@save_nilai_pkl_to_trans');
+    Route::post('save_nilai_sempro_ta_to_trans', 'AdminPraustaController@save_nilai_sempro_ta_to_trans');
 
     //data prakerin
     Route::get('data_prakerin', 'AdminPraustaController@data_prakerin');
