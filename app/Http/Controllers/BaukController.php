@@ -9,6 +9,9 @@ use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Waktu;
 use App\Prausta_setting_relasi;
+use App\Beasiswa_trans;
+use App\Exports\DataPengajuanBeasiswa;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +45,6 @@ class BaukController extends Controller
 
     public function pilih_ta_penangguhan(Request $request)
     {
-
         $tahun = Periode_tahun::join('penangguhan_master_trans', 'periode_tahun.id_periodetahun', '=', 'penangguhan_master_trans.id_periodetahun')
             ->groupBy('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
             ->select('periode_tahun.id_periodetahun', 'periode_tahun.periode_tahun')
@@ -51,7 +53,7 @@ class BaukController extends Controller
 
         $tipe = Periode_tipe::all();
 
-        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $thn_aktif = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
 
         $data = Penangguhan_kategori::leftjoin('penangguhan_master_trans', 'penangguhan_master_kategori.id_penangguhan_kategori', '=', 'penangguhan_master_trans.id_penangguhan_kategori')
@@ -69,7 +71,7 @@ class BaukController extends Controller
 
     public function data_penangguhan_bauk(Request $request)
     {
-        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $thn_aktif = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
         $kategori = Penangguhan_kategori::where('id_penangguhan_kategori', $request->id_penangguhan_kategori)->first();
 
@@ -115,7 +117,7 @@ class BaukController extends Controller
         $ang->total_tunggakan = $request->total_tunggakan;
         $ang->save();
 
-        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $thn_aktif = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
         $kategori = Penangguhan_kategori::where('id_penangguhan_kategori', $request->id_penangguhan_kategori)->first();
 
@@ -141,7 +143,7 @@ class BaukController extends Controller
     {
         Penangguhan_trans::where('id_penangguhan_trans', $request->id_penangguhan_trans)->update(['validasi_bauk' => 'SUDAH']);
 
-        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $thn_aktif = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
         $kategori = Penangguhan_kategori::where('id_penangguhan_kategori', $request->id_penangguhan_kategori)->first();
 
@@ -175,7 +177,7 @@ class BaukController extends Controller
     {
         Penangguhan_trans::where('id_penangguhan_trans', $request->id_penangguhan_trans)->update(['validasi_bauk' => 'BELUM']);
 
-        $thn_aktif = Periode_tahun::where('id_periodetahun',  $request->id_periodetahun)->first();
+        $thn_aktif = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $tp_aktif = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
         $kategori = Penangguhan_kategori::where('id_penangguhan_kategori', $request->id_penangguhan_kategori)->first();
 
@@ -297,6 +299,58 @@ class BaukController extends Controller
 
         Alert::success('Penutupan Pengajuan Beasiswa', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function pengajuan_beasiswa_by_mhs()
+    {
+        $thn_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tp_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $data = Beasiswa_trans::join('student', 'beasiswa_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('periode_tahun', 'beasiswa_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'beasiswa_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('semester', 'beasiswa_trans.id_semester', '=', 'semester.idsemester')
+            ->where('beasiswa_trans.status', 'ACTIVE')
+            ->where('beasiswa_trans.id_periodetahun', $thn_aktif->id_periodetahun)
+            ->where('beasiswa_trans.id_periodetipe', $tp_aktif->id_periodetipe)
+            ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'student.tgllahir', 'student.tmptlahir', 'student.hp', 'student.email', 'beasiswa_trans.id_trans_beasiswa', 'semester.semester', 'beasiswa_trans.validasi_bauk', 'beasiswa_trans.validasi_wadir3', 'beasiswa_trans.status', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'beasiswa_trans.ipk')
+            ->get();
+
+        return view('bauk/beasiswa/pengajuan_beasiswa', compact('data', 'thn_aktif', 'tp_aktif'));
+    }
+
+    public function val_pengajuan_beasiswa_bauk($id)
+    {
+        Beasiswa_trans::where('id_trans_beasiswa', $id)->update(['validasi_bauk' => 'SUDAH']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function batal_val_pengajuan_beasiswa_bauk($id)
+    {
+        Beasiswa_trans::where('id_trans_beasiswa', $id)->update(['validasi_bauk' => 'BELUM']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function export_excel_pengajuan_beasiswa(Request $request)
+    {
+        $id_tahun = $request->id_periodetahun;
+        $id_tipe = $request->id_periodetipe;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $id_tahun)->first();
+        $tipe = Periode_tipe::where('id_periodetipe', $id_tipe)->first();
+        $ganti_tahun = str_replace('/', '_', $tahun->periode_tahun);
+      
+        $nama_file = 'Data Pengajuan Beasiswa' . ' ' . $ganti_tahun . '-' . $tipe->periode_tipe . '.xlsx';
+
+        return Excel::download(new DataPengajuanBeasiswa($id_tahun, $id_tipe), $nama_file);
     }
 
     public function uang_saku_pkl()

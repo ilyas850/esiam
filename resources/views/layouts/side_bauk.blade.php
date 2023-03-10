@@ -11,7 +11,7 @@
         <ul class="treeview-menu">
             <li><a href="{{ url('kategori_penangguhan_bauk') }}"><i class="fa fa-circle-o"></i>
                     <span>Penangguhan</span></a></li>
-            <li><a href="{{ url('kategori_penangguhan_bauk') }}"><i class="fa fa-circle-o"></i>
+            <li><a href="{{ url('pengajuan_beasiswa_by_mhs') }}"><i class="fa fa-circle-o"></i>
                     <span>Beasiswa</span></a></li>
             <li><a href="{{ url('uang_saku_pkl') }}"><i class="fa fa-circle-o"></i>
                     <span>Uang Saku Mhs PKL</span></a></li>

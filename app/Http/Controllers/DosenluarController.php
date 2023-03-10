@@ -1065,13 +1065,14 @@ class DosenluarController extends Controller
 
     public function save_edit_absensi(Request $request)
     {
+        
         #id BAP
         $id_bp = $request->id_bap;
-
+        
         #cek bap yang sama
         $bap_gabungan = DB::select('CALL bap_gabungan(?)', [$id_bp]);
         $jml_bap_gabungan = count($bap_gabungan);
-
+       
         #jumlah yang masuk/absen
         $absen = $request->absensi;
         $jmlabsen = count($absen);

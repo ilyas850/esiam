@@ -12,6 +12,10 @@
             </div>
             <form action="{{ url('save_pengajuan_beasiswa') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
+                <input type="hidden" name="id_student" value="{{ $id }}">
+                <input type="hidden" name="id_periodetahun" value="{{ $id_thn }}">
+                <input type="hidden" name="id_periodetipe" value="{{ $tp }}">
+                <input type="hidden" name="id_semester" value="{{ $c }}">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -60,6 +64,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Indeks Prestasi Akademik Semester {{ $c }}</label>
+                                <input type="text" class="form-control" name="ipk" value="{{ $hasil_ipk }}"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
         </div>

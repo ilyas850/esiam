@@ -6054,18 +6054,42 @@ class SadminController extends Controller
         $prodi = Prodi::select('id_prodi', 'kodeprodi', 'prodi', 'konsentrasi')
             ->get();
 
-        return view('sadmin/konversi/filter_konversi', compact('kurikulum', 'tahun', 'tipe', 'angkatan', 'prodi'));
+        $kelas = Kelas::orderBy('kelas', 'asc')->get();
+
+        return view('sadmin/konversi/filter_konversi', compact('kurikulum', 'tahun', 'tipe', 'angkatan', 'prodi', 'kelas'));
+    }
+
+    public function filter_konversi(Request $request)
+    {
+        
+        $id_kurikulum = $request->id_kurikulum;
+        $id_prodi = $request->id_prodi;
+        $id_angkatan = $request->id_angkatan;
+        $id_kelas = $request->idkelas;
+
+        $data = DB::select('CALL filter_konversi(?,?,?,?)', [$id_kurikulum, $id_prodi, $id_angkatan, $id_kelas]);
+        dd($data);
     }
 
     public function master_konversi_makul()
     {
+        $kurikulum = Kurikulum_master::whereIn('remark', [1, 2])->get();
+
+        $angkatan = Angkatan::join('kurikulum_transaction', 'angkatan.idangkatan', '=', 'kurikulum_transaction.id_angkatan')
+            ->select(DB::raw('DISTINCT(angkatan.idangkatan)'), 'angkatan.angkatan')
+            ->orderBy('angkatan.angkatan', 'desc')
+            ->get();
+
+        $prodi = Prodi::select('id_prodi', 'kodeprodi', 'prodi', 'konsentrasi')
+            ->get();
+
         $data = Konversi_makul::join('matakuliah', 'konversi_makul.id_makul_awal', '=', 'matakuliah.idmakul')
             ->select('matakuliah.kode', 'matakuliah.makul')
             ->get();
 
         $makul = Matakuliah::where('active', 1)->get();
 
-        return view('sadmin/konversi/konversi_makul', compact('data', 'makul'));
+        return view('sadmin/konversi/konversi_makul', compact('data', 'makul', 'angkatan', 'prodi', 'kurikulum'));
     }
 
     //tambah konversi

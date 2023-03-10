@@ -2943,7 +2943,7 @@ class MhsController extends Controller
         $biaya = Biaya::where('idangkatan', $idangkatan)
             ->where('idstatus', $idstatus)
             ->where('kodeprodi', $kodeprodi)
-            ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14' , 'prakerin')
+            ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14', 'prakerin')
             ->first();
 
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
@@ -4165,7 +4165,10 @@ class MhsController extends Controller
                 'semester.semester',
                 'beasiswa_trans.validasi_bauk',
                 'beasiswa_trans.validasi_wadir3',
-                'beasiswa_trans.status'
+                'beasiswa_trans.status',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'beasiswa_trans.ipk'
             )
             ->get();
 
@@ -4251,6 +4254,14 @@ class MhsController extends Controller
             }
         }
 
+        if ($tp == 1) {
+            $id_thn = $periode_tahun->id_periodetahun - 1;
+            $id_tp = 2.3;
+        } elseif ($tp == 2) {
+            $id_thn = $periode_tahun->id_periodetahun;
+            $id_tp = 1;
+        }
+
         $ipk = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
@@ -4263,12 +4274,34 @@ class MhsController extends Controller
             ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
             ->get();
 
+        $data = DB::select('CALL ipk_pengajuan_beasiswa(?,?,?)', [$id, $id_thn, $id_tp]);
+
         $sks = 0;
-        foreach ($ipk as $ips) {
+        $ipkk = 0;
+        foreach ($data as $ips) {
             $sks += $ips->akt_sks_teori + $ips->akt_sks_praktek;
+            $ipkk += ($ips->akt_sks_teori + $ips->akt_sks_praktek) * ($ips->nilai_indeks);
         }
 
-        return view('mhs/beasiswa/form_beasiswa', compact('mhs'));
+        $hasil_ipk = $ipkk / $sks;
+
+        return view('mhs/beasiswa/form_beasiswa', compact('id', 'mhs', 'id_thn', 'tp', 'c', 'hasil_ipk'));
+    }
+
+    public function save_pengajuan_beasiswa(Request $request)
+    {
+
+        $ang = new Beasiswa_trans();
+        $ang->id_student = $request->id_student;
+        $ang->id_periodetahun = $request->id_periodetahun;
+        $ang->id_periodetipe = $request->id_periodetipe;
+        $ang->id_semester = $request->id_semester;
+        $ang->ipk = $request->ipk;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Data Pengajuan Beasiswa berhasil ditambahkan')->autoclose(3500);
+        return redirect('beasiswa_mhs');
     }
 
     public function bim_perwalian()

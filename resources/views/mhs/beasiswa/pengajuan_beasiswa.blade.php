@@ -22,51 +22,52 @@
                         <div class="callout callout-info">
                             <p>{{ Carbon\Carbon::parse($status_pengajuan->waktu_awal)->formatLocalized('%d %B %Y') }} s/d
                                 {{ Carbon\Carbon::parse($status_pengajuan->waktu_akhir)->formatLocalized('%d %B %Y') }}</p>
-
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-2">
-
                             <a href="{{ url('pengajuan_beasiswa') }}" class="btn btn-success">Pengajuan Beasiswa</a>
                         </div>
                     </div>
                     <br>
                 @endif
-
                 <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="4px" rowspan="2">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Tahun Akademik</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Semester</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>IPK</center>
                             </th>
-
-                            <th colspan="2">
-                                <center>Validasi</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Aksi</center>
-                            </th>
-                        </tr>
-                        <tr>
                             <th>
-                                <center>BAUK</center>
-                            </th>
-                            <th>
-                                <center>Wadir 3</center>
+                                <center>Validasi BAUK</center>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($data as $item)
+                            <tr>
+                                <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
+                                <td align="center">{{ $item->semester }}</td>
+                                <td align="center">{{ $item->ipk }}</td>
+                                <td align="center">
+                                    @if ($item->validasi_bauk == 'BELUM')
+                                        <span class="badge bg-yellow">{{ $item->validasi_bauk }}</span>
+                                    @else
+                                        <span class="badge bg-green">{{ $item->validasi_bauk }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

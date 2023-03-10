@@ -412,6 +412,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('master_konversi', 'SadminController@master_konversi');
     Route::get('master_konversi_makul', 'SadminController@master_konversi_makul');
     Route::get('tambah_konversi_makul', 'SadminController@tambah_konversi_makul');
+
+    #filter konversi
+    Route::post('filter_konversi', 'SadminController@filter_konversi');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -786,6 +789,7 @@ Route::group(['middleware' => 'mhs'], function () {
     //pengajuan beasiswa
     Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
     Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
+    Route::post('save_pengajuan_beasiswa', 'MhsController@save_pengajuan_beasiswa');
 
     //bimbingan perwalian
     Route::get('bim_perwalian', 'MhsController@bim_perwalian');
@@ -1470,6 +1474,12 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::get('waktu_beasiswa', 'BaukController@waktu_beasiswa');
     Route::post('simpan_waktu_pengajuan_beasiswa', 'BaukController@simpan_waktu_pengajuan_beasiswa');
     Route::post('edit_time_pengajuan_beasiswa', 'BaukController@edit_time_pengajuan_beasiswa');
+
+    #pengajuan beasiswa
+    Route::get('pengajuan_beasiswa_by_mhs', 'BaukController@pengajuan_beasiswa_by_mhs');
+    Route::get('val_pengajuan_beasiswa_bauk/{id}', 'BaukController@val_pengajuan_beasiswa_bauk');
+    Route::get('batal_val_pengajuan_beasiswa_bauk/{id}', 'BaukController@batal_val_pengajuan_beasiswa_bauk');
+    Route::post('export_excel_pengajuan_beasiswa', 'BaukController@export_excel_pengajuan_beasiswa');
 
     //uang saku mahasiswa
     Route::get('uang_saku_pkl', 'BaukController@uang_saku_pkl');

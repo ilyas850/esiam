@@ -62,7 +62,7 @@
                         </div>
                         <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
                         <button type="button" class="btn btn-warning btn-lg btn-block" data-toggle="modal"
-                            data-target=".bs-example-modal-sm">Penutupan Waktu Penangguhan</button>
+                            data-target=".bs-example-modal-sm">Penutupan Waktu Beasiswa</button>
                         <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog"
                             aria-labelledby="mySmallModalLabel">
                             <div class="modal-dialog" role="document">
@@ -118,7 +118,7 @@
                     seconds = parseInt(seconds_left % 60);
                     countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
                         " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
-                        " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
+                        " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Beasiswa</span>";
                 }, 1000);
                 //]]>
             </script>

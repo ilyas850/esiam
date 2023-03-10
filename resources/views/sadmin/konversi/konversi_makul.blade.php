@@ -11,9 +11,54 @@
                 <h3 class="box-title">Konversi Matakuliah</h3>
             </div>
             <div class="box-body">
-                <a href="/tambah_konversi_makul" class="btn btn-info">Tambah Data</a>
+                <div class="row">
+                    <div class="col-xs-2">
+                        <button type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#addpsi">
+                            <i class="fa fa-plus"></i> Filter Data Matakuliah
+                        </button>
+                    </div>
+                </div>
                 <br>
                 <br>
+                <div class="modal fade" id="addpsi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form method="post" action="{{ url('filter_matakuliah') }}" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Filter Data Matakuliah</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Kurikulum</label>
+                                        <select class="form-control" name="id_dosen">
+                                            <option>-pilih-</option>
+                                            @foreach ($dosen as $keydsn)
+                                                <option value="{{ $keydsn->iddosen }},{{ $keydsn->nama }}">
+                                                    {{ $keydsn->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Wadir</label>
+                                        <select class="form-control" name="wadir">
+                                            <option>-pilih-</option>
+                                            <option value="wadir1,7">Wadir 1</option>
+                                            <option value="wadir2,12">Wadir 2</option>
+                                            <option value="wadir3,10">Wadir 3</option>
+                                            <option value="wadir4,13">Wadir 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>

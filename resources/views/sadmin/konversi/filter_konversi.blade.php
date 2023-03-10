@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Kurikulum</h3>
+                <h3 class="box-title">Filter Kurikulum Lama</h3>
             </div>
             <form class="form" role="form" action="{{ url('filter_konversi') }}" method="POST">
                 {{ csrf_field() }}
@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-xs-2">
                             <label>Kurikulum</label>
-                            <select class="form-control" name="id_kurikulum">
+                            <select class="form-control" name="id_kurikulum" required>
                                 <option></option>
                                 @foreach ($kurikulum as $krlm)
                                     <option value="{{ $krlm->id_kurikulum }}">{{ $krlm->nama_kurikulum }} -
@@ -29,7 +29,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-2">
+                        {{-- <div class="col-xs-2">
                             <label>Periode Tahun</label>
                             <select class="form-control" name="id_periodetahun">
                                 <option></option>
@@ -46,7 +46,7 @@
                                     <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-xs-4">
                             <label>Program Studi</label>
                             <select class="form-control" name="id_prodi" required>
@@ -63,6 +63,15 @@
                                 <option></option>
                                 @foreach ($angkatan as $angk)
                                     <option value="{{ $angk->idangkatan }}">{{ $angk->angkatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <label>Kelas</label>
+                            <select class="form-control" name="idkelas" required>
+                                <option></option>
+                                @foreach ($kelas as $kls)
+                                    <option value="{{ $kls->idkelas }}">{{ $kls->kelas }}</option>
                                 @endforeach
                             </select>
                         </div>
