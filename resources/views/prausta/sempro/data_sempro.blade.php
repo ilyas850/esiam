@@ -68,7 +68,7 @@
                         @foreach ($data as $key)
                             <tr>
                                 <td>{{ $no++ }}</td>
-                                <td>{{ $key->nama }}/{{ $key->nim }}</td>
+                                <td>{{ $key->mhs }}</td>
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->dosen_penguji_2 }}</td>

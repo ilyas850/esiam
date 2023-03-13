@@ -221,7 +221,7 @@ class AdminPraustaController extends Controller
     {
         $akhir = time(); #Waktu sekarang
 
-        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+        $data1 = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
@@ -264,6 +264,8 @@ class AdminPraustaController extends Controller
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('student.nim', 'ASC')
             ->get();
+
+            $data = DB::select('CALL data_sempro');
 
         return view('prausta/sempro/data_sempro', compact('akhir', 'data'));
     }
