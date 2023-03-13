@@ -418,9 +418,7 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_3">
-                                @if ($jml_bim < 12)
-                                    <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 12</span>
-                                @elseif ($jml_bim >= 12)
+                                @if ($angkatan == 18 or $angkatan == 19)
                                     @if ($hasil_spp >= 0)
                                         @if ($usta->acc_seminar_sidang == null)
                                             <form class="" action="{{ url('ajukan_seminar_pkl') }}" method="post"
@@ -598,6 +596,190 @@
                                     @else
                                         <span class="badge bg-red">Maaf syarat keuangan anda belum memenuhi untuk
                                             pengajuan seminar</span>
+                                    @endif
+                                @else
+                                    @if ($jml_bim < 12)
+                                        <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 12</span>
+                                    @elseif ($jml_bim >= 12)
+                                        @if ($hasil_spp >= 0)
+                                            @if ($usta->acc_seminar_sidang == null)
+                                                <form class="" action="{{ url('ajukan_seminar_pkl') }}"
+                                                    method="post" enctype="multipart/form-data">
+                                                    {{ csrf_field() }}
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Total Uang Saku Selama PKL</label>
+                                                                <input type="number" name="total_uang_saku"
+                                                                    class="form-control" required>
+                                                                <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
+                                                                    1000000</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>File Draft Laporan Seminar</label>
+                                                                <input type="file" name="file_draft_laporan"
+                                                                    class="form-control" required>
+                                                                <span>max. size file 4mb format pdf</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                                value="{{ $usta->id_settingrelasi_prausta }}">
+                                                            <button type="submit" class="btn btn-info">Ajukan Seminar
+                                                                PKL</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            @elseif ($usta->acc_seminar_sidang == 'PENGAJUAN')
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <span class="info-box-icon bg-red"><i
+                                                                    class="fa fa-files-o"></i></span>
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">Draft Laporan PKL</span>
+                                                                <span class="info-box-number">
+                                                                    @if ($usta->file_draft_laporan == null)
+                                                                        Belum ada
+                                                                    @elseif ($usta->file_draft_laporan != null)
+                                                                        <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                            target="_blank"> File Laporan</a>
+                                                                    @endif
+                                                                </span>
+                                                                <br>
+                                                                <span class="badge bg-yellow">Menunggu Acc. Dosen
+                                                                    Pembimbing</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <form action="{{ url('ajukan_seminar_pkl') }}" method="post"
+                                                                enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                <div class="form-group">
+                                                                    <label>Total Uang Saku Selama PKL</label>
+                                                                    <input type="number" name="total_uang_saku"
+                                                                        class="form-control"
+                                                                        value="{{ $usta->total_uang_saku }}" required>
+                                                                    <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
+                                                                        1000000</span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <input type="file" name="file_draft_laporan"
+                                                                        class="form-control">
+                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @elseif ($usta->acc_seminar_sidang == 'TERIMA')
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <span class="info-box-icon bg-red"><i
+                                                                    class="fa fa-files-o"></i></span>
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">Draft Laporan PKL</span>
+                                                                <span class="info-box-number">
+                                                                    @if ($usta->file_draft_laporan == null)
+                                                                        Belum ada
+                                                                    @elseif ($usta->file_draft_laporan != null)
+                                                                        <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                            target="_blank"> File Laporan</a>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @if ($usta->validasi_baak == 'BELUM')
+                                                        <div class="col-md-4">
+                                                            <div class="info-box">
+                                                                <form action="{{ url('ajukan_seminar_pkl') }}"
+                                                                    method="post" enctype="multipart/form-data">
+                                                                    {{ csrf_field() }}
+                                                                    <input type="hidden" name="id_settingrelasi_prausta"
+                                                                        value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                    <div class="form-group">
+                                                                        <input type="file" name="file_draft_laporan"
+                                                                            class="form-control">
+                                                                        <span>Format file pdf max. size 5mb</span> <br>
+                                                                        <button type="submit"
+                                                                            class="btn btn-info">Simpan</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md-4">
+                                                            <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <span class="badge bg-green">Sudah di Acc. Dosen Pembimbing</span>
+                                                    </div>
+                                                </div>
+                                            @elseif ($usta->acc_seminar_sidang == 'TOLAK')
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <span class="info-box-icon bg-red"><i
+                                                                    class="fa fa-files-o"></i></span>
+
+                                                            <div class="info-box-content">
+                                                                <span class="info-box-text">Draft Laporan PKL</span>
+                                                                <span class="info-box-number">
+                                                                    @if ($usta->file_draft_laporan == null)
+                                                                        Belum ada
+                                                                    @elseif ($usta->file_draft_laporan != null)
+                                                                        <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                            target="_blank"> File Laporan</a>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <form action="{{ url('ajukan_seminar_pkl') }}" method="post"
+                                                                enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $usta->id_settingrelasi_prausta }}">
+                                                                <div class="form-group">
+                                                                    <input type="file" name="file_draft_laporan"
+                                                                        class="form-control">
+                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <span class="badge bg-red">Pengajuan di Tolak Dosen
+                                                            Pembimbing</span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-red">Maaf syarat keuangan anda belum memenuhi untuk
+                                                pengajuan seminar</span>
+                                        @endif
                                     @endif
                                 @endif
                             </div>

@@ -69,7 +69,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Judul Sempro</label>
-                                            <textarea class="form-control" rows="2" cols="60" name="judul_prausta" readonly>{{ $data->judul_prausta }}</textarea>
+                                            <textarea class="form-control" rows="3" cols="60" name="judul_prausta" readonly>{{ $data->judul_prausta }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

@@ -324,7 +324,7 @@ class PraustaController extends Controller
                 foreach ($data as $usta) {
                 }
 
-                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'hasil_spp', 'cekdata_nilai'));
+                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'hasil_spp', 'cekdata_nilai', 'angkatan'));
             }
         }
     }

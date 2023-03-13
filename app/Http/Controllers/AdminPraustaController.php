@@ -115,7 +115,7 @@ class AdminPraustaController extends Controller
 
     public function data_prakerin()
     {
-        $akhir = time(); // Waktu sekarang
+        $akhir = time(); #Waktu sekarang
 
         $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
@@ -264,7 +264,6 @@ class AdminPraustaController extends Controller
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('student.nim', 'ASC')
             ->get();
-
 
         return view('prausta/sempro/data_sempro', compact('akhir', 'data'));
     }
