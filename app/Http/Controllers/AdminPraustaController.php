@@ -265,7 +265,7 @@ class AdminPraustaController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-            $data = DB::select('CALL data_sempro');
+        $data = DB::select('CALL data_sempro');
 
         return view('prausta/sempro/data_sempro', compact('akhir', 'data'));
     }
@@ -353,12 +353,13 @@ class AdminPraustaController extends Controller
                 $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
                     ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
             })
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
-            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316])
+            ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316, 430])
             ->where('prausta_master_waktu.tipe_prausta', 'TA')
             ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->where('student.active', 1)
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_master_kode.kode_prausta',
@@ -518,7 +519,8 @@ class AdminPraustaController extends Controller
 
     public function bim_prakerin()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -556,7 +558,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bim_prakerin_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -566,10 +569,10 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'student.nama',
@@ -638,7 +641,8 @@ class AdminPraustaController extends Controller
 
     public function bim_sempro()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -676,7 +680,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bim_sempro_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -686,10 +691,10 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'student.nama',
@@ -758,7 +763,8 @@ class AdminPraustaController extends Controller
 
     public function bim_ta()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -768,7 +774,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -796,7 +802,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bim_ta_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -806,10 +813,10 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'student.nama',
