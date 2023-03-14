@@ -16,10 +16,10 @@
                         method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
-                            <select class="form-control" name="id_prodi" required>
+                            <select class="form-control" name="kodeprodi" required>
                                 <option></option>
                                 @foreach ($prodi as $key)
-                                    <option value="{{ $key->id_prodi }}">
+                                    <option value="{{ $key->kodeprodi }}">
                                         {{ $key->prodi }}
                                     </option>
                                 @endforeach

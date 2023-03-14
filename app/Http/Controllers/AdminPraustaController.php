@@ -1957,7 +1957,8 @@ class AdminPraustaController extends Controller
 
     public function bap_prakerin()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -1967,7 +1968,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -1986,7 +1987,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bap_prakerin_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -1996,10 +1998,10 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 'student.nama',
                 'student.nim',
@@ -2229,7 +2231,8 @@ class AdminPraustaController extends Controller
 
     public function bap_sempro()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -2258,7 +2261,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bap_sempro_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -2271,7 +2275,7 @@ class AdminPraustaController extends Controller
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 'student.nama',
                 'student.nim',
@@ -2391,7 +2395,8 @@ class AdminPraustaController extends Controller
 
     public function bap_ta()
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -2401,7 +2406,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -2420,7 +2425,8 @@ class AdminPraustaController extends Controller
 
     public function filter_bap_ta_use_prodi(Request $request)
     {
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -2430,10 +2436,10 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->where('prodi.id_prodi', $request->id_prodi)
+            ->where('student.kodeprodi', $request->kodeprodi)
             ->select(
                 'student.nama',
                 'student.nim',
