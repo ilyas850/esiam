@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use Alert;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
@@ -10,10 +11,13 @@ use App\Periode_tipe;
 use App\Waktu;
 use App\Prausta_setting_relasi;
 use App\Beasiswa_trans;
+use App\Beasiswa;
+use App\Student;
 use App\Exports\DataPengajuanBeasiswa;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class BaukController extends Controller
 {
@@ -317,10 +321,110 @@ class BaukController extends Controller
             ->where('beasiswa_trans.status', 'ACTIVE')
             ->where('beasiswa_trans.id_periodetahun', $thn_aktif->id_periodetahun)
             ->where('beasiswa_trans.id_periodetipe', $tp_aktif->id_periodetipe)
-            ->select('student.idstudent', 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'student.tgllahir', 'student.tmptlahir', 'student.hp', 'student.email', 'beasiswa_trans.id_trans_beasiswa', 'semester.semester', 'beasiswa_trans.validasi_bauk', 'beasiswa_trans.validasi_wadir3', 'beasiswa_trans.status', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'beasiswa_trans.ipk')
+            ->select(
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'student.tgllahir',
+                'student.tmptlahir',
+                'student.hp',
+                'student.email',
+                'beasiswa_trans.id_trans_beasiswa',
+                'semester.semester',
+                'beasiswa_trans.validasi_bauk',
+                'beasiswa_trans.validasi_wadir3',
+                'beasiswa_trans.status',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'beasiswa_trans.ipk',
+                'beasiswa_trans.id_periodetahun',
+                'beasiswa_trans.id_periodetipe',
+                'beasiswa_trans.id_semester',
+                'beasiswa_trans.beasiswa'
+            )
             ->get();
 
         return view('bauk/beasiswa/pengajuan_beasiswa', compact('data', 'thn_aktif', 'tp_aktif'));
+    }
+
+    public function put_beasiswa(Request $request, $id)
+    {
+        $idstudent = $request->id_student;
+        $idsemester = $request->id_semester;
+        $beasiswa = $request->beasiswa;
+
+        $ang = Beasiswa_trans::find($id);
+        $ang->beasiswa = $request->beasiswa;
+        $ang->save();
+
+        if ($idsemester == 2) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp2' => $beasiswa]);
+        } elseif ($idsemester == 3) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp3' => $beasiswa]);
+        } elseif ($idsemester == 4) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp4' => $beasiswa]);
+        } elseif ($idsemester == 5) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp5' => $beasiswa]);
+        } elseif ($idsemester == 6) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp6' => $beasiswa]);
+        } elseif ($idsemester == 7) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp7' => $beasiswa]);
+        } elseif ($idsemester == 8) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp8' => $beasiswa]);
+        } elseif ($idsemester == 9) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp9' => $beasiswa]);
+        } elseif ($idsemester == 10) {
+            Beasiswa::where('idstudent', $idstudent)->update(['spp10' => $beasiswa]);
+        }
+
+        return redirect('pengajuan_beasiswa_by_mhs');
+    }
+
+    public function download_khs_by_bauk(Request $request)
+    {
+        $thn = $request->id_periodetahun;
+        $tp = $request->id_periodetipe;
+        $id = $request->id_student;
+
+        $mhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+              ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+          }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'student.idstudent')
+            ->first();
+
+        $periode_tahun = Periode_tahun::where('id_periodetahun',  $thn)->first();
+        $periode_tipe = Periode_tipe::where('id_periodetipe', $tp)->first();
+
+        if ($tp == 1) {
+            $id_thn = $periode_tahun->id_periodetahun - 1;
+            $id_tp = 2.3;
+            $periode_tahun1 = Periode_tahun::where('id_periodetahun',  $id_thn)->select('periode_tahun')->first();
+            $periode_tipe1 = 'GENAP';
+        } elseif ($tp == 2) {
+            $id_thn = $periode_tahun->id_periodetahun;
+            $id_tp = 1;
+            $periode_tahun1 = Periode_tahun::where('id_periodetahun',  $id_thn)->select('periode_tahun')->first();
+            $periode_tipe1 = 'GANJIL';
+        }
+
+        $data = DB::select('CALL ipk_pengajuan_beasiswa(?,?,?)', [$id, $id_thn, $id_tp]);
+
+        $sks = 0;
+        $ipkk = 0;
+        foreach ($data as $ips) {
+            $sks += $ips->akt_sks_teori + $ips->akt_sks_praktek;
+            $ipkk += ($ips->akt_sks_teori + $ips->akt_sks_praktek) * ($ips->nilai_indeks);
+        }
+
+        $hasil_ipk = $ipkk / $sks;
+
+        $pdf = PDF::loadView('bauk/download/khs_nilai_pdf', compact('periode_tahun1', 'periode_tipe1', 'hasil_ipk', 'sks', 'mhs', 'data', 'id', 'ipkk'));
+        return $pdf->download('KHS ' . $mhs->nama . ' ' . $periode_tahun1->periode_tahun . '-' . $periode_tipe1 . '.pdf');
     }
 
     public function val_pengajuan_beasiswa_bauk($id)
@@ -347,7 +451,7 @@ class BaukController extends Controller
         $tahun = Periode_tahun::where('id_periodetahun', $id_tahun)->first();
         $tipe = Periode_tipe::where('id_periodetipe', $id_tipe)->first();
         $ganti_tahun = str_replace('/', '_', $tahun->periode_tahun);
-      
+
         $nama_file = 'Data Pengajuan Beasiswa' . ' ' . $ganti_tahun . '-' . $tipe->periode_tipe . '.xlsx';
 
         return Excel::download(new DataPengajuanBeasiswa($id_tahun, $id_tipe), $nama_file);

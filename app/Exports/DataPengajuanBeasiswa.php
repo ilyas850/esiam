@@ -58,7 +58,8 @@ class DataPengajuanBeasiswa implements FromView, ShouldAutoSize
                     'beasiswa_trans.status',
                     'periode_tahun.periode_tahun',
                     'periode_tipe.periode_tipe',
-                    'beasiswa_trans.ipk'
+                    'beasiswa_trans.ipk',
+                    'beasiswa_trans.beasiswa'
                 )
                 ->get()
         ]);

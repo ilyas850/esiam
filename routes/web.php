@@ -1480,6 +1480,8 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::get('val_pengajuan_beasiswa_bauk/{id}', 'BaukController@val_pengajuan_beasiswa_bauk');
     Route::get('batal_val_pengajuan_beasiswa_bauk/{id}', 'BaukController@batal_val_pengajuan_beasiswa_bauk');
     Route::post('export_excel_pengajuan_beasiswa', 'BaukController@export_excel_pengajuan_beasiswa');
+    Route::put('put_beasiswa/{id}', 'BaukController@put_beasiswa');
+    Route::post('download_khs_by_bauk', 'BaukController@download_khs_by_bauk');
 
     //uang saku mahasiswa
     Route::get('uang_saku_pkl', 'BaukController@uang_saku_pkl');

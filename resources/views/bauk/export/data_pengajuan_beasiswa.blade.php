@@ -25,6 +25,9 @@
             <th>
                 <center>IPK</center>
             </th>
+            <th>
+                <center>Beasiswa</center>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -49,6 +52,7 @@
                     <center>{{ $item->semester }}</center>
                 </td>
                 <td align="center">{{ $item->ipk }}</td>
+                <td align="center">{{ $item->beasiswa }}%</td>
             </tr>
         @endforeach
     </tbody>

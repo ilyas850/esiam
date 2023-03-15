@@ -47,7 +47,13 @@
                                 <center>IPK</center>
                             </th>
                             <th>
-                                <center>Validasi BAUK</center>
+                                <center>Beasiswa</center>
+                            </th>
+                            <th>
+                                <center>Validasi</center>
+                            </th>
+                            <th>
+                                <center>KHS</center>
                             </th>
                         </tr>
                     </thead>
@@ -66,63 +72,58 @@
                                     {{ $item->ipk }}
                                 </td>
                                 <td align="center">
-                                    @if ($item->validasi_bauk == 'BELUM')
-                                        {{-- <form action="{{ url('val_penangguhan_bauk') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id_penangguhan_trans"
-                                                value="{{ $item->id_penangguhan_trans }}">
-                                            <input type="hidden" name="id_penangguhan_kategori"
-                                                value="{{ $kategori->id_penangguhan_kategori }}">
-                                            <input type="hidden" name="id_periodetahun"
-                                                value="{{ $thn_aktif->id_periodetahun }}">
-                                            <input type="hidden" name="id_periodetipe"
-                                                value="{{ $tp_aktif->id_periodetipe }}">
-                                            <button type="submit" class="btn btn-info btn-xs">Validasi</button>
-                                        </form> --}}
-                                        <a href="/val_pengajuan_beasiswa_bauk/{{ $item->id_trans_beasiswa }}"
-                                            class="btn btn-info btn-xs">Validasi</a>
-                                    @elseif ($item->validasi_bauk == 'SUDAH')
-                                        {{-- <form action="{{ url('batal_val_penangguhan_bauk') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id_penangguhan_trans"
-                                                value="{{ $item->id_penangguhan_trans }}">
-                                            <input type="hidden" name="id_penangguhan_kategori"
-                                                value="{{ $kategori->id_penangguhan_kategori }}">
-                                            <input type="hidden" name="id_periodetahun"
-                                                value="{{ $thn_aktif->id_periodetahun }}">
-                                            <input type="hidden" name="id_periodetipe"
-                                                value="{{ $tp_aktif->id_periodetipe }}">
-                                            <button type="submit" class="btn btn-warning btn-xs">Batal</button>
-                                        </form> --}}
-
-                                        <a href="/batal_val_pengajuan_beasiswa_bauk/{{ $item->id_trans_beasiswa }}"
-                                            class="btn btn-warning btn-xs">Batal</a>
+                                    @if ($item->beasiswa == null)
+                                        <center>
+                                            <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $item->id_trans_beasiswa }}">Input</button>
+                                        </center>
+                                    @elseif($item->beasiswa != null)
+                                        {{ $item->beasiswa }}%
+                                        <button class="btn btn-warning btn-xs fa-pull-right" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $item->id_trans_beasiswa }}"><i
+                                                class="fa fa-edit"></i></button>
                                     @endif
                                 </td>
+                                <td align="center">
+                                    @if ($item->validasi_bauk == 'BELUM')
+                                        <a href="/val_pengajuan_beasiswa_bauk/{{ $item->id_trans_beasiswa }}"
+                                            class="btn btn-success btn-xs"><i class="fa fa-check"></i></a>
+                                    @elseif ($item->validasi_bauk == 'SUDAH')
+                                        <a href="/batal_val_pengajuan_beasiswa_bauk/{{ $item->id_trans_beasiswa }}"
+                                            class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    <form action="{{ url('download_khs_by_bauk') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="id_student" value="{{ $item->idstudent }}">
+                                        <input type="hidden" name="id_periodetahun" value="{{ $item->id_periodetahun }}">
+                                        <input type="hidden" name="id_periodetipe" value="{{ $item->id_periodetipe }}">
+                                        <button class="btn btn-primary btn-xs"><i class="fa fa-download"></i></button>
+                                    </form>
+                                </td>
                             </tr>
-                            {{-- <div class="modal fade" id="modalTambahKomentar{{ $item->id_penangguhan_trans }}"
-                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                            <div class="modal fade" id="modalTambahKomentar{{ $item->id_trans_beasiswa }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Tunggakan</h5>
+                                            <h5 class="modal-title">Beasiswa Mahasiswa Semester {{ $item->semester }}</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/put_tunggakan/{{ $item->id_penangguhan_trans }}" method="post"
+                                            <form action="/put_beasiswa/{{ $item->id_trans_beasiswa }}" method="post"
                                                 enctype="multipart/form-data">
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <label>Nominal Tunggakan</label>
-                                                    <input type="number" class="form-control" name="total_tunggakan"
-                                                        value="{{ $item->total_tunggakan }}" required>
+                                                    <label>Beasiswa (%)</label>
+                                                    <input type="varchar" class="form-control" name="beasiswa"
+                                                        value="{{ $item->beasiswa }}"
+                                                        placeholder="Masukan jumlah beasiswa Ex. 50" required>
                                                 </div>
-                                                <input type="hidden" name="id_penangguhan_kategori"
-                                                    value="{{ $kategori->id_penangguhan_kategori }}">
-                                                <input type="hidden" name="id_periodetahun"
-                                                    value="{{ $thn_aktif->id_periodetahun }}">
-                                                <input type="hidden" name="id_periodetipe"
-                                                    value="{{ $tp_aktif->id_periodetipe }}">
+                                                <input type="hidden" name="id_student" value="{{ $item->idstudent }}">
+                                                <input type="hidden" name="id_semester" value="{{ $item->id_semester }}">
+
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>
                                                 <button type="submit" class="btn btn-primary">Simpan
@@ -131,7 +132,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
