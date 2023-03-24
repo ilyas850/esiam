@@ -6061,7 +6061,6 @@ class SadminController extends Controller
 
     public function filter_konversi(Request $request)
     {
-        
         $id_kurikulum = $request->id_kurikulum;
         $id_prodi = $request->id_prodi;
         $id_angkatan = $request->id_angkatan;

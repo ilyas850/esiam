@@ -118,8 +118,14 @@
                                                 <div class="form-group">
                                                     <label>Beasiswa (%)</label>
                                                     <input type="varchar" class="form-control" name="beasiswa"
-                                                        value="{{ $item->beasiswa }}"
-                                                        placeholder="Masukan jumlah beasiswa Ex. 50" required>
+                                                        value=" @if ($item->id_semester == 2) {{ $item->spp2 }} 
+                                                        @elseif ($item->id_semester == 3) {{ $item->spp3 }}
+                                                        @elseif ($item->id_semester == 4) {{ $item->spp4 }}
+                                                        @elseif ($item->id_semester == 5) {{ $item->spp5 }}
+                                                        @elseif ($item->id_semester == 6) {{ $item->spp6 }}
+                                                        @elseif ($item->id_semester == 7) {{ $item->spp7 }}
+                                                        @elseif ($item->id_semester == 8) {{ $item->spp8 }} @endif"
+                                                        required>
                                                 </div>
                                                 <input type="hidden" name="id_student" value="{{ $item->idstudent }}">
                                                 <input type="hidden" name="id_semester" value="{{ $item->id_semester }}">

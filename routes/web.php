@@ -796,6 +796,9 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('post_bim_pa', 'MhsController@post_bim_pa');
     Route::put('edit_bimbingan_perwalian/{id}', 'MhsController@edit_bimbingan_perwalian');
     route::get('hapus_bim_perwalian/{id}', 'MhsController@hapus_bim_perwalian');
+
+    #absensi ujian
+    Route::get('absen_ujian_mhs', 'MhsController@absen_ujian_mhs');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1464,8 +1467,12 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::post('val_penangguhan_bauk', 'BaukController@val_penangguhan_bauk');
     // Route::get('batal_val_penangguhan_bauk/{id}', 'BaukController@batal_val_penangguhan_bauk');
     Route::post('batal_val_penangguhan_bauk', 'BaukController@batal_val_penangguhan_bauk');
+    #CLOSE penangguhan
+    Route::get('close_penangguhan/{id}', 'BaukController@close_penangguhan');
+    #OPEN penangguhan
+    Route::get('open_penangguhan/{id}', 'BaukController@open_penangguhan');
 
-    //waktu penangguhan
+    #waktu penangguhan
     Route::get('waktu_penangguhan', 'BaukController@waktu_penangguhan');
     Route::post('simpan_waktu_penangguhan', 'BaukController@simpan_waktu_penangguhan');
     Route::post('edit_time_penangguhan', 'BaukController@edit_time_penangguhan');

@@ -48,7 +48,9 @@
                             <th colspan="4">
                                 <center>Validasi</center>
                             </th>
-
+                            <th rowspan="2">
+                                <center>Status</center>
+                            </th>
                         </tr>
                         <tr>
                             <th>
@@ -80,8 +82,7 @@
                                     @if ($item->total_tunggakan == null)
                                         <center>
                                             <button class="btn btn-info btn-xs" data-toggle="modal"
-                                                data-target="#modalTambahKomentar{{ $item->id_penangguhan_trans }}">Edit
-                                                Tunggakan</button>
+                                                data-target="#modalTambahKomentar{{ $item->id_penangguhan_trans }}">Input</button>
                                         </center>
                                     @elseif($item->total_tunggakan != null)
                                         @currency ( $item->total_tunggakan )
@@ -120,7 +121,7 @@
                                                 value="{{ $thn_aktif->id_periodetahun }}">
                                             <input type="hidden" name="id_periodetipe"
                                                 value="{{ $tp_aktif->id_periodetipe }}">
-                                            <button type="submit" class="btn btn-warning btn-xs">Batal</button>
+                                            <button type="submit" class="btn btn-danger btn-xs">Batal</button>
                                         </form>
 
                                         {{-- <a href="/batal_val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
@@ -146,6 +147,15 @@
                                         <span class="badge bg-yellow">{{ $item->validasi_baak }}</span>
                                     @else
                                         <span class="badge bg-green">{{ $item->validasi_baak }}</span>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->status_penangguhan == 'OPEN' or $item->status_penangguhan == null)
+                                        <a href="/close_penangguhan/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-info btn-xs" title="Klik untuk CLOSE Penangguhan"><i class="fa fa-check"></i></a>
+                                    @elseif ($item->status_penangguhan == 'CLOSE')
+                                        <a href="/open_penangguhan/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-danger btn-xs" title="Klik untuk OPEN Penangguhan"><i class="fa fa-close"></i></a>
                                     @endif
                                 </td>
                             </tr>

@@ -68,8 +68,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Indeks Prestasi Akademik Semester {{ $c }}</label>
-                                <input type="text" class="form-control" name="ipk" value="{{ $hasil_ipk }}"
-                                    readonly>
+                                <input type="text" class="form-control" name="ipk"
+                                    value="{{ round($hasil_ipk, 2) }}" readonly>
                             </div>
                         </div>
                     </div>

@@ -67,6 +67,7 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ url('kartu_uts') }}"><i class="fa fa-circle-o"></i> <span>Kartu UTS</span></a></li>
                     <li><a href="{{ url('kartu_uas') }}"><i class="fa fa-circle-o"></i> <span>Kartu UAS</span></a></li>
+                    <li><a href="{{ url('absen_ujian_mhs') }}"><i class="fa fa-circle-o"></i> <span>Absen Ujian</span></a></li>
                 </ul>
             </li>
             <li class="treeview">
