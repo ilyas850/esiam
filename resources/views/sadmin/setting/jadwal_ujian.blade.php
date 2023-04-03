@@ -97,9 +97,6 @@
                             <th>
                                 <center>Jam</center>
                             </th>
-                            <th>
-                                <center>Tipe</center>
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,7 +113,6 @@
                                 <td>{{ $item->makul }}</td>
                                 <td align="center">{{ $item->nama_ruangan }}</td>
                                 <td align="center">{{ $item->jam }}</td>
-                                <td align="center">{{ $item->tipe_ujian }}</td>
                             </tr>
                         @endforeach
                     </tbody>

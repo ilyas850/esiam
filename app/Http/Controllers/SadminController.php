@@ -5939,7 +5939,7 @@ class SadminController extends Controller
         $tipe_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
 
         $data = DB::select('CALL jadwal_ujian(?,?)', [$tahun->id_periodetahun, $tipe_aktif->id_periodetipe]);
-
+       
         return view('sadmin/setting/jadwal_ujian', compact('tahun', 'tipe_aktif', 'tipe', 'prodi', 'kelas', 'data'));
     }
 
