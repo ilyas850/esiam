@@ -42,6 +42,8 @@ use App\Setting_nilai;
 use App\Standar;
 use App\Pedoman_akademik;
 use App\Pedoman_khusus;
+use App\Absen_ujian;
+use App\Permohonan_ujian;
 use App\Exports\DataNilaiExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -4934,5 +4936,44 @@ class DosenluarController extends Controller
         //PDF file is stored under project/public/download/info.pdf
         $file = 'Pedoman Khusus/' . $ped->file;
         return Response::download($file);
+    }
+
+    public function data_pengajuan_keringanan_absen_luar()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = DB::select('CALL keringanan_absensi(?)', [$id]);
+
+        return view('dosen/mhs/keringanan_absensi', compact('data'));
+    }
+
+    public function acc_keringanan_luar($id)
+    {
+        Permohonan_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        Absen_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        return redirect('data_pengajuan_keringanan_absen_dlm');
+    }
+
+    public function reject_keringanan_luar($id)
+    {
+        Permohonan_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'TIDAK DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        Absen_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'TIDAK DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        return redirect('data_pengajuan_keringanan_absen_dlm');
     }
 }

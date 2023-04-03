@@ -590,6 +590,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('cek_bim_perwalian/{id}', 'DosenController@cek_bim_perwalian');
     Route::get('val_bim_perwalian/{id}', 'DosenController@val_bim_perwalian');
 
+    #pengajuan keringanan absen
     Route::get('data_pengajuan_keringanan_absen_dlm', 'DosenController@data_pengajuan_keringanan_absen_dlm');
     Route::get('acc_keringanan_dlm/{id}', 'DosenController@acc_keringanan_dlm');
     Route::get('reject_keringanan_dlm/{id}', 'DosenController@reject_keringanan_dlm');
@@ -960,6 +961,11 @@ Route::group(['middleware' => 'dosenluar'], function () {
     #pedoman khusus
     Route::get('pedoman_khusus_dsn_luar', 'DosenluarController@pedoman_khusus_dsn_luar');
     Route::get('download_pedoman_khusus_dsn_luar/{id}', 'DosenluarController@download_pedoman_khusus_dsn_luar');
+
+    #pengajuan keringanan absen
+    Route::get('data_pengajuan_keringanan_absen_luar', 'DosenluarController@data_pengajuan_keringanan_absen_luar');
+    Route::get('acc_keringanan_luar/{id}', 'DosenluarController@acc_keringanan_luar');
+    Route::get('reject_keringanan_luar/{id}', 'DosenluarController@reject_keringanan_luar');
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {

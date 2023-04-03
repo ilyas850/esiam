@@ -76,9 +76,9 @@
                                     @endif
                                 </td>
                                 <td align="center">
-                                    <a href="/acc_keringanan_dlm/{{ $key->id_studentrecord }}" class="btn btn-info btn-xs"
+                                    <a href="/acc_keringanan_luar/{{ $key->id_studentrecord }}" class="btn btn-info btn-xs"
                                         title="Klik untuk Setujui Keringanan"><i class="fa fa-check"></i></a>
-                                    <a href="/reject_keringanan_dlm/{{ $key->id_studentrecord }}"
+                                    <a href="/reject_keringanan_luar/{{ $key->id_studentrecord }}"
                                         class="btn btn-danger btn-xs" title="Klik untuk Tolak Keringanan"><i
                                             class="fa fa-close"></i></a>
                                 </td>
