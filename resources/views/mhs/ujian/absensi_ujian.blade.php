@@ -82,42 +82,49 @@
                                     @endif
                                 </td>
                                 <td align="center">
-                                    {{ Carbon\Carbon::parse($item->tgl_uas)->formatLocalized('%A, %d %B %Y') }}</td>
-                                <td align="center">
-                                    @if ($item->absen_uas == null)
-                                        @if ($item->id_kelas == 1)
-                                            @if ($item->jml_tdk_hdr <= 3)
-                                                <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-success btn-xs">Absen</a>
-                                            @elseif ($item->jml_tdk_hdr > 3)
-                                                <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-success btn-xs">Absen</a>
-                                            @endif
-                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
-                                            @if ($item->jml_tdk_hdr <= 4)
-                                                <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-success btn-xs">Absen</a>
-                                            @elseif ($item->jml_tdk_hdr > 4)
-                                                <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-success btn-xs">Absen</a>
-                                            @endif
-                                        @endif
-                                    @else
-                                        {{ $item->absen_uas }}
+                                    @if ($item->tgl_uas != null)
+                                        {{ Carbon\Carbon::parse($item->tgl_uas)->formatLocalized('%A, %d %B %Y') }}
                                     @endif
                                 </td>
                                 <td align="center">
-                                    @if ($item->id_kelas == 1)
-                                        @if ($item->jml_tdk_hdr <= 3)
-                                            <span class="badge bg-green"><i class="fa fa-check"></i></span>
-                                        @elseif ($item->jml_tdk_hdr > 3)
-                                            <span class="badge bg-red"><i class="fa fa-close"></i></span>
+                                    @if ($item->tgl_uas != null)
+                                        @if ($item->absen_uas == null)
+                                            @if ($item->id_kelas == 1)
+                                                @if ($item->jml_tdk_hdr <= 3)
+                                                    <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-success btn-xs">Absen</a>
+                                                @elseif ($item->jml_tdk_hdr > 3)
+                                                    <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-success btn-xs">Absen</a>
+                                                @endif
+                                            @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                                @if ($item->jml_tdk_hdr <= 4)
+                                                    <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-success btn-xs">Absen</a>
+                                                @elseif ($item->jml_tdk_hdr > 4)
+                                                    <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-success btn-xs">Absen</a>
+                                                @endif
+                                            @endif
+                                        @else
+                                            {{ $item->absen_uas }}
                                         @endif
-                                    @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
-                                        @if ($item->jml_tdk_hdr <= 4)
-                                            <span class="badge bg-green"><i class="fa fa-check"></i></span>
-                                        @elseif ($item->jml_tdk_hdr > 4)
-                                            <span class="badge bg-red"><i class="fa fa-close"></i></span>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->tgl_uas != null)
+                                        @if ($item->id_kelas == 1)
+                                            @if ($item->jml_tdk_hdr <= 3)
+                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
+                                            @elseif ($item->jml_tdk_hdr > 3)
+                                                <span class="badge bg-red"><i class="fa fa-close"></i></span>
+                                            @endif
+                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                            @if ($item->jml_tdk_hdr <= 4)
+                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
+                                            @elseif ($item->jml_tdk_hdr > 4)
+                                                <span class="badge bg-red"><i class="fa fa-close"></i></span>
+                                            @endif
                                         @endif
                                     @endif
                                 </td>
