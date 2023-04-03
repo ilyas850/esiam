@@ -66,6 +66,11 @@
             <li><a href="{{ url('penguji_ta') }}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
         </ul>
     </li>
+    <li>
+        <a href="{{ url('data_pengajuan_keringanan_absen_dlm') }}">
+            <i class="fa fa-list"></i> <span>Pengajuan Absen</span>
+        </a>
+    </li>
     {{-- <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>Jadwal PraUSTA</span>

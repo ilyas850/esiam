@@ -88,9 +88,8 @@
                                                             <input type="hidden" name="name"
                                                                 value="{{ $item->nama }}">
                                                             {{ csrf_field() }}
-                                                            <button type="submit" class="btn btn-success btn-xs"
-                                                                data-toggle="tooltip"
-                                                                data-placement="right">Generate</button>
+                                                            <button type="submit"
+                                                                class="btn btn-success btn-xs">Generate</button>
                                                         </form>
                                                     @elseif($item->username != null)
                                                         <div class="btn-group">

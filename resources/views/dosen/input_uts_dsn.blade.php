@@ -74,19 +74,25 @@
                                     </td>
                                     <td>
                                         <center>
-                                            @if ($item->nilai_UTS == 0)
-                                                <input type="hidden" name="id_student[]"
-                                                    value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
-                                                <input type="hidden" name="id_studentrecord[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                                <input type="text" name="nilai_UTS[]">
-                                            @elseif ($item->nilai_UTS != 0)
-                                                <input type="hidden" name="id_student[]"
-                                                    value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
-                                                <input type="hidden" name="id_studentrecord[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                                <input type="text" name="nilai_UTS[]" value="{{ $item->nilai_UTS }}">
+                                            @if ($item->absen_uts != null)
+                                                @if ($item->nilai_UTS == 0)
+                                                    <input type="hidden" name="id_student[]"
+                                                        value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
+                                                    <input type="hidden" name="id_studentrecord[]"
+                                                        value="{{ $item->id_studentrecord }}">
+                                                    <input type="text" name="nilai_UTS[]">
+                                                @elseif ($item->nilai_UTS != 0)
+                                                    <input type="hidden" name="id_student[]"
+                                                        value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
+                                                    <input type="hidden" name="id_studentrecord[]"
+                                                        value="{{ $item->id_studentrecord }}">
+                                                    <input type="text" name="nilai_UTS[]"
+                                                        value="{{ $item->nilai_UTS }}">
+                                                @endif
+                                            @elseif($item->absen_uts == null)
+                                                <span class="badge bg-yellow"> Tidak Absen Ujian</span>
                                             @endif
+
                                         </center>
                                     </td>
                                 </tr>

@@ -32,7 +32,6 @@
                         <td>Program Studi </td>
                         <td>:</td>
                         <td>{{ $datamhs->prodi }}</td>
-
                         <td>Kelas</td>
                         <td>:</td>
                         <td>{{ $datamhs->kelas }}</td>

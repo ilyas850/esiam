@@ -589,6 +589,10 @@ Route::group(['middleware' => 'dosen'], function () {
     //cek bimbingan perwalian
     Route::get('cek_bim_perwalian/{id}', 'DosenController@cek_bim_perwalian');
     Route::get('val_bim_perwalian/{id}', 'DosenController@val_bim_perwalian');
+
+    Route::get('data_pengajuan_keringanan_absen_dlm', 'DosenController@data_pengajuan_keringanan_absen_dlm');
+    Route::get('acc_keringanan_dlm/{id}', 'DosenController@acc_keringanan_dlm');
+    Route::get('reject_keringanan_dlm/{id}', 'DosenController@reject_keringanan_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -799,6 +803,13 @@ Route::group(['middleware' => 'mhs'], function () {
 
     #absensi ujian
     Route::get('absen_ujian_mhs', 'MhsController@absen_ujian_mhs');
+    Route::get('absen_ujian_uts/{id}', 'MhsController@absen_ujian_uts');
+    Route::get('absen_ujian_uas/{id}', 'MhsController@absen_ujian_uas');
+
+    Route::get('absen_ujian_uas_memenuhi/{id}', 'MhsController@absen_ujian_uas_memenuhi');
+    Route::get('absen_ujian_uas_tdk_memenuhi/{id}', 'MhsController@absen_ujian_uas_tdk_memenuhi');
+
+    Route::get('ajukan_keringanan_absen/{id}', 'MhsController@ajukan_keringanan_absen');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

@@ -265,6 +265,7 @@ class SadminController extends Controller
 
     public function save_generate_user(Request $request)
     {
+        dd($request);
         $student = $request->student;
         $jml_student = count($student);
 
@@ -6013,24 +6014,35 @@ class SadminController extends Controller
             for ($j = 0; $j < $jml_cek; $j++) {
                 $hasil_cek = $cek[$j];
 
-                $new = new Ujian_transaction;
-                $new->id_periodetahun = $idtahun;
-                $new->id_periodetipe = $idtipe;
-                $new->jenis_ujian = $jenis_ujian;
-                $new->id_prodi = $hasil_cek->id_prodi;
-                $new->id_kelas = $hasil_cek->id_kelas;
-                $new->id_makul = $idmakul;
-                $new->tanggal_ujian = $tanggal[$i];
-                $new->id_jam = $hasil_cek->id_jam;
-                $new->id_ruangan = $hasil_cek->id_ruangan;
-                $new->id_tipeujian = $idtipeujian[$j];
-                $new->data_origin = 'eSIAM';
-                $new->status = 'ACTIVE';
+                $cek_ujian = Ujian_transaction::where('id_periodetahun', $idtahun)
+                    ->where('id_periodetipe', $idtipe)
+                    ->where('jenis_ujian', $jenis_ujian)
+                    ->where('id_prodi', $hasil_cek->id_prodi)
+                    ->where('id_kelas', $hasil_cek->id_kelas)
+                    ->where('id_makul', $idmakul)
+                    ->where('tanggal_ujian', $tanggal[$i])
+                    ->where('id_jam', $hasil_cek->id_jam)
+                    ->where('id_ruangan', $hasil_cek->id_ruangan)
+                    ->get();
 
-                $new->save();
+                if (count($cek_ujian) == 0) {
+                    $new = new Ujian_transaction;
+                    $new->id_periodetahun = $idtahun;
+                    $new->id_periodetipe = $idtipe;
+                    $new->jenis_ujian = $jenis_ujian;
+                    $new->id_prodi = $hasil_cek->id_prodi;
+                    $new->id_kelas = $hasil_cek->id_kelas;
+                    $new->id_makul = $idmakul;
+                    $new->tanggal_ujian = $tanggal[$i];
+                    $new->id_jam = $hasil_cek->id_jam;
+                    $new->id_ruangan = $hasil_cek->id_ruangan;
+                    $new->id_tipeujian = $idtipeujian[$i];
+                    $new->data_origin = 'eSIAM';
+                    $new->status = 'ACTIVE';
+                    $new->save();
+                }
             }
         }
-
 
         return redirect('setting_ujian');
     }

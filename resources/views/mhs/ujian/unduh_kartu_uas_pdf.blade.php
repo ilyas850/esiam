@@ -63,7 +63,6 @@
     <br>
     <table border="1" width="100%">
         <thead>
-
             <tr>
                 <th><span style="font-size:80%">No</span></th>
                 <th><span style="font-size:80%">Jadwal </span></th>

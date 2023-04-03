@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use File;
 use PDF;
 use Alert;
+use App\Absen_ujian;
 use App\Bap;
 use App\Absensi_mahasiswa;
 use App\Pedoman_akademik;
@@ -58,7 +59,9 @@ use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use App\Konversi_itembayar;
 use App\Beasiswa_trans;
+use App\Permohonan_ujian;
 use App\Perwalian_trans_bimbingan;
+use App\Soal_ujian;
 use Carbon\Carbon;
 use Hamcrest\Core\IsNull;
 use Illuminate\Http\Request;
@@ -4533,6 +4536,306 @@ class MhsController extends Controller
 
     public function absen_ujian_mhs()
     {
-        
+        $id = Auth::user()->id_user;
+
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->first();
+
+        $idangkatan = $datamhs->idangkatan;
+        $idstatus = $datamhs->idstatus;
+        $kodeprodi = $datamhs->kodeprodi;
+        $idprodi = $datamhs->id_prodi;
+
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $id_tahun = $periode_tahun->id_periodetahun;
+        $id_tipe = $periode_tipe->id_periodetipe;
+
+        $cek_ujian = Ujian_transaction::where('ujian_transaction.id_periodetahun', $id_tahun)
+            ->where('ujian_transaction.id_periodetipe', $id_tipe)
+            ->where('ujian_transaction.status', 'ACTIVE')
+            ->select(
+                DB::raw('MAX(ujian_transaction.id_ujiantrans)'),
+                'ujian_transaction.id_periodetahun',
+                'ujian_transaction.id_periodetipe',
+                'ujian_transaction.jenis_ujian'
+            )
+            ->groupBy(
+                'ujian_transaction.id_periodetahun',
+                'ujian_transaction.id_periodetipe',
+                'ujian_transaction.jenis_ujian'
+            )
+            ->get();
+
+        $hitung_ujian = count($cek_ujian);
+
+        //cek semester
+        $sub_thn = substr($periode_tahun->periode_tahun, 6, 2);
+
+        $smt = $sub_thn . $id_tipe;
+
+        if ($smt % 2 != 0) {
+            if ($id_tipe == 1) {
+                //ganjil
+                $a = (($smt + 10) - 1) / 10;
+                $b = $a - $idangkatan;
+                $c = ($b * 2) - 1;
+            } elseif ($id_tipe == 3) {
+                //pendek
+                $a = (($smt + 10) - 3) / 10;
+                $b = $a - $idangkatan;
+                $c = ($b * 2) . '0' . '1';
+            }
+        } else {
+            //genap
+            $a = ($smt + 10 - 2) / 10;
+            $b = $a - $idangkatan;
+            $c = $b * 2;
+        }
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+            ->where('idstatus', $idstatus)
+            ->where('kodeprodi', $kodeprodi)
+            ->select(
+                'daftar',
+                'awal',
+                'dsp',
+                'spp1',
+                'spp2',
+                'spp3',
+                'spp4',
+                'spp5',
+                'spp6',
+                'spp7',
+                'spp8',
+                'spp9',
+                'spp10',
+                'spp11',
+                'spp12',
+                'spp13',
+                'spp14'
+            )
+            ->first();
+
+        $cek_bea = Beasiswa::where('idstudent', $id)->first();
+
+        if ($cek_bea != null) {
+            $daftar = $biaya->daftar - ($biaya->daftar * $cek_bea->daftar) / 100;
+            $awal = $biaya->awal - ($biaya->awal * $cek_bea->awal) / 100;
+            $dsp = $biaya->dsp - ($biaya->dsp * $cek_bea->dsp) / 100;
+            $spp1 = $biaya->spp1 - ($biaya->spp1 * $cek_bea->spp1) / 100;
+            $spp2 = $biaya->spp2 - ($biaya->spp2 * $cek_bea->spp2) / 100;
+            $spp3 = $biaya->spp3 - ($biaya->spp3 * $cek_bea->spp3) / 100;
+            $spp4 = $biaya->spp4 - ($biaya->spp4 * $cek_bea->spp4) / 100;
+            $spp5 = $biaya->spp5 - ($biaya->spp5 * $cek_bea->spp5) / 100;
+            $spp6 = $biaya->spp6 - ($biaya->spp6 * $cek_bea->spp6) / 100;
+            $spp7 = $biaya->spp7 - ($biaya->spp7 * $cek_bea->spp7) / 100;
+            $spp8 = $biaya->spp8 - ($biaya->spp8 * $cek_bea->spp8) / 100;
+            $spp9 = $biaya->spp9 - ($biaya->spp9 * $cek_bea->spp9) / 100;
+            $spp10 = $biaya->spp10 - ($biaya->spp10 * $cek_bea->spp10) / 100;
+            $spp11 = $biaya->spp11 - ($biaya->spp11 * $cek_bea->spp11) / 100;
+            $spp12 = $biaya->spp12 - ($biaya->spp12 * $cek_bea->spp12) / 100;
+            $spp13 = $biaya->spp13 - ($biaya->spp13 * $cek_bea->spp13) / 100;
+            $spp14 = $biaya->spp14 - ($biaya->spp14 * $cek_bea->spp14) / 100;
+        } elseif ($cek_bea == null) {
+            $daftar = $biaya->daftar;
+            $awal = $biaya->awal;
+            $dsp = $biaya->dsp;
+            $spp1 = $biaya->spp1;
+            $spp2 = $biaya->spp2;
+            $spp3 = $biaya->spp3;
+            $spp4 = $biaya->spp4;
+            $spp5 = $biaya->spp5;
+            $spp6 = $biaya->spp6;
+            $spp7 = $biaya->spp7;
+            $spp8 = $biaya->spp8;
+            $spp9 = $biaya->spp9;
+            $spp10 = $biaya->spp10;
+            $spp11 = $biaya->spp11;
+            $spp12 = $biaya->spp12;
+            $spp13 = $biaya->spp13;
+            $spp14 = $biaya->spp14;
+        }
+
+        //total pembayaran kuliah
+        $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->sum('bayar.bayar');
+
+        if ($hitung_ujian == 1) {
+            if ($c == 1) {
+                $cekbyr = $daftar + $awal + ($spp1 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 2) {
+                $cekbyr = $daftar + $awal + ($dsp * 25) / 100 + $spp1 + ($spp2 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == '201') {
+                $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + ($spp2 * 82 / 100)) - $total_semua_dibayar;
+            } elseif ($c == 3) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 4) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == '401') {
+                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82 / 100)) - $total_semua_dibayar;
+            } elseif ($c == 5) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 6) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == '601') {
+                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82 / 100)) - $total_semua_dibayar;
+            } elseif ($c == 7) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 8) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == '801') {
+                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 82 / 100)) - $total_semua_dibayar;
+            } elseif ($c == 9) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + ($spp9 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 10) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == '1001') {
+                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 82 / 100)) - $total_semua_dibayar;
+            } elseif ($c == 11) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + ($spp11 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 12) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11(($spp12 * 50) / 100) - $total_semua_dibayar;
+            } elseif ($c == 13) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + ($spp13 * 50) / 100 - $total_semua_dibayar;
+            } elseif ($c == 14) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 50) / 100 - $total_semua_dibayar;
+            }
+
+            
+
+            if ($cekbyr == 0 or $cekbyr < 1) {
+                $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
+
+                return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
+            } else {
+                Alert::warning('Maaf anda tidak dapat mendownload Kartu Ujian UTS karena keuangan Anda belum memenuhi syarat');
+                return redirect('home');
+            }
+        } elseif ($hitung_ujian == 2) {
+            # code...
+        } elseif ($hitung_ujian == 0) {
+            Alert::warning('Maaf Jadwal Ujian Belum ada');
+            return redirect('home');
+        }
+    }
+
+    public function absen_ujian_uts($id)
+    {
+        $cek_data = Absen_ujian::where('id_studentrecord', $id)->first();
+
+        $todayDate = date("Y-m-d");
+
+        if ($cek_data == null) {
+            $data = new Absen_ujian();
+            $data->id_studentrecord = $id;
+            $data->absen_uts = $todayDate;
+            $data->created_by = Auth::user()->name;
+            $data->save();
+        } else {
+            Absen_ujian::where('id_studentrecord', $id)->update([
+                'absen_uts' => $todayDate,
+                'updated_by' => Auth::user()->name
+            ]);
+        }
+
+        Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
+        return redirect('absen_ujian_mhs');
+    }
+
+    public function absen_ujian_uas_memenuhi($id)
+    {
+        $cek_data = Absen_ujian::where('id_studentrecord', $id)->first();
+
+        $todayDate = date("Y-m-d");
+
+        if ($cek_data == null) {
+
+            $data = new Absen_ujian();
+            $data->id_studentrecord = $id;
+            $data->absen_uas = $todayDate;
+            $data->ket_absensi = 'MEMENUHI';
+            $data->created_by = Auth::user()->name;
+            $data->save();
+        } else {
+
+            Absen_ujian::where('id_studentrecord', $id)->update([
+                'absen_uas' => $todayDate,
+                'ket_absensi' => 'MEMENUHI',
+                'updated_by' => Auth::user()->name
+            ]);
+        }
+
+        Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
+        return redirect('absen_ujian_mhs');
+    }
+
+    public function absen_ujian_uas_tdk_memenuhi($id)
+    {
+        $cek_data = Absen_ujian::where('id_studentrecord', $id)->first();
+
+        $todayDate = date("Y-m-d");
+
+        if ($cek_data == null) {
+            $data = new Absen_ujian();
+            $data->id_studentrecord = $id;
+            $data->absen_uas = $todayDate;
+            $data->ket_absensi = 'TIDAK MEMENUHI';
+            $data->created_by = Auth::user()->name;
+            $data->save();
+        } else {
+            Absen_ujian::where('id_studentrecord', $id)->update([
+                'absen_uas' => $todayDate,
+                'ket_absensi' => 'TIDAK MEMENUHI',
+                'updated_by' => Auth::user()->name
+            ]);
+        }
+
+        Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
+        return redirect('absen_ujian_mhs');
+    }
+
+    public function ajukan_keringanan_absen($id)
+    {
+        $cek_data = Permohonan_ujian::where('id_studentrecord', $id)->first();
+
+        $cek_data1 = Absen_ujian::where('id_studentrecord', $id)->first();
+
+        if ($cek_data == null) {
+            $data = new Permohonan_ujian();
+            $data->id_studentrecord = $id;
+            $data->permohonan = 'MENGAJUKAN';
+            $data->created_by = Auth::user()->name;
+            $data->save();
+        } else {
+            Permohonan_ujian::where('id_studentrecord', $id)->update([
+                'permohonan' => 'MENGAJUKAN',
+                'updated_by' => Auth::user()->name
+            ]);
+        }
+
+        if ($cek_data1 == null) {
+            $data1 = new Absen_ujian();
+            $data1->id_studentrecord = $id;
+            $data1->permohonan = 'MENGAJUKAN';
+            $data->created_by = Auth::user()->name;
+            $data1->save();
+        } else {
+            Absen_ujian::where('id_studentrecord', $id)->update([
+                'permohonan' => 'MENGAJUKAN',
+                'updated_by' => Auth::user()->name
+            ]);
+        }
+
+        Alert::success('', 'Pengajuan berhasil disimpan')->autoclose(3500);
+        return redirect('absen_ujian_mhs');
     }
 }

@@ -51,6 +51,8 @@ use App\Exports\DataNilaiExport;
 use App\Http\Requests;
 use App\Pedoman_khusus;
 use App\Soal_ujian;
+use App\Absen_ujian;
+use App\Permohonan_ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -5820,5 +5822,44 @@ class DosenController extends Controller
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function data_pengajuan_keringanan_absen_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = DB::select('CALL keringanan_absensi(?)', [$id]);
+
+        return view('dosen/mhs/keringanan_absensi', compact('data'));
+    }
+
+    public function acc_keringanan_dlm($id)
+    {
+        Permohonan_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        Absen_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        return redirect('data_pengajuan_keringanan_absen_dlm');
+    }
+
+    public function reject_keringanan_dlm($id)
+    {
+        Permohonan_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'TIDAK DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        Absen_ujian::where('id_studentrecord', $id)->update([
+            'permohonan' => 'TIDAK DISETUJUI',
+            'updated_by' => Auth::user()->name
+        ]);
+
+        return redirect('data_pengajuan_keringanan_absen_dlm');
     }
 }
