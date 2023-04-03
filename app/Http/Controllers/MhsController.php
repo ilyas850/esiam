@@ -4644,6 +4644,7 @@ class MhsController extends Controller
             $spp12 = $biaya->spp12 - ($biaya->spp12 * $cek_bea->spp12) / 100;
             $spp13 = $biaya->spp13 - ($biaya->spp13 * $cek_bea->spp13) / 100;
             $spp14 = $biaya->spp14 - ($biaya->spp14 * $cek_bea->spp14) / 100;
+            $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cek_bea->prakerin)) / 100);
         } elseif ($cek_bea == null) {
             $daftar = $biaya->daftar;
             $awal = $biaya->awal;
@@ -4662,6 +4663,7 @@ class MhsController extends Controller
             $spp12 = $biaya->spp12;
             $spp13 = $biaya->spp13;
             $spp14 = $biaya->spp14;
+            $prakerin = $biaya->prakerin;
         }
 
         //total pembayaran kuliah
@@ -4710,18 +4712,67 @@ class MhsController extends Controller
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 50) / 100 - $total_semua_dibayar;
             }
 
-            
-
-            if ($cekbyr == 0 or $cekbyr < 1) {
+            if ($cekbyr == 0 or $cekbyr < 1000) {
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
 
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
-                Alert::warning('Maaf anda tidak dapat mendownload Kartu Ujian UTS karena keuangan Anda belum memenuhi syarat');
+                Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat');
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {
-            # code...
+            if ($c == 1) {
+                $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
+            } elseif ($c == 2) {
+                $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
+            } elseif ($c == '201') {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
+            } elseif ($c == 3) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
+            } elseif ($c == 4) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
+            } elseif ($c == '401') {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
+            } elseif ($c == 5) {
+                if ($kodeprodi == 23 or $kodeprodi == 24) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $prakerin - $total_semua_dibayar;
+                } elseif ($kodeprodi == 25) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+                }
+            } elseif ($c == 6) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
+            } elseif ($c == '601') {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
+            } elseif ($c == 7) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 - $total_semua_dibayar;
+            } elseif ($c == 8) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
+            } elseif ($c == '801') {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
+            } elseif ($c == 9) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 - $total_semua_dibayar;
+            } elseif ($c == 10) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
+            } elseif ($c == '1001') {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
+            } elseif ($c == 11) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 - $total_semua_dibayar;
+            } elseif ($c == 12) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 - $total_semua_dibayar;
+            } elseif ($c == 13) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 - $total_semua_dibayar;
+            } elseif ($c == 14) {
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
+            }
+
+            if ($cekbyr == 0 or $cekbyr < 1000) {
+                $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
+
+                return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
+            } else {
+                Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat');
+                return redirect('home');
+            }
         } elseif ($hitung_ujian == 0) {
             Alert::warning('Maaf Jadwal Ujian Belum ada');
             return redirect('home');
