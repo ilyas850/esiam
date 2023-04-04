@@ -4805,6 +4805,7 @@ class DosenController extends Controller
                 $info->id_kurperiode = $gabungan->id_kurperiode;
                 $info->created_by = Auth::user()->name;
                 $info->tipe_ujian_uts = $request->tipe_ujian_uts;
+                $info->cetak_soal_uts = $request->cetak_soal_uts;
 
                 if ($i == 0) {
                     if ($request->hasFile('soal_uts')) {
@@ -4844,6 +4845,7 @@ class DosenController extends Controller
                 $id = $cek->id_soal;
                 $info = Soal_ujian::find($id);
                 $info->tipe_ujian_uts = $request->tipe_ujian_uts;
+                $info->cetak_soal_uts = $request->cetak_soal_uts;
 
                 if ($i == 0) {
                     if ($info->soal_uts) {
@@ -4944,6 +4946,7 @@ class DosenController extends Controller
                 $info->id_kurperiode = $gabungan->id_kurperiode;
                 $info->created_by = Auth::user()->name;
                 $info->tipe_ujian_uas = $request->tipe_ujian_uas;
+                $info->cetak_soal_uas = $request->cetak_soal_uas;
 
                 if ($i == 0) {
                     if ($request->hasFile('soal_uas')) {
@@ -4983,6 +4986,7 @@ class DosenController extends Controller
                 $id = $cek->id_soal;
                 $info = Soal_ujian::find($id);
                 $info->tipe_ujian_uas = $request->tipe_ujian_uas;
+                $info->cetak_soal_uas = $request->cetak_soal_uas;
 
                 if ($i == 0) {
                     if ($info->soal_uas) {

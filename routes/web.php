@@ -1244,6 +1244,11 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     //total mahasiswa per matakuliah
     Route::get('total_mhs_matkul', 'KaprodiController@total_mhs_matkul');
+
+    #pengajuan keringanan absen
+    Route::get('data_pengajuan_keringanan_absen_kprd', 'KaprodiController@data_pengajuan_keringanan_absen_kprd');
+    Route::get('acc_keringanan_kprd/{id}', 'KaprodiController@acc_keringanan_kprd');
+    Route::get('reject_keringanan_kprd/{id}', 'KaprodiController@reject_keringanan_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

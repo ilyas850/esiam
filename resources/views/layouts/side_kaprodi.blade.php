@@ -174,5 +174,9 @@
                         Prodi</span></a></li>
         </ul>
     </li>
-
+    <li>
+        <a href="{{ url('data_pengajuan_keringanan_absen_kprd') }}">
+            <i class="fa fa-list"></i> <span>Pengajuan Absen</span>
+        </a>
+    </li>
 </ul>

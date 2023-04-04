@@ -49,6 +49,8 @@ use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
 use App\Yudisium;
 use App\Wisuda;
+use App\Absen_ujian;
+use App\Permohonan_ujian;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -6098,6 +6100,7 @@ class KaprodiController extends Controller
 
   public function simpan_soal_uts_dsn_kprd(Request $request)
   {
+   
     $message = [
       'max' => ':attribute harus diisi maksimal :max KB',
       'required' => ':attribute wajib diisi'
@@ -6128,6 +6131,7 @@ class KaprodiController extends Controller
         $info->id_kurperiode = $gabungan->id_kurperiode;
         $info->created_by = Auth::user()->name;
         $info->tipe_ujian_uts = $request->tipe_ujian_uts;
+        $info->cetak_soal_uts = $request->cetak_soal_uts;
 
         if ($i == 0) {
           if ($request->hasFile('soal_uts')) {
@@ -6167,6 +6171,7 @@ class KaprodiController extends Controller
         $id = $cek->id_soal;
         $info = Soal_ujian::find($id);
         $info->tipe_ujian_uts = $request->tipe_ujian_uts;
+        $info->cetak_soal_uts = $request->cetak_soal_uts;
 
         if ($i == 0) {
           if ($info->soal_uts) {
@@ -6268,6 +6273,7 @@ class KaprodiController extends Controller
         $info->id_kurperiode = $gabungan->id_kurperiode;
         $info->created_by = Auth::user()->name;
         $info->tipe_ujian_uas = $request->tipe_ujian_uas;
+        $info->cetak_soal_uas = $request->cetak_soal_uas;
 
         if ($i == 0) {
           if ($request->hasFile('soal_uas')) {
@@ -6307,6 +6313,7 @@ class KaprodiController extends Controller
         $id = $cek->id_soal;
         $info = Soal_ujian::find($id);
         $info->tipe_ujian_uas = $request->tipe_ujian_uas;
+        $info->cetak_soal_uas = $request->cetak_soal_uas;
 
         if ($i == 0) {
           if ($info->soal_uas) {
@@ -8636,9 +8643,42 @@ class KaprodiController extends Controller
     return view('kaprodi/perkuliahan/total_mhs_matkul', compact('data', 'thn_aktif', 'tp_aktif'));
   }
 
-  //test remote
-  public function FunctionName()
+  public function data_pengajuan_keringanan_absen_kprd()
   {
-    dd('inii coba lagi');
+    $id = Auth::user()->id_user;
+
+    $data = DB::select('CALL keringanan_absensi(?)', [$id]);
+
+    return view('dosen/mhs/keringanan_absensi', compact('data'));
+  }
+
+  public function acc_keringanan_kprd($id)
+  {
+    Permohonan_ujian::where('id_studentrecord', $id)->update([
+      'permohonan' => 'DISETUJUI',
+      'updated_by' => Auth::user()->name
+    ]);
+
+    Absen_ujian::where('id_studentrecord', $id)->update([
+      'permohonan' => 'DISETUJUI',
+      'updated_by' => Auth::user()->name
+    ]);
+
+    return redirect('data_pengajuan_keringanan_absen_kprd');
+  }
+
+  public function reject_keringanan_kprd($id)
+  {
+    Permohonan_ujian::where('id_studentrecord', $id)->update([
+      'permohonan' => 'TIDAK DISETUJUI',
+      'updated_by' => Auth::user()->name
+    ]);
+
+    Absen_ujian::where('id_studentrecord', $id)->update([
+      'permohonan' => 'TIDAK DISETUJUI',
+      'updated_by' => Auth::user()->name
+    ]);
+
+    return redirect('data_pengajuan_keringanan_absen_kprd');
   }
 }
