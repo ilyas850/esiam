@@ -30,22 +30,22 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th width="4%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="20%">
+                                <th>
                                     <center>Nama</center>
                                 </th>
-                                <th width="15%">
+                                <th>
                                     <center>Program Studi</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Kelas</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Angkatan</center>
                                 </th>
                                 <th>
@@ -74,18 +74,23 @@
                                     </td>
                                     <td>
                                         <center>
-                                            @if ($item->nilai_UTS == 0)
-                                                <input type="hidden" name="id_student[]"
-                                                    value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
-                                                <input type="hidden" name="id_studentrecord[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                                <input type="text" name="nilai_UTS[]">
-                                            @elseif ($item->nilai_UTS != 0)
-                                                <input type="hidden" name="id_student[]"
-                                                    value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
-                                                <input type="hidden" name="id_studentrecord[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                                <input type="text" name="nilai_UTS[]" value="{{ $item->nilai_UTS }}">
+                                            @if ($item->absen_uts != null)
+                                                @if ($item->nilai_UTS == 0)
+                                                    <input type="hidden" name="id_student[]"
+                                                        value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
+                                                    <input type="hidden" name="id_studentrecord[]"
+                                                        value="{{ $item->id_studentrecord }}">
+                                                    <input type="text" name="nilai_UTS[]">
+                                                @elseif ($item->nilai_UTS != 0)
+                                                    <input type="hidden" name="id_student[]"
+                                                        value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
+                                                    <input type="hidden" name="id_studentrecord[]"
+                                                        value="{{ $item->id_studentrecord }}">
+                                                    <input type="text" name="nilai_UTS[]"
+                                                        value="{{ $item->nilai_UTS }}">
+                                                @endif
+                                            @elseif($item->absen_uts == null)
+                                                <span class="badge bg-yellow"> Tidak Absen Ujian</span>
                                             @endif
                                         </center>
                                     </td>

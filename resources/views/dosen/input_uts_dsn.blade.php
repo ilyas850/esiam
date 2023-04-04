@@ -30,22 +30,22 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th width="4%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="20%">
+                                <th>
                                     <center>Nama</center>
                                 </th>
-                                <th width="15%">
+                                <th>
                                     <center>Program Studi</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Kelas</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Angkatan</center>
                                 </th>
                                 <th>
