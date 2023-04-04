@@ -29,10 +29,10 @@
                             <th rowspan="2">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="2">
+                            <th colspan="3">
                                 <center> UTS</center>
                             </th>
-                            <th colspan="2">
+                            <th colspan="3">
                                 <center> UAS</center>
                             </th>
                         </tr>
@@ -44,10 +44,16 @@
                                 <center>Sifat Ujian</center>
                             </th>
                             <th>
+                                <center>Cetak</center>
+                            </th>
+                            <th>
                                 <center>Soal</center>
                             </th>
                             <th>
                                 <center>Sifat Ujian</center>
+                            </th>
+                            <th>
+                                <center>Cetak</center>
                             </th>
                         </tr>
                     </thead>
@@ -87,6 +93,7 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->tipe_ujian_uts }}</td>
+                                <td>{{ $item->cetak_soal_uts }}</td>
                                 <td>
                                     <center>
                                         @if ($item->soal_uas == null)
@@ -105,6 +112,7 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->tipe_ujian_uas }}</td>
+                                <td>{{ $item->cetak_soal_uas }}</td>
                             </tr>
                         @endforeach
                     </tbody>
