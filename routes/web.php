@@ -772,7 +772,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::put('put_penangguhan/{id}', 'MhsController@put_penangguhan');
     Route::get('batal_penangguhan/{id}', 'MhsController@batal_penangguhan');
 
-    //link penangguhan
+    #link penangguhan
     Route::get('penangguhan_krs/{id}', 'PenangguhanController@penangguhan_krs');
     Route::post('input_krs_penangguhan', 'PenangguhanController@input_krs_penangguhan');
     Route::post('save_penangguhan_krs', 'PenangguhanController@save_penangguhan_krs');
@@ -788,15 +788,18 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('post_kritiksaran', 'MhsController@post_kritiksaran');
     Route::put('put_kritiksaran/{id}', 'MhsController@put_kritiksaran');
 
-    //data dosen
+    #penangguhan absen ujian
+    Route::get('penangguhan_absen_ujian/{id}', 'PenangguhanController@penangguhan_absen_ujian');
+
+    #data dosen
     Route::get('dosen_mip', 'MhsController@dosen_mip');
 
-    //pengajuan beasiswa
+    #pengajuan beasiswa
     Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
     Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
     Route::post('save_pengajuan_beasiswa', 'MhsController@save_pengajuan_beasiswa');
 
-    //bimbingan perwalian
+    #bimbingan perwalian
     Route::get('bim_perwalian', 'MhsController@bim_perwalian');
     Route::post('post_bim_pa', 'MhsController@post_bim_pa');
     Route::put('edit_bimbingan_perwalian/{id}', 'MhsController@edit_bimbingan_perwalian');

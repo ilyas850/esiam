@@ -4015,7 +4015,8 @@ class MhsController extends Controller
                 'penangguhan_master_trans.validasi_dsn_pa',
                 'penangguhan_master_trans.validasi_bauk',
                 'penangguhan_master_trans.validasi_baak',
-                'penangguhan_master_trans.id_penangguhan_trans'
+                'penangguhan_master_trans.id_penangguhan_trans',
+                'penangguhan_master_trans.status_penangguhan'
             )
             ->where('penangguhan_master_trans.status', 'ACTIVE')
             ->get();
@@ -4799,7 +4800,7 @@ class MhsController extends Controller
         }
 
         Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
-        return redirect('absen_ujian_mhs');
+        return redirect()->back();
     }
 
     public function absen_ujian_uas_memenuhi($id)
@@ -4826,7 +4827,7 @@ class MhsController extends Controller
         }
 
         Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
-        return redirect('absen_ujian_mhs');
+        return redirect()->back();
     }
 
     public function absen_ujian_uas_tdk_memenuhi($id)
@@ -4851,7 +4852,7 @@ class MhsController extends Controller
         }
 
         Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
-        return redirect('absen_ujian_mhs');
+        return redirect()->back();
     }
 
     public function ajukan_keringanan_absen($id)
@@ -4887,6 +4888,6 @@ class MhsController extends Controller
         }
 
         Alert::success('', 'Pengajuan berhasil disimpan')->autoclose(3500);
-        return redirect('absen_ujian_mhs');
+        return redirect()->back();
     }
 }

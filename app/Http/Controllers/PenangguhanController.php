@@ -18,6 +18,7 @@ use App\Penangguhan_trans;
 use App\Edom_transaction;
 use App\Kuisioner_transaction;
 use App\Prausta_setting_relasi;
+use App\Ujian_transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -393,7 +394,58 @@ class PenangguhanController extends Controller
         return redirect('penangguhan_krs');
     }
 
-    
+    public function penangguhan_absen_ujian($id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $ids)
+            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->first();
+
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $id_tahun = $periode_tahun->id_periodetahun;
+        $id_tipe = $periode_tipe->id_periodetipe;
+
+        $cek_ujian = Ujian_transaction::where('ujian_transaction.id_periodetahun', $id_tahun)
+            ->where('ujian_transaction.id_periodetipe', $id_tipe)
+            ->where('ujian_transaction.status', 'ACTIVE')
+            ->select(
+                DB::raw('MAX(ujian_transaction.id_ujiantrans)'),
+                'ujian_transaction.id_periodetahun',
+                'ujian_transaction.id_periodetipe',
+                'ujian_transaction.jenis_ujian'
+            )
+            ->groupBy(
+                'ujian_transaction.id_periodetahun',
+                'ujian_transaction.id_periodetipe',
+                'ujian_transaction.jenis_ujian'
+            )
+            ->get();
+
+        $hitung_ujian = count($cek_ujian);
+
+        $dt_penangguhan = Penangguhan_trans::where('id_penangguhan_trans', $id)
+            ->where('id_periodetahun', $periode_tahun->id_periodetahun)
+            ->where('id_periodetipe', $periode_tipe->id_periodetipe)
+            ->first();
+
+        if ($dt_penangguhan == null) {
+            alert()->error('Maaf Periode Download Kartu UTS Sudah Berakhir', 'Silahkan menghubungi BAAK');
+            return redirect()->back();
+        } else {
+
+            $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $ids]);
+
+            return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
+        }
+    }
 
     public function penangguhan_kartu_uts($id)
     {

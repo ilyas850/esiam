@@ -157,8 +157,8 @@
                                     @endif
                                 </td>
                                 <td align="center">
-                                    <a href="penangguhan_absen_ujian/{{ $item->id_penangguhan_trans }}"
-                                        class="btn btn-warning btn-xs">UTS</a>
+
+
                                     @if ($item->validasi_bauk == 'BELUM')
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateSertifikat{{ $item->id_penangguhan_trans }}"
@@ -172,11 +172,15 @@
                                             <a href="penangguhan_krs/{{ $item->id_penangguhan_trans }}"
                                                 class="btn btn-info btn-xs">KRS</a>
                                         @elseif($item->id_penangguhan_kategori == 2)
-                                            <a href="penangguhan_kartu_uts/{{ $item->id_penangguhan_trans }}"
-                                                class="btn btn-warning btn-xs">UTS</a>
+                                            @if ($item->status_penangguhan == 'OPEN')
+                                                <a href="penangguhan_absen_ujian/{{ $item->id_penangguhan_trans }}"
+                                                    class="btn btn-primary btn-xs">Absen</a>
+                                            @endif
                                         @elseif($item->id_penangguhan_kategori == 3)
-                                            <a href="penangguhan_kartu_uas/{{ $item->id_penangguhan_trans }}"
-                                                class="btn btn-danger btn-xs">UAS</a>
+                                            @if ($item->status_penangguhan == 'OPEN')
+                                                <a href="penangguhan_absen_ujian/{{ $item->id_penangguhan_trans }}"
+                                                    class="btn btn-primary btn-xs">Absen</a>
+                                            @endif
                                         @elseif($item->id_penangguhan_kategori == 4)
                                             <a href="penangguhan_yudisium/{{ $item->id_penangguhan_trans }}"
                                                 class="btn btn-primary btn-xs">Yudisium</a>
