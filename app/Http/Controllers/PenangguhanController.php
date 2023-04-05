@@ -393,6 +393,8 @@ class PenangguhanController extends Controller
         return redirect('penangguhan_krs');
     }
 
+    
+
     public function penangguhan_kartu_uts($id)
     {
         $ids = Auth::user()->id_user;
@@ -425,6 +427,7 @@ class PenangguhanController extends Controller
             ->where('id_periodetahun', $thn->id_periodetahun)
             ->where('id_periodetipe', $tp->id_periodetipe)
             ->first();
+
         if ($dt_penangguhan == null) {
             alert()->error('Maaf Periode Download Kartu UTS Sudah Berakhir', 'Silahkan menghubungi BAAK');
             return redirect()->back();
