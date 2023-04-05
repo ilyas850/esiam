@@ -4545,13 +4545,24 @@ class MhsController extends Controller
         }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
-            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi',
+                'student.intake'
+            )
             ->first();
 
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
         $idprodi = $datamhs->id_prodi;
+        $intake = $datamhs->intake;
 
         $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
@@ -4585,20 +4596,34 @@ class MhsController extends Controller
         if ($smt % 2 != 0) {
             if ($id_tipe == 1) {
                 //ganjil
-                $a = (($smt + 10) - 1) / 10;
-                $b = $a - $idangkatan;
-                $c = ($b * 2) - 1;
+                $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                if ($intake == 2) {
+                    $c = ($b * 2) - 1 - 1;
+                } elseif ($intake == 1) {
+                    $c = ($b * 2) - 1;
+                } // 2 * 2 - 1 = 3
             } elseif ($id_tipe == 3) {
                 //pendek
-                $a = (($smt + 10) - 3) / 10;
-                $b = $a - $idangkatan;
-                $c = ($b * 2) . '0' . '1';
+                $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                // $c = ($b * 2);
+                if ($intake == 2) {
+                    $c = $b * 2 - 1;
+                } elseif ($intake == 1) {
+                    $c = $b * 2;
+                }
             }
         } else {
             //genap
-            $a = ($smt + 10 - 2) / 10;
-            $b = $a - $idangkatan;
-            $c = $b * 2;
+            $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
+            $b = $a - $idangkatan; // 22 - 20 = 2
+            // 2 * 2 = 4
+            if ($intake == 2) {
+                $c = $b * 2 - 1;
+            } elseif ($intake == 1) {
+                $c = $b * 2;
+            }
         }
 
         $biaya = Biaya::where('idangkatan', $idangkatan)
