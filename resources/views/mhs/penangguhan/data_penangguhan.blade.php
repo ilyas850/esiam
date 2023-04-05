@@ -176,11 +176,15 @@
                                                 <a href="penangguhan_absen_ujian/{{ $item->id_penangguhan_trans }}"
                                                     class="btn btn-primary btn-xs">Absen</a>
                                             @endif
+                                            {{-- <a href="penangguhan_kartu_uts/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-warning btn-xs">UTS</a> --}}
                                         @elseif($item->id_penangguhan_kategori == 3)
                                             @if ($item->status_penangguhan == 'OPEN')
                                                 <a href="penangguhan_absen_ujian/{{ $item->id_penangguhan_trans }}"
                                                     class="btn btn-primary btn-xs">Absen</a>
                                             @endif
+                                            {{-- <a href="penangguhan_kartu_uas/{{ $item->id_penangguhan_trans }}"
+                                                class="btn btn-danger btn-xs">UAS</a> --}}
                                         @elseif($item->id_penangguhan_kategori == 4)
                                             <a href="penangguhan_yudisium/{{ $item->id_penangguhan_trans }}"
                                                 class="btn btn-primary btn-xs">Yudisium</a>
