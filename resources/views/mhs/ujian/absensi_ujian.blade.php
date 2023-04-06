@@ -129,30 +129,32 @@
                                     @endif
                                 </td>
                                 <td align="center">
-                                    @if ($item->id_kelas == 1)
-                                        @if ($item->jml_tdk_hdr > 3)
-                                            @if ($item->permohonan == null)
-                                                <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-primary btn-xs">Ajukan</a>
-                                            @elseif ($item->permohonan == 'MENGAJUKAN')
-                                                <span class="badge bg-yellow"></i>MENGAJUAKN</span>
-                                            @elseif ($item->permohonan == 'DISETUJUI')
-                                                <span class="badge bg-green"></i>DISETUJUI</span>
-                                            @elseif ($item->permohonan == 'TIDAK DISETUJUI')
-                                                <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
+                                    @if ($item->tgl_uas != null)
+                                        @if ($item->id_kelas == 1)
+                                            @if ($item->jml_tdk_hdr > 3)
+                                                @if ($item->permohonan == null)
+                                                    <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-primary btn-xs">Ajukan</a>
+                                                @elseif ($item->permohonan == 'MENGAJUKAN')
+                                                    <span class="badge bg-yellow"></i>MENGAJUAKN</span>
+                                                @elseif ($item->permohonan == 'DISETUJUI')
+                                                    <span class="badge bg-green"></i>DISETUJUI</span>
+                                                @elseif ($item->permohonan == 'TIDAK DISETUJUI')
+                                                    <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
+                                                @endif
                                             @endif
-                                        @endif
-                                    @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
-                                        @if ($item->jml_tdk_hdr > 4)
-                                            @if ($item->permohonan == null)
-                                                <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
-                                                    class="btn btn-primary btn-xs">Ajukan</a>
-                                            @elseif ($item->permohonan == 'MENGAJUKAN')
-                                                <span class="badge bg-yellow"></i>MENGAJUAKN</span>
-                                            @elseif ($item->permohonan == 'DISETUJUI')
-                                                <span class="badge bg-green"></i>DISETUJUI</span>
-                                            @elseif ($item->permohonan == 'TIDAK DISETUJUI')
-                                                <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
+                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                            @if ($item->jml_tdk_hdr > 4)
+                                                @if ($item->permohonan == null)
+                                                    <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
+                                                        class="btn btn-primary btn-xs">Ajukan</a>
+                                                @elseif ($item->permohonan == 'MENGAJUKAN')
+                                                    <span class="badge bg-yellow"></i>MENGAJUAKN</span>
+                                                @elseif ($item->permohonan == 'DISETUJUI')
+                                                    <span class="badge bg-green"></i>DISETUJUI</span>
+                                                @elseif ($item->permohonan == 'TIDAK DISETUJUI')
+                                                    <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
+                                                @endif
                                             @endif
                                         @endif
                                     @endif
