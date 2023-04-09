@@ -588,7 +588,7 @@ class BaukController extends Controller
 
     public function store(Request $request)
     {
-
+        dd($request);
         $id = $request->id_waktu;
         $time_nya = Waktu::find($id);
         $time_nya->status = '0';

@@ -118,6 +118,7 @@
                                 <td align="center">
                                     @if ($item->validasi_dsn_pa == 'BELUM')
                                         <span class="badge bg-yellow">{{ $item->validasi_dsn_pa }}</span>
+                                    
                                     @else
                                         <span class="badge bg-green">{{ $item->validasi_dsn_pa }}</span>
                                     @endif
