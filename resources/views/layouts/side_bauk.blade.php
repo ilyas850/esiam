@@ -19,15 +19,16 @@
     </li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-list"></i> <span>Setting Waktu</span>
+            <i class="fa fa-list"></i> <span>Setting</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('waktu_penangguhan') }}"><i class="fa fa-circle-o"></i> <span>Penangguhan</span></a>
+            <li><a href="{{ url('waktu_penangguhan') }}"><i class="fa fa-circle-o"></i> <span>Waktu Penangguhan</span></a>
             </li>
-            <li><a href="{{ url('waktu_beasiswa') }}"><i class="fa fa-circle-o"></i> <span>Beasiswa</span></a></li>
+            <li><a href="{{ url('waktu_beasiswa') }}"><i class="fa fa-circle-o"></i> <span>Waktu Beasiswa</span></a></li>
+            <li><a href="{{ url('min_biaya') }}"><i class="fa fa-circle-o"></i> <span>Minimal Pembayaran</span></a></li>
         </ul>
     </li>
 </ul>

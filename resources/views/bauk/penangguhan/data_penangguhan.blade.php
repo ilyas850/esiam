@@ -96,36 +96,23 @@
                                 <td>{{ $item->alasan }}</td>
                                 <td align="center">
                                     @if ($item->validasi_bauk == 'BELUM')
-                                        <form action="{{ url('val_penangguhan_bauk') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id_penangguhan_trans"
-                                                value="{{ $item->id_penangguhan_trans }}">
-                                            <input type="hidden" name="id_penangguhan_kategori"
-                                                value="{{ $kategori->id_penangguhan_kategori }}">
-                                            <input type="hidden" name="id_periodetahun"
-                                                value="{{ $thn_aktif->id_periodetahun }}">
-                                            <input type="hidden" name="id_periodetipe"
-                                                value="{{ $tp_aktif->id_periodetipe }}">
-                                            <button type="submit" class="btn btn-info btn-xs">Validasi</button>
-                                        </form>
-                                        {{-- <a href="/val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-info btn-xs">Validasi</a> --}}
+                                        <a href="/validasi_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-success btn-xs" title="klik untuk validasi"><i
+                                                class="fa fa-check"></i></a>
+                                        <a href="/tolak_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-danger btn-xs" title="klik untuk tolak"><i
+                                                class="fa fa-close"></i></a>
                                     @elseif ($item->validasi_bauk == 'SUDAH')
-                                        <form action="{{ url('batal_val_penangguhan_bauk') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id_penangguhan_trans"
-                                                value="{{ $item->id_penangguhan_trans }}">
-                                            <input type="hidden" name="id_penangguhan_kategori"
-                                                value="{{ $kategori->id_penangguhan_kategori }}">
-                                            <input type="hidden" name="id_periodetahun"
-                                                value="{{ $thn_aktif->id_periodetahun }}">
-                                            <input type="hidden" name="id_periodetipe"
-                                                value="{{ $tp_aktif->id_periodetipe }}">
-                                            <button type="submit" class="btn btn-danger btn-xs">Batal</button>
-                                        </form>
-
-                                        {{-- <a href="/batal_val_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-warning btn-xs">Batal</a> --}}
+                                        <a href="/batal_validasi_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-warning btn-xs" title="klik untuk batal"><i
+                                                class="fa fa-rotate-left"></i></a>
+                                        <a href="/tolak_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-danger btn-xs" title="klik untuk tolak"><i
+                                                class="fa fa-close"></i></a>
+                                    @elseif ($item->validasi_bauk == 'TOLAK')
+                                        <a href="/batal_validasi_penangguhan_bauk/{{ $item->id_penangguhan_trans }}"
+                                            class="btn btn-info btn-xs" title="klik untuk batal tolak penangguhan"><i
+                                                class="fa fa-rotate-right"></i></a>
                                     @endif
                                 </td>
                                 <td align="center">
@@ -152,10 +139,12 @@
                                 <td align="center">
                                     @if ($item->status_penangguhan == 'OPEN' or $item->status_penangguhan == null)
                                         <a href="/close_penangguhan/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-info btn-xs" title="Klik untuk CLOSE Penangguhan"><i class="fa fa-check"></i></a>
+                                            class="btn btn-info btn-xs" title="Klik untuk CLOSE Penangguhan"><i
+                                                class="fa fa-check"></i></a>
                                     @elseif ($item->status_penangguhan == 'CLOSE')
                                         <a href="/open_penangguhan/{{ $item->id_penangguhan_trans }}"
-                                            class="btn btn-danger btn-xs" title="Klik untuk OPEN Penangguhan"><i class="fa fa-close"></i></a>
+                                            class="btn btn-danger btn-xs" title="Klik untuk OPEN Penangguhan"><i
+                                                class="fa fa-close"></i></a>
                                     @endif
                                 </td>
                             </tr>

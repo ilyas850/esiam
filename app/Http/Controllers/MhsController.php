@@ -62,6 +62,7 @@ use App\Beasiswa_trans;
 use App\Permohonan_ujian;
 use App\Perwalian_trans_bimbingan;
 use App\Soal_ujian;
+use App\Min_biaya;
 use Carbon\Carbon;
 use Hamcrest\Core\IsNull;
 use Illuminate\Http\Request;
@@ -4028,19 +4029,280 @@ class MhsController extends Controller
     {
         $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $id_tipe = $tipe->id_periodetipe;
         $id = Auth::user()->id_user;
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi',
+                'student.intake'
+            )
+            ->first();
 
-        $new = new Penangguhan_trans;
-        $new->id_periodetahun = $tahun->id_periodetahun;
-        $new->id_periodetipe = $tipe->id_periodetipe;
-        $new->id_student = $id;
-        $new->id_penangguhan_kategori = $request->id_penangguhan_kategori;
-        $new->rencana_bayar = $request->rencana_bayar;
-        $new->alasan = $request->alasan;
-        $new->save();
+        $idangkatan = $datamhs->idangkatan;
+        $intake = $datamhs->intake;
+        $idstatus = $datamhs->idstatus;
+        $kodeprodi = $datamhs->kodeprodi;
 
-        Alert::success('', 'Penangguhan berhasil ditambahkan')->autoclose(3500);
-        return redirect('penangguhan_mhs');
+        $sub_thn = substr($tahun->periode_tahun, 6, 2);
+
+        $smt = $sub_thn . $id_tipe;
+
+        if ($smt % 2 != 0) {
+            if ($id_tipe == 1) {
+                //ganjil
+                $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                if ($intake == 2) {
+                    $c = ($b * 2) - 1 - 1;
+                } elseif ($intake == 1) {
+                    $c = ($b * 2) - 1;
+                } // 2 * 2 - 1 = 3
+            } elseif ($id_tipe == 3) {
+                //pendek
+                $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                // $c = ($b * 2);
+                if ($intake == 2) {
+                    $c = $b * 2 - 1;
+                } elseif ($intake == 1) {
+                    $c = $b * 2;
+                }
+            }
+        } else {
+            //genap
+            $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
+            $b = $a - $idangkatan; // 22 - 20 = 2
+            // 2 * 2 = 4
+            if ($intake == 2) {
+                $c = $b * 2 - 1;
+            } elseif ($intake == 1) {
+                $c = $b * 2;
+            }
+        }
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+            ->where('idstatus', $idstatus)
+            ->where('kodeprodi', $kodeprodi)
+            ->select(
+                'daftar',
+                'awal',
+                'dsp',
+                'spp1',
+                'spp2',
+                'spp3',
+                'spp4',
+                'spp5',
+                'spp6',
+                'spp7',
+                'spp8',
+                'spp9',
+                'spp10',
+                'spp11',
+                'spp12',
+                'spp13',
+                'spp14'
+            )
+            ->first();
+
+        $cek_bea = Beasiswa::where('idstudent', $id)->first();
+
+        if ($cek_bea != null) {
+            $daftar = $biaya->daftar - ($biaya->daftar * $cek_bea->daftar) / 100;
+            $awal = $biaya->awal - ($biaya->awal * $cek_bea->awal) / 100;
+            $dsp = $biaya->dsp - ($biaya->dsp * $cek_bea->dsp) / 100;
+            $spp1 = $biaya->spp1 - ($biaya->spp1 * $cek_bea->spp1) / 100;
+            $spp2 = $biaya->spp2 - ($biaya->spp2 * $cek_bea->spp2) / 100;
+            $spp3 = $biaya->spp3 - ($biaya->spp3 * $cek_bea->spp3) / 100;
+            $spp4 = $biaya->spp4 - ($biaya->spp4 * $cek_bea->spp4) / 100;
+            $spp5 = $biaya->spp5 - ($biaya->spp5 * $cek_bea->spp5) / 100;
+            $spp6 = $biaya->spp6 - ($biaya->spp6 * $cek_bea->spp6) / 100;
+            $spp7 = $biaya->spp7 - ($biaya->spp7 * $cek_bea->spp7) / 100;
+            $spp8 = $biaya->spp8 - ($biaya->spp8 * $cek_bea->spp8) / 100;
+            $spp9 = $biaya->spp9 - ($biaya->spp9 * $cek_bea->spp9) / 100;
+            $spp10 = $biaya->spp10 - ($biaya->spp10 * $cek_bea->spp10) / 100;
+            $spp11 = $biaya->spp11 - ($biaya->spp11 * $cek_bea->spp11) / 100;
+            $spp12 = $biaya->spp12 - ($biaya->spp12 * $cek_bea->spp12) / 100;
+            $spp13 = $biaya->spp13 - ($biaya->spp13 * $cek_bea->spp13) / 100;
+            $spp14 = $biaya->spp14 - ($biaya->spp14 * $cek_bea->spp14) / 100;
+            $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cek_bea->prakerin)) / 100);
+        } elseif ($cek_bea == null) {
+            $daftar = $biaya->daftar;
+            $awal = $biaya->awal;
+            $dsp = $biaya->dsp;
+            $spp1 = $biaya->spp1;
+            $spp2 = $biaya->spp2;
+            $spp3 = $biaya->spp3;
+            $spp4 = $biaya->spp4;
+            $spp5 = $biaya->spp5;
+            $spp6 = $biaya->spp6;
+            $spp7 = $biaya->spp7;
+            $spp8 = $biaya->spp8;
+            $spp9 = $biaya->spp9;
+            $spp10 = $biaya->spp10;
+            $spp11 = $biaya->spp11;
+            $spp12 = $biaya->spp12;
+            $spp13 = $biaya->spp13;
+            $spp14 = $biaya->spp14;
+            $prakerin = $biaya->prakerin;
+        }
+
+        #total pembayaran kuliah
+        $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->sum('bayar.bayar');
+
+        #minimal pembayaran UTS
+        $min_uts = Min_biaya::where('kategori', 'UTS')->first();
+        $persen_uts = $min_uts->persentase;
+
+        $min_uas = Min_biaya::where('kategori', 'UAS')->first();
+        $persen_uas = $min_uas->persentase;
+
+        $cek_penangguhan_mhs = Penangguhan_trans::where('id_periodetahun', $tahun->id_periodetahun)
+            ->where('id_periodetipe', $id_tipe)
+            ->where('id_student', $id)
+            ->where('id_penangguhan_kategori', $request->id_penangguhan_kategori)
+            ->get();
+
+        if (count($cek_penangguhan_mhs) == 0) {
+
+            if ($request->id_penangguhan_kategori == 2) {
+                if ($c == 1) {
+                    $cekbyr = $daftar + $awal + ($spp1 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == 2) {
+                    $cekbyr = $daftar + $awal + ($dsp * 25) / 100 + $spp1 + ($spp2 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == '201') {
+                    $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + ($spp2 * 82 / 100)) - $total_semua_dibayar;
+                } elseif ($c == 3) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == 4) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == '401') {
+                    $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82 / 100)) - $total_semua_dibayar;
+                } elseif ($c == 5) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == 6) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == '601') {
+                    $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82 / 100)) - $total_semua_dibayar;
+                } elseif ($c == 7) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == 8) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * $persen_uts) / 100 - $total_semua_dibayar;
+                } elseif ($c == '801') {
+                    $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 82 / 100)) - $total_semua_dibayar;
+                } elseif ($c == 9) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + ($spp9 * 50) / 100 - $total_semua_dibayar;
+                } elseif ($c == 10) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 50) / 100 - $total_semua_dibayar;
+                } elseif ($c == '1001') {
+                    $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * 82 / 100)) - $total_semua_dibayar;
+                } elseif ($c == 11) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + ($spp11 * 50) / 100 - $total_semua_dibayar;
+                } elseif ($c == 12) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11(($spp12 * 50) / 100) - $total_semua_dibayar;
+                } elseif ($c == 13) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + ($spp13 * 50) / 100 - $total_semua_dibayar;
+                } elseif ($c == 14) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 50) / 100 - $total_semua_dibayar;
+                }
+
+                if ($cekbyr == 0 or $cekbyr < 1000) {
+
+                    Alert::success('Maaf anda tidak perlu melakukan penangguhan Absen UTS karena keuangan Anda SUDAH memenuhi syarat');
+                    return redirect('home');
+                } else {
+                    $new = new Penangguhan_trans;
+                    $new->id_periodetahun = $tahun->id_periodetahun;
+                    $new->id_periodetipe = $tipe->id_periodetipe;
+                    $new->id_student = $id;
+                    $new->id_penangguhan_kategori = $request->id_penangguhan_kategori;
+                    $new->rencana_bayar = $request->rencana_bayar;
+                    $new->alasan = $request->alasan;
+                    $new->save();
+
+                    Alert::success('', 'Penangguhan berhasil ditambahkan')->autoclose(3500);
+                    return redirect('penangguhan_mhs');
+                }
+            } elseif ($request->id_penangguhan_kategori == 3) {
+                if ($c == 1) {
+                    $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
+                } elseif ($c == 2) {
+                    $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
+                } elseif ($c == '201') {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
+                } elseif ($c == 3) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
+                } elseif ($c == 4) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
+                } elseif ($c == '401') {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
+                } elseif ($c == 5) {
+                    if ($kodeprodi == 23 or $kodeprodi == 24) {
+                        $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $prakerin - $total_semua_dibayar;
+                    } elseif ($kodeprodi == 25) {
+                        $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+                    }
+                } elseif ($c == 6) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
+                } elseif ($c == '601') {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
+                } elseif ($c == 7) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 - $total_semua_dibayar;
+                } elseif ($c == 8) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
+                } elseif ($c == '801') {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
+                } elseif ($c == 9) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 - $total_semua_dibayar;
+                } elseif ($c == 10) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
+                } elseif ($c == '1001') {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
+                } elseif ($c == 11) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 - $total_semua_dibayar;
+                } elseif ($c == 12) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 - $total_semua_dibayar;
+                } elseif ($c == 13) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 - $total_semua_dibayar;
+                } elseif ($c == 14) {
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
+                }
+
+                if ($cekbyr == 0 or $cekbyr < 1000) {
+
+                    Alert::success('Maaf anda tidak perlu melakukan penangguhan Absen UAS karena keuangan Anda SUDAH memenuhi syarat');
+                    return redirect('home');
+                } else {
+                    $new = new Penangguhan_trans;
+                    $new->id_periodetahun = $tahun->id_periodetahun;
+                    $new->id_periodetipe = $tipe->id_periodetipe;
+                    $new->id_student = $id;
+                    $new->id_penangguhan_kategori = $request->id_penangguhan_kategori;
+                    $new->rencana_bayar = $request->rencana_bayar;
+                    $new->alasan = $request->alasan;
+                    $new->save();
+
+                    Alert::success('', 'Penangguhan berhasil ditambahkan')->autoclose(3500);
+                    return redirect('penangguhan_mhs');
+                }
+            }
+        } elseif (count($cek_penangguhan_mhs) == 1) {
+            Alert::warning('', 'Maaf Penangguhan sudah ada')->autoclose(3500);
+            return redirect('penangguhan_mhs');
+        }
     }
 
     public function put_penangguhan(Request $request, $id)
@@ -4692,34 +4954,41 @@ class MhsController extends Controller
             $prakerin = $biaya->prakerin;
         }
 
-        //total pembayaran kuliah
+        #total pembayaran kuliah
         $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
             ->where('kuitansi.idstudent', $id)
             ->sum('bayar.bayar');
 
+        #minimal pembayaran UTS
+        $min_uts = Min_biaya::where('kategori', 'UTS')->first();
+        $persen_uts = $min_uts->persentase;
+
+        $min_uas = Min_biaya::where('kategori', 'UAS')->first();
+        $persen_uas = $min_uas->persentase;
+
         if ($hitung_ujian == 1) {
             if ($c == 1) {
-                $cekbyr = $daftar + $awal + ($spp1 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + ($spp1 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == 2) {
-                $cekbyr = $daftar + $awal + ($dsp * 25) / 100 + $spp1 + ($spp2 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + ($dsp * 25) / 100 + $spp1 + ($spp2 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == '201') {
                 $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + ($spp2 * 82 / 100)) - $total_semua_dibayar;
             } elseif ($c == 3) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == 4) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == '401') {
                 $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * 82 / 100)) - $total_semua_dibayar;
             } elseif ($c == 5) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == 6) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == '601') {
                 $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82 / 100)) - $total_semua_dibayar;
             } elseif ($c == 7) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == 8) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 33) / 100 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * $persen_uts) / 100 - $total_semua_dibayar;
             } elseif ($c == '801') {
                 $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * 82 / 100)) - $total_semua_dibayar;
             } elseif ($c == 9) {

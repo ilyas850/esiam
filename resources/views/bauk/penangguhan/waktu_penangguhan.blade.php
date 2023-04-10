@@ -105,7 +105,6 @@
             </div>
 
             <script type='text/javascript'>
-                //<![CDATA[
                 var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
                 var days, hours, minutes, seconds;
                 var countdown = document.getElementById("countdown");
@@ -121,10 +120,32 @@
                     countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
                         " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
                         " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
+                    // $('#simpan-otomatis-form').submit();
                 }, 1000);
-                //]]>
             </script>
+
+
+
         </div>
+
+        <script>
+            let timerId;
+
+            function startTimer() {
+                timerId = setTimeout(function() {
+                    $('#simpan-otomatis-form').submit();
+                }, 5000); // waktu dalam milidetik
+            }
+
+            function resetTimer() {
+                clearTimeout(timerId);
+                startTimer();
+            }
+
+            $('#simpan-otomatis-btn').on('click', function() {
+                startTimer();
+            });
+        </script>
 
         <style scoped="" type="text/css">
             #waktumundur {

@@ -1497,6 +1497,15 @@ Route::group(['middleware' => 'bauk'], function () {
     #OPEN penangguhan
     Route::get('open_penangguhan/{id}', 'BaukController@open_penangguhan');
 
+    #validasi penangguhan mahasiswa
+    Route::get('validasi_penangguhan_bauk/{id}', 'BaukController@validasi_penangguhan_bauk');
+    #batal validasi penangguhan mahasiswa
+    Route::get('batal_validasi_penangguhan_bauk/{id}', 'BaukController@batal_validasi_penangguhan_bauk');
+    #tolak penangguhan mahasiswa
+    Route::get('tolak_penangguhan_bauk/{id}', 'BaukController@tolak_penangguhan_bauk');
+    #cancel tolak penangguhan
+    Route::get('cancel_tolak_penangguhan_bauk/{id}', 'BaukController@cancel_tolak_penangguhan_bauk');
+
     #waktu penangguhan
     Route::get('waktu_penangguhan', 'BaukController@waktu_penangguhan');
     Route::post('simpan_waktu_penangguhan', 'BaukController@simpan_waktu_penangguhan');
@@ -1517,6 +1526,13 @@ Route::group(['middleware' => 'bauk'], function () {
 
     //uang saku mahasiswa
     Route::get('uang_saku_pkl', 'BaukController@uang_saku_pkl');
+
+    #minimal pembayaran
+    Route::get('min_biaya', 'BaukController@min_biaya');
+    Route::post('post_min_biaya', 'BaukController@post_min_biaya');
+
+    Route::post('/simpan-otomatis', 'BaukController@store')->name('simpan-otomatis');
+
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

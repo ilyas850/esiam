@@ -404,7 +404,16 @@ class PenangguhanController extends Controller
         }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $ids)
-            ->select('student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi', 'prodi.id_prodi')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi'
+            )
             ->first();
 
         $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
