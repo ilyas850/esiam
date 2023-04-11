@@ -622,14 +622,14 @@ Route::group(['middleware' => 'mhs'], function () {
 
     Route::post('unduh_krs', 'KrsController@unduh_krs');
 
-    //KRS mahasiswa
+    #KRS mahasiswa
     Route::get('krs', 'KrsController@krs');
     Route::post('filter_krs', 'KRsController@filter_krs');
     Route::post('input_krs', 'KrsController@entri_krs');
     Route::post('save_krs', 'KrsController@save_krs');
     Route::post('batalkrs', 'KrsController@batalkrs');
 
-    //cek KHS
+    #cek KHS
     Route::get('khs', 'NilaiController@khs');
     Route::post('filter_khs', 'NilaiController@filter_khs');
     Route::post('unduh_khs_mid_term', 'NilaiController@unduh_khs_mid_term');
@@ -814,6 +814,9 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('absen_ujian_uas_tdk_memenuhi/{id}', 'MhsController@absen_ujian_uas_tdk_memenuhi');
 
     Route::get('ajukan_keringanan_absen/{id}', 'MhsController@ajukan_keringanan_absen');
+
+    #magang mahasiswa
+    Route::get('magang_mhs', 'MagangSkripsiController@magang_mhs');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

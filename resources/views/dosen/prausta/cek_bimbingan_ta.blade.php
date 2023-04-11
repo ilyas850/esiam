@@ -38,6 +38,11 @@
                         <td>:</td>
                         <td>{{ $jdl->kelas }}</td>
                     </tr>
+                    <tr>
+                        <td>Dosen Pembimbing</td>
+                        <td>:</td>
+                        <td>{{ $jdl->dosen_pembimbing }}</td>
+                    </tr>
                 </table>
             </div>
             <div class="box-body">

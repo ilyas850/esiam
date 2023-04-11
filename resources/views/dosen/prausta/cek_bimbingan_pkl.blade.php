@@ -38,6 +38,11 @@
                         <td>:</td>
                         <td>{{ $jdl->kelas }}</td>
                     </tr>
+                    <tr>
+                        <td>Dosen Pembimbing</td>
+                        <td>:</td>
+                        <td>{{ $jdl->dosen_pembimbing }}</td>
+                    </tr>
                 </table>
             </div>
             <div class="box-body">
@@ -138,8 +143,8 @@
                                     @endif
                                 </td>
                             </tr>
-                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}"
-                                tabindex="-1" aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                            <div class="modal fade" id="modalTambahKomentar{{ $key->id_transbimb_prausta }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -151,8 +156,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="form-group">
-                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20"
-                                                        rows="10"> {{ $key->komentar_bimbingan }} </textarea>
+                                                    <textarea class="form-control" name="komentar_bimbingan" cols="20" rows="10"> {{ $key->komentar_bimbingan }} </textarea>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Batal</button>

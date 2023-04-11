@@ -3066,7 +3066,22 @@ class DosenController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi')
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.dosen_pembimbing'
+            )
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -3398,7 +3413,21 @@ class DosenController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi')
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi'
+            )
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -4050,7 +4079,23 @@ class DosenController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.acc_seminar_sidang', 'student.idstudent', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.file_plagiarisme')
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.file_plagiarisme',
+                'prausta_setting_relasi.dosen_pembimbing'
+            )
             ->first();
 
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')

@@ -104,13 +104,27 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('seminar_prakerin') }}"><i class="fa fa-circle-o"></i> <span>Seminar
-                        Prakerin</span></a></li>
+                        PKL</span></a></li>
             <li><a href="{{ url('seminar_proposal') }}"><i class="fa fa-circle-o"></i> <span>Seminar
                         Proposal</span></a></li>
             <li><a href="{{ url('sidang_ta') }}"><i class="fa fa-circle-o"></i> <span>Sidang TA</span></a></li>
+
         </ul>
     </li>
-
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Magang & Skripsi</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('magang_mhs') }}"><i class="fa fa-circle-o"></i> <span>Magang</span></a></li>
+            <li><a href="{{ url('sempro_mhs') }}"><i class="fa fa-circle-o"></i> <span>Seminar
+                        Proposal</span></a></li>
+            <li><a href="{{ url('skripsi_mhs') }}"><i class="fa fa-circle-o"></i> <span>Skripsi</span></a></li>
+        </ul>
+    </li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-list"></i> <span>Wisuda</span>
