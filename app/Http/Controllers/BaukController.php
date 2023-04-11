@@ -562,7 +562,12 @@ class BaukController extends Controller
 
         $data = Waktu::where('tipe_waktu', 3)->first();
 
-        return view('bauk/penangguhan/waktu_penangguhan', compact('data', 'tahun', 'tipe', 'now'));
+        return view('bauk/penangguhan/waktu_penangguhan1', compact('data', 'tahun', 'tipe', 'now'));
+    }
+
+    public function set_waktu_penangguhan()
+    {
+        # code...
     }
 
     public function simpan_waktu_penangguhan(Request $request)
@@ -588,8 +593,18 @@ class BaukController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
+
         $id = $request->id_waktu;
+        $time_nya = Waktu::find($id);
+        $time_nya->status = '0';
+        $time_nya->save();
+
+        Alert::success('Penutupan Penangguhan', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function stop_waktu_penangguhan($id)
+    {
         $time_nya = Waktu::find($id);
         $time_nya->status = '0';
         $time_nya->save();

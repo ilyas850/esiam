@@ -88,29 +88,79 @@
                     </form>
                 @endif
             </div>
-        </div>
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <span class="glyphicon glyphicon-info-sign"></span>
-                <h3 class="box-title">Hitung mundur Waktu Penangguhan</h3>
-            </div>
-            <div class="box-body">
-                <div id="waktumundur">
-                    @if ($data->status != 0)
-                        <span id="countdown"></span>
-                    @else
-                        Waktu Penangguhan belum dibuka
-                    @endif
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                    <h3 class="box-title">Hitung mundur Waktu Penangguhan</h3>
                 </div>
+                <div class="box-body">
+                    <div id="waktumundur">
+                        @if ($data->status != 0)
+                            <span id="countdown"></span>
+                        @else
+                            Waktu Penangguhan belum dibuka
+                        @endif
+                    </div>
+                </div>
+
+                <p>Waktu mundur: <span id="countdown-timer"></span></p>
+
+                <form id="simpan-otomatis-form" method="POST" action="{{ route('simpan-otomatis') }}">
+                    @csrf
+
+                    <input type="hidden" id="status-tanggal" name="status" value="0">
+                    <input type="hidden" name="id_waktu" value="{{ $data->id_waktu }}">
+                    <!-- input form untuk menyimpan data -->
+                </form>
             </div>
 
-            <script type='text/javascript'>
-                var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
-                var days, hours, minutes, seconds;
-                var countdown = document.getElementById("countdown");
-                setInterval(function() {
-                    var current_date = new Date().getTime();
-                    var seconds_left = (target_date - current_date) / 1000;
+        </div>
+
+        <script type='text/javascript'>
+            var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
+            var days, hours, minutes, seconds;
+            var countdown = document.getElementById("countdown");
+            setInterval(function() {
+                var current_date = new Date().getTime();
+                var seconds_left = (target_date - current_date) / 1000;
+                days = parseInt(seconds_left / 86400);
+                seconds_left = seconds_left % 86400;
+                hours = parseInt(seconds_left / 3600);
+                seconds_left = seconds_left % 3600;
+                minutes = parseInt(seconds_left / 60);
+                seconds = parseInt(seconds_left % 60);
+                countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
+                    " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
+                    " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
+
+            }, 1000);
+        </script>
+
+        <script type='text/javascript'>
+            var target_date = new Date("2023-04-10 4:59:00").getTime();
+            var days, hours, minutes, seconds;
+            var countdown = document.getElementById("countdown");
+            var interval = setInterval(function() {
+                var current_date = new Date().getTime();
+                var seconds_left = (target_date - current_date) / 1000;
+                if (seconds_left <= 0) {
+                    clearInterval(interval);
+                    // make an AJAX request to update the status to 0 in the database
+                    // replace `your/update/url` with the actual URL that updates the status
+                    $.ajax({
+                        url: 'stop_waktu_penangguhan/{{ $data->id_waktu }}',
+                        method: 'GET',
+                        data: {
+                            status: 0
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus, errorThrown);
+                        }
+                    });
+                } else {
                     days = parseInt(seconds_left / 86400);
                     seconds_left = seconds_left % 86400;
                     hours = parseInt(seconds_left / 3600);
@@ -118,14 +168,16 @@
                     minutes = parseInt(seconds_left / 60);
                     seconds = parseInt(seconds_left % 60);
                     countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
-                        " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
+                        " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " +
+                        seconds +
                         " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
+                }
+            }, 1000);
+        </script>
 
-                }, 1000);
-            </script>           
-        </div>
 
-        
+
+
         <style scoped="" type="text/css">
             #waktumundur {
                 background: #31266b;
@@ -148,6 +200,5 @@
                 color: white
             }
         </style>
-
     </section>
 @endsection

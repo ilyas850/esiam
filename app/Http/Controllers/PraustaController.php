@@ -608,12 +608,12 @@ class PraustaController extends Controller
             ->whereIn('matakuliah.idmakul', [136, 178, 179, 206, 286, 316, 430])
             ->where('student_record.id_student', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select('matakuliah.makul')
+            ->select('student_record.id_studentrecord', 'matakuliah.kode', 'matakuliah.makul')
             ->get();
 
         $hasil_krs = count($cek);
 
-        //cek nilai dan file seminar prakerin
+        #cek nilai dan file seminar prakerin
         $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_student', $id)
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
@@ -621,7 +621,7 @@ class PraustaController extends Controller
             ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
             ->first();
 
-        //cek pembimbing sempro
+        #cek pembimbing sempro
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
@@ -643,16 +643,19 @@ class PraustaController extends Controller
             return redirect('home');
         } elseif ($hasil_krs > 0) {
 
-            if (count($cekdata) == null) {
+            if (count($cekdata) == 0) {
 
                 Alert::error('Maaf Dosen Pembimbing Sempro anda belum di setting', 'Silahkan hubungi Prodi masing-masing !!');
                 return redirect('home');
-            } elseif (count($cekdata) != null) {
+            } elseif (count($cekdata) != 0) {
 
                 if ($cekdata_nilai == null) {
+
                     Alert::error('Maaf anda belum melakukan Upload Laporan Prakerin', 'MAAF !!');
                     return redirect('home');
-                } elseif ($cekdata_nilai->file_draft_laporan != null) {
+                } elseif ($cekdata_nilai != null) {
+
+                    // } elseif ($cekdata_nilai->file_draft_laporan != null) {
 
                     if ($cekdata_nilai->nilai_huruf == null) {
 

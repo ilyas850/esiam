@@ -1511,6 +1511,9 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::post('simpan_waktu_penangguhan', 'BaukController@simpan_waktu_penangguhan');
     Route::post('edit_time_penangguhan', 'BaukController@edit_time_penangguhan');
 
+    Route::get('stop_waktu_penangguhan/{id}', 'BaukController@stop_waktu_penangguhan');
+
+
     //waktu beasiswa
     Route::get('waktu_beasiswa', 'BaukController@waktu_beasiswa');
     Route::post('simpan_waktu_pengajuan_beasiswa', 'BaukController@simpan_waktu_pengajuan_beasiswa');
@@ -1532,6 +1535,8 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::post('post_min_biaya', 'BaukController@post_min_biaya');
 
     Route::post('/simpan-otomatis', 'BaukController@store')->name('simpan-otomatis');
+
+    
 
 });
 
