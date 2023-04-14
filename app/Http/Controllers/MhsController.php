@@ -4172,6 +4172,7 @@ class MhsController extends Controller
             ->where('id_periodetipe', $id_tipe)
             ->where('id_student', $id)
             ->where('id_penangguhan_kategori', $request->id_penangguhan_kategori)
+            ->where('status', 'ACTIVE')
             ->get();
 
         if (count($cek_penangguhan_mhs) == 0) {
@@ -4961,7 +4962,7 @@ class MhsController extends Controller
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
 
- 
+
 
         if ($hitung_ujian == 1) {
             if ($c == 1) {
