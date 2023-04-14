@@ -116,7 +116,7 @@
 
         </div>
 
-        <script type='text/javascript'>
+        {{-- <script type='text/javascript'>
             var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
             var days, hours, minutes, seconds;
             var countdown = document.getElementById("countdown");
@@ -134,10 +134,10 @@
                     " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Penangguhan</span>";
 
             }, 1000);
-        </script>
+        </script> --}}
 
         <script type='text/javascript'>
-            var target_date = new Date("2023-04-10 4:59:00").getTime();
+            var target_date = new Date("{{ $data->waktu_akhir }}").getTime();
             var days, hours, minutes, seconds;
             var countdown = document.getElementById("countdown");
             var interval = setInterval(function() {

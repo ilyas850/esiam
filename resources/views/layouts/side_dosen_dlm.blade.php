@@ -66,6 +66,19 @@
             <li><a href="{{ url('penguji_ta') }}"><i class="fa fa-circle-o"></i> Penguji TA</a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Magang & Skripsi</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_magang_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi</a>
+            </li>
+            <li><a href="{{ url('pembimbing_magang') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang</a></li>
+        </ul>
+    </li>
     <li>
         <a href="{{ url('data_pengajuan_keringanan_absen_dlm') }}">
             <i class="fa fa-list"></i> <span>Pengajuan Absen</span>

@@ -4167,8 +4167,6 @@ class MhsController extends Controller
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
 
-        #$min_uas = Min_biaya::where('kategori', 'UAS')->first();
-        #$persen_uas = $min_uas->persentase;
 
         $cek_penangguhan_mhs = Penangguhan_trans::where('id_periodetahun', $tahun->id_periodetahun)
             ->where('id_periodetipe', $id_tipe)
@@ -4963,8 +4961,7 @@ class MhsController extends Controller
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
 
-        $min_uas = Min_biaya::where('kategori', 'UAS')->first();
-        $persen_uas = $min_uas->persentase;
+ 
 
         if ($hitung_ujian == 1) {
             if ($c == 1) {

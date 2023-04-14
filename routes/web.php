@@ -594,6 +594,12 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('data_pengajuan_keringanan_absen_dlm', 'DosenController@data_pengajuan_keringanan_absen_dlm');
     Route::get('acc_keringanan_dlm/{id}', 'DosenController@acc_keringanan_dlm');
     Route::get('reject_keringanan_dlm/{id}', 'DosenController@reject_keringanan_dlm');
+
+    #magang mahasiswa
+    Route::get('pembimbing_magang', 'MagangSkripsiController@pembimbing_magang');
+    Route::get('record_bim_magang/{id}', 'MagangSkripsiController@record_bim_magang');
+    Route::put('komentar_bimbingan_magang/{id}', 'MagangSkripsiController@komentar_bimbingan_magang');
+    Route::get('val_bim_magang/{id}', 'MagangSkripsiController@val_bim_magang');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -817,6 +823,13 @@ Route::group(['middleware' => 'mhs'], function () {
 
     #magang mahasiswa
     Route::get('magang_mhs', 'MagangSkripsiController@magang_mhs');
+    Route::get('input_data_magang/{id}', 'MagangSkripsiController@input_data_magang');
+    Route::post('simpan_data_magang', 'MagangSkripsiController@simpan_data_magang');
+    Route::put('put_data_magang/{id}', 'MagangskripsiController@put_data_magang');
+    Route::post('simpan_bimbingan_magang', 'MagangSkripsiController@simpan_bimbingan_magang');
+    Route::put('edit_bimbingan_magang/{id}', 'MagangSkripsiController@edit_bimbingan_magang');
+    Route::get('download_bimbingan_magang_mhs/{id}', 'MagangSkripsiController@download_bimbingan_magang_mhs');
+    Route::post('ajukan_seminar_magang', 'MagangSkripsiController@ajukan_seminar_magang');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

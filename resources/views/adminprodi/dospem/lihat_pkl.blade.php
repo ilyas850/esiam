@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 
 @section('content')
@@ -18,19 +16,19 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr>
-                                <th width="1%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="10%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="30%">
-                                    <center>Nama Mahasiswa</center>
+                                <th>
+                                    Nama Mahasiswa
                                 </th>
-                                <th width="25%">
-                                    <center>Dosen Pembimbing</center>
+                                <th>
+                                    Dosen Pembimbing
                                 </th>
-                                <th width="25%">
+                                <th>
                                     <center>Pilih Pembimbing</center>
                                 </th>
                             </tr>
@@ -53,14 +51,13 @@
                                                 <option></option>
                                                 @foreach ($dosen as $keyangk)
                                                     <option
-                                                        value="{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }}">
+                                                        value="{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }}, {{ $keydsn->id_masterkode_prausta }}">
                                                         {{ $keyangk->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </center>
                                     </td>
                                 </tr>
-                                <input type="hidden" name="id_masterkode_prausta" value="{{ $id2 }}">
                             @endforeach
                         </tbody>
                     </table>

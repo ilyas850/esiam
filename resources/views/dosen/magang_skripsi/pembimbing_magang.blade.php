@@ -7,12 +7,12 @@
 @section('content_header')
     <section class="content-header">
         <h1>
-            Data Mahasiswa Bimbingan PKL 
+            Data Mahasiswa Bimbingan Magang
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
 
-            <li class="active">Data mahasiswa bimbingan PKL</li>
+            <li class="active">Data mahasiswa bimbingan Magang</li>
         </ol>
     </section>
 @endsection
@@ -85,12 +85,12 @@
                                 <td>
                                     <center>
                                         <a class="btn btn-info btn-xs"
-                                            href="/record_bim_pkl/{{ $key->id_settingrelasi_prausta }}">Cek Bimbingan</a>
+                                            href="/record_bim_magang/{{ $key->id_settingrelasi_prausta }}">Cek Bimbingan</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="/download_bap_pkl_dsn_dlm/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="/download_bap_magang_dsn_dlm/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-danger btn-xs">Download</a>
                                     </center>
                                 </td>

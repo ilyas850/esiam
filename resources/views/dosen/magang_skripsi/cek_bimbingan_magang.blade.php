@@ -7,12 +7,12 @@
 @section('content_header')
     <section class="content-header">
         <h1>
-            Cek Mahasiswa Bimbingan PKL
+            Cek Mahasiswa Bimbingan Magang
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('pembimbing_pkl') }}">Data Mahasiswa PKL </a></li>
-            <li class="active">Cek Mahasiswa Bimbingan PKL </li>
+            <li><a href="{{ url('pembimbing_magang') }}">Data Mahasiswa Magang </a></li>
+            <li class="active">Cek Mahasiswa Bimbingan Magang </li>
         </ol>
     </section>
 @endsection
@@ -52,26 +52,13 @@
                         <input type="hidden" name="id_settingrelasi_prausta" value="{{ $jdl->id_settingrelasi_prausta }}">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Judul PKL </label>
+                                <label>Judul Magang </label>
                                 <textarea class="form-control" rows="1" cols="60" readonly>{{ $jdl->judul_prausta }}</textarea>
                             </div>
                             <div class="form-group">
-                                <label>Tempat PKL </label>
+                                <label>Tempat Magang </label>
                                 <input type="text" class="form-control" value="{{ $jdl->tempat_prausta }}" readonly>
                             </div>
-                            {{-- <div class="form-group">
-                                @if ($jdl->acc_judul == 'BELUM')
-                                    <button type="submit" class="btn btn-info" name="acc_judul"
-                                        value="SUDAH">Terima/Acc</button>
-                                @elseif ($jdl->acc_judul == 'REVISI')
-                                    <button type="submit" class="btn btn-info" name="acc_judul"
-                                        value="SUDAH">Terima/Acc</button>
-                                    <button type="submit" class="btn btn-warning" name="acc_judul" value="REVISI">Revisi
-                                        Lagi</button>
-                                @elseif ($jdl->acc_judul == 'SUDAH')
-                                    <span class="badge bg-blue">Judul telah di Acc.</span>
-                                @endif
-                            </div> --}}
                         </div>
                     </form>
                 </div>
@@ -127,7 +114,7 @@
                                 <td>
                                     <center>
                                         @if ($key->validasi == 'BELUM')
-                                            <a href="/val_bim_pkl/{{ $key->id_transbimb_prausta }}"
+                                            <a href="/val_bim_magang/{{ $key->id_transbimb_prausta }}"
                                                 class="btn btn-info btn-xs">Validasi</a>
                                         @elseif ($key->validasi == 'SUDAH')
                                             <span class="badge bg-blue">Sudah</span>
@@ -151,7 +138,7 @@
                                             <h5 class="modal-title">Komentar Bimbingan</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/komentar_bimbingan/{{ $key->id_transbimb_prausta }}"
+                                            <form action="/komentar_bimbingan_magang/{{ $key->id_transbimb_prausta }}"
                                                 method="post" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('put')
@@ -174,7 +161,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
-                Pengajuan Seminar PKL
+                Pengajuan Seminar Magang <span class="badge bg-red">{{ $jdl->acc_seminar_sidang }}</span>
             </div>
             <div class="box-body">
                 <div class="form">
@@ -182,20 +169,21 @@
                         <span class="badge bg-red">Belum ada pengajuan</span>
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
                         <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar PKL</a>
+                            Seminar Magang</a>
                         <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
-                            Seminar PKL</a>
+                            Seminar Magang</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
-                        <span class="badge bg-blue">Sudah di Acc.</span>
-                    @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
-                        <span class="badge bg-red">Pengajuan ditolak</span>
-                        {{-- <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Prakerin</a>
+                        <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                            Seminar Magang</a>
                         <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
-                            Seminar Prakerin</a> --}}
+                            Seminar Magang</a>
+                    @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
+                        <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                            Seminar Magang</a>
+                        <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                            Seminar Magang</a>
                     @endif
                 </div>
-
             </div>
         </div>
 
@@ -205,7 +193,7 @@
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Draft Laporan Prakerin</span>
+                        <span class="info-box-text">Draft Laporan Magang</span>
                         <span class="info-box-number">
                             @if ($jdl->file_draft_laporan == null)
                                 Belum ada
@@ -225,7 +213,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Laporan Akhir Prakerin</span>
+                        <span class="info-box-text">Laporan Akhir Magang</span>
                         <span class="info-box-number">
                             @if ($jdl->file_laporan_revisi == null)
                                 Belum ada

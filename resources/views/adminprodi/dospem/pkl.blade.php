@@ -8,14 +8,14 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Setting Dosen Pembimbing Prakerin</h3>
+                <h3 class="box-title">Setting Dosen Pembimbing PKL dan Magang</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('view_mhs_bim_pkl') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-xs-3">
-                            <label for="">Angkatan</label>
+                            <label>Angkatan</label>
                             <select class="form-control" name="idangkatan" required>
                                 <option></option>
                                 @foreach ($angkatan as $keyangk)
@@ -24,13 +24,17 @@
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <label for="">Prodi</label>
+                            <label>Prodi</label>
                             <select class="form-control" name="kodeprodi" required>
                                 <option></option>
                                 @foreach ($prodi as $keyprd)
-                                    <option value="{{ $keyprd->kodeprodi }},{{ $keyprd->id_masterkode_prausta }}">
+                                    <option value="{{ $keyprd->kodeprodi }}">
                                         {{ $keyprd->prodi }}</option>
                                 @endforeach
+                                {{-- @foreach ($prodi as $keyprd)
+                                    <option value="{{ $keyprd->kodeprodi }},{{ $keyprd->id_masterkode_prausta }}">
+                                        {{ $keyprd->prodi }}</option>
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>
@@ -45,7 +49,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title">Data Dosen Pembimbing Prakerin</h3>
+                <h3 class="box-title">Data Dosen Pembimbing PKL dan Magang</h3>
             </div>
             <div class="box-body">
                 <table class="table table-condensed" id="example1">
@@ -94,7 +98,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Dosen Pembimbing Prakerin</h5>
+                                            <h5 class="modal-title">Update Dosen Pembimbing PKL dan Magang</h5>
                                         </div>
                                         <div class="modal-body">
                                             <form action="/put_dospem_pkl/{{ $keydsn->id_settingrelasi_prausta }}"

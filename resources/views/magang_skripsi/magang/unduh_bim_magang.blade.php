@@ -26,7 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h3><b>KARTU BIMBINGAN PKL</b></h3>
+                    <h3><b>KARTU BIMBINGAN MAGANG</b></h3>
                 </center>
             </td>
         </tr>
@@ -53,7 +53,7 @@
     <table width="100%">
 
         <tr>
-            <td width="11%" style="font-size:85%"> <b>Judul Prakerin</b> </td>
+            <td width="11%" style="font-size:85%"> <b>Judul Magang</b> </td>
             <td width="1%" style="font-size:85%">:</td>
             <td width="40%" colspan="3" style="font-size:85%"><b>{{ $mhs->judul_prausta }}</b></td>
         </tr>

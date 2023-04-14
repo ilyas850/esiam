@@ -27,14 +27,18 @@ class ProdiController extends Controller
   public function dospem_pkl()
   {
     $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
-    $prodi = Prodi::join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+      ->select('kodeprodi', 'prodi')
+      ->get();
+
+    $prodi1 = Prodi::join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
       ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3])
       ->select('prodi.kodeprodi', 'prodi.id_prodi', 'prodi.prodi', 'prausta_master_kode.id_masterkode_prausta')
       ->get();
 
     $data = Student::join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
       ->where('student.active', 1)
-      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21, 24, 27, 30])
       ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->orderBy('student.nim', 'DESC')
       ->get();
@@ -51,15 +55,28 @@ class ProdiController extends Controller
     $angkatan = $request->idangkatan;
     $prodi = $request->kodeprodi;
 
-    $user = explode(',', $prodi, 2);
-    $id1 = $user[0];
-    $id2 = $user[1];
-
-    $data = Student::where('student.idangkatan', $angkatan)
-      ->where('student.kodeprodi', $id1)
+    $data = Student::join('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+      ->leftjoin('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+      ->where('student.idangkatan', $angkatan)
+      ->where('student.kodeprodi', $prodi)
       ->where('student.active', 1)
+      ->whereIn('prausta_master_kode.id_masterkode_prausta', [12, 15, 18, 21, 24, 27, 30])
+      ->select('student.idstudent', 'student.nim', 'student.nama', 'student.kodeprodi', 'prodi.id_prodi', 'prausta_master_kode.id_masterkode_prausta', 'prausta_setting_relasi.dosen_pembimbing')
       ->orderBy('student.nim', 'ASC')
       ->get();
+
+    // $user = explode(',', $prodi, 2);
+    // $id1 = $user[0];
+    // $id2 = $user[1];
+
+    // $data = Student::where('student.idangkatan', $angkatan)
+    //   ->where('student.kodeprodi', $id1)
+    //   ->where('student.active', 1)
+    //   ->orderBy('student.nim', 'ASC')
+    //   ->get();
 
     // $datas = Student::leftjoin('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
     //   ->where('student.idangkatan', $angkatan)
@@ -78,7 +95,8 @@ class ProdiController extends Controller
       ->whereIn('idstatus', [1, 2, 3])
       ->get();
 
-    return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen', 'id2'));
+    // return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen', 'id2'));
+    return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen'));
   }
 
   public function save_dsn_bim_pkl(Request $request)
@@ -93,20 +111,21 @@ class ProdiController extends Controller
 
       if ($dta != null) {
 
-        $user = explode(',', $dta, 3);
+        $user = explode(',', $dta, 4);
         $id1 = $user[0];
         $id2 = $user[1];
         $id3 = $user[2];
+        $id4 = $user[3];
 
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
-          ->where('id_masterkode_prausta', $idms)
+          ->where('id_masterkode_prausta', $id4)
           ->where('status', 'ACTIVE')
           ->get();
 
         if (count($cekmhs) == 0) {
 
           $dt = new Prausta_setting_relasi;
-          $dt->id_masterkode_prausta = $idms;
+          $dt->id_masterkode_prausta = $id4;
           $dt->id_student = $id1;
           $dt->dosen_pembimbing = $id3;
           $dt->id_dosen_pembimbing = $id2;
@@ -117,7 +136,7 @@ class ProdiController extends Controller
         } elseif (count($cekmhs) > 0) {
 
           $akun = Prausta_setting_relasi::where('id_student', $id1)
-            ->where('id_masterkode_prausta', $idms)
+            ->where('id_masterkode_prausta', $id4)
             ->where('status', 'ACTIVE')
             ->update([
               'id_dosen_pembimbing' => $id2,
