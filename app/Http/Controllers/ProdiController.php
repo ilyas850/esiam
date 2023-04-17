@@ -93,6 +93,7 @@ class ProdiController extends Controller
 
     $dosen = Dosen::where('active', 1)
       ->whereIn('idstatus', [1, 2, 3])
+      ->orderBy('nama', 'ASC')
       ->get();
 
     // return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen', 'id2'));

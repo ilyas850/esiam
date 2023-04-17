@@ -263,8 +263,6 @@ class NilaiController extends Controller
     $smt = $sub_thn . $tp;
     $angk = $mhs->idangkatan;
 
-    
-
     if ($smt % 2 != 0) {
       if ($tp == 1) {
         //ganjil
