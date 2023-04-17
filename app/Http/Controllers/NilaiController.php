@@ -225,7 +225,17 @@ class NilaiController extends Controller
     }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->where('student.idstudent', $id)
-      ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
+      ->select(
+        'student.idstudent',
+        'student.nama',
+        'student.nim',
+        'kelas.kelas',
+        'prodi.prodi',
+        'student.idangkatan',
+        'student.idstatus',
+        'student.kodeprodi',
+        'student.intake'
+      )
       ->first();
 
     $periode_khs = $request->id_periodetahun;
@@ -246,29 +256,46 @@ class NilaiController extends Controller
     $idangkatan = $mhs->idangkatan;
     $idstatus = $mhs->idstatus;
     $kodeprodi = $mhs->kodeprodi;
+    $intake = $mhs->intake;
 
     $sub_thn = substr($prd_thn->periode_tahun, 6, 2);
     $tp = $prd_tp->id_periodetipe;
     $smt = $sub_thn . $tp;
     $angk = $mhs->idangkatan;
 
+    
+
     if ($smt % 2 != 0) {
       if ($tp == 1) {
         //ganjil
-        $a = (($smt + 10) - 1) / 10;
-        $b = $a - $idangkatan;
-        $c = ($b * 2) - 1;
+        $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
+        $b = $a - $idangkatan; // 22 - 20 = 2
+        if ($intake == 2) {
+          $c = ($b * 2) - 1 - 1;
+        } elseif ($intake == 1) {
+          $c = ($b * 2) - 1;
+        } // 2 * 2 - 1 = 3
       } elseif ($tp == 3) {
         //pendek
-        $a = (($smt + 10) - 3) / 10;
-        $b = $a - $idangkatan;
-        $c = ($b * 2) . '0' . '1';
+        $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
+        $b = $a - $idangkatan; // 22 - 20 = 2
+        // $c = ($b * 2);
+        if ($intake == 2) {
+          $c = $b * 2 - 1;
+        } elseif ($intake == 1) {
+          $c = $b * 2;
+        }
       }
     } else {
       //genap
-      $a = ($smt + 10 - 2) / 10;
-      $b = $a - $angk;
-      $c = $b * 2;
+      $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
+      $b = $a - $idangkatan; // 22 - 20 = 2
+      // 2 * 2 = 4
+      if ($intake == 2) {
+        $c = $b * 2 - 1;
+      } elseif ($intake == 1) {
+        $c = $b * 2;
+      }
     }
 
     $biaya = Biaya::where('idangkatan', $idangkatan)
@@ -364,7 +391,7 @@ class NilaiController extends Controller
       } elseif ($c == 14) {
         $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 / 2 - $total_semua_dibayar;
       }
-
+  
       if ($cekbyr == 0 or $cekbyr < 1) {
         $record = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
           ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
