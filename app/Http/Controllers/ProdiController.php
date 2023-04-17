@@ -55,18 +55,31 @@ class ProdiController extends Controller
     $angkatan = $request->idangkatan;
     $prodi = $request->kodeprodi;
 
-    $data = Student::join('prodi', function ($join) {
+    $data1 = Student::join('prodi', function ($join) {
       $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
     })
-      ->join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
+
       ->leftjoin('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+      ->leftjoin('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
       ->where('student.idangkatan', $angkatan)
       ->where('student.kodeprodi', $prodi)
       ->where('student.active', 1)
       ->whereIn('prausta_master_kode.id_masterkode_prausta', [12, 15, 18, 21, 24, 27, 30])
-      ->select('student.idstudent', 'student.nim', 'student.nama', 'student.kodeprodi', 'prodi.id_prodi', 'prausta_master_kode.id_masterkode_prausta', 'prausta_setting_relasi.dosen_pembimbing')
+      ->select(
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'student.idstudent',
+        'student.nim',
+        'student.nama',
+        'student.kodeprodi',
+        'prodi.id_prodi',
+        'prausta_master_kode.id_masterkode_prausta',
+        'prausta_setting_relasi.dosen_pembimbing',
+        'prausta_setting_relasi.status'
+      )
       ->orderBy('student.nim', 'ASC')
       ->get();
+
+    $data = DB::select('CALL view_mhs_bim_pkl(?,?)', [$prodi, $angkatan]);
 
     // $user = explode(',', $prodi, 2);
     // $id1 = $user[0];
