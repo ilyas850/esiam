@@ -162,6 +162,31 @@
 
     <li class="treeview">
         <a href="#">
+            <i class="fa fa-database"></i> <span>Master Magang & Skripsi</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('jadwal_magang_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi </a></li>
+            <li class="treeview">
+                <a href="#"><i class="fa fa-circle-o"></i> Pembimbing
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('pembimbing_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang</a></li>
+                    <li><a href="{{ url('pembimbing_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> SEMPRO</a>
+                    </li>
+                    <li><a href="{{ url('pembimbing_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+
+    <li class="treeview">
+        <a href="#">
             <i class="fa fa-database"></i> <span>Master Penangguhan</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>

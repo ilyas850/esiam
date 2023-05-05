@@ -11,7 +11,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('pembimbing_magang') }}">Data Mahasiswa Magang </a></li>
+            <li><a href="{{ url('pembimbing_magang_kprd') }}">Data Mahasiswa Magang </a></li>
             <li class="active">Cek Mahasiswa Bimbingan Magang </li>
         </ol>
     </section>
@@ -110,7 +110,7 @@
                                 <td>
                                     <center>
                                         @if ($key->validasi == 'BELUM')
-                                            <a href="/val_bim_magang/{{ $key->id_transbimb_prausta }}"
+                                            <a href="/val_bim_magang_kprd/{{ $key->id_transbimb_prausta }}"
                                                 class="btn btn-info btn-xs">Validasi</a>
                                         @elseif ($key->validasi == 'SUDAH')
                                             <span class="badge bg-blue">Sudah</span>
@@ -134,7 +134,7 @@
                                             <h5 class="modal-title">Komentar Bimbingan</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/komentar_bimbingan_magang/{{ $key->id_transbimb_prausta }}"
+                                            <form action="/komentar_bimbingan_magang_kprd/{{ $key->id_transbimb_prausta }}"
                                                 method="post" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('put')

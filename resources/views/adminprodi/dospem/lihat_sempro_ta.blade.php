@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Dosen Pembimbing Seminar Proposal & Tugas Akhir</h3>
+                <h3 class="box-title">Data Dosen Pembimbing Seminar Proposal, Tugas Akhir & Skripsi</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('save_dsn_bim_sempro_ta') }}" method="POST">

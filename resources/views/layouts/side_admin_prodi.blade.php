@@ -10,10 +10,9 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
-                        PKL</span></a></li>
+                        PKL & Magang</span></a></li>
             <li><a href="{{ url('dospem_sempro_ta') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
-                        SEMPRO & TA</span></a></li>
-            
+                        SEMPRO, TA & Skripsi</span></a></li>
         </ul>
     </li>
     <li class="treeview">

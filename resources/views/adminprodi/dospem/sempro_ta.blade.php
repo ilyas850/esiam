@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Setting Dosen Pembimbing Seminar Proposal dan Tugas Akhir</h3>
+                <h3 class="box-title">Setting Dosen Pembimbing Seminar Proposal, Tugas Akhir & Skripsi</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('view_mhs_bim_sempro_ta') }}" method="POST">

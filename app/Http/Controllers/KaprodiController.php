@@ -6100,7 +6100,7 @@ class KaprodiController extends Controller
 
   public function simpan_soal_uts_dsn_kprd(Request $request)
   {
-   
+
     $message = [
       'max' => ':attribute harus diisi maksimal :max KB',
       'required' => ':attribute wajib diisi'
@@ -8681,4 +8681,83 @@ class KaprodiController extends Controller
 
     return redirect('data_pengajuan_keringanan_absen_kprd');
   }
+
+  public function pembimbing_magang_kprd()
+  {
+    $id = Auth::user()->id_user;
+
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where('student.active', 1)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [24, 27, 30])
+            ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('kaprodi/magang_skripsi/pembimbing_magang', compact('data'));
+  }
+
+  public function record_bim_magang($id)
+    {
+        $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.dosen_pembimbing'
+            )
+            ->first();
+
+        $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [24, 27, 30])
+            ->get();
+
+        return view('kaprodi/magang_skripsi/cek_bimbingan_magang', compact('jdl', 'pkl'));
+    }
+
+    public function komentar_bimbingan_magang(Request $request, $id)
+    {
+        $prd = Prausta_trans_bimbingan::find($id);
+        $prd->komentar_bimbingan = $request->komentar_bimbingan;
+        $prd->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function val_bim_magang($id)
+    {
+        $val = Prausta_trans_bimbingan::find($id);
+        $val->validasi = 'SUDAH';
+        $val->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
 }
