@@ -106,9 +106,20 @@
                         </tbody>
                     </table>
                     <br>
-                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
+                    <button id="simpan" class="btn btn-success btn-block" type="submit">Simpan</button>
                 </div>
             </form>
         </div>
     </section>
+    <script>
+        $(document).ready(function() {
+            $('#simpan').click(function() {
+                // Menonaktifkan tombol setelah diklik
+                $(this).prop('disabled', true);
+
+                // Mencegah pengguna mengklik tombol lagi
+                $(this).unbind('click');
+            });
+        });
+    </script>
 @endsection

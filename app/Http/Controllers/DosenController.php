@@ -53,6 +53,7 @@ use App\Pedoman_khusus;
 use App\Soal_ujian;
 use App\Absen_ujian;
 use App\Permohonan_ujian;
+use App\Pertemuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -1363,7 +1364,24 @@ class DosenController extends Controller
     {
         $jam = Kurikulum_jam::all();
 
-        return view('dosen/form_bap', ['id' => $id, 'jam' => $jam]);
+        $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
+            ->where('kuliah_transaction.id_kurperiode', $id)
+
+            ->get();
+
+        $nilai_pertemuan = DB::table('pertemuan')
+            ->select('pertemuan.id_pertemuan')
+
+            ->leftJoin('bap', function ($join) use ($id) {
+                $join->on('pertemuan.pertemuan', '=', 'bap.pertemuan')
+                    ->where('bap.id_kurperiode', '=', $id)
+                    ->where('bap.status', 'ACTIVE');
+            })
+            
+            ->whereNull('bap.pertemuan')
+            ->get();
+
+        return view('dosen/form_bap', compact('id', 'jam', 'nilai_pertemuan'));
     }
 
     public function save_bap(Request $request)

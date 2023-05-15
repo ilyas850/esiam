@@ -44,7 +44,11 @@
                                 </label>
                                 <select class="form-control" name="pertemuan" required>
                                     <option></option>
-                                    <option value="1">Pertemuan Ke-1</option>
+                                    @foreach ($nilai_pertemuan as $item)
+                                        <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
+                                        </option>
+                                    @endforeach
+                                    {{-- <option value="1">Pertemuan Ke-1</option>
                                     <option value="2">Pertemuan Ke-2</option>
                                     <option value="3">Pertemuan Ke-3</option>
                                     <option value="4">Pertemuan Ke-4</option>
@@ -59,7 +63,7 @@
                                     <option value="13">Pertemuan Ke-13</option>
                                     <option value="14">Pertemuan Ke-14</option>
                                     <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option>
+                                    <option value="16">Pertemuan Ke-16</option> --}}
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">

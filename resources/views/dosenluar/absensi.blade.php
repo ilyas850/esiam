@@ -91,27 +91,21 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <br><br>
-                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
-                        class="btn btn-warning">
-                    <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                        class="btn btn-warning"> --}}
-                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
+                    <br>
+                    <button id="simpan" class="btn btn-success btn-block" type="submit">Simpan</button>
                 </div>
             </form>
         </div>
     </section>
-    <script language="javascript">
-        function check_all() {
-            var chk = document.getElementsByName('absensi[]');
-            for (i = 0; i < chk.length; i++)
-                chk[i].checked = true;
-        }
+    <script>
+        $(document).ready(function() {
+            $('#simpan').click(function() {
+                // Menonaktifkan tombol setelah diklik
+                $(this).prop('disabled', true);
 
-        function uncheck_all() {
-            var chk = document.getElementsByName('absensi[]');
-            for (i = 0; i < chk.length; i++)
-                chk[i].checked = false;
-        }
+                // Mencegah pengguna mengklik tombol lagi
+                $(this).unbind('click');
+            });
+        });
     </script>
 @endsection

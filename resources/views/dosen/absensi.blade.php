@@ -84,7 +84,7 @@
                                                 value="{{ $item->id_studentrecord }}">
                                             {{-- <input type="checkbox" name="absensi[]"
                                                 value="{{ $item->id_studentrecord }}"> --}}
-                                            <select name="absensi[]" class="form-control">
+                                            <select name="absensi[]" class="form-control" required>
                                                 <option value="HADIR"></option>
                                                 <option value="ABSEN">Hadir</option>
                                                 <option value="IZIN">Izin</option>
@@ -99,26 +99,22 @@
                         </tbody>
                     </table>
                     <br>
-                    {{-- <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
-                        class="btn btn-success">
-                    <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"
-                        class="btn btn-warning"> --}}
-                    <input class="btn btn-success btn-block" type="submit" name="submit" value="Simpan">
+                    <button id="simpan" class="btn btn-success btn-block" type="submit">Simpan</button>
+
                 </div>
             </form>
         </div>
     </section>
-    <script language="javascript">
-        function check_all() {
-            var chk = document.getElementsByName('absensi[]');
-            for (i = 0; i < chk.length; i++)
-                chk[i].checked = true;
-        }
 
-        function uncheck_all() {
-            var chk = document.getElementsByName('absensi[]');
-            for (i = 0; i < chk.length; i++)
-                chk[i].checked = false;
-        }
+    <script>
+        $(document).ready(function() {
+            $('#simpan').click(function() {
+                // Menonaktifkan tombol setelah diklik
+                $(this).prop('disabled', true);
+
+                // Mencegah pengguna mengklik tombol lagi
+                $(this).unbind('click');
+            });
+        });
     </script>
 @endsection
