@@ -30,7 +30,7 @@
                 <a class="btn btn-warning" href="/print_bap_kprd/{{$dtbp->id_bap}}" target="_blank"><i class="fa fa-print"></i> PRINT</a>
 
                     <center>
-                        <h2 class="box-title">Laporan Pembelajaran Daring Prodi {{$prd}} </h2>
+                        <h2 class="box-title">Laporan BAP Prodi {{$prd}} </h2>
                         <h3 class="box-title">Semester {{$tipe}} – {{$tahun}}</h3>
                     </center>
                     <table class="table table-bordered table-striped">
@@ -47,7 +47,7 @@
                             <td>{{$data->kelas}} / {{$data->semester}}</td>
                         </tr>
                         <tr>
-                            <td>Media Pemebelajaran</td>
+                            <td>Media Pembelajaran</td>
                             <td>{{$dtbp->media_pembelajaran}}</td>
                         </tr>
                         <tr>
@@ -56,7 +56,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal Perkuliahan</td>
-                            <td>{{$dtbp->tanggal}}</td>
+                            <td>{{ Carbon\Carbon::parse($dtbp->tanggal)->formatLocalized('%d %B %Y') }}</td>
                         </tr>
                         <tr>
                             <td>Materi Perkuliahan</td>
