@@ -37,7 +37,7 @@
             <td>{{ $data->kelas }} / {{ $data->semester }}</td>
         </tr>
         <tr>
-            <td>Media Pemebelajaran</td>
+            <td>Media Pembelajaran</td>
             <td>{{ $dtbp->media_pembelajaran }}</td>
         </tr>
         <tr>
