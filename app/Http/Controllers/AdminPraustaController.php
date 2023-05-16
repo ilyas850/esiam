@@ -113,6 +113,71 @@ class AdminPraustaController extends Controller
         return redirect('nilai_prausta');
     }
 
+    public function data_pkl_magang()
+    {
+
+        return view('prausta/filter/pkl_magang');
+    }
+
+    public function filter_pkl_magang(Request $request)
+    {
+        $data_fil = $request->filter;
+
+        if ($data_fil == 'PKL') {
+            $kode_prausta = [1, 2, 3, 12, 15, 18, 21];
+        } elseif ($data_fil == 'Magang') {
+            $kode_prausta = [24, 27, 30];
+        }
+
+        $akhir = time(); #Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->join('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')
+                    ->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', $kode_prausta)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281, 481])
+            ->where('prausta_master_waktu.tipe_prausta', 'PKL')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->where('student.active', 1)
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
+                'prausta_setting_relasi.tanggal_mulai',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status',
+                'prausta_master_kode.batas_waktu',
+                'prausta_setting_relasi.tgl_pengajuan'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('prausta/prakerin/data_prakerin', compact('akhir', 'data', 'data_fil'));
+    }
+
     public function data_prakerin()
     {
         $akhir = time(); #Waktu sekarang

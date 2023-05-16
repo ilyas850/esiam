@@ -1362,6 +1362,10 @@ Route::group(['middleware' => 'wadir3'], function () {
 });
 
 Route::group(['middleware' => 'prausta'], function () {
+    #PKL dan Magang
+    Route::get('data_pkl_magang', 'AdminPraustaController@data_pkl_magang');
+    Route::post('filter_pkl_magang', 'AdminPraustaController@filter_pkl_magang');
+
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
     Route::post('save_nilai_prausta', 'PraustaController@save_nilai_prausta');

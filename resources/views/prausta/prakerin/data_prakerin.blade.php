@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data PKL</h3>
+                <h3 class="box-title">Data {{ $data_fil }}</h3>
             </div>
             <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">
@@ -21,13 +21,13 @@
                             <th colspan="2">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="2">
-                                <center>Tanggal PraUSTA</center>
-                            </th>
-                            <th rowspan="2">
+                            {{-- <th colspan="2">
+                                <center>Tanggal {{ $data_fil }}</center>
+                            </th> --}}
+                            {{-- <th rowspan="2">
                                 <center>Tanggal Pengajuan</center>
-                            </th>
-                            <th colspan="2">
+                            </th> --}}
+                            <th colspan="3">
                                 <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Batas Waktu</th>
@@ -48,14 +48,17 @@
                             <th>
                                 <center>Penguji</center>
                             </th>
-                            <th>
+                            {{-- <th>
                                 <center>Mulai</center>
                             </th>
                             <th>
                                 <center>Selesai</center>
-                            </th>
+                            </th> --}}
                             <th>
                                 <center>Mulai</center>
+                            </th>
+                            <th>
+                                <center>Pengajuan</center>
                             </th>
                             <th>
                                 <center>Selesai</center>
@@ -75,11 +78,12 @@
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->set_waktu_awal }}</td>
                                 <td>{{ $key->set_waktu_akhir }}</td>
-                                <td>
-                                    {{ $key->tgl_pengajuan }}
-                                </td>
+
                                 <td>
                                     <center>{{ $key->tanggal_mulai }}</center>
+                                </td>
+                                <td align="center">
+                                    {{ $key->tgl_pengajuan }}
                                 </td>
                                 <td>
                                     <center>{{ $key->tanggal_selesai }}</center>

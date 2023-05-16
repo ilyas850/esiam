@@ -11,10 +11,11 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>PKL</span></a></li>
+            <li><a href="{{ url('data_pkl_magang') }}"><i class="fa fa-circle-o"></i> <span>PKL/Magang</span></a></li>
+            {{-- <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>PKL/Magang</span></a></li> --}}
             <li><a href="{{ url('data_sempro') }}"><i class="fa fa-circle-o"></i> <span>Seminar Proposal</span></a>
             </li>
-            <li><a href="{{ url('data_ta') }}"><i class="fa fa-circle-o"></i> <span>Tugas Akhir</span></a></li>
+            <li><a href="{{ url('data_ta') }}"><i class="fa fa-circle-o"></i> <span>TA/Skripsi</span></a></li>
         </ul>
     </li>
     <li class="treeview">

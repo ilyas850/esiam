@@ -67,8 +67,7 @@
                                 <td>
                                     <center>{{ $key->nilai_2 }}</center>
                                 </td>
-                                <td>
-                                    <center>{{ $key->nilai_3 }}</center>
+                                <td>                                    <center>{{ $key->nilai_3 }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>

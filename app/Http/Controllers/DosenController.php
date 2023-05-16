@@ -54,6 +54,7 @@ use App\Soal_ujian;
 use App\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Pertemuan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -1377,7 +1378,7 @@ class DosenController extends Controller
                     ->where('bap.id_kurperiode', '=', $id)
                     ->where('bap.status', 'ACTIVE');
             })
-            
+
             ->whereNull('bap.pertemuan')
             ->get();
 
@@ -1797,6 +1798,15 @@ class DosenController extends Controller
         foreach ($bp as $dtbp) {
             # code...
         }
+
+        $date = $dtbp->tanggal;
+       
+
+        
+        // dd($bp->tanggal);
+        // $tanggalIndonesia = Carbon::createFromFormat('Y-m-d', $dtbp->tanggal)->format('d-m-Y');
+
+        // dd($tanggalIndonesia);
 
         $bap = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')

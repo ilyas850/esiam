@@ -32,10 +32,10 @@ class AppServiceProvider extends ServiceProvider
             return "Rp. <?php echo number_format($expression, 0, ',', '.'); ?>";
         });
 
-        config(['app.locale' => 'id']);
+        //config(['app.locale' => 'id']);
         setlocale(LC_ALL, 'IND');
-        Carbon::setLocale('id');
-        date_default_timezone_set('Asia/Jakarta');
-        // Carbon::now()->formatLocalized("A, %d %B %Y");
+        //Carbon::setLocale('id');
+        //date_default_timezone_set('Asia/Jakarta');
+         //Carbon::now()->formatLocalized("A, %d %B %Y");
     }
 }
