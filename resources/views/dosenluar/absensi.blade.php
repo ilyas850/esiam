@@ -97,7 +97,7 @@
             </form>
         </div>
     </section>
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('#simpan').click(function() {
                 // Menonaktifkan tombol setelah diklik
@@ -107,5 +107,5 @@
                 $(this).unbind('click');
             });
         });
-    </script>
+    </script> --}}
 @endsection
