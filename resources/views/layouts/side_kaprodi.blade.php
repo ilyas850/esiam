@@ -182,6 +182,27 @@
                     <li><a href="{{ url('pembimbing_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a></li>
                 </ul>
             </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-circle-o"></i> <span>Monitoring</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('bimbingan_magang_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan
+                            Magang</a></li>
+                    <li><a href="{{ url('bimbingan_sempro_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan SEMPRO</a>
+                    </li>
+                    <li><a href="{{ url('bimbingan_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan Skripsi</a></li>
+                    <li><a href="{{ url('nilai_magang_kprd') }}"><i class="fa fa-circle-o"></i> <span>
+                                Nilai Magang</span></a></li>
+                    <li><a href="{{ url('nilai_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> <span>
+                                Nilai SEMPRO</span></a></li>
+                    <li><a href="{{ url('nilai_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> <span>
+                                Nilai Skripsi</span></a></li>
+                </ul>
+            </li>
         </ul>
     </li>
 

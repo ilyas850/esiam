@@ -1274,6 +1274,16 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('record_bim_magang_kprd/{id}', 'KaprodiController@record_bim_magang');
     Route::put('komentar_bimbingan_magang_kprd/{id}', 'KaprodiController@komentar_bimbingan_magang');
     Route::get('val_bim_magang_kprd/{id}', 'KaprodiController@val_bim_magang');
+
+    #monitoring magang dan skripsi
+    Route::get('bimbingan_magang_kprd', 'KaprodiController@bimbingan_magang_kprd');
+    Route::get('detail_bim_magang/{id}', 'KaprodiController@detail_bim_magang');
+    Route::get('bimbingan_sempro_kprd', 'KaprodiController@bimbingan_sempro_kprd');
+    Route::get('bimbingan_skripsi_kprd', 'KaprodiController@bimbingan_skripsi_kprd');
+    Route::get('detail_bim_skripsi', 'KaprodiController@detail_bim_skripsi');
+    Route::get('nilai_magang_kprd', 'KaprodiController@nilai_magang_kprd');
+    Route::get('nilai_sempro_skripsi_kprd', 'KaprodiController@nilai_sempro_skripsi_kprd');
+    Route::get('nilai_skripsi_kprd', 'KaprodiController@nilai_skripsi_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
