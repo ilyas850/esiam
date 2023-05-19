@@ -4,19 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Setting Jadwal Prakerin Mahasiswa
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('data_prakerin') }}">Data Prakerin</a></li>
-            <li class="active">Setting prakerin</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -50,7 +37,7 @@
         </div>
         <div class="box box-success">
             <div class="box-header">
-                <h3 class="box-title"><b>Setting Seminar Prakerin</b> </h3>
+                <h3 class="box-title"><b>Setting Seminar PKL/Magang</b> </h3>
 
             </div>
             <div class="box-body">

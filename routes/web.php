@@ -1364,7 +1364,8 @@ Route::group(['middleware' => 'wadir3'], function () {
 Route::group(['middleware' => 'prausta'], function () {
     #PKL dan Magang
     Route::get('data_pkl_magang', 'AdminPraustaController@data_pkl_magang');
-    Route::post('filter_pkl_magang', 'AdminPraustaController@filter_pkl_magang');
+    Route::get('data_pkl_mahasiswa', 'AdminPraustaController@data_pkl_mahasiswa');
+    Route::get('data_magang_mahasiswa', 'AdminPraustaController@data_magang_mahasiswa');
 
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
@@ -1375,7 +1376,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('save_nilai_pkl_to_trans', 'AdminPraustaController@save_nilai_pkl_to_trans');
     Route::post('save_nilai_sempro_ta_to_trans', 'AdminPraustaController@save_nilai_sempro_ta_to_trans');
 
-    //data prakerin
+    //data pkl
     Route::get('data_prakerin', 'AdminPraustaController@data_prakerin');
     Route::get('atur_prakerin/{id}', 'AdminPraustaController@atur_prakerin');
     Route::post('simpan_atur_prakerin', 'AdminPraustaController@simpan_atur_prakerin');

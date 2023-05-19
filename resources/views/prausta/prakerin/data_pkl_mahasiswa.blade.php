@@ -5,11 +5,20 @@
 @endsection
 
 @section('content')
-    
     <section class="content">
+        <div class="box box-danger">
+            <div class="box-header">
+                <h3 class="box-title">Pilih Tipe</h3>
+            </div>
+            <div class="box-body">
+                <a href="/data_pkl_mahasiswa" class="btn btn-info">Data PKL</a>
+                <a href="/data_magang_mahasiswa" class="btn btn-success">Data Magang</a>
+            </div>
+        </div>
+
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data {{ $data_fil }}</h3>
+                <h3 class="box-title">Data PKL</h3>
             </div>
             <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">
@@ -20,18 +29,11 @@
                             <th colspan="2">
                                 <center>Dosen</center>
                             </th>
-                            {{-- <th colspan="2">
-                                <center>Tanggal {{ $data_fil }}</center>
-                            </th> --}}
-                            {{-- <th rowspan="2">
-                                <center>Tanggal Pengajuan</center>
-                            </th> --}}
                             <th colspan="3">
                                 <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Batas Waktu</th>
                             <th rowspan="2">Due Date</th>
-                            {{-- <th rowspan="2">Durasi</th> --}}
                             <th rowspan="2">
                                 <center>Jam Seminar</center>
                             </th>
@@ -47,12 +49,6 @@
                             <th>
                                 <center>Penguji</center>
                             </th>
-                            {{-- <th>
-                                <center>Mulai</center>
-                            </th>
-                            <th>
-                                <center>Selesai</center>
-                            </th> --}}
                             <th>
                                 <center>Mulai</center>
                             </th>
@@ -72,8 +68,6 @@
                                 <td>{{ $key->nama }}/{{ $key->nim }}</td>
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
-                                {{-- <td>{{ $key->set_waktu_awal }}</td>
-                                <td>{{ $key->set_waktu_akhir }}</td> --}}
                                 <td>
                                     <center>{{ $key->tanggal_mulai }}</center>
                                 </td>
@@ -104,14 +98,6 @@
                                         <span class="label label-success">Tepat waktu</span>
                                     @endif
                                 </td>
-                                {{-- <td>
-                                    @if ($key->tanggal_selesai == null)
-                                        0
-                                    @else
-                                        {{ floor((strtotime($key->tanggal_selesai) - strtotime($key->tanggal_mulai)) / (60 * 60 * 24)) }}
-                                    @endif
-                                    hari
-                                </td> --}}
                                 <td>
                                     <center>{{ $key->jam_mulai_sidang }} - {{ $key->jam_selesai_sidang }}</center>
                                 </td>
@@ -135,14 +121,8 @@
                                             </button>
                                             <ul class="dropdown-menu" role="menu">
                                                 <li>
-                                                    <form action="">
-                                                        <button class="btn btn-warning btn-xs btn-block">Setting</button>
-                                                    </form>
-                                                </li>
-                                                <li>
-
-                                                    <a href="/atur_prakerin/{{ $key->id_settingrelasi_prausta }}"
-                                                        class="btn btn-danger btn-xs btn-block">Setting</a>
+                                                    <a
+                                                        href="/atur_prakerin/{{ $key->id_settingrelasi_prausta }}">Setting</a>
                                                 </li>
                                                 @if ($key->status == 'ACTIVE')
                                                     <li><a href="/nonatifkan_prausta_prakerin/{{ $key->id_settingrelasi_prausta }}"

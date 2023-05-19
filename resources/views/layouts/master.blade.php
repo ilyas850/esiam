@@ -468,6 +468,19 @@
         })
 
         $(document).ready(function() {
+            var table = $('#example41').DataTable({
+                // 'paging': true,
+                // 'lengthChange': true,
+                // 'searching': true,
+                // 'ordering': true,
+                // 'info': true,
+                // 'autoWidth': false,
+                scrollX: true,
+                scrollCollapse: true
+            });
+        });
+
+        $(document).ready(function() {
             var table = $('#example4').DataTable({
                 // scrollY: "465px",
                 scrollX: true,
@@ -488,7 +501,6 @@
                 'ordering': false,
                 'info': true,
                 'autoWidth': false
-
             });
         });
 
