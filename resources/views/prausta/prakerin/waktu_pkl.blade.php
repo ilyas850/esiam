@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Waktu Pelaksanaan PKL</h3>
+                <h3 class="box-title">Waktu Pelaksanaan PKL/Magang</h3>
             </div>
             <div class="box-body">
                 <div class="row">
@@ -27,7 +27,7 @@
 
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan PKL</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan PKL/Magang</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -165,7 +165,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Waktu PKL</h5>
+                                            <h5 class="modal-title">Update Waktu PKL/Magang</h5>
                                         </div>
                                         <div class="modal-body">
                                             <form action="/put_waktu_prausta/{{ $item->id_masterwaktu_prausta }}"

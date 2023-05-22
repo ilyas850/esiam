@@ -6,10 +6,18 @@
 
 @section('content')
     <section class="content">
-
-        <div class="box box-info">
+        <div class="box box-danger">
             <div class="box-header">
-                <h3 class="box-title">Data Tugas Akhir/Skripsi</h3>
+                <h3 class="box-title">Pilih Tipe</h3>
+            </div>
+            <div class="box-body">
+                <a href="/data_ta_mahasiswa" class="btn btn-info">Data Tugas Akhir</a>
+                <a href="/data_skripsi_mahasiswa" class="btn btn-success">Data Skripsi</a>
+            </div>
+        </div>
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">Data Skripsi</h3>
             </div>
             <div class="box-body">
 
@@ -24,14 +32,10 @@
                             <th colspan="2">
                                 <center>Tanggal PraUSTA</center>
                             </th>
-                            <th rowspan="2">
-                                <center>Tanggal Pengajuan</center>
-                            </th>
-                            <th colspan="2">
-                                <center>Tanggal Sidang</center>
+                            <th colspan="3">
+                                <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Due Date</th>
-                            {{-- <th rowspan="2">Durasi</th> --}}
                             <th rowspan="2">
                                 <center>Jam Sidang</center>
                             </th>
@@ -54,15 +58,11 @@
                                 <center>Mulai</center>
                             </th>
                             <th>
-                                <center>Selesai</center>
-                            </th>
-                            <th>
-                                <center>Mulai</center>
+                                <center>Pengajuan</center>
                             </th>
                             <th>
                                 <center>Selesai</center>
                             </th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -74,8 +74,6 @@
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->dosen_penguji_2 }}</td>
-                                <td>{{ $key->set_waktu_awal }}</td>
-                                <td>{{ $key->set_waktu_akhir }}</td>
                                 <td>
                                     {{ $key->tgl_pengajuan }}
                                 </td>
@@ -103,14 +101,6 @@
                                         <span class="label label-success">Tepat waktu</span>
                                     @endif
                                 </td>
-                                {{-- <td>
-                                    @if ($key->tanggal_selesai == null)
-                                        0
-                                    @else
-                                        {{ floor((strtotime($key->tanggal_selesai) - strtotime($key->tanggal_mulai)) / (60 * 60 * 24)) }}
-                                    @endif
-                                    hari
-                                </td> --}}
                                 <td>
                                     <center>{{ $key->jam_mulai_sidang }} - {{ $key->jam_selesai_sidang }}</center>
                                 </td>

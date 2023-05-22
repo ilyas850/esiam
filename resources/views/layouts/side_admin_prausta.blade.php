@@ -15,7 +15,7 @@
             {{-- <li><a href="{{ url('data_prakerin') }}"><i class="fa fa-circle-o"></i> <span>PKL/Magang</span></a></li> --}}
             <li><a href="{{ url('data_sempro') }}"><i class="fa fa-circle-o"></i> <span>Seminar Proposal</span></a>
             </li>
-            <li><a href="{{ url('data_ta') }}"><i class="fa fa-circle-o"></i> <span>TA/Skripsi</span></a></li>
+            <li><a href="{{ url('data_ta_skripsi') }}"><i class="fa fa-circle-o"></i> <span>TA/Skripsi</span></a></li>
         </ul>
     </li>
     <li class="treeview">

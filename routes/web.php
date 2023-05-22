@@ -1367,6 +1367,11 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_pkl_mahasiswa', 'AdminPraustaController@data_pkl_mahasiswa');
     Route::get('data_magang_mahasiswa', 'AdminPraustaController@data_magang_mahasiswa');
 
+    #TA dan Skripsi
+    Route::get('data_ta_skripsi', 'AdminPraustaController@data_ta_skripsi');
+    Route::get('data_ta_mahasiswa', 'AdminPraustaController@data_ta_mahasiswa');
+    Route::get('data_skripsi_mahasiswa', 'AdminPraustaController@data_skripsi_mahasiswa');
+
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
     Route::post('save_nilai_prausta', 'PraustaController@save_nilai_prausta');
