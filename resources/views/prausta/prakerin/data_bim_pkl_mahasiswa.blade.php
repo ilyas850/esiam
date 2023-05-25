@@ -6,13 +6,23 @@
 
 @section('content')
     <section class="content">
+        <div class="box box-danger">
+            <div class="box-header">
+                <h3 class="box-title">Pilih Tipe</h3>
+            </div>
+            <div class="box-body">
+                <a href="/data_bim_pkl_mahasiswa" class="btn btn-info">Data Bimbingan PKL</a>
+                <a href="/data_bim_magang_mahasiswa" class="btn btn-success">Data Bimbingan Magang</a>
+            </div>
+        </div>
+
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Bimbingan TA</h3>
+                <h3 class="box-title">Data Bimbingan PKL</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_bim_ta_use_prodi') }}" method="POST">
+                    <form class="form" role="form" action="{{ url('filter_bim_pkl_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>
@@ -74,7 +84,7 @@
                                 </td>
 
                                 <td>
-                                    <center> <a href="cek_bim_ta/{{ $key->id_settingrelasi_prausta }}"
+                                    <center> <a href="cek_bim_pkl/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-info btn-xs"> lihat </a></center>
                                 </td>
                             </tr>

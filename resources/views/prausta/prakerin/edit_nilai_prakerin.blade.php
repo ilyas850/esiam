@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h4 class="box-title"><b>Edit Nilai Prakerin</b> </h4>
+                <h4 class="box-title"><b>Edit Nilai PKL</b> </h4>
             </div>
             <div class="box-body">
                 <table width="100%">

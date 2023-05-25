@@ -52,12 +52,12 @@
     <br>
     <table width="100%">
         <tr>
-            <td width="15%" style="font-size:85%"> Judul Prakerin </td>
+            <td width="15%" style="font-size:85%"> Judul PKL </td>
             <td width="1%" style="font-size:85%">:</td>
             <td width="84%" colspan="3" style="font-size:85%">{{ $datadiri->judul_prausta }}</td>
         </tr>
         <tr>
-            <td style="font-size:85%">Tempat Prakerin</td>
+            <td style="font-size:85%">Tempat PKL</td>
             <td style="font-size:85%">:</td>
             <td colspan="3" style="font-size:85%">{{ $datadiri->tempat_prausta }}</td>
         </tr>
@@ -102,7 +102,7 @@
                     <center>100 </center>
                 </td>
                 <td style="font-size:85%">
-                    <center>{{ $hasil }}</center>
+                    <center><b>{{ $hasil }}</b></center>
                 </td>
             </tr>
         </tbody>

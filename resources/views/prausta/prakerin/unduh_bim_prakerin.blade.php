@@ -26,7 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h3><b>KARTU BIMBINGAN PKL</b></h3>
+                    <h3><b>KARTU BIMBINGAN PKL/Magang</b></h3>
                 </center>
             </td>
         </tr>
@@ -35,25 +35,25 @@
         <tr>
             <td width="25%" style="font-size:85%"><b>Nama </b></td>
             <td width="2%" style="font-size:85%"> : </td>
-            <td width="50%" style="font-size:85%"><b><u>{{ $mhs->nama }}</u></b></td>
+            <td width="50%" style="font-size:85%"><b>{{ $mhs->nama }}</b></td>
             <td width="18%" style="font-size:85%"><b>Program Studi</b></td>
             <td width="2%" style="font-size:85%"> : </td>
-            <td width="20%" style="font-size:85%"><b><u>{{ $mhs->prodi }} </u></b></td>
+            <td width="20%" style="font-size:85%"><b>{{ $mhs->prodi }} </b></td>
         </tr>
         <tr>
             <td style="font-size:85%"><b>NIM</b></td>
             <td style="font-size:85%">: </td>
-            <td style="font-size:85%"><b><u>{{ $mhs->nim }}</u></b></td>
-            <td style="font-size:85%"><b><u>Kelas</b></td>
+            <td style="font-size:85%"><b>{{ $mhs->nim }}</b></td>
+            <td style="font-size:85%"><b>Kelas</b></td>
             <td style="font-size:85%"> : </td>
-            <td style="font-size:85%"><b><u>{{ $mhs->kelas }} </u></b></td>
+            <td style="font-size:85%"><b>{{ $mhs->kelas }}</b></td>
         </tr>
     </table>
     <br>
     <table width="100%">
 
         <tr>
-            <td width="11%" style="font-size:85%"> <b>Judul Prakerin</b> </td>
+            <td width="11%" style="font-size:85%"> <b>Judul PKL/Magang</b> </td>
             <td width="1%" style="font-size:85%">:</td>
             <td width="40%" colspan="3" style="font-size:85%"><b>{{ $mhs->judul_prausta }}</b></td>
         </tr>

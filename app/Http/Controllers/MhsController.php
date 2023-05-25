@@ -403,7 +403,24 @@ class MhsController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
+            ->select(
+                'kurikulum_periode.akt_sks_praktek',
+                'kurikulum_periode.akt_sks_teori',
+                'kurikulum_periode.id_kelas',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'dosen.akademik',
+                'dosen.nama',
+                'ruangan.nama_ruangan',
+                'kurikulum_jam.jam',
+                'kurikulum_hari.hari',
+                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester'
+            )
             ->get();
         foreach ($bap as $key) {
             # code...
@@ -421,7 +438,17 @@ class MhsController extends Controller
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             ->where('absensi_mahasiswa.id_studentrecord', $kur->id_studentrecord)
-            ->select('student_record.id_studentrecord', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'student.nama', 'student.nim', 'absensi_mahasiswa.absensi')
+            ->select(
+                'student_record.id_studentrecord',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'student.nama',
+                'student.nim',
+                'absensi_mahasiswa.absensi'
+            )
+            ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
         return view('mhs/rekap_absen', ['data' => $key, 'abs' => $abs]);

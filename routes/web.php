@@ -1372,6 +1372,31 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_ta_mahasiswa', 'AdminPraustaController@data_ta_mahasiswa');
     Route::get('data_skripsi_mahasiswa', 'AdminPraustaController@data_skripsi_mahasiswa');
 
+    #Bimbingan PKL dan Magang
+    Route::get('bim_pkl_magang', 'AdminPraustaController@bim_pkl_magang');
+    Route::get('data_bim_pkl_mahasiswa', 'AdminPraustaController@data_bim_pkl_mahasiswa');
+    Route::get('data_bim_magang_mahasiswa', 'AdminPraustaController@data_bim_magang_mahasiswa');
+
+    Route::post('filter_bim_pkl_use_prodi', 'AdminPraustaController@filter_bim_pkl_use_prodi');
+    Route::post('filter_bim_magang_use_prodi', 'AdminPraustaController@filter_bim_magang_use_prodi');
+
+    Route::get('cek_bim_pkl/{id}', 'AdminPraustaController@cek_bim_pkl');
+    Route::get('cek_bim_magang/{id}', 'AdminPraustaController@cek_bim_magang');
+
+    #Bimbingan TA dan Skripsi
+    Route::get('bim_ta_skripsi', 'AdminPraustaController@bim_ta_skripsi');
+    Route::get('data_bim_ta_mahasiswa', 'AdminPraustaController@data_bim_ta_mahasiswa');
+    Route::get('data_bim_skripsi_mahasiswa', 'AdminPraustaController@data_bim_skripsi_mahasiswa');
+
+    Route::get('cek_bim_ta_mahasiswa/{id}', 'AdminPraustaController@cek_bim_ta_mahasiswa');
+    Route::get('cek_bim_skripsi_mahasiswa/{id}', 'AdminPraustaController@cek_bim_skripsi_mahasiswa');
+
+    #Nilai PKL dan Magang
+    Route::get('nilai_pkl_magang', 'AdminPraustaController@nilai_pkl_magang');
+    Route::get('data_nilai_pkl_mahasiswa', 'AdminPraustaController@data_nilai_pkl_mahasiswa');
+    Route::get('data_nilai_magang_mahasiswa', 'AdminPraustaController@data_nilai_magang_mahasiswa');
+
+
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
     Route::post('save_nilai_prausta', 'PraustaController@save_nilai_prausta');
@@ -1485,6 +1510,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('filter_bim_prakerin_use_prodi', 'AdminPraustaController@filter_bim_prakerin_use_prodi');
     Route::post('filter_bim_sempro_use_prodi', 'AdminPraustaController@filter_bim_sempro_use_prodi');
     Route::post('filter_bim_ta_use_prodi', 'AdminPraustaController@filter_bim_ta_use_prodi');
+    Route::post('filter_bim_skripsi_use_prodi', 'AdminPraustaController@filter_bim_skripsi_use_prodi');
 
     Route::post('filter_nilai_prakerin_use_prodi', 'AdminPraustaController@filter_nilai_prakerin_use_prodi');
     Route::post('filter_nilai_sempro_use_prodi', 'AdminPraustaController@filter_nilai_sempro_use_prodi');
