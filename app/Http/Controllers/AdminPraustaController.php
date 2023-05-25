@@ -2424,7 +2424,6 @@ class AdminPraustaController extends Controller
         }
     }
 
-
     public function put_nilai_ta_dospeng2(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
@@ -2786,7 +2785,6 @@ class AdminPraustaController extends Controller
         }
     }
 
-
     public function put_nilai_skripsi_dospeng2(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
@@ -2849,6 +2847,16 @@ class AdminPraustaController extends Controller
 
         Alert::success('', 'Nilai Skripsi berhasil diedit')->autoclose(3500);
         return redirect('data_nilai_skripsi_mahasiswa');
+    }
+
+    public function bap_pkl_magang()
+    {
+        return view('prausta/prakerin/bap_pkl_magang');
+    }
+
+    public function data_bap_pkl_mahasiswa()
+    {
+        # code...
     }
 
     public function nonatifkan_prausta_prakerin($id)

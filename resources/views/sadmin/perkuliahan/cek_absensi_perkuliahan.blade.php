@@ -144,7 +144,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -157,7 +163,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -170,7 +182,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -183,7 +201,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -196,7 +220,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -209,7 +239,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -222,7 +258,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -235,7 +277,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -248,7 +296,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -261,7 +315,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -274,7 +334,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -287,7 +353,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -300,7 +372,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -313,7 +391,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -326,7 +410,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
@@ -339,7 +429,13 @@
                                                 @if ($item1->absensi == 'ABSEN')
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
-                                                    (x)
+                                                    (X)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach
