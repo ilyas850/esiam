@@ -1394,7 +1394,32 @@ Route::group(['middleware' => 'prausta'], function () {
     #Nilai PKL dan Magang
     Route::get('nilai_pkl_magang', 'AdminPraustaController@nilai_pkl_magang');
     Route::get('data_nilai_pkl_mahasiswa', 'AdminPraustaController@data_nilai_pkl_mahasiswa');
+    Route::post('filter_nilai_pkl_use_prodi', 'AdminPraustaController@filter_nilai_pkl_use_prodi');
+    Route::get('edit_nilai_pkl/{id}', 'AdminPraustaController@edit_nilai_pkl');
+    Route::post('put_nilai_pkl', 'AdminPraustaController@put_nilai_pkl');
+    Route::get('validate_nilai_pkl/{id}', 'AdminPraustaController@validate_nilai_pkl');
+    Route::get('unvalidate_nilai_pkl/{id}', 'AdminPraustaController@unvalidate_nilai_pkl');
+
     Route::get('data_nilai_magang_mahasiswa', 'AdminPraustaController@data_nilai_magang_mahasiswa');
+    Route::post('filter_nilai_magang_use_prodi', 'AdminPraustaController@filter_nilai_magang_use_prodi');
+    Route::get('edit_nilai_magang/{id}', 'AdminPraustaController@edit_nilai_magang');
+    Route::post('put_nilai_magang', 'AdminPraustaController@put_nilai_magang');
+    Route::get('validate_nilai_magang/{id}', 'AdminPraustaController@validate_nilai_magang');
+    Route::get('unvalidate_nilai_magang/{id}', 'AdminPraustaController@unvalidate_nilai_magang');
+
+
+    //Nilai Tugas Akhir dan Skripsi
+    Route::get('nilai_ta_skripsi', 'AdminPraustaController@nilai_ta_skripsi');
+    
+    Route::get('data_nilai_ta_mahasiswa', 'AdminPraustaController@data_nilai_ta_mahasiswa');
+    Route::get('data_nilai_skripsi_mahasiswa', 'AdminPraustaController@data_nilai_skripsi_mahasiswa');
+    Route::post('filter_nilai_skripsi_use_prodi', 'AdminPraustaController@filter_nilai_skripsi_use_prodi');
+    Route::get('edit_nilai_skripsi_bim/{id}', 'AdminPraustaController@edit_nilai_ta_bim');
+    Route::post('put_nilai_skripsi_dospem', 'AdminPraustaController@put_nilai_ta_dospem');
+    Route::get('edit_nilai_skripsi_p1/{id}', 'AdminPraustaController@edit_nilai_ta_p1');
+    Route::post('put_nilai_skripsi_dospeng1', 'AdminPraustaController@put_nilai_ta_dospeng1');
+    Route::get('edit_nilai_skripsi_p2/{id}', 'AdminPraustaController@edit_nilai_ta_p2');
+    Route::post('put_nilai_skripsi_dospeng2', 'AdminPraustaController@put_nilai_ta_dospeng2');
 
 
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
@@ -1416,8 +1441,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('atur_sempro/{id}', 'AdminPraustaController@atur_sempro');
     Route::post('simpan_atur_sempro', 'AdminPraustaController@simpan_atur_sempro');
 
-    //data tugas akhir
-    Route::get('data_ta', 'AdminPraustaController@data_ta');
+    
     Route::get('atur_ta/{id}', 'AdminPraustaController@atur_ta');
     Route::post('simpan_atur_ta', 'AdminPraustaController@simpan_atur_ta');
 
@@ -1435,8 +1459,7 @@ Route::group(['middleware' => 'prausta'], function () {
 
     //nilai prakerin
     Route::get('nilai_prakerin', 'AdminPraustaController@nilai_prakerin');
-    Route::get('edit_nilai_prakerin/{id}', 'AdminPraustaController@edit_nilai_prakerin');
-    Route::post('put_nilai_prakerin', 'AdminPraustaController@put_nilai_prakerin');
+   
 
     //nilai sempro
     Route::get('nilai_sempro', 'AdminPraustaController@nilai_sempro');
@@ -1492,9 +1515,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('excel_prakerin', 'AdminPraustaController@excel_prakerin');
     Route::post('excel_ta', 'AdminPraustaController@excel_ta');
 
-    //validasi prausta
-    Route::get('validate_nilai_prakerin/{id}', 'AdminPraustaController@validate_nilai_prakerin');
-    Route::get('unvalidate_nilai_prakerin/{id}', 'AdminPraustaController@unvalidate_nilai_prakerin');
+   
 
     Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');
     Route::get('unvalidate_nilai_sempro/{id}', 'AdminPraustaController@unvalidate_nilai_sempro');

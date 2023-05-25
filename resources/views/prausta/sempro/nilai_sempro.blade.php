@@ -12,8 +12,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_nilai_sempro_use_prodi') }}"
-                        method="POST">
+                    <form class="form" role="form" action="{{ url('filter_nilai_sempro_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>
@@ -128,10 +127,12 @@
                                             class="btn btn-warning btn-xs">EP II</a>
                                         @if ($key->validasi == 0)
                                             <a href="validate_nilai_sempro/{{ $key->id_settingrelasi_prausta }}"
-                                                class="btn btn-primary btn-xs">Validate</a>
+                                                class="btn btn-primary btn-xs" title="klik untuk validasi"><i
+                                                    class="fa fa-check"></i></a>
                                         @else
                                             <a href="unvalidate_nilai_sempro/{{ $key->id_settingrelasi_prausta }}"
-                                                class="btn btn-danger btn-xs">Unvalidate</a>
+                                                class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
+                                                    class="fa fa-close"></i></a>
                                         @endif
                                     </center>
                                 </td>

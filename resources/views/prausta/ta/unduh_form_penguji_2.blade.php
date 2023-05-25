@@ -26,8 +26,7 @@
         <tr>
             <td>
                 <center>
-                    <h4><b>FORM PENILAIAN SIDANG TUGAS AKHIR</b> <br> (Dosen Penguji II)</h4>
-
+                    <h4><b>FORM PENILAIAN SIDANG TUGAS AKHIR / SKRIPSI</b> <br> (Dosen Penguji II)</h4>
                 </center>
             </td>
         </tr>

@@ -6,6 +6,15 @@
 
 @section('content')
     <section class="content">
+        <div class="box box-danger">
+            <div class="box-header">
+                <h3 class="box-title">Pilih Tipe</h3>
+            </div>
+            <div class="box-body">
+                <a href="/data_nilai_ta_mahasiswa" class="btn btn-info">Data Nilai TA</a>
+                <a href="/data_nilai_skripsi_mahasiswa" class="btn btn-success">Data Nilai Skripsi</a>
+            </div>
+        </div>
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Data Nilai Tugas Akhir Mahasiswa</h3>
@@ -109,27 +118,33 @@
                                 <td>
                                     <center>
                                         <a href="/unduh_nilai_ta_a/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs">P</a>
+                                            class="btn btn-info btn-xs" title="klik untuk unduh nilai Pembimbing TA">P</a>
                                         <a href="/unduh_nilai_ta_b/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-success btn-xs">P I</a>
+                                            class="btn btn-success btn-xs" title="klik untuk unduh nilai Penguji I TA">P
+                                            I</a>
                                         <a href="/unduh_nilai_ta_c/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-warning btn-xs">P II</a>
+                                            class="btn btn-warning btn-xs" title="klik untuk unduh nilai Penguji II TA">P
+                                            II</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
                                         <a href="edit_nilai_ta_bim/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs">EP</a>
+                                            class="btn btn-info btn-xs" title="klik untuk edit nilai Pembimbing TA">EP</a>
                                         <a href="edit_nilai_ta_p1/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-success btn-xs">EP I</a>
+                                            class="btn btn-success btn-xs" title="klik untuk edit nilai Penguji I TA">EP
+                                            I</a>
                                         <a href="edit_nilai_ta_p2/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-warning btn-xs">EP II</a>
+                                            class="btn btn-warning btn-xs" title="klik untuk edit nilai Penguji II TA">EP
+                                            II</a>
                                         @if ($key->validasi == 0)
                                             <a href="validate_nilai_ta/{{ $key->id_settingrelasi_prausta }}"
-                                                class="btn btn-primary btn-xs">Validate</a>
+                                                class="btn btn-primary btn-xs" title="klik untuk validasi"><i
+                                                    class="fa fa-check"></i></a>
                                         @else
                                             <a href="unvalidate_nilai_ta/{{ $key->id_settingrelasi_prausta }}"
-                                                class="btn btn-danger btn-xs">Unvalidate</a>
+                                                class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
+                                                    class="fa fa-close"></i></a>
                                         @endif
                                     </center>
                                 </td>

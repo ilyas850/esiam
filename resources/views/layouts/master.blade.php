@@ -370,7 +370,7 @@
             <div class="pull-right hidden-xs">
 
             </div>
-            <strong>Copyright &copy; 2020-2022 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
+            <strong>Copyright &copy; 2020-2023 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
             rights
             reserved.
         </footer>

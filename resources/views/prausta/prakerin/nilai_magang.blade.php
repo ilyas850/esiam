@@ -17,11 +17,11 @@
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Nilai PKL Mahasiswa</h3>
+                <h3 class="box-title">Data Nilai Magang Mahasiswa</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_nilai_pkl_use_prodi') }}" method="POST">
+                    <form class="form" role="form" action="{{ url('filter_nilai_magang_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>
@@ -126,15 +126,15 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="edit_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="edit_nilai_magang/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-warning btn-xs" title="klik untuk edit"><i
                                                 class="fa fa-edit"></i></a>
                                         @if ($key->validasi == 0)
-                                            <a href="validate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="validate_nilai_magang/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-primary btn-xs" title="klik untuk validasi"><i
                                                     class="fa fa-check"></i></a>
                                         @else
-                                            <a href="unvalidate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="unvalidate_nilai_magang/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
                                                     class="fa fa-close"></i></a>
                                         @endif

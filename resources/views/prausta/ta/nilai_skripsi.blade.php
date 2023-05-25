@@ -11,17 +11,17 @@
                 <h3 class="box-title">Pilih Tipe</h3>
             </div>
             <div class="box-body">
-                <a href="/data_nilai_pkl_mahasiswa" class="btn btn-info">Data Nilai PKL</a>
-                <a href="/data_nilai_magang_mahasiswa" class="btn btn-success">Data Nilai Magang</a>
+                <a href="/data_nilai_ta_mahasiswa" class="btn btn-info">Data Nilai TA</a>
+                <a href="/data_nilai_skripsi_mahasiswa" class="btn btn-success">Data Nilai Skripsi</a>
             </div>
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Nilai PKL Mahasiswa</h3>
+                <h3 class="box-title">Data Nilai Skripsi Mahasiswa</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_nilai_pkl_use_prodi') }}" method="POST">
+                    <form class="form" role="form" action="{{ url('filter_nilai_skripsi_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>
@@ -40,23 +40,22 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th rowspan="2">
+                            <th width="3%" rowspan="2">
                                 <center>No</center>
                             </th>
                             <th rowspan="2">
-                                <center>Tanggal Seminar</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>NIM</center>
+                                <center>Tanggal Sidang</center>
                             </th>
                             <th rowspan="2">
                                 <center>Nama Mahasiswa</center>
                             </th>
-
-                            <th rowspan="2">
+                            <th width="6%" rowspan="2">
+                                <center>NIM</center>
+                            </th>
+                            <th width="11%" rowspan="2">
                                 <center>Program Studi</center>
                             </th>
-                            <th rowspan="2">
+                            <th width="8%" rowspan="2">
                                 <center>Kelas</center>
                             </th>
                             <th colspan="4">
@@ -94,10 +93,10 @@
                                 <td>
                                     <center>{{ $key->tanggal_selesai }}</center>
                                 </td>
+                                <td>{{ $key->nama }}</td>
                                 <td>
                                     <center>{{ $key->nim }}</center>
                                 </td>
-                                <td>{{ $key->nama }}</td>
                                 <td>
                                     <center>{{ $key->prodi }}</center>
                                 </td>
@@ -118,23 +117,32 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="/unduh_nilai_prakerin_b/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-info btn-xs">Pembimbing</a>
-                                        <a href="/unduh_nilai_prakerin_c/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-success btn-xs">Seminar</a>
+                                        <a href="/unduh_nilai_ta_a/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-info btn-xs" title="klik untuk unduh nilai Pembimbing TA">P</a>
+                                        <a href="/unduh_nilai_ta_b/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-success btn-xs" title="klik untuk unduh nilai Penguji I TA">P
+                                            I</a>
+                                        <a href="/unduh_nilai_ta_c/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-warning btn-xs" title="klik untuk unduh nilai Penguji II TA">P
+                                            II</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="edit_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
-                                            class="btn btn-warning btn-xs" title="klik untuk edit"><i
-                                                class="fa fa-edit"></i></a>
+                                        <a href="edit_nilai_skripsi_bim/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-info btn-xs" title="klik untuk edit nilai Pembimbing TA">EP</a>
+                                        <a href="edit_nilai_skripsi_p1/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-success btn-xs" title="klik untuk edit nilai Penguji I TA">EP
+                                            I</a>
+                                        <a href="edit_nilai_skripsi_p2/{{ $key->id_settingrelasi_prausta }}"
+                                            class="btn btn-warning btn-xs" title="klik untuk edit nilai Penguji II TA">EP
+                                            II</a>
                                         @if ($key->validasi == 0)
-                                            <a href="validate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="validate_nilai_skripsi/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-primary btn-xs" title="klik untuk validasi"><i
                                                     class="fa fa-check"></i></a>
                                         @else
-                                            <a href="unvalidate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="unvalidate_nilai_skripsi/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
                                                     class="fa fa-close"></i></a>
                                         @endif

@@ -25,7 +25,7 @@
                 </table>
             </div>
         </div>
-        <form class="" action="{{ url('put_nilai_prakerin') }}" method="post" enctype="multipart/form-data"
+        <form action="{{ url('put_nilai_pkl') }}" method="post" enctype="multipart/form-data"
             name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
