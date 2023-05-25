@@ -25,7 +25,7 @@
         <tr>
             <td>
                 <center>
-                    <h3><b>BERITA ACARA SEMINAR PKL</b></h3>
+                    <h3><b>BERITA ACARA SEMINAR PKL/MAGANG</b></h3>
                 </center>
             </td>
         </tr>
@@ -50,12 +50,12 @@
         </tr>
 
         <tr>
-            <td>Judul Laporan PKL </td>
+            <td>Judul Laporan </td>
             <td> : </td>
             <td>{{ $data->judul_prausta }}</td>
         </tr>
         <tr>
-            <td width="18%">Tempat PKL</td>
+            <td width="18%">Tempat PKL/Magang</td>
             <td width="2%">: </td>
             <td width="80%">{{ $data->tempat_prausta }}</td>
         </tr>
@@ -65,16 +65,17 @@
         <tr>
             <td>
                 <p align="justify">
-                    Pada tanggal {{ $tglhasil }}, telah diselenggarakan Seminar PKL terhadap mahasiswa Politeknik
+                    Pada tanggal {{ $tglhasil }}, telah diselenggarakan Seminar PKL/Magang terhadap mahasiswa
+                    Politeknik
                     META Industri
-                    Cikarang. Berdasarkan kebutuhan penilaian terhadap mahasiswa, maka dilakukan Seminar PKL.
-                    Adapun keterangan hasil penilaian seminar PKL, sebagai berikut:
+                    Cikarang. Berdasarkan kebutuhan penilaian terhadap mahasiswa, maka dilakukan Seminar PKL/Magang.
+                    Adapun keterangan hasil penilaian seminar PKL/Magang, sebagai berikut:
                 </p>
             </td>
         </tr>
         <tr>
             <td>
-                Keterangan Hasil Seminar PKL :
+                Keterangan Hasil Seminar PKL/Magang :
             </td>
         </tr>
     </table>
@@ -96,14 +97,17 @@
         </tr>
         <tr height="10px">
             <td align="center">Nilai Akhir Angka <br> (rata-rata)</td>
-            <td colspan="3" align="center">{{ round(($data->nilai_1 + $data->nilai_2 + $data->nilai_3) / 3, 2) }}
+            <td colspan="3" align="center">
+                @if ($data->nilai_1 == null)
+                    {{ round(($data->nilai_2 + $data->nilai_3) / 2, 2) }}
+                @elseif ($data->nilai_1 != null)
+                    {{ round(($data->nilai_1 + $data->nilai_2 + $data->nilai_3) / 3, 2) }}
+                @endif
             </td>
-
         </tr>
         <tr>
             <td align="center">Nilai Akhir Huruf</td>
             <td colspan="3" align="center">{{ $data->nilai_huruf }}</td>
-
         </tr>
     </table>
     <br>

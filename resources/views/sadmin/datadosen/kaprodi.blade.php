@@ -41,8 +41,9 @@
                                         <label>Program Studi</label>
                                         <select class="form-control" name="id_prodi">
                                             <option>-pilih-</option>
-                                            @foreach ($prodi as $keyprd)
-                                                <option value="{{ $keyprd->id_prodi }}">{{ $keyprd->prodi }}</option>
+                                            @foreach ($pd as $keyprd)
+                                                <option value="{{ $keyprd->id_prodi }},{{ $keyprd->kodeprodi }}">
+                                                    {{ $keyprd->prodi }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -130,10 +131,12 @@
                                                 <div class="form-group">
                                                     <label>Program studi</label>
                                                     <select class="form-control" name="id_prodi">
-                                                        <option value="{{ $key->id_prodi }}">{{ $key->prodi }}
+                                                        <option value="{{ $key->id_prodi }},{{ $key->kodeprodi }}">
+                                                            {{ $key->prodi }}
                                                         </option>
-                                                        @foreach ($prodi as $keyprd)
-                                                            <option value="{{ $keyprd->id_prodi }}">
+                                                        @foreach ($pd as $keyprd)
+                                                            <option
+                                                                value="{{ $keyprd->id_prodi }},{{ $keyprd->kodeprodi }}">
                                                                 {{ $keyprd->prodi }}
                                                             </option>
                                                         @endforeach

@@ -1311,31 +1311,50 @@ class SadminController extends Controller
             ->select('dosen.nik', 'dosen.nama', 'prodi.prodi', 'kaprodi.id_kaprodi', 'kaprodi.id_dosen', 'kaprodi.id_prodi')
             ->get();
 
-        $dosen = Dosen::where('idstatus', 1)->get();
+        $dosen = Dosen::where('idstatus', 1)
+            ->orderBy('nama', 'ASC')
+            ->get();
 
-        $prodi = Prodi::all();
+        $prodi = Prodi::select(DB::raw('DISTINCT(prodi)'), 'kodeprodi')
+            ->get();
 
-        return view('sadmin/datadosen/kaprodi', compact('kaprodi', 'dosen', 'prodi'));
+        $pd = DB::select('CALL prodi');
+       
+        return view('sadmin/datadosen/kaprodi', compact('kaprodi', 'dosen', 'prodi', 'pd'));
     }
 
     public function post_kaprodi(Request $request)
     {
+        $prd = $request->id_prodi;
+
+        $idr = explode(',', $prd, 2);
+        $tra = $idr[0];
+        $trs = $idr[1];
+
         $kpr = new Kaprodi();
         $kpr->id_dosen = $request->id_dosen;
-        $kpr->id_prodi = $request->id_prodi;
+        $kpr->id_prodi = $tra;
+        $kpr->kodeprodi = $trs;
         $kpr->created_by = Auth::user()->name;
         $kpr->save();
 
-        $akun = User::where('id_user', $request->id_dosen)->update(['role' => 6]);
+        User::where('id_user', $request->id_dosen)->update(['role' => 6]);
 
         return redirect('kaprodi');
     }
 
     public function put_kaprodi(Request $request, $id)
     {
+        $pd = $request->id_prodi;
+
+        $idr = explode(',', $pd, 2);
+        $tra = $idr[0];
+        $trs = $idr[1];
+
         $prd = Kaprodi::find($id);
         $prd->id_dosen = $request->id_dosen;
-        $prd->id_prodi = $request->id_prodi;
+        $prd->id_prodi = $tra;
+        $prd->kodeprodi = $trs;
         $prd->updated_by = Auth::user()->name;
         $prd->save();
 
@@ -5939,7 +5958,7 @@ class SadminController extends Controller
         $tipe_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
 
         $data = DB::select('CALL jadwal_ujian(?,?)', [$tahun->id_periodetahun, $tipe_aktif->id_periodetipe]);
-       
+
         return view('sadmin/setting/jadwal_ujian', compact('tahun', 'tipe_aktif', 'tipe', 'prodi', 'kelas', 'data'));
     }
 

@@ -1424,6 +1424,7 @@ Route::group(['middleware' => 'prausta'], function () {
     //BAP PKL dan Magang
     Route::get('bap_pkl_magang', 'AdminPraustaController@bap_pkl_magang');
     Route::get('data_bap_pkl_mahasiswa', 'AdminPraustaController@data_bap_pkl_mahasiswa');
+    Route::post('filter_bap_pkl_use_prodi', 'AdminPraustaController@filter_bap_pkl_use_prodi');
 
 
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');

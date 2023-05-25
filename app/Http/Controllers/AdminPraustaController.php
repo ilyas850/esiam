@@ -2856,7 +2856,63 @@ class AdminPraustaController extends Controller
 
     public function data_bap_pkl_mahasiswa()
     {
-        # code...
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
+
+        $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.id_settingrelasi_prausta'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/prakerin/bap_pkl', compact('data', 'prodi'));
+    }
+
+    public function filter_bap_pkl_use_prodi(Request $request)
+    {
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
+
+        $data = Prausta_trans_hasil::join('prausta_setting_relasi', 'prausta_trans_hasil.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where('student.kodeprodi', $request->kodeprodi)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.id_settingrelasi_prausta'
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/prakerin/bap_pkl', compact('data', 'prodi'));
     }
 
     public function nonatifkan_prausta_prakerin($id)
@@ -3112,16 +3168,18 @@ class AdminPraustaController extends Controller
                 'dosen.akademik'
             )
             ->first();
-
+        
         $nama = $data->nama;
         $nim = $data->nim;
         $kelas = $data->kelas;
         $idprodi = $data->id_prodi;
 
         $kaprodi = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
-            ->where('kaprodi.id_prodi', $idprodi)
+            ->join('prodi', 'prodi.kodeprodi', '=', 'kaprodi.kodeprodi')
+            ->where('prodi.id_prodi', $idprodi)
             ->select('dosen.nama', 'dosen.nik', 'dosen.akademik')
             ->first();
+
         $nama_kaprodi = $kaprodi->nama;
         $akademik_kaprodi = $kaprodi->akademik;
         $nik_kaprodi = $kaprodi->nik;
