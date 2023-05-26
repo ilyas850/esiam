@@ -1531,7 +1531,17 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('excel_magang', 'AdminPraustaController@excel_magang');
     Route::post('excel_ta', 'AdminPraustaController@excel_ta');
     Route::post('excel_skripsi', 'AdminPraustaController@excel_skripsi');
+
+    //Validasi PKL dan Magang
+    Route::get('validasi_pkl_magang', 'AdminPraustaController@validasi_pkl_magang');
+    Route::get('data_val_pkl_mahasiswa', 'AdminPraustaController@data_val_pkl_mahasiswa');
+    Route::get('data_val_magang_mahasiswa', 'AdminPraustaController@data_val_magang_mahasiswa');
    
+    Route::get('validasi_sempro', 'AdminPraustaController@validasi_sempro');
+
+    Route::get('validasi_ta_skripsi', 'AdminPraustaController@validasi_ta_skripsi');
+    Route::get('data_val_ta_mahasiswa', 'AdminPraustaController@data_val_ta_mahasiswa');
+    Route::get('data_val_skripsi_mahasiswa', 'AdminPraustaController@data_val_skripsi_mahasiswa');
 
     Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');
     Route::get('unvalidate_nilai_sempro/{id}', 'AdminPraustaController@unvalidate_nilai_sempro');
@@ -1557,12 +1567,6 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('filter_bap_sempro_use_prodi', 'AdminPraustaController@filter_bap_sempro_use_prodi');
     
 
-    //validasi prausta
-    Route::get('validasi_prakerin', 'AdminPraustaController@validasi_prakerin');
-
-    Route::get('validasi_sempro', 'AdminPraustaController@validasi_sempro');
-
-    Route::get('validasi_ta', 'AdminPraustaController@validasi_ta');
 
     Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
     Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
