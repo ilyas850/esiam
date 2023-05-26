@@ -20,23 +20,6 @@
                 <h3 class="box-title">Data BAP Magang Mahasiswa</h3>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <form action="{{ url('filter_bap_magang_use_prodi') }}" method="POST">
-                        {{ csrf_field() }}
-                        <div class="col-xs-3">
-                            <select class="form-control" name="kodeprodi" required>
-                                <option></option>
-                                @foreach ($prodi as $key)
-                                    <option value="{{ $key->kodeprodi }}">
-                                        {{ $key->prodi }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success">Filter Prodi</button>
-                    </form>
-                </div>
-                <br>
                 <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>

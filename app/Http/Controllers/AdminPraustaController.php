@@ -5221,6 +5221,7 @@ class AdminPraustaController extends Controller
                 'periode_tahun.periode_tahun',
                 'periode_tipe.periode_tipe',
                 'prodi.prodi',
+                'prodi.konsentrasi',
                 'prausta_master_waktu.set_waktu_awal',
                 'prausta_master_waktu.set_waktu_akhir',
                 'prausta_master_waktu.tipe_prausta',
@@ -5242,7 +5243,7 @@ class AdminPraustaController extends Controller
         $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('prodi', 'prausta_master_waktu.id_prodi', '=', 'prodi.id_prodi')
-            ->where('prausta_master_waktu.tipe_prausta', 'TA')
+            ->whereIn('prausta_master_waktu.tipe_prausta', ['TA', 'Skripsi'])
             ->where('prausta_master_waktu.status', 'ACTIVE')
             ->select(
                 'prausta_master_waktu.id_masterwaktu_prausta',
@@ -5252,6 +5253,7 @@ class AdminPraustaController extends Controller
                 'periode_tahun.periode_tahun',
                 'periode_tipe.periode_tipe',
                 'prodi.prodi',
+                'prodi.konsentrasi',
                 'prausta_master_waktu.set_waktu_awal',
                 'prausta_master_waktu.set_waktu_akhir',
                 'prausta_master_waktu.tipe_prausta',

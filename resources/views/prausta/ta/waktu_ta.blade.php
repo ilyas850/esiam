@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Waktu Pelaksanaan TA</h3>
+                <h3 class="box-title">Waktu Pelaksanaan TA/Skripsi</h3>
             </div>
             <div class="box-body">
                 <div class="row">
@@ -24,17 +24,16 @@
                     <div class="modal-dialog">
                         <form method="post" action="{{ url('post_waktu_prausta') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            <input type="hidden" name="tipe_prausta" value="TA">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan TA</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Waktu Pelaksanaan TA/Skripsi</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Periode tahun</label>
-                                                <select class="form-control" name="id_periodetahun">
+                                                <select class="form-control" name="id_periodetahun" required>
                                                     <option></option>
                                                     @foreach ($periodetahun as $thn)
                                                         <option value="{{ $thn->id_periodetahun }}">
@@ -43,10 +42,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Periode tipe</label>
-                                                <select class="form-control" name="id_periodetipe">
+                                                <select class="form-control" name="id_periodetipe" required>
                                                     <option></option>
                                                     @foreach ($periodetipe as $tp)
                                                         <option value="{{ $tp->id_periodetipe }}">
@@ -55,12 +54,22 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>TA/Skripsi</label>
+                                                <select class="form-control" name="tipe_prausta" required>
+                                                    <option></option>
+                                                    <option value="TA">TA</option>
+                                                    <option value="Skripsi">Skripsi</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Prodi</label>
-                                                <select class="form-control" name="id_prodi">
+                                                <select class="form-control" name="id_prodi" required>
                                                     <option></option>
                                                     @foreach ($prodi as $prd)
                                                         <option value="{{ $prd->id_prodi }}">
@@ -132,7 +141,7 @@
                                 <td align="center">{{ $no++ }}</td>
                                 <td>{{ $item->periode_tahun }}</td>
                                 <td>{{ $item->periode_tipe }}</td>
-                                <td>{{ $item->prodi }}</td>
+                                <td>{{ $item->prodi }} - {{ $item->konsentrasi }}</td>
                                 <td>{{ $item->set_waktu_awal }}</td>
                                 <td>{{ $item->set_waktu_akhir }}</td>
                                 <td>{{ $item->tipe_prausta }}</td>
@@ -161,7 +170,7 @@
                                                 @csrf
                                                 @method('put')
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label>Periode tahun</label>
                                                             <select class="form-control" name="id_periodetahun">
@@ -174,7 +183,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label>Periode tipe</label>
                                                             <select class="form-control" name="id_periodetipe">
@@ -187,13 +196,24 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>TA/Skripsi</label>
+                                                            <select class="form-control" name="tipe_prausta" required>
+                                                                <option value="{{ $item->tipe_prausta }}">
+                                                                    {{ $item->tipe_prausta }}</option>
+                                                                <option value="TA">TA</option>
+                                                                <option value="Skripsi">Skripsi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>Prodi</label>
                                                             <select class="form-control" name="id_prodi">
-                                                                <option value="{{ $item->id_prodi }}">{{ $item->prodi }}
+                                                                <option value="{{ $item->id_prodi }}">{{ $item->prodi }} - {{ $item->konsentrasi }}
                                                                 </option>
                                                                 @foreach ($prodi as $prd)
                                                                     <option value="{{ $prd->id_prodi }}">
@@ -222,7 +242,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" name="tipe_prausta" value="SEMPRO">
                                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                             </form>
                                         </div>
