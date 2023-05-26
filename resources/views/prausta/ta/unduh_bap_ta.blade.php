@@ -25,7 +25,7 @@
         <tr>
             <td>
                 <center>
-                    <h3><b>BERITA ACARA SIDANG TUGAS AKHIR</b></h3>
+                    <h3><b>BERITA ACARA SIDANG TUGAS AKHIR/SKRIPSI</b></h3>
                 </center>
             </td>
         </tr>
@@ -48,7 +48,7 @@
             <td>{{ $data->prodi }}</td>
         </tr>
         <tr>
-            <td>Laporan TA </td>
+            <td>Laporan </td>
             <td> : </td>
             <td>{{ $data->judul_prausta }}</td>
         </tr>
@@ -57,7 +57,7 @@
     <table width="100%">
         <tr>
             <td>
-                Berdasarkan penilaian pelaksanaan Tugas Akhir dan Ujian Sidang Tugas Akhir dibawah ini :
+                Berdasarkan penilaian pelaksanaan Tugas Akhir/Skripsi dan Ujian Sidang Tugas Akhir/Skripsi dibawah ini :
             </td>
         </tr>
     </table>
@@ -69,7 +69,7 @@
             <td width="15%" align="center">Nilai x Bobot</td>
         </tr>
         <tr>
-            <td colspan="3"> Nilai Bimbingan Tugas Akhir</td>
+            <td colspan="3"> Nilai Bimbingan Tugas Akhir/Skripsi</td>
             <td align="center"></td>
         </tr>
         <tr>
@@ -79,7 +79,7 @@
             <td align="center">{{ ($data->nilai_1 * 60) / 100 }}</td>
         </tr>
         <tr>
-            <td colspan="3">Nilai Sidang Tugas Akhir</td>
+            <td colspan="3">Nilai Sidang Tugas Akhir/Skripsi</td>
             <td align="center"></td>
         </tr>
         <tr>

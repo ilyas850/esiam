@@ -21,7 +21,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_bap_ta_use_prodi') }}" method="POST">
+                    <form class="form" role="form" action="{{ url('filter_bap_skripsi_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>

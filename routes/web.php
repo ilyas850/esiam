@@ -1425,6 +1425,16 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('bap_pkl_magang', 'AdminPraustaController@bap_pkl_magang');
     Route::get('data_bap_pkl_mahasiswa', 'AdminPraustaController@data_bap_pkl_mahasiswa');
     Route::post('filter_bap_pkl_use_prodi', 'AdminPraustaController@filter_bap_pkl_use_prodi');
+    
+    Route::get('data_bap_magang_mahasiswa', 'AdminPraustaController@data_bap_magang_mahasiswa');
+    Route::post('filter_bap_magang_use_prodi', 'AdminPraustaController@filter_bap_magang_use_prodi');
+    
+    Route::get('bap_ta_skripsi', 'AdminPraustaController@bap_ta_skripsi');
+    Route::get('data_bap_ta_mahasiswa', 'AdminPraustaController@data_bap_ta_mahasiswa');
+    Route::post('filter_bap_ta_use_prodi', 'AdminPraustaController@filter_bap_ta_use_prodi');
+
+    Route::get('data_bap_skripsi_mahasiswa', 'AdminPraustaController@data_bap_skripsi_mahasiswa');
+    Route::post('filter_bap_skripsi_use_prodi', 'AdminPraustaController@filter_bap_skripsi_use_prodi');
 
 
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
@@ -1544,7 +1554,7 @@ Route::group(['middleware' => 'prausta'], function () {
 
     Route::post('filter_bap_prakerin_use_prodi', 'AdminPraustaController@filter_bap_prakerin_use_prodi');
     Route::post('filter_bap_sempro_use_prodi', 'AdminPraustaController@filter_bap_sempro_use_prodi');
-    Route::post('filter_bap_ta_use_prodi', 'AdminPraustaController@filter_bap_ta_use_prodi');
+    
 
     //validasi prausta
     Route::get('validasi_prakerin', 'AdminPraustaController@validasi_prakerin');

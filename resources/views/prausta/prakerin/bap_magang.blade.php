@@ -11,17 +11,17 @@
                 <h3 class="box-title">Pilih Tipe</h3>
             </div>
             <div class="box-body">
-                <a href="/data_bap_ta_mahasiswa" class="btn btn-info">Data BAP TA</a>
-                <a href="/data_bap_skripsi_mahasiswa" class="btn btn-success">Data BAP Skripsi</a>
+                <a href="/data_bap_pkl_mahasiswa" class="btn btn-info">Data BAP PKL</a>
+                <a href="/data_bap_magang_mahasiswa" class="btn btn-success">Data BAP Magang</a>
             </div>
         </div>
-        <div class="box box-info">
+        <div class="box box-success">
             <div class="box-header">
-                <h3 class="box-title">Data BAP TA Mahasiswa</h3>
+                <h3 class="box-title">Data BAP Magang Mahasiswa</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('filter_bap_ta_use_prodi') }}" method="POST">
+                    <form action="{{ url('filter_bap_magang_use_prodi') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-xs-3">
                             <select class="form-control" name="kodeprodi" required>
@@ -37,7 +37,7 @@
                     </form>
                 </div>
                 <br>
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example8" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th width="3%">
@@ -85,7 +85,7 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="{{ url('download_bap_ta') }}" method="post">
+                                        <form action="{{ url('download_bap_prakerin') }}" method="post">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_settingrelasi_prausta"
                                                 value="{{ $key->id_settingrelasi_prausta }}">
