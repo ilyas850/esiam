@@ -1525,11 +1525,12 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('unduh_nilai_ta_b/{id}', 'AdminPraustaController@unduh_nilai_ta_b');
     Route::get('unduh_nilai_ta_c/{id}', 'AdminPraustaController@unduh_nilai_ta_c');
 
-    //export prausta
+    //Export Prausta
     Route::get('export_data', 'AdminPraustaController@export_data');
-    Route::post('excel_prakerin', 'AdminPraustaController@excel_prakerin');
+    Route::post('excel_pkl', 'AdminPraustaController@excel_pkl');
+    Route::post('excel_magang', 'AdminPraustaController@excel_magang');
     Route::post('excel_ta', 'AdminPraustaController@excel_ta');
-
+    Route::post('excel_skripsi', 'AdminPraustaController@excel_skripsi');
    
 
     Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');

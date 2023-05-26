@@ -23,7 +23,7 @@
                 <center>Dosen Penguji I</center>
             </th>
             <th>
-                <center>Tempat PKL</center>
+                <center>Tempat Magang</center>
             </th>
             <th>
                 <center>Tanggal Mulai</center>

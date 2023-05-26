@@ -44,7 +44,7 @@ class DataPrakerinExport implements FromView, ShouldAutoSize
                 })
                 ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
                 ->join('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->where('kurikulum_periode.id_periodetahun', $this->id1)
                 ->where('kurikulum_periode.id_periodetipe', $this->id2)

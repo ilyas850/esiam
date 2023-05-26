@@ -13,8 +13,12 @@
             <th>
                 <center>Program Studi </center>
             </th>
+
             <th>
-                <center>Judul</center>
+                <center>Tempat Penelitian</center>
+            </th>
+            <th>
+                <center>Judul Skripsi</center>
             </th>
             <th>
                 <center>Dosen Pembimbing</center>
@@ -23,16 +27,16 @@
                 <center>Dosen Penguji I</center>
             </th>
             <th>
-                <center>Tempat PKL</center>
+                <center>Dosen Penguji II</center>
             </th>
             <th>
                 <center>Tanggal Mulai</center>
             </th>
             <th>
-                <center>Tanggal Seminar</center>
+                <center>Tanggal Sidang</center>
             </th>
             <th>
-                <center>Jam Seminar</center>
+                <center>Jam Sidang</center>
             </th>
             <th>
                 <center>Ruang</center>
@@ -55,6 +59,9 @@
                 </td>
                 <td>{{ $item->prodi }}</td>
                 <td>
+                    <center>{{ $item->tempat_prausta }}</center>
+                </td>
+                <td>
                     <center>{{ $item->judul_prausta }}</center>
                 </td>
                 <td>
@@ -64,13 +71,13 @@
                     <center>{{ $item->dosen_penguji_1 }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->tempat_prausta }}</center>
+                    <center>{{ $item->dosen_penguji_2 }}</center>
                 </td>
                 <td>
                     <center>{{ $item->tanggal_mulai }}</center>
                 </td>
                 <td>
-                    <center>{{ $item->tanggal_selesai }} </center>
+                    <center>{{ $item->tanggal_selesai }}</center>
                 </td>
                 <td>
                     <center>{{ $item->jam_mulai_sidang }} - {{ $item->jam_selesai_sidang }}</center>

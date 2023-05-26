@@ -42,7 +42,7 @@
                 <center>Ruang</center>
             </th>
             <th>
-                <center>Kategori PraUSTA</center>
+                <center>Kategori</center>
             </th>
         </tr>
     </thead>
