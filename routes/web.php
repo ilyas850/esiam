@@ -1543,6 +1543,29 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_val_ta_mahasiswa', 'AdminPraustaController@data_val_ta_mahasiswa');
     Route::get('data_val_skripsi_mahasiswa', 'AdminPraustaController@data_val_skripsi_mahasiswa');
 
+    //Honor PKL & Magang
+    Route::get('honor_pkl_magang', 'AdminPraustaController@honor_pkl_magang');
+
+    Route::get('data_honor_pkl_mahasiswa', 'AdminPraustaController@data_honor_pkl_mahasiswa');
+    Route::post('filter_honor_pkl', 'AdminPraustaController@filter_honor_pkl');
+
+    Route::get('data_honor_magang_mahasiswa', 'AdminPraustaController@data_honor_magang_mahasiswa');
+    Route::post('filter_honor_magang', 'AdminPraustaController@filter_honor_magang');
+
+    //Honor Sempro
+    Route::get('honor_sempro', 'AdminPraustaController@honor_sempro');
+    Route::post('filter_honor_sempro', 'AdminPraustaController@filter_honor_sempro');
+
+    //Honor TA & Skripsi
+    Route::get('honor_ta_skripsi', 'AdminPraustaController@honor_ta_skripsi');
+
+    Route::get('data_honor_ta_mahasiswa', 'AdminPraustaController@data_honor_ta_mahasiswa');
+    Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
+
+    Route::get('data_honor_skripsi_mahasiswa', 'AdminPraustaController@data_honor_skripsi_mahasiswa');
+    Route::post('filter_honor_skripsi', 'AdminPraustaController@filter_honor_skripsi');
+
+
     Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');
     Route::get('unvalidate_nilai_sempro/{id}', 'AdminPraustaController@unvalidate_nilai_sempro');
 
@@ -1581,10 +1604,8 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('waktu_ta', 'AdminPraustaController@waktu_ta');
 
     //honor prausta
-    Route::get('honor_pkl', 'AdminPraustaController@honor_pkl');
-    Route::post('filter_honor_pkl', 'AdminPraustaController@filter_honor_pkl');
-    Route::get('honor_sempro', 'AdminPraustaController@honor_sempro');
-    Route::post('filter_honor_sempro', 'AdminPraustaController@filter_honor_sempro');
+    
+    
     Route::get('honor_ta', 'AdminPraustaController@honor_ta');
     Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
 });

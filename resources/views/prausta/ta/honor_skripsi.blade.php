@@ -11,15 +11,15 @@
                 <h3 class="box-title">Pilih Tipe</h3>
             </div>
             <div class="box-body">
-                <a href="/data_honor_pkl_mahasiswa" class="btn btn-info">Data Honor PKL</a>
-                <a href="/data_honor_magang_mahasiswa" class="btn btn-success">Data Honor Magang</a>
+                <a href="/data_honor_ta_mahasiswa" class="btn btn-info">Data Honor TA</a>
+                <a href="/data_honor_skripsi_mahasiswa" class="btn btn-success">Data Honor Skripsi</a>
             </div>
         </div>
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Data Honor PKL Mahasiswa</h3>
+                <h3 class="box-title">Filter Data Honor Skripsi Mahasiswa</h3>
             </div>
-            <form class="form" role="form" action="{{ url('filter_honor_pkl') }}" method="POST">
+            <form class="form" role="form" action="{{ url('filter_honor_skripsi') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="row">
@@ -41,7 +41,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Honor PKL </b></h3>
+                <h3 class="box-title">Data Honor Skripsi</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -50,12 +50,13 @@
                             <th rowspan="2">No</th>
                             <th rowspan="2">Mahasiswa/NIM</th>
                             <th rowspan="2">Prodi</th>
-                            <th colspan="2">
+                            <th colspan="3">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="2">
+                            <th colspan="3">
                                 <center>Honor</center>
                             </th>
+
                         </tr>
                         <tr>
                             <th>
@@ -64,14 +65,18 @@
                             <th>
                                 <center>Penguji I</center>
                             </th>
-
+                            <th>
+                                <center>Penguji II</center>
+                            </th>
                             <th>
                                 <center>Pembimbing</center>
                             </th>
                             <th>
                                 <center>Penguji I</center>
                             </th>
-
+                            <th>
+                                <center>Penguji II</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,6 +88,7 @@
                                 <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->dosen_pembimbing }}</td>
                                 <td>{{ $item->dosen_penguji_1 }}</td>
+                                <td>{{ $item->dosen_penguji_2 }}</td>
                                 <td align="center">
                                     @if ($item->payroll_check_dosen_pembimbing == 'SUDAH')
                                         <span class="label label-info">SUDAH</span>
@@ -94,6 +100,13 @@
                                     @if ($item->payroll_check_dosen_penguji_1 == 'SUDAH')
                                         <span class="label label-info">SUDAH</span>
                                     @elseif ($item->payroll_check_dosen_penguji_1 == 'BELUM')
+                                        <span class="label label-warning">BELUM</span>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->payroll_check_dosen_penguji_2 == 'SUDAH')
+                                        <span class="label label-info">SUDAH</span>
+                                    @elseif ($item->payroll_check_dosen_penguji_2 == 'BELUM')
                                         <span class="label label-warning">BELUM</span>
                                     @endif
                                 </td>

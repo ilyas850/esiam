@@ -15,24 +15,14 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-3">
-                            <label for="">Periode Tahun</label>
-                            <select class="form-control" name="id_periodetahun" required>
+                            <label for="">Prodi</label>
+                            <select class="form-control" name="kodeprodi" required>
                                 <option></option>
-                                @foreach ($prd_thn as $thn)
-                                    <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
+                                @foreach ($prodi as $prd)
+                                    <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-xs-3">
-                            <label for="">Periode Tipe</label>
-                            <select class="form-control" name="id_periodetipe" required>
-                                <option></option>
-                                @foreach ($prd_tp as $tipee)
-                                    <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
                     </div>
                 </div>
                 <div class="box-footer">
@@ -42,7 +32,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Honor SEMPRO <b> {{ $namaperiodetahun }} - {{ $namaperiodetipe }} </b></h3>
+                <h3 class="box-title">Data Honor SEMPRO </h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -85,7 +75,7 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
-                                <td>{{ $item->nama }}/{{ $item->nim }}</td>
+                                <td>{{ $item->nim }} - {{ $item->nama }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->dosen_pembimbing }}</td>
                                 <td>{{ $item->dosen_penguji_1 }}</td>
