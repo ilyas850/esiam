@@ -118,7 +118,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('honor_pkl_magang') }}"><i class="fa fa-circle-o"></i> <span>
-                        PKL/Magang</span></a></li>
+                        PKL & Magang</span></a></li>
             <li><a href="{{ url('honor_sempro') }}"><i class="fa fa-circle-o"></i> <span>
                         Seminar Proposal</span></a></li>
             <li><a href="{{ url('honor_ta_skripsi') }}"><i class="fa fa-circle-o"></i> <span>
