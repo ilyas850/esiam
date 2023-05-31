@@ -1347,6 +1347,11 @@ Route::group(['middleware' => 'wadir1'], function () {
     //master pembayaran
     Route::get('rekap_pembayaran_mhs', 'Wadir1Controller@rekap_pembayaran_mhs');
     Route::get('detail_pembayaran_mhs/{id}', 'Wadir1Controller@detail_pembayaran_mhs');
+
+    #Master KRS
+    Route::get('data_krs_wadir1', 'Wadir1Controller@data_krs_wadir1');
+    Route::post('view_krs_wadir1', 'Wadir1Controller@view_krs_wadir1');
+    Route::post('cek_krs_wadir1', 'Wadir1Controller@cek_krs_wadir1');
 });
 
 Route::group(['middleware' => 'wadir3'], function () {

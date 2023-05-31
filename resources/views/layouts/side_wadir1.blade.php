@@ -10,6 +10,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('data_bap') }}"><i class="fa fa-circle-o"></i> <span>Data BAP</span></a></li>
+            <li><a href="{{ url('data_krs_wadir1') }}"><i class="fa fa-circle-o"></i> <span>Data KRS</span></a></li>
         </ul>
     </li>
     <li class="treeview">

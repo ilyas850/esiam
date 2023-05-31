@@ -534,7 +534,138 @@ class Wadir1Controller extends Controller
     foreach ($total_byr_mhs as $key_total) {
       # code...
     }
-    
+
     return view('wadir/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
+  }
+
+  public function data_krs_wadir1()
+  {
+    $tahun = DB::table('periode_tahun')
+      ->orderBy('periode_tahun', 'DESC')
+      ->latest()
+      ->limit(7)
+      ->get();
+
+    $tipe = Periode_tipe::orderBy('periode_tipe', 'ASC')->get();
+
+    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+      ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+      ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+      ->where('student_record.status', 'TAKEN')
+      ->where('student.active', 1)
+      ->select(
+        DB::raw('DISTINCT(student_record.id_student)'),
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'dosen.nama as nama_dsn',
+        'kelas.kelas',
+        'student_record.remark'
+      )
+      ->orderBy('student.nim', 'ASC')
+      ->get();
+
+    return view('wadir/master/data_krs', compact('data', 'tahun', 'tipe', 'thn', 'tp'));
+  }
+
+  public function view_krs_wadir1(Request $request)
+  {
+    $tahun = DB::table('periode_tahun')
+      ->orderBy('periode_tahun', 'DESC')
+      ->latest()
+      ->limit(7)
+      ->get();
+
+    $tipe = Periode_tipe::orderBy('periode_tipe', 'ASC')->get();
+
+    $thn = Periode_tahun::where('id_periodetahun', $request->id_tahun)->first();
+    $tp = Periode_tipe::where('id_periodetipe', $request->id_tipe)->first();
+
+    $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('dosen_pembimbing', 'student.idstudent', 'dosen_pembimbing.id_student')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+      ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+      ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+      ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+      ->where('student_record.status', 'TAKEN')
+      ->where('student.active', 1)
+      ->select(
+        DB::raw('DISTINCT(student_record.id_student)'),
+        'student.nama',
+        'student.nim',
+        'prodi.prodi',
+        'angkatan.angkatan',
+        'dosen.nama as nama_dsn',
+        'kelas.kelas',
+        'student_record.remark'
+      )
+      ->orderBy('student.nim', 'ASC')
+      ->get();
+
+    return view('wadir/master/data_krs', compact('data', 'tahun', 'tipe', 'thn', 'tp'));
+  }
+
+  public function cek_krs_wadir1(Request $request)
+  {
+    $datamhs = Student::leftJoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $request->id_student)
+      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+      ->first();
+
+    $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+      ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
+      ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
+      ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
+      ->where('periode_tahun.id_periodetahun', $request->id_periodetahun)
+      ->where('periode_tipe.id_periodetipe', $request->id_periodetipe)
+      ->where('student_record.status', 'TAKEN')
+      ->where('id_student', $request->id_student)
+      ->select(
+        'student_record.remark',
+        'student.idstudent',
+        'student_record.id_studentrecord',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek',
+        'dosen.nama',
+        'matakuliah.makul',
+        'matakuliah.kode',
+        'student_record.remark',
+        'kurikulum_hari.hari',
+        'kurikulum_jam.jam',
+        'ruangan.nama_ruangan',
+        'semester.semester'
+      )
+      ->get();
+
+      return view('wadir/master/cek_krs', compact('val', 'datamhs'));
   }
 }

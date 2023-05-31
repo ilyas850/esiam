@@ -4,32 +4,30 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Approve Dosen Pembimbing
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li class="active">Data KRS Mahasiswa pembimbing</li>
-        </ol>
-    </section>
-@endsection
 @section('content')
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Approve KRS Dosen Pembimbing</h3>
+                <h3 class="box-title">Data KRS Mahasiswa <b>{{ $thn->periode_tahun }} - {{ $tp->periode_tipe }}</b></h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('view_krs') }}" method="POST">
+                    <form class="form" role="form" action="{{ url('view_krs_wadir1') }}" method="POST">
                         {{ csrf_field() }}
-                        <div class="col-xs-4">
-                            <select class="form-control" name="remark">
-                                <option>-pilih status-</option>
-                                <option value="1">Sudah divalidasi</option>
-                                <option value="0">Belum divalidasi</option>
+                        <div class="col-xs-2">
+                            <select class="form-control" name="id_tahun" required>
+                                <option></option>
+                                @foreach ($tahun as $item)
+                                    <option value="{{ $item->id_periodetahun }}">{{ $item->periode_tahun }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <select class="form-control" name="id_tipe" required>
+                                <option></option>
+                                @foreach ($tipe as $item)
+                                    <option value="{{ $item->id_periodetipe }}">{{ $item->periode_tipe }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <button type="submit" class="btn btn-success ">Tampilkan</button>
@@ -62,7 +60,7 @@
                                 <center>Dosen Pembimbing</center>
                             </th>
                             <th>
-                                <center>Status</center>
+                                <center>Validasi</center>
                             </th>
                             <th>
                                 <center>Aksi</center>
@@ -71,7 +69,7 @@
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($appr as $app)
+                        @foreach ($data as $app)
                             <tr>
                                 <td>
                                     <center>{{ $no++ }}</center>
@@ -107,21 +105,17 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($app->remark == 1)
-                                            <a class="btn btn-danger btn-xs" href="/batal_krs_admin/{{ $app->id_student }}"
-                                                title="Klik untuk batal validasi"><i class="fa fa-close"></i>
-                                            </a>
-                                        @elseif($app->remark == 0)
-                                            <a class="btn btn-success btn-xs"
-                                                href="/validasi_krs_admin/{{ $app->id_student }}"
-                                                title="Klik untuk validasi"><i class="fa fa-check"></i>
-                                            </a>
-                                        @endif
-                                        <a class="btn btn-info btn-xs" href="/cek_krs_admin/{{ $app->id_student }}"
-                                            title="Klik untuk cek KRS"><i class="fa fa-eye"></i></a>
-                                        <a class="btn btn-warning btn-xs"
-                                            href="/cek_makul_mengulang_admin/{{ $app->id_student }}"><i
-                                                class="fa fa-repeat" title="Klik untuk cek matakuliah mengulang"></i></a>
+                                        <form action="{{ url('cek_krs_wadir1') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id_student" value="{{ $app->id_student }}">
+                                            <input type="hidden" name="id_periodetahun"
+                                                value="{{ $thn->id_periodetahun }}">
+                                            <input type="hidden" name="id_periodetipe" value="{{ $tp->id_periodetipe }}">
+
+                                            <button type="submit" class="btn btn-info btn-xs" title="Klik untuk cek KRS"><i
+                                                    class="fa fa-eye"></i></button>
+                                        </form>
+
                                     </center>
                                 </td>
                             </tr>

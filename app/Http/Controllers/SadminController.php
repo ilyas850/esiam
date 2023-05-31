@@ -749,7 +749,16 @@ class SadminController extends Controller
             ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
             ->where('student.active', 1)
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student.nama', 'student.nim', 'prodi.prodi', 'angkatan.angkatan', 'dosen.nama as nama_dsn', 'kelas.kelas', 'student_record.remark')
+            ->select(
+                DB::raw('DISTINCT(student_record.id_student)'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'angkatan.angkatan',
+                'dosen.nama as nama_dsn',
+                'kelas.kelas',
+                'student_record.remark'
+            )
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -1319,7 +1328,7 @@ class SadminController extends Controller
             ->get();
 
         $pd = DB::select('CALL prodi');
-       
+
         return view('sadmin/datadosen/kaprodi', compact('kaprodi', 'dosen', 'prodi', 'pd'));
     }
 
