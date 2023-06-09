@@ -38,7 +38,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     //master kategori prausta
     Route::get('master_kategoriprausta', 'SadminController@master_kategoriprausta');
 
-    //master pkl
+    #master pkl
     Route::get('master_prakerin', 'SadminController@master_prakerin');
     Route::get('cek_master_prakerin/{id}', 'SadminController@cek_master_prakerin');
     Route::post('filter_master_prakerin', 'SadminController@filter_master_prakerin');
@@ -195,7 +195,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('edit_transkrip_final/{id}', 'SadminController@edit_transkrip_final');
     Route::put('simpanedit_transkrip_final/{id}', 'SadminController@simpanedit_transkrip_final');
 
-    //nilai mahasiswa
+    #nilai mahasiswa
     Route::get('nilai_mhs', 'SadminController@nilai_mhs');
     Route::get('cek_nilai_mhs/{id}', 'SadminController@cek_nilai_mhs');
 
@@ -408,13 +408,17 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('filter_jadwal_ujian', 'SadminController@filter_jadwal_ujian');
     Route::post('save_jadwal_ujian', 'SadminController@save_jadwal_ujian');
 
-    //master konversi
+    #master konversi
     Route::get('master_konversi', 'SadminController@master_konversi');
     Route::get('master_konversi_makul', 'SadminController@master_konversi_makul');
     Route::get('tambah_konversi_makul', 'SadminController@tambah_konversi_makul');
 
     #filter konversi
     Route::post('filter_konversi', 'SadminController@filter_konversi');
+
+    #Download 
+    Route::get('download_bap_dosen/{id}', 'SadminController@download_bap_dosen');
+    Route::get('download_absensi_mhs/{id}', 'SadminController@download_absensi_mhs');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

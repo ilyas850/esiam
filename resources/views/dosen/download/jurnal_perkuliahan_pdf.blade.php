@@ -12,11 +12,11 @@
     <table width="100%">
         <tr>
             <td>
-                <img src="images/logo meta png.png" width="200" height="75" alt="" align="left" />
+                <img src="images/logo meta png.png" width="200" height="75" alt="" align="left">
             </td>
             <td>
                 <center>
-                    <img src="images/kop.png" width="200" height="70" alt="" align="right" />
+                    <img src="images/kop.png" width="200" height="70" alt="" align="right">
                 </center>
             </td>
         </tr>
@@ -143,7 +143,5 @@
             <td width="47%"><span style="font-size:85%">{{ $bap->nama }}, {{ $bap->akademik }}</span></td>
         </tr>
     </table>
-    <script>
-        window.print();
-    </script>
+   
 </body>

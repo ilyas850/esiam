@@ -31,7 +31,6 @@
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
                 </div>
                 <div class="box-footer">
@@ -71,6 +70,9 @@
                             <th>
                                 <center>BAP</center>
                             </th>
+                            <th>
+                                <center>Download</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,9 +96,13 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="cek_rekapan/{{ $key->id_kurperiode }}" class="btn btn-info btn-xs">Cek
+                                        <a href="cek_rekapan/{{ $key->id_kurperiode }}" class="btn btn-info btn-xs"><i class="fa fa-eye"></i> Cek
                                         </a>
                                     </center>
+                                </td>
+                                <td align="center">
+                                    <a href="/download_bap_dosen/{{ $key->id_kurperiode }}" class="btn btn-danger btn-xs" title="klik untuk download BAP"><i class="fa fa-download"></i> BAP</a>
+                                    <a href="/download_absensi_mhs/{{ $key->id_kurperiode }}" class="btn btn-danger btn-xs" title="klik untuk download Absensi"><i class="fa fa-download"></i> Absen</a>
                                 </td>
                             </tr>
                         @endforeach

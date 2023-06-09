@@ -147,6 +147,12 @@
                                                     (&#10003;)
                                                 @elseif ($item1->absensi == 'HADIR')
                                                     (x)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
                                                 @endif
                                             @endif
                                         @endforeach

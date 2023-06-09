@@ -1800,9 +1800,9 @@ class DosenController extends Controller
         }
 
         $date = $dtbp->tanggal;
-       
 
-        
+
+
         // dd($bp->tanggal);
         // $tanggalIndonesia = Carbon::createFromFormat('Y-m-d', $dtbp->tanggal)->format('d-m-Y');
 
@@ -5514,7 +5514,28 @@ class DosenController extends Controller
             ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_trans_hasil.id_settingrelasi_prausta', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'dosen.nama as nama_dsn', 'dosen.akademik')
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.id_dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf',
+                'dosen.nama as nama_dsn',
+                'dosen.akademik'
+            )
             ->first();
 
         if ($data == null) {
