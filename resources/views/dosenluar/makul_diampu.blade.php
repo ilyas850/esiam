@@ -284,6 +284,15 @@
                                                     <input type="file" class="form-control" name="soal_uas">
                                                     <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Cetak Soal</label>
+                                                    <select name="cetak_soal_uas" class="form-control" required>
+                                                        <option value="{{ $item->cetak_soal_uas }}">
+                                                            {{ $item->cetak_soal_uas }}</option>
+                                                        <option value="YA">YA</option>
+                                                        <option value="TIDAK">TIDAK</option>
+                                                    </select>
+                                                </div>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                             </form>
                                         </div>
