@@ -1061,7 +1061,7 @@ class AdminPraustaController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
-            ->where('student.active', 1)
+            ->whereIn('student.active', [1, 2])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
@@ -1100,7 +1100,7 @@ class AdminPraustaController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
-            ->where('student.active', 1)
+            ->whereIn('student.active', [1, 2])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
@@ -5404,5 +5404,4 @@ class AdminPraustaController extends Controller
 
         return view('prausta/ta/honor_skripsi', compact('data', 'prodi'));
     }
-
 }
