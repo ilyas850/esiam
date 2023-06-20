@@ -419,6 +419,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     #Download 
     Route::get('download_bap_dosen/{id}', 'SadminController@download_bap_dosen');
     Route::get('download_absensi_mhs/{id}', 'SadminController@download_absensi_mhs');
+
+    #Report Absen EDOM
+    Route::get('absen_edom', 'SadminController@absen_edom');
+    Route::post('report_absen_edom', 'SadminController@report_absen_edom');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
