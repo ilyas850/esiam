@@ -97,7 +97,7 @@
 
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-list"></i> <span>PraUSTA</span>
+            <i class="fa fa-list"></i> <span>PraUSTA - D3</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -113,7 +113,7 @@
     </li>
     <li class="treeview">
         <a href="#">
-            <i class="fa fa-list"></i> <span>Magang & Skripsi</span>
+            <i class="fa fa-list"></i> <span>Magang & Skripsi - D4</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>

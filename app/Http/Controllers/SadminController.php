@@ -6115,9 +6115,10 @@ class SadminController extends Controller
         $tipe = $bap->periode_tipe;
         $kelas = $bap->kelas;
 
+
         $abs = DB::select(' CALL sum_absen(?)', [$id]);
 
-        $pdf = PDF::loadView('sadmin/download/pdf_absensi_perkuliahan', compact('abs','bap'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('sadmin/download/pdf_absensi_perkuliahan', compact('abs', 'bap'))->setPaper('a4', 'landscape');
         return $pdf->download('Absensi Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
     }
 
