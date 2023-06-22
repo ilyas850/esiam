@@ -139,241 +139,216 @@
                                 <td>{{ $itembs->nama }}</td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn1 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn1 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn1 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn1 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn1 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs1 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @elseif($item1->absensi == 'SAKIT')
+                                                    (S)
+                                                @elseif($item1->absensi == 'ALFA')
+                                                    (A)
+                                                @elseif($item1->absensi == 'IZIN')
+                                                    (I)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn2 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn2 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn2 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn2 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn2 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs2 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn3 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn3 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn3 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn3 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn3 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs3 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn4 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn4 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn4 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn4 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn4 == 'IZIN')
-                                            (I)
-                                        @endif
-                                </td>
-                                <td>
-                                    <center>
-                                        @if ($itembs->absn5 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn5 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn5 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn5 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn5 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs4 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn6 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn6 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn6 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn6 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn6 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs5 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn7 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn7 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn7 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn7 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn7 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs6 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn8 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn8 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn8 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn8 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn8 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs7 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn9 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn9 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn9 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn9 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn9 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs8 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn10 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn10 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn10 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn10 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn10 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs9 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn11 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn11 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn11 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn11 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn11 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs10 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn12 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn12 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn12 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn12 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn12 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs11 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn13 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn13 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn13 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn13 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn13 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs12 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn14 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn14 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn14 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn14 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn14 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs13 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn15 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn15 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn15 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn15 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn15 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs14 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($itembs->absn16 == 'ABSEN')
-                                            (&#10003;)
-                                        @elseif ($itembs->absn16 == 'HADIR')
-                                            (X)
-                                        @elseif($itembs->absn16 == 'SAKIT')
-                                            (S)
-                                        @elseif($itembs->absn16 == 'ALFA')
-                                            (A)
-                                        @elseif($itembs->absn16 == 'IZIN')
-                                            (I)
-                                        @endif
+                                        @foreach ($abs15 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @foreach ($abs16 as $item1)
+                                            @if ($itembs->id_studentrecord == $item1->id_studentrecord)
+                                                @if ($item1->absensi == 'ABSEN')
+                                                    (&#10003;)
+                                                @elseif ($item1->absensi == 'HADIR')
+                                                    (x)
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </center>
                                 </td>
                             </tr>
