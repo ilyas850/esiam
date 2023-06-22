@@ -2225,7 +2225,7 @@ class SadminController extends Controller
             # code...
         }
 
-        $abss = DB::select(' CALL sum_absen(?)', [$id]);
+        // $abss = DB::select(' CALL sum_absen(?)', [$id]);
 
         $abs = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
             ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
