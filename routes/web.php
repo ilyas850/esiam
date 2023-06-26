@@ -608,6 +608,11 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('record_bim_magang/{id}', 'MagangSkripsiController@record_bim_magang');
     Route::put('komentar_bimbingan_magang/{id}', 'MagangSkripsiController@komentar_bimbingan_magang');
     Route::get('val_bim_magang/{id}', 'MagangSkripsiController@val_bim_magang');
+
+    #penguji magang
+    Route::get('penguji_magang_dlm', 'MagangSkripsiController@penguji_magang_dlm');
+    Route::get('isi_form_nilai_magang/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
+    Route::post('simpan_nilai_magang', 'MagangSkripsiController@simpan_nilai_magang');
 });
 
 Route::group(['middleware' => 'mhs'], function () {

@@ -77,6 +77,7 @@
             <li><a href="{{ url('jadwal_magang_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi</a>
             </li>
             <li><a href="{{ url('pembimbing_magang') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang</a></li>
+            <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang</a></li>
         </ul>
     </li>
     <li>

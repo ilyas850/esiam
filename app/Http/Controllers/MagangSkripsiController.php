@@ -13,6 +13,9 @@ use App\Student_record;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kategori;
 use App\Prausta_trans_bimbingan;
+use App\Prausta_master_penilaian;
+use App\Prausta_trans_hasil;
+use App\Prausta_trans_penilaian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -493,5 +496,153 @@ class MagangSkripsiController extends Controller
 
         $pdf = PDF::loadView('magang_skripsi/magang/unduh_bim_magang', compact('mhs', 'data'))->setPaper('a4');
         return $pdf->download('Kartu Bimbingan Magang' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+    }
+
+    public function penguji_magang_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            //->where('prausta_trans_hasil.status', 'ACTIVE')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [24, 27, 30])
+            ->select(
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_trans_hasil.validasi'
+            )
+            ->get();
+
+        return view('dosen/magang_skripsi/penguji_magang', compact('data'));
+    }
+
+    public function isi_form_nilai_magang($id)
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+            ->first();
+
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Pembimbing')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        $form_seminar = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Seminar')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosen/magang_skripsi/form_nilai_magang', compact('data', 'id', 'form_dosbing', 'form_seminar'));
+    }
+
+    public function simpan_nilai_magang(Request $request){
+        $id_prausta = $request->id_settingrelasi_prausta;
+        $nilai_pem_lap = $request->nilai_pembimbing_lapangan;
+        $id_penilaian1 = $request->id_penilaian_prausta1;
+        $id_penilaian2 = $request->id_penilaian_prausta2;
+        $nilai1 = $request->nilai1;
+        $nilai2 = $request->nilai2;
+
+        $hitung_id_penilaian1 = count($id_penilaian1);
+        $hitung_id_penilaian2 = count($id_penilaian2);
+
+        for ($i = 0; $i < $hitung_id_penilaian1; $i++) {
+            $id_nilai1 = $id_penilaian1[$i];
+            $n1 = $nilai1[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai1;
+            $usta->nilai = $n1;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        for ($i = 0; $i < $hitung_id_penilaian2; $i++) {
+            $id_nilai2 = $id_penilaian2[$i];
+            $n2 = $nilai2[$i];
+
+            $usta = new Prausta_trans_penilaian();
+            $usta->id_settingrelasi_prausta = $id_prausta;
+            $usta->id_penilaian_prausta = $id_nilai2;
+            $usta->nilai = $n2;
+            $usta->created_by = Auth::user()->name;
+            $usta->save();
+        }
+
+        $ceknilai_1 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
+            ->first();
+
+        $ceknilai_2 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+            ->where('prausta_master_penilaian.kategori', 1)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Seminar')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
+            ->first();
+
+        if ($nilai_pem_lap == null) {
+            $huruf = ($ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 2;
+        } elseif ($nilai_pem_lap != null) {
+            $huruf = ($nilai_pem_lap + $ceknilai_1->nilai1 + $ceknilai_2->nilai2) / 3;
+        }
+
+        $hasilavg = round($huruf, 2);
+
+        if ($hasilavg >= 80) {
+            $nilai_huruf = 'A';
+        } elseif ($hasilavg >= 75) {
+            $nilai_huruf = 'B+';
+        } elseif ($hasilavg >= 70) {
+            $nilai_huruf = 'B';
+        } elseif ($hasilavg >= 65) {
+            $nilai_huruf = 'C+';
+        } elseif ($hasilavg >= 60) {
+            $nilai_huruf = 'C';
+        } elseif ($hasilavg >= 50) {
+            $nilai_huruf = 'D';
+        } elseif ($hasilavg >= 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $usta = new Prausta_trans_hasil();
+        $usta->id_settingrelasi_prausta = $id_prausta;
+        $usta->nilai_1 = $nilai_pem_lap;
+        $usta->nilai_2 = $ceknilai_1->nilai1;
+        $usta->nilai_3 = $ceknilai_2->nilai2;
+        $usta->nilai_huruf = $nilai_huruf;
+        $usta->added_by = Auth::user()->name;
+        $usta->status = 'ACTIVE';
+        $usta->data_origin = 'eSIAM';
+        $usta->save();
+
+        Alert::success('', 'Nilai Magang berhasil disimpan')->autoclose(3500);
+        return redirect('penguji_magang_dlm');
     }
 }
