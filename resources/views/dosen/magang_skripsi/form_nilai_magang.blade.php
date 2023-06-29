@@ -33,7 +33,7 @@
         </div>
        
 
-        <form class="" action="{{ url('simpan_nilai_magang') }}" method="post"
+        <form class="" action="{{ url('simpan_nilai_magang_dlm') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">

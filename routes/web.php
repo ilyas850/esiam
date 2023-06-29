@@ -611,8 +611,8 @@ Route::group(['middleware' => 'dosen'], function () {
 
     #penguji magang
     Route::get('penguji_magang_dlm', 'MagangSkripsiController@penguji_magang_dlm');
-    Route::get('isi_form_nilai_magang/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
-    Route::post('simpan_nilai_magang', 'MagangSkripsiController@simpan_nilai_magang');
+    Route::get('isi_form_nilai_magang_dlm/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
+    Route::post('simpan_nilai_magang_dlm', 'MagangSkripsiController@simpan_nilai_magang');
 });
 
 Route::group(['middleware' => 'mhs'], function () {

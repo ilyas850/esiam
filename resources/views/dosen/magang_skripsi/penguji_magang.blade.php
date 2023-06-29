@@ -107,7 +107,7 @@
                                                 @endif
                                             @elseif($key->nilai_huruf == null)
                                                 <a class="btn btn-success btn-xs"
-                                                    href="/isi_form_nilai_magang/{{ $key->id_settingrelasi_prausta }}">Isi
+                                                    href="/isi_form_nilai_magang_dlm/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
                                                     Penilaian Magang</a>
                                             @endif
