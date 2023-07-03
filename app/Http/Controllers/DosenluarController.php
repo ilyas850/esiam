@@ -4948,10 +4948,10 @@ class DosenluarController extends Controller
 
         $data = DB::select('CALL keringanan_absensi(?)', [$id]);
 
-        return view('dosen/mhs/keringanan_absensi', compact('data'));
+        return view('dosenluar/mhs/keringanan_absensi', compact('data'));
     }
 
-    public function acc_keringanan_luar($id)
+    public function acc_keringanan_absensi_luar($id)
     {
         Permohonan_ujian::where('id_studentrecord', $id)->update([
             'permohonan' => 'DISETUJUI',

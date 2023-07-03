@@ -996,7 +996,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
 
     #pengajuan keringanan absen
     Route::get('data_pengajuan_keringanan_absen_luar', 'DosenluarController@data_pengajuan_keringanan_absen_luar');
-    Route::get('acc_keringanan_luar/{id}', 'DosenluarController@acc_keringanan_luar');
+    Route::get('acc_keringanan_absensi_luar/{id}', 'DosenluarController@acc_keringanan_absensi_luar');
     Route::get('reject_keringanan_luar/{id}', 'DosenluarController@reject_keringanan_luar');
 });
 

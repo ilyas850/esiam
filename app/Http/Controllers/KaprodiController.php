@@ -8649,7 +8649,7 @@ class KaprodiController extends Controller
 
     $data = DB::select('CALL keringanan_absensi(?)', [$id]);
 
-    return view('dosen/mhs/keringanan_absensi', compact('data'));
+    return view('kaprodi/mhs/keringanan_absensi', compact('data'));
   }
 
   public function acc_keringanan_kprd($id)
