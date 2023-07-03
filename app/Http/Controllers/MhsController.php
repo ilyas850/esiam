@@ -4139,7 +4139,10 @@ class MhsController extends Controller
                 'spp11',
                 'spp12',
                 'spp13',
-                'spp14'
+                'spp14',
+                'prakerin',
+                'seminar',
+                'sidang'
             )
             ->first();
 
@@ -4164,6 +4167,8 @@ class MhsController extends Controller
             $spp13 = $biaya->spp13 - ($biaya->spp13 * $cek_bea->spp13) / 100;
             $spp14 = $biaya->spp14 - ($biaya->spp14 * $cek_bea->spp14) / 100;
             $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cek_bea->prakerin)) / 100);
+            $seminar = $biaya->seminar - (($biaya->seminar * ($cek_bea->seminar)) / 100);
+            $sidang = $biaya->sidang - (($biaya->sidang * ($cek_bea->sidang)) / 100);
         } elseif ($cek_bea == null) {
             $daftar = $biaya->daftar;
             $awal = $biaya->awal;
@@ -4183,6 +4188,8 @@ class MhsController extends Controller
             $spp13 = $biaya->spp13;
             $spp14 = $biaya->spp14;
             $prakerin = $biaya->prakerin;
+            $seminar = $biaya->seminar;
+            $sidang = $biaya->sidang;
         }
 
         #total pembayaran kuliah
@@ -4220,7 +4227,7 @@ class MhsController extends Controller
                 } elseif ($c == 5) {
                     $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * $persen_uts) / 100 - $total_semua_dibayar;
                 } elseif ($c == 6) {
-                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * $persen_uts) / 100 - $total_semua_dibayar;
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * $persen_uts) / 100 - ($total_semua_dibayar - $prakerin - $seminar - $sidang);
                 } elseif ($c == '601') {
                     $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * 82 / 100)) - $total_semua_dibayar;
                 } elseif ($c == 7) {
@@ -4244,6 +4251,7 @@ class MhsController extends Controller
                 } elseif ($c == 14) {
                     $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * 50) / 100 - $total_semua_dibayar;
                 }
+
 
                 if ($cekbyr == 0 or $cekbyr < 1000) {
 
@@ -4282,7 +4290,7 @@ class MhsController extends Controller
                         $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
                     }
                 } elseif ($c == 6) {
-                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - ($total_semua_dibayar - $prakerin - $seminar - $sidang);
                 } elseif ($c == '601') {
                     $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
                 } elseif ($c == 7) {
@@ -5085,7 +5093,7 @@ class MhsController extends Controller
             } elseif ($c == 14) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
             }
-            
+
             if ($cekbyr == 0 or $cekbyr < 1000) {
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
 
