@@ -5100,10 +5100,10 @@ class MhsController extends Controller
             } elseif ($c == 14) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
             }
-           
+
             if ($cekbyr == 0 or $cekbyr < 1000) {
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-
+                
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
                 Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat');

@@ -197,6 +197,7 @@ class ProdiController extends Controller
 
     $dosen = Dosen::where('active', 1)
       ->whereIn('idstatus', [1, 2])
+      ->orderBy('nama', 'ASC')
       ->get();
 
     $data = DB::select('CALL dospem_sempro_ta()');

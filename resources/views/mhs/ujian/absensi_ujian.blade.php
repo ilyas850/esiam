@@ -97,7 +97,7 @@
                                                     <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
                                                         class="btn btn-success btn-xs">Absen</a>
                                                 @endif
-                                            @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                            @elseif($item->id_kelas == 2 or $item->id_kelas == 3 or $item->id_kelas == 4)
                                                 @if ($item->jml_tdk_hdr <= 4)
                                                     <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
                                                         class="btn btn-success btn-xs">Absen</a>
@@ -119,7 +119,7 @@
                                             @elseif ($item->jml_tdk_hdr > 3)
                                                 <span class="badge bg-red"><i class="fa fa-close"></i></span>
                                             @endif
-                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3 or $item->id_kelas == 4)
                                             @if ($item->jml_tdk_hdr <= 4)
                                                 <span class="badge bg-green"><i class="fa fa-check"></i></span>
                                             @elseif ($item->jml_tdk_hdr > 4)
@@ -143,7 +143,7 @@
                                                     <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
                                                 @endif
                                             @endif
-                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3)
+                                        @elseif($item->id_kelas == 2 or $item->id_kelas == 3 or $item->id_kelas == 4)
                                             @if ($item->jml_tdk_hdr > 4)
                                                 @if ($item->permohonan == null)
                                                     <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
