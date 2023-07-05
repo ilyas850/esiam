@@ -19,11 +19,9 @@
                             <th colspan="3">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="2">
-                                <center>Tanggal PraUSTA</center>
-                            </th>
+                            
                             <th rowspan="2">
-                                <center>Tanggal Pengajuan</center>
+                                <center>Pengajuan</center>
                             </th>
                             <th colspan="2">
                                 <center>Tanggal Seminar</center>
@@ -48,12 +46,7 @@
                             <th>
                                 <center>Penguji 2</center>
                             </th>
-                            <th>
-                                <center>Mulai</center>
-                            </th>
-                            <th>
-                                <center>Selesai</center>
-                            </th>
+                            
                             <th>
                                 <center>Mulai</center>
                             </th>

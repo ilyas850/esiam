@@ -28,7 +28,10 @@
                             <th colspan="3">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="3">
+                            <th rowspan="2">
+                                <center>Pengajuan</center>
+                            </th>
+                            <th colspan="2">
                                 <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Due Date</th>
@@ -53,13 +56,10 @@
                             <th>
                                 <center>Mulai</center>
                             </th>
-                            <th>
-                                <center>Pengajuan</center>
-                            </th>
+                            
                             <th>
                                 <center>Selesai</center>
                             </th>
-
                         </tr>
                     </thead>
                     <tbody>
