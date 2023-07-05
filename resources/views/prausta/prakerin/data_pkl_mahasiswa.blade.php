@@ -29,7 +29,10 @@
                             <th colspan="2">
                                 <center>Dosen</center>
                             </th>
-                            <th colspan="3">
+                            <th rowspan="2">
+                                <center>Pengajuan</center>
+                            </th>
+                            <th colspan="2">
                                 <center>Tanggal Aktual</center>
                             </th>
                             <th rowspan="2">Batas Waktu</th>
@@ -52,9 +55,7 @@
                             <th>
                                 <center>Mulai</center>
                             </th>
-                            <th>
-                                <center>Pengajuan</center>
-                            </th>
+                            
                             <th>
                                 <center>Selesai</center>
                             </th>
@@ -68,12 +69,13 @@
                                 <td>{{ $key->nama }}/{{ $key->nim }}</td>
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
-                                <td>
-                                    <center>{{ $key->tanggal_mulai }}</center>
-                                </td>
                                 <td align="center">
                                     {{ $key->tgl_pengajuan }}
                                 </td>
+                                <td>
+                                    <center>{{ $key->tanggal_mulai }}</center>
+                                </td>
+                                
                                 <td>
                                     <center>{{ $key->tanggal_selesai }}</center>
                                 </td>
