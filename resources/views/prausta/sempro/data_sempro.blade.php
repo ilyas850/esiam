@@ -65,8 +65,7 @@
                                 <td>{{ $key->dosen_pembimbing }}</td>
                                 <td>{{ $key->dosen_penguji_1 }}</td>
                                 <td>{{ $key->dosen_penguji_2 }}</td>
-                                <td>{{ $key->set_waktu_awal }}</td>
-                                <td>{{ $key->set_waktu_akhir }}</td>
+                                
                                 <td>
                                     {{ $key->tgl_pengajuan }}
                                 </td>
