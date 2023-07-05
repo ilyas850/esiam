@@ -1373,6 +1373,7 @@ Route::group(['middleware' => 'wadir3'], function () {
 
     //master mahasiswa aktif
     Route::get('master_mhs_aktif_wadir3', 'Wadir3Controller@master_mhs_aktif_wadir3');
+    Route::post('export_xls_data_mhs_wadir3', 'Wadir3Controller@export_xls_data_mhs_wadir3');
 
     //master sertifikat mahasiswa
     Route::get('master_sertifikat_mhs_wadir3', 'Wadir3Controller@master_sertifikat_mhs_wadir3');

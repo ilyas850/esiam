@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Student;
+use App\Angkatan;
 use App\Sertifikat;
 use App\Jenis_kegiatan;
 use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\DataMhsExportPerAngkatan;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Wadir3Controller extends Controller
 {
@@ -58,6 +61,8 @@ class Wadir3Controller extends Controller
 
     public function master_mhs_aktif_wadir3()
     {
+        $angkatan = Angkatan::all();
+
         $data = Student::leftJoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
@@ -70,7 +75,18 @@ class Wadir3Controller extends Controller
             ->orderBy('kelas.kelas', 'ASC')
             ->get();
 
-        return view('wadir3/mahasiswa/mahasiswa_aktif', compact('data'));
+        return view('wadir3/mahasiswa/mahasiswa_aktif', compact('data', 'angkatan'));
+    }
+
+    public function export_xls_data_mhs_wadir3(Request $request)
+    {
+        $idangkatan = $request->idangkatan;
+
+        $angkatan = Angkatan::where('idangkatan', $idangkatan)->first();
+
+        $nama_file = 'Data Mahasiswa Angkatan' . ' ' . $angkatan->angkatan . '.xlsx';
+
+        return Excel::download(new DataMhsExportPerAngkatan($idangkatan), $nama_file);
     }
 
     public function master_sertifikat_mhs_wadir3()

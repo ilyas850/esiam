@@ -13,7 +13,6 @@
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="row">
-
                         <div class="col-xs-6">
                             <label for="">Angkatan</label>
                             <select class="form-control" name="idangkatan" required>

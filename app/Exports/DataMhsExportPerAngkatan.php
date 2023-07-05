@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-class DataMhsExportAngkatan implements FromView, ShouldAutoSize
+class DataMhsExportPerAngkatan implements FromView, ShouldAutoSize
 {
     use Exportable;
 
@@ -25,7 +25,7 @@ class DataMhsExportAngkatan implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        return view('sadmin/export/data_mhs', [
+        return view('wadir3/export/data_mhs', [
 
             'val' => Student::leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
