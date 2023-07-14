@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter KRS Mahasiswa</h3>
+                <h3 class="box-title">Cek KRS Mahasiswa Sebelumnya</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('filter_krs') }}" method="POST">

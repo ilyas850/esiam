@@ -613,6 +613,10 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('penguji_magang_dlm', 'MagangSkripsiController@penguji_magang_dlm');
     Route::get('isi_form_nilai_magang_dlm/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
     Route::post('simpan_nilai_magang_dlm', 'MagangSkripsiController@simpan_nilai_magang');
+
+    #SK Mengajar
+    Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
+    Route::get('unduh_lkd_dosen_dlm/{id}', 'DosenController@unduh_lkd_dosen_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -1332,6 +1336,10 @@ Route::group(['middleware' => 'adminprodi'], function () {
     //jadwal perkuliahan
     Route::get('jadwal_kuliah_prodi', 'ProdiController@jadwal_kuliah_prodi');
     Route::post('filter_jadwal_perkuliahan_prodi', 'ProdiController@filter_jadwal_perkuliahan_prodi');
+
+    #upload SK pengajaran
+    Route::get('upload_sk_pengajaran_prodi', 'ProdiController@upload_sk_pengajaran_prodi');
+    Route::post('save_sk_pengajaran', 'ProdiController@save_sk_pengajaran');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

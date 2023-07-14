@@ -123,7 +123,7 @@
                                     <center>
                                         <a href="view_bap_his/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
                                             title="klik untuk cek BAP"> <i class="fa fa-file-text"></i></a>
-
+                                            
                                     </center>
                                 </td>
 

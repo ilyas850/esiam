@@ -16,6 +16,7 @@ use App\Periode_tipe;
 use App\Prausta_setting_relasi;
 use App\Prausta_master_kode;
 use App\Semester;
+use App\Sk_pengajaran;
 use App\Student_record;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -1235,5 +1236,52 @@ class ProdiController extends Controller
     $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
 
     return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+  }
+
+  public function upload_sk_pengajaran_prodi()
+  {
+    $tahun = Periode_tahun::where('periode_tahun', '>', 'T.A.2014/2015')
+      ->orderBy('periode_tahun', 'DESC')
+      ->get();
+
+    $tipe = Periode_tipe::all();
+    $data = Sk_pengajaran::join('periode_tahun', 'sk_pengajaran.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'sk_pengajaran.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('prodi', 'sk_pengajaran.kodeprodi', '=', 'prodi.kodeprodi')
+      ->where('sk_pengajaran.status', 'ACTIVE')
+      ->select('sk_pengajaran.id_sk_pengajaran', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'prodi.prodi', 'sk_pengajaran.file')
+      ->groupBy('sk_pengajaran.id_sk_pengajaran', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'prodi.prodi', 'sk_pengajaran.file')
+      ->get();
+
+    $prodi = Prodi::groupBy('prodi', 'kodeprodi')
+      ->select('prodi', 'kodeprodi')
+      ->get();
+
+    return view('adminprodi/perkuliahan/sk_pengajaran', compact('tahun', 'tipe', 'data', 'prodi'));
+  }
+
+  public function save_sk_pengajaran(Request $request)
+  {
+    $this->validate($request, [
+      'id_periodetipe' => 'required',
+      'file' => 'mimes:pdf|max:10000',
+      'id_periodetahun' => 'required',
+      'kodeprodi' => 'required'
+    ]);
+
+    $info = new Sk_pengajaran();
+    $info->id_periodetipe = $request->id_periodetipe;
+    $info->id_periodetahun = $request->id_periodetahun;
+    $info->kodeprodi = $request->kodeprodi;
+    $file = $request->file('file');
+    $filename = time() . '_' . $file->getClientOriginalName();
+    $tujuan_upload = 'SK Mengajar';
+    $file->move($tujuan_upload, $filename);
+    $info->file = $filename;
+    $info->created_by = Auth::user()->username;
+    $info->save();
+
+    Alert::success('', 'SK Mengajar berhasil ditambahkan')->autoclose(3500);
+    return redirect('upload_sk_pengajaran_prodi');
   }
 }

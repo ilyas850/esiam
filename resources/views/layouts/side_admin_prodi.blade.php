@@ -46,6 +46,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('upload_sk_pengajaran_prodi') }}"><i class="fa fa-circle-o"></i> Upload SK Pengajaran</a></li>
             <li><a href="{{ url('jadwal_kuliah_prodi') }}"><i class="fa fa-circle-o"></i> Jadwal Perkuliahan</a></li>
         </ul>
     </li>

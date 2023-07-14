@@ -5049,7 +5049,7 @@ class MhsController extends Controller
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-
+                
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
                 Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat');
@@ -5103,7 +5103,7 @@ class MhsController extends Controller
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-                
+               
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
                 Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat');

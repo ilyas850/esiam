@@ -54,6 +54,7 @@ use App\Soal_ujian;
 use App\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Pertemuan;
+use App\Sk_pengajaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -5959,5 +5960,19 @@ class DosenController extends Controller
         ]);
 
         return redirect('data_pengajuan_keringanan_absen_dlm');
+    }
+
+    public function sk_pengajaran_dsn_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = DB::select('CALL lkd_makul(?)', [$id]);
+       
+        return view('dosen/pengajaran/sk_pengajaran', compact('data'));
+    }
+
+    public function unduh_lkd_dosen_dlm($id)
+    {
+        
     }
 }

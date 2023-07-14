@@ -42,6 +42,9 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="{{ url('sk_pengajaran_dsn_dlm') }}"><i class="fa fa-circle-o"></i> <span>SK
+                        Pengajaran</span></a>
+            </li>
             <li><a href="{{ url('makul_diampu_dsn') }}"><i class="fa fa-circle-o"></i> <span>Matakuliah
                         diampu</span></a>
             </li>
