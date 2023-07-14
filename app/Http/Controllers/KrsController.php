@@ -36,7 +36,7 @@ class KrsController extends Controller
 {
   public function krs()
   {
-   
+
     $waktu_krs = Waktu_krs::where('status', 1)->first();
 
     if ($waktu_krs == null) {
@@ -193,22 +193,24 @@ class KrsController extends Controller
       $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
-
+      
       //test lagi
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 20 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
-        $cekbyr = ($daftar + $awal + ($dsp * 50 / 100) + $spp1 ) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + ($dsp * 50 / 100) + $spp1) - $total_semua_dibayar;
       } elseif ($c == 2) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1) - $total_semua_dibayar;
       } elseif ($c == '201') {
-        $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + $spp2 ) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + ($dsp * 91 / 100) + $spp1 + $spp2) - $total_semua_dibayar;
       } elseif ($c == 3) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2) - $total_semua_dibayar;
+      } elseif ($c == '301') {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3) - $total_semua_dibayar;
       } elseif ($c == 4) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3) - $total_semua_dibayar;
       } elseif ($c == '401') {
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 ) - $total_semua_dibayar;
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4) - $total_semua_dibayar;
       } elseif ($c == 5) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4) + ($prakerin * 75 / 100) - $total_semua_dibayar;
       } elseif ($c == 6) {
@@ -236,7 +238,7 @@ class KrsController extends Controller
       } elseif ($c == 14) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13) - $total_semua_dibayar;
       }
-
+      
       if ($cekbyr < 0 or $cekbyr == 0) {
 
         //data KRS yang diambil
