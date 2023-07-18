@@ -99,7 +99,7 @@ class DosenController extends Controller
                     ->select(DB::raw('MAX(student_record.id_studentrecord)'))
                     ->groupBy('student_record.id_student');
             })
-            ->where('student.active', 1)
+            ->whereIn('student.active', [1, 5])
             ->where('dosen_pembimbing.id_dosen', $id)
             ->where('student_record.status', 'TAKEN')
             ->get();

@@ -139,8 +139,8 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="/master_edom"><i class="fa fa-circle-o"></i>Report EDOM</a></li>
-            <li><a href="/edom"><i class="fa fa-circle-o"></i> Setting EDOM</a></li>
-            <li><a href="/absen_edom"><i class="fa fa-circle-o"></i> Report Absen EDOM</a></li>
+            <li><a href="/edom"><i class="fa fa-circle-o"></i>Setting EDOM</a></li>
+            <li><a href="/absen_edom"><i class="fa fa-circle-o"></i>Report Absen EDOM</a></li>
         </ul>
     </li>
     <li class="treeview">

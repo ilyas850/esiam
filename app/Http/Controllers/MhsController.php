@@ -4751,7 +4751,6 @@ class MhsController extends Controller
 
     public function save_pengajuan_beasiswa(Request $request)
     {
-
         $ang = new Beasiswa_trans();
         $ang->id_student = $request->id_student;
         $ang->id_periodetahun = $request->id_periodetahun;
@@ -5048,8 +5047,9 @@ class MhsController extends Controller
             }
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
+
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-                
+
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
                 Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat');
@@ -5102,9 +5102,104 @@ class MhsController extends Controller
             }
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
-                $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-               
-                return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
+                $records = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                    ->where('student_record.id_student', $id)
+                    ->where('kurikulum_periode.id_periodetipe', $id_tipe)
+                    ->where('kurikulum_periode.id_periodetahun', $id_tahun)
+                    ->where('student_record.status', 'TAKEN')
+                    ->get();
+
+                $hit = count($records);
+
+                #cek jumlah pengisian edom
+                $cekedom = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+                    ->join('kurikulum_transaction', 'edom_transaction.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                    ->where('edom_transaction.id_student', $id)
+                    ->where('kurikulum_periode.id_periodetipe', $id_tipe)
+                    ->where('kurikulum_periode.id_periodetahun', $id_tahun)
+                    ->select(DB::raw('DISTINCT(edom_transaction.id_kurperiode)'))
+                    ->get();
+
+                $sekhit = count($cekedom);
+
+                if ($hit == $sekhit) {
+                    #cek kuisioner Pembimbing Akademik
+                    $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                        ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                        ->where('kuisioner_transaction.id_student', $id)
+                        ->where('kuisioner_master_kategori.id_kategori_kuisioner', 1)
+                        ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+                        ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+                        ->get();
+
+                    if (count($cek_kuis_pa) > 0) {
+                        #cek kuisioner BAAK
+                        $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                            ->where('kuisioner_transaction.id_student', $id)
+                            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 6)
+                            ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+                            ->get();
+
+                        if (count($cek_kuis_baak) > 0) {
+                            #cek kuisioner BAUK
+                            $cek_kuis_bauk = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                ->where('kuisioner_transaction.id_student', $id)
+                                ->where('kuisioner_master_kategori.id_kategori_kuisioner', 7)
+                                ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+                                ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+                                ->get();
+
+                            if (count($cek_kuis_bauk) > 0) {
+                                #cek kuisioner PERPUS
+                                $cek_kuis_perpus = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                    ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                    ->where('kuisioner_transaction.id_student', $id)
+                                    ->where('kuisioner_master_kategori.id_kategori_kuisioner', 8)
+                                    ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                                    ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+                                    ->get();
+
+                                if (count($cek_kuis_perpus) > 0) {
+                                    #cek kuisioner Beasiswa
+                                    $cek_kuis_beasiswa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                                        ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+                                        ->where('kuisioner_transaction.id_student', $id)
+                                        ->where('kuisioner_master_kategori.id_kategori_kuisioner', 9)
+                                        ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                                        ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+                                        ->get();
+
+                                    if (count($cek_kuis_beasiswa) > 0) {
+                                        $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
+
+                                        return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
+                                    } elseif (count($cek_kuis_beasiswa) == 0) {
+                                        Alert::error('Maaf anda belum melakukan pengisian kuisioner BEASISWA', 'MAAF !!');
+                                        return redirect('home');
+                                    }
+                                } elseif (count($cek_kuis_perpus) == 0) {
+                                    Alert::error('Maaf anda belum melakukan pengisian kuisioner PERPUSTAKAAN', 'MAAF !!');
+                                    return redirect('home');
+                                }
+                            } elseif (count($cek_kuis_bauk) == 0) {
+                                Alert::error('Maaf anda belum melakukan pengisian kuisioner BAUK', 'MAAF !!');
+                                return redirect('home');
+                            }
+                        } elseif (count($cek_kuis_baak) == 0) {
+                            Alert::error('Maaf anda belum melakukan pengisian kuisioner BAAK', 'MAAF !!');
+                            return redirect('home');
+                        }
+                    } elseif (count($cek_kuis_pa) == 0) {
+                        Alert::error('Maaf anda belum melakukan pengisian kuisioner Pembimbing Akademik', 'MAAF !!');
+                        return redirect('home');
+                    }
+                } else {
+                    Alert::error('Maaf anda belum melakukan pengisian edom', 'MAAF !!');
+                    return redirect('home');
+                }
             } else {
                 Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat');
                 return redirect('home');
