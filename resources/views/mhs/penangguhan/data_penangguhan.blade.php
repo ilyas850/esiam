@@ -157,8 +157,6 @@
                                     @endif
                                 </td>
                                 <td align="center">
-
-
                                     @if ($item->validasi_bauk == 'BELUM')
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateSertifikat{{ $item->id_penangguhan_trans }}"

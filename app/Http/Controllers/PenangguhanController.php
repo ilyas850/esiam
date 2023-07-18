@@ -446,7 +446,7 @@ class PenangguhanController extends Controller
             ->first();
 
         if ($dt_penangguhan == null) {
-            alert()->error('Maaf Periode Download Kartu UTS Sudah Berakhir', 'Silahkan menghubungi BAAK');
+            alert()->error('Maaf Periode Absen Ujian Sudah Berakhir', 'Silahkan menghubungi BAAK');
             return redirect()->back();
         } else {
 
