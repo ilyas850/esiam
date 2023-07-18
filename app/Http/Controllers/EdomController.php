@@ -275,6 +275,200 @@ class EdomController extends Controller
     }
   }
 
+  public function isi_edom_new()
+  {
+    $waktu_edom = Waktu_edom::all();
+    foreach ($waktu_edom as $edom) {
+      // code...
+    }
+
+    if ($edom->status == 1) {
+
+      $id = Auth::user()->id_user;
+
+      $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+
+      $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+
+      $latestPosts = DB::table('student_record')
+        ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+        ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+        ->where('student_record.id_student', $id)
+        ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+        ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
+        ->where('student_record.status', 'TAKEN')
+        ->select(
+          'matakuliah.makul',
+          'matakuliah.kode',
+          'kurikulum_periode.id_makul',
+          'kurikulum_periode.id_dosen',
+          'student_record.id_student',
+          DB::raw('MAX(student_record.id_kurtrans) as id_kurtrans'),
+          DB::raw('MAX(student_record.id_kurperiode) as id_kurperiode'),
+          'dosen.nama'
+        )
+        ->groupBy('matakuliah.makul', 'matakuliah.kode', 'kurikulum_periode.id_makul', 'kurikulum_periode.id_dosen', 'student_record.id_student', 'dosen.nama')
+        ->get();
+
+      return view('mhs/edom_new/isi_edom', ['edom' => $latestPosts]);
+    } else {
+
+      alert()->error('Pengisian EDOM Belum dibuka', 'Maaf silahkan menghubungi bagian akademik');
+      return redirect('home');
+    }
+  }
+
+  public function form_edom_new(Request $request)
+  {
+    $id = $request->id_student;
+    $kurper = $request->id_kurperiode;
+    $kurtr = $request->id_kurtrans;
+    $mk = $request->id_makul;
+    $dsn = $request->id_dosen;
+
+    $cekedom = Edom_transaction::where('id_student', $request->id_student)
+      ->where('id_kurperiode', $request->id_kurperiode)
+      ->where('id_kurtrans', $request->id_kurtrans)
+      ->get();
+
+    if (count($cekedom) > 0) {
+      Alert::warning('maaf edom mata kuliah isi sudah diisi', 'MAAF !!');
+      return redirect('isi_edom_new');
+    } elseif (count($cekedom) == 0) {
+
+      $makul = Matakuliah::where('idmakul', $mk)->first();
+
+      if ($dsn == 0) {
+        $dosen = '';
+
+        $nama_dsn = '';
+        $akademik = '';
+      } else {
+        $dosen = Dosen::where('iddosen', $dsn)->first();
+        $nama_dsn = $dosen->nama;
+        $akademik = $dosen->akademik;
+      }
+
+      $edm = Edom_master::where('id_edom', 1)->get();
+
+      foreach ($edm as $keydm) {
+        // code...
+      }
+
+      $edom = Edom_master::orderBy('type', 'ASC')
+        ->where('status', 'ACTIVE')
+        ->orderBy('description', 'ASC')
+        ->paginate(30);
+
+      return view('mhs/edom_new/form_edom', ['keydm' => $keydm, 'edom' => $edom, 'akademik' => $akademik, 'nama_dsn' => $nama_dsn, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
+    }
+  }
+
+  public function save_edom_new(Request $request)
+  {
+    $this->validate($request, [
+      'id_student' => 'required',
+      'id_kurperiode' => 'required',
+      'id_kurtrans' => 'required',
+      'nilai_edom' => 'required',
+    ]);
+    $mhs = Student::where('idstudent', $request->id_student)->first();
+
+    $nama = $mhs->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cekedom = Edom_transaction::where('id_student', $request->id_student)
+      ->where('id_kurperiode', $request->id_kurperiode)
+      ->where('id_kurtrans', $request->id_kurtrans)
+      ->get();
+
+    if (count($cekedom) > 0) {
+      Alert::warning('maaf edom mata kuliah sudah dipilih', 'MAAF !!');
+      return redirect('isi_edom_new');
+    } elseif (count($cekedom) == 0) {
+      $jml = count($request->nilai_edom);
+      for ($i = 0; $i < $jml; $i++) {
+        $nilai = $request->nilai_edom[$i];
+        $edom = explode(',', $nilai, 2);
+        $idom = $edom[0];
+        $nidom = $edom[1];
+
+        $isi = new Edom_transaction;
+        $isi->id_edom = $idom;
+        $isi->id_student = $request->id_student;
+        $isi->id_kurperiode = $request->id_kurperiode;
+        $isi->id_kurtrans = $request->id_kurtrans;
+        $isi->nilai_edom = $nidom;
+
+        $isi->created_by = $nama_ok;
+        $isi->created_date   = date("Y-m-d h:i:s");
+        $isi->save();
+      }
+    }
+
+    Alert::success('', 'Pengisian EDOM anda berhasil ')->autoclose(3500);
+    return redirect('isi_edom_new');
+  }
+
+  public function edom_kom_new(Request $request)
+  {
+    $id = $request->id_student;
+    $kurper = $request->id_kurperiode;
+    $kurtr = $request->id_kurtrans;
+    $mk = $request->id_makul;
+    $dsn = $request->id_dosen;
+    $makul = Matakuliah::where('idmakul', $mk)->first();
+    $dosen = Dosen::where('iddosen', $dsn)->first();
+
+    $edom_com = Edom_master::orderBy('id_edom', 'DESC')
+      ->paginate(1);
+
+    return view('mhs/edom_new/komentar', ['edom_com' => $edom_com, 'dsn' => $dsn, 'dosen' => $dosen, 'makul' => $makul, 'mk' => $mk, 'kurtr' => $kurtr, 'kurper' => $kurper, 'ids' => $id]);
+  }
+
+  public function save_com_new(Request $request)
+  {
+    $this->validate($request, [
+      'id_student' => 'required',
+      'id_kurperiode' => 'required',
+      'id_kurtrans' => 'required',
+    ]);
+
+    $name = Student::where('idstudent', $request->id_student)->get();
+    foreach ($name as $value) {
+      // code...
+    }
+
+    $nama = $value->nama;
+    $nama_ok = str_replace("'", "", $nama);
+
+    $cekedom = Edom_transaction::where('id_edom', $request->id_edom)
+      ->where('id_student', $request->id_student)
+      ->where('id_kurperiode', $request->id_kurperiode)
+      ->where('id_kurtrans', $request->id_kurtrans)
+      ->get();
+
+    if (count($cekedom) > 0) {
+
+      Alert::warning('maaf komentar di edom mata kuliah ini sudah diisi', 'MAAF !!');
+      return redirect('isi_edom_new');
+    } else {
+      $isi = new Edom_transaction;
+      $isi->id_edom = $request->id_edom;
+      $isi->id_student = $request->id_student;
+      $isi->id_kurperiode = $request->id_kurperiode;
+      $isi->id_kurtrans = $request->id_kurtrans;
+      $isi->nilai_edom = $request->nilai_edom;
+
+      $isi->created_by = $nama_ok;
+      $isi->created_date   = date("Y-m-d h:i:s");
+      $isi->save();
+      Alert::success('', 'Pengisian Komentar di EDOM anda berhasil ')->autoclose(3500);
+      return redirect('isi_edom_new');
+    }
+  }
+
   public function master_edom()
   {
     $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
@@ -286,8 +480,6 @@ class EdomController extends Controller
 
     return view('sadmin/edom/master_edom', compact('periodetahun', 'periodetipe', 'prodi'));
   }
-
-  
 
   public function report_edom(Request $request)
   {

@@ -728,11 +728,11 @@ Route::group(['middleware' => 'mhs'], function () {
     //dosen pembimbing
     Route::get('dosbing', 'MhsController@dosbing');
 
-    //biaya kuliah
+    #biaya kuliah
     Route::get('record_biaya', 'MhsController@record_biaya');
     Route::get('data_biaya', 'MhsController@data_biaya');
 
-    //kuisioner
+    #kuisioner
     Route::get('kuisioner', 'MhsController@kuisioner');
     Route::get('isi_dosen_pa/{id}', 'MhsController@isi_dosen_pa');
     Route::post('save_kuisioner_dsn_pa', 'MhsController@save_kuisioner_dsn_pa');
@@ -753,13 +753,41 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('isi_kuis_beasiswa/{id}', 'MhsController@isi_kuis_beasiswa');
     Route::post('save_kuisioner_beasiswa', 'MhsController@save_kuisioner_beasiswa');
 
-    //kartu ujian
-    Route::get('kartu_uts', 'MhsController@kartu_uts');
-    Route::get('kartu_uas', 'MhsController@kartu_uas');
-    Route::get('unduh_kartu_uas', 'MhsController@unduh_kartu_uas');
-    Route::get('unduh_kartu_uts', 'MhsController@unduh_kartu_uts');
+    #Kuisioner Mahasiswa
+    Route::get('kuisioner_mahasiswa', 'MhsController@kuisioner_mahasiswa');
+    Route::get('isi_dosen_pa_new/{id}', 'MhsController@isi_dosen_pa_new');
+    Route::post('save_kuisioner_dsn_pa_new', 'MhsController@save_kuisioner_dsn_pa_new');
+    Route::get('isi_dosen_pkl_new/{id}', 'MhsController@isi_dosen_pkl_new');
+    Route::post('save_kuisioner_dsn_pkl_new', 'MhsController@save_kuisioner_dsn_pkl_new');
+    Route::get('isi_dosen_ta_new/{id}', 'MhsController@isi_dosen_ta_new');
+    Route::post('save_kuisioner_dsn_ta_new', 'MhsController@save_kuisioner_dsn_ta_new');
+    Route::get('isi_dosen_ta_peng1_new/{id}', 'MhsController@isi_dosen_ta_peng1_new');
+    Route::post('save_kuisioner_dsn_ta_peng1_new', 'MhsController@save_kuisioner_dsn_ta_peng1_new');
+    Route::get('isi_dosen_ta_peng2_new/{id}', 'MhsController@isi_dosen_ta_peng2_new');
+    Route::post('save_kuisioner_dsn_ta_peng2_new', 'MhsController@save_kuisioner_dsn_ta_peng2_new');
+    Route::get('isi_kuis_baak_new/{id}', 'MhsController@isi_kuis_baak_new');
+    Route::post('save_kuisioner_baak_new', 'MhsController@save_kuisioner_baak_new');
+    Route::get('isi_kuis_bauk_new/{id}', 'MhsController@isi_kuis_bauk_new');
+    Route::post('save_kuisioner_bauk_new', 'MhsController@save_kuisioner_bauk_new');
+    Route::get('isi_kuis_perpus_new/{id}', 'MhsController@isi_kuis_perpus_new');
+    Route::post('save_kuisioner_perpus_new', 'MhsController@save_kuisioner_perpus_new');
+    Route::get('isi_kuis_beasiswa_new/{id}', 'MhsController@isi_kuis_beasiswa_new');
+    Route::post('save_kuisioner_beasiswa_new', 'MhsController@save_kuisioner_beasiswa_new');
 
-    //upload sertifikat
+    #EDOM new
+    Route::get('isi_edom_new', 'EdomController@isi_edom_new');
+    Route::post('form_edom_new', 'EdomController@form_edom_new');
+    Route::post('save_edom_new', 'EdomController@save_edom_new');
+    Route::post('edom_kom_new', 'EdomController@edom_kom_new');
+    Route::post('save_edom_kom_new', 'EdomController@save_com_new');
+
+    #Kartu Ujian
+    // Route::get('kartu_uts', 'MhsController@kartu_uts');
+    // Route::get('kartu_uas', 'MhsController@kartu_uas');
+    // Route::get('unduh_kartu_uas', 'MhsController@unduh_kartu_uas');
+    // Route::get('unduh_kartu_uts', 'MhsController@unduh_kartu_uts');
+
+    #upload sertifikat
     Route::get('upload_sertifikat', 'MhsController@upload_sertifikat');
     Route::post('post_sertifikat', 'MhsController@post_sertifikat');
     Route::put('put_sertifikat/{id}', 'MhsController@put_sertifikat');
