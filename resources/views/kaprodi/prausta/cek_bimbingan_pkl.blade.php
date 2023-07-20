@@ -187,7 +187,6 @@
                             Seminar Prakerin</a> --}}
                     @endif
                 </div>
-
             </div>
         </div>
         <div class="row">

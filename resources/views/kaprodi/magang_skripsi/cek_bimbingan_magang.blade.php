@@ -164,19 +164,19 @@
                     @if ($jdl->acc_seminar_sidang == null)
                         <span class="badge bg-red">Belum ada pengajuan</span>
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
-                        <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
                             Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
                             Seminar Magang</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
-                        <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
                             Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
                             Seminar Magang</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
-                        <a href="/acc_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
                             Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
                             Seminar Magang</a>
                     @endif
                 </div>
