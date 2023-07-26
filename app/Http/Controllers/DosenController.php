@@ -1338,6 +1338,7 @@ class DosenController extends Controller
 
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
+            ->join('dosen', 'bap.id_dosen', '=', 'dosen.iddosen')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             // ->where('kuliah_transaction.id_dosen', $id_dosen)
@@ -1350,11 +1351,13 @@ class DosenController extends Controller
                 'bap.jam_mulai',
                 'bap.jam_selsai',
                 'bap.materi_kuliah',
+                'bap.praktikum',
                 'bap.metode_kuliah',
                 'kuliah_tipe.tipe_kuliah',
                 'bap.jenis_kuliah',
                 'bap.hadir',
-                'bap.tidak_hadir'
+                'bap.tidak_hadir',
+                'dosen.nama'
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
@@ -1364,7 +1367,7 @@ class DosenController extends Controller
 
     public function input_bap($id)
     {
-        $jam = Kurikulum_jam::all();
+        $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
 
         $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
             ->where('kuliah_transaction.id_kurperiode', $id)
@@ -3343,7 +3346,7 @@ class DosenController extends Controller
             $id_nilai1 = $id_penilaian1[$i];
             $n1 = $nilai1[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)->update([
+            Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)->update([
                 'nilai' => $n1,
                 'updated_by' => Auth::user()->name,
             ]);
@@ -3353,7 +3356,7 @@ class DosenController extends Controller
             $id_nilai2 = $id_penilaian2[$i];
             $n2 = $nilai2[$i];
 
-            $usta = Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai2)->update([
+            Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai2)->update([
                 'nilai' => $n2,
                 'updated_by' => Auth::user()->name,
             ]);
@@ -3399,12 +3402,12 @@ class DosenController extends Controller
             $nilai_huruf = 'E';
         }
 
-        $usta = Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
+        Prausta_trans_hasil::where('id_settingrelasi_prausta', $id_prausta)->update([
             'nilai_1' => $nilai_pem_lap,
             'nilai_2' => $ceknilai_1->nilai1,
             'nilai_3' => $ceknilai_2->nilai2,
             'nilai_huruf' => $nilai_huruf,
-            'updated_by' => Auth::user()->name,
+            'updated_by' => Auth::user()->name
         ]);
 
         Alert::success('', 'Nilai Prakerin berhasil disimpan')->autoclose(3500);

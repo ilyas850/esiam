@@ -183,6 +183,19 @@
                 </ul>
             </li>
             <li class="treeview">
+                <a href="#"><i class="fa fa-circle-o"></i> Penguji
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('penguji_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang</a></li>
+                    <li><a href="{{ url('penguji_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> SEMPRO</a>
+                    </li>
+                    <li><a href="{{ url('penguji_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-circle-o"></i> <span>Monitoring</span>
                     <span class="pull-right-container">

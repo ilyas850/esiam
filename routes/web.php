@@ -613,6 +613,8 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('penguji_magang_dlm', 'MagangSkripsiController@penguji_magang_dlm');
     Route::get('isi_form_nilai_magang_dlm/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
     Route::post('simpan_nilai_magang_dlm', 'MagangSkripsiController@simpan_nilai_magang');
+    Route::get('edit_nilai_magang_by_dosen_dlm/{id}', 'MagangSkripsiController@edit_nilai_magang_by_dosen_dlm');
+    Route::post('put_nilai_magang_by_dsn_dlm', 'MagangSkripsiController@put_nilai_magang_by_dsn_dlm');
 
     #SK Mengajar
     Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
@@ -1164,7 +1166,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('tolak_seminar_pkl_kprd/{id}', 'KaprodiController@tolak_seminar_pkl');
     route::put('komentar_bimbingan_kprd/{id}', 'KaprodiController@komentar_bimbingan_kprd');
 
-    //penguji PKL
+    #penguji PKL
     Route::get('penguji_pkl_kprd', 'KaprodiController@penguji_pkl');
     Route::get('isi_form_nilai_pkl_kprd/{id}', 'KaprodiController@isi_form_nilai_pkl');
     Route::post('simpan_nilai_prakerin_kprd', 'KaprodiController@simpan_nilai_prakerin');
@@ -1200,7 +1202,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('pembimbing_ta_kprd', 'KaprodiController@pembimbing_ta');
     Route::get('record_bim_ta_kprd/{id}', 'KaprodiController@record_bim_ta');
 
-    //penguji TA
+    #penguji TA
     Route::get('penguji_ta_kprd', 'KaprodiController@penguji_ta');
     Route::get('isi_form_nilai_ta_dospem_kprd/{id}', 'KaprodiController@isi_form_nilai_ta_dospem');
     Route::post('simpan_nilai_ta_dospem_kprd', 'KaprodiController@simpan_nilai_ta_dospem');
@@ -1215,6 +1217,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('put_nilai_ta_dospeng1_kprd', 'KaprodiController@put_nilai_ta_dospeng1_kprd');
     Route::get('edit_nilai_ta_by_dospeng2_kprd/{id}', 'KaprodiController@edit_nilai_ta_by_dospeng2_kprd');
     Route::post('put_nilai_ta_dospeng2_kprd', 'KaprodiController@put_nilai_ta_dospeng2_kprd');
+
+    #
 
     //monitoring prausta
     Route::get('bimbingan_prakerin', 'KaprodiController@bimbingan_prakerin');
@@ -1319,6 +1323,14 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('record_bim_magang_kprd/{id}', 'KaprodiController@record_bim_magang');
     Route::put('komentar_bimbingan_magang_kprd/{id}', 'KaprodiController@komentar_bimbingan_magang');
     Route::get('val_bim_magang_kprd/{id}', 'KaprodiController@val_bim_magang');
+
+    #penguji magang
+    Route::get('penguji_magang_kprd', 'KaprodiController@penguji_magang_kprd');
+    Route::get('isi_form_nilai_magang_kaprodi/{id}', 'KaprodiController@isi_form_nilai_magang_kaprodi');
+    Route::post('simpan_nilai_magang_kaprodi', 'KaprodiController@simpan_nilai_magang_kaprodi');
+    Route::get('edit_nilai_magang_by_kaprodi/{id}', 'KaprodiController@edit_nilai_magang_by_kaprodi');
+    Route::post('put_nilai_magang_by_kaprodi', 'KaprodiController@put_nilai_magang_by_kaprodi');
+
 
     #monitoring magang dan skripsi
     Route::get('bimbingan_magang_kprd', 'KaprodiController@bimbingan_magang_kprd');

@@ -70,14 +70,20 @@
                             <th rowspan="2">
                                 <center>Materi Kuliah</center>
                             </th>
+                            <th rowspan="2">
+                                <center>Praktikum</center>
+                            </th>
                             <th colspan="3">
                                 <center>Kuliah</center>
                             </th>
-                            <th colspan="2">
-                                <center>Absen Mahasiswa</center>
+                            <th rowspan="2">
+                                <center>Absen Mahasiswa <br> (Hadir/Tidak)</center>
                             </th>
                             <th rowspan="2">
                                 <center>Absen</center>
+                            </th>
+                            <th rowspan="2">
+                                <center>Dosen</center>
                             </th>
                             <th rowspan="2">
                                 <center>Action</center>
@@ -93,12 +99,7 @@
                             <th>
                                 <center>Metode</center>
                             </th>
-                            <th>
-                                <center>Hadir</center>
-                            </th>
-                            <th>
-                                <center>Tidak</center>
-                            </th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -108,7 +109,7 @@
                                     <center>Ke-{{ $item->pertemuan }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->tanggal }}</center>
+                                    <center>{{ Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $item->jam_mulai }} - {{ $item->jam_selsai }}</center>
@@ -117,6 +118,7 @@
                                     <center>{{ $item->kurang_jam }}</center>
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
+                                <td>{{ $item->praktikum }}</td>
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
                                 </td>
@@ -127,10 +129,7 @@
                                     <center>{{ $item->metode_kuliah }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->hadir }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->tidak_hadir }}</center>
+                                    <center>{{ $item->hadir }} / {{ $item->tidak_hadir }}</center>
                                 </td>
                                 <td>
                                     <center>
@@ -142,6 +141,9 @@
                                                 Entri</a>
                                         @endif
                                     </center>
+                                </td>
+                                <td>
+                                    {{ $item->nama }}
                                 </td>
                                 <td>
                                     <center>

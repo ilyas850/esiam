@@ -44,11 +44,11 @@
                                 </label>
                                 <select class="form-control" name="pertemuan" required>
                                     <option></option>
-                                    @foreach ($nilai_pertemuan as $item)
+                                    {{-- @foreach ($nilai_pertemuan as $item)
                                         <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
                                         </option>
-                                    @endforeach
-                                    {{-- <option value="1">Pertemuan Ke-1</option>
+                                    @endforeach --}}
+                                    <option value="1">Pertemuan Ke-1</option>
                                     <option value="2">Pertemuan Ke-2</option>
                                     <option value="3">Pertemuan Ke-3</option>
                                     <option value="4">Pertemuan Ke-4</option>
@@ -63,7 +63,7 @@
                                     <option value="13">Pertemuan Ke-13</option>
                                     <option value="14">Pertemuan Ke-14</option>
                                     <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option> --}}
+                                    <option value="16">Pertemuan Ke-16</option>
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -141,7 +141,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label>
-                                    <font color="red-text">*</font>Metode Kuliah/Ujian
+                                    <font color="red-text">*</font>Metode Kuliah
                                 </label>
                                 <select class="form-control" name="metode_kuliah" required>
                                     <option></option>
@@ -151,17 +151,23 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label>
-                                    <font color="red-text">*</font>Materi Kuliah/Ujian
+                                    <font color="red-text">*</font>Materi Kuliah
                                 </label>
-                                <textarea class="form-control" rows="3" name="materi_kuliah" required></textarea>
+                                <textarea class="form-control" rows="5" name="materi_kuliah" required></textarea>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label>
-                                    <font color="red-text">*</font>Media Pembelajaran/Ujian
+                                    Materi Praktikum
                                 </label>
-                                <textarea class="form-control" rows="3" name="media_pembelajaran" required></textarea>
+                                <textarea class="form-control" rows="5" name="praktikum"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <font color="red-text">*</font>Media Pembelajaran
+                                </label>
+                                <textarea class="form-control" rows="5" name="media_pembelajaran" required></textarea>
                             </div>
                         </div>
                         <div class="form-group">

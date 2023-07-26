@@ -92,7 +92,7 @@
                         <center>{{ $no++ }}</center>
                     </td>
                     <td>
-                        <center>{{ $item->tanggal }}</center>
+                        <center>{{ Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</center>
                     </td>
                     <td>
                         <center>{{ $item->jam_mulai }} - {{ $item->jam_selsai }}</center>

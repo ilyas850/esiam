@@ -97,9 +97,7 @@ class HomeController extends Controller
 
 
     if ($akses == 1) {
-
       $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-
       $tp = Periode_tipe::orderBy('periode_tipe', 'DESC')->get();
 
       $ldate = date('m/d/Y');
@@ -120,7 +118,7 @@ class HomeController extends Controller
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
     } elseif ($akses == 2) {
 
-      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
+      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info]);
     } elseif ($akses == 3) {
 
       $waktu_edom = Waktu_edom::select('status', 'waktu_awal', 'waktu_Akhir')
