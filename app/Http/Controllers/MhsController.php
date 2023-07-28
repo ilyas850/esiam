@@ -279,27 +279,11 @@ class MhsController extends Controller
 
     public function jadwal()
     {
-        $id = Auth::user()->username;
+        $id = Auth::user()->id_user;
 
-        $maha = Student::where('nim', $id)->get();
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-        foreach ($maha as $key) {
-            # code...
-        }
-
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-
-        foreach ($thn as $tahun) {
-            // code...
-        }
-
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-
-        foreach ($tp as $tipe) {
-            // code...
-        }
-
-        $tp = $tipe->id_periodetipe;
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
         $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -309,12 +293,22 @@ class MhsController extends Controller
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
             ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->where('student_record.id_student', $key->idstudent)
-            ->where('kurikulum_periode.id_periodetipe', $tp)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+            ->where('student_record.id_student', $id)
+            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
+            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
             ->where('student_record.status', 'TAKEN')
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('kurikulum_periode.id_kurperiode', 'student_record.tanggal_krs', 'kurikulum_periode.id_semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'dosen.nama')
+            ->select(
+                'kurikulum_periode.id_kurperiode',
+                'student_record.tanggal_krs',
+                'kurikulum_periode.id_semester',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'kurikulum_hari.hari',
+                'kurikulum_jam.jam',
+                'ruangan.nama_ruangan',
+                'dosen.nama'
+            )
             ->orderBy('kurikulum_periode.id_hari', 'ASC')
             ->orderBy('kurikulum_periode.id_jam', 'ASC')
             ->get();

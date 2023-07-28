@@ -1324,13 +1324,21 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::put('komentar_bimbingan_magang_kprd/{id}', 'KaprodiController@komentar_bimbingan_magang');
     Route::get('val_bim_magang_kprd/{id}', 'KaprodiController@val_bim_magang');
 
+    #pembimbing SEMPRO
+    Route::get('pembimbing_sempro_skripsi_kprd', 'KaprodiController@pembimbing_sempro_skripsi_kprd');
+    Route::get('record_bim_sempro_skripsi_kprd/{id}', 'KaprodiController@record_bim_sempro_skripsi_kprd');
+    Route::put('komentar_bimbingan_sempro_skripsi_kprd/{id}', 'KaprodiController@komentar_bimbingan_sempro_skripsi_kprd');
+    Route::get('acc_sempro_skripsi_kprd/{id}', 'KaprodiController@acc_sempro_skripsi_kprd');
+
+    #pembimbing Skripsi 
+    Route::get('pembimbing_skripsi_kprd', 'KaprodiController@pembimbing_skripsi_kprd');
+
     #penguji magang
     Route::get('penguji_magang_kprd', 'KaprodiController@penguji_magang_kprd');
     Route::get('isi_form_nilai_magang_kaprodi/{id}', 'KaprodiController@isi_form_nilai_magang_kaprodi');
     Route::post('simpan_nilai_magang_kaprodi', 'KaprodiController@simpan_nilai_magang_kaprodi');
     Route::get('edit_nilai_magang_by_kaprodi/{id}', 'KaprodiController@edit_nilai_magang_by_kaprodi');
     Route::post('put_nilai_magang_by_kaprodi', 'KaprodiController@put_nilai_magang_by_kaprodi');
-
 
     #monitoring magang dan skripsi
     Route::get('bimbingan_magang_kprd', 'KaprodiController@bimbingan_magang_kprd');

@@ -9,9 +9,9 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
+            <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>
                         PKL & Magang</span></a></li>
-            <li><a href="{{ url('dospem_sempro_ta') }}"><i class="fa fa-circle-o"></i> <span>Pembimbing
+            <li><a href="{{ url('dospem_sempro_ta') }}"><i class="fa fa-circle-o"></i> <span>
                         SEMPRO, TA & Skripsi</span></a></li>
         </ul>
     </li>

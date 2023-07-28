@@ -255,6 +255,7 @@ class ProdiController extends Controller
 
     $dosen = Dosen::where('active', 1)
       ->whereIn('idstatus', [1, 2])
+      ->orderBy('nama', 'ASC')
       ->get();
 
     // $kode = Prausta_master_kode::where('id_prodi', $id2)
@@ -291,7 +292,7 @@ class ProdiController extends Controller
 
         $kode = Prausta_master_kode::where('id_prodi', $id4)
           ->where('prausta_master_kode.tipe_prausta', 'Seminar')
-          ->whereIn('prausta_master_kode.kode_prausta', ['FA-6001', 'TI-6001'])
+          ->whereIn('prausta_master_kode.kode_prausta', ['TK-612', 'TI-612', 'FA-612', 'FA/6001', 'TI/6001', 'PL/8001'])
           ->select('prausta_master_kode.id_masterkode_prausta')
           ->first();
 
@@ -336,11 +337,13 @@ class ProdiController extends Controller
         $id4 = $user[3]; #id prodi
 
         $kode1 = Prausta_master_kode::where('id_prodi', $id4)
-          ->where('prausta_master_kode.tipe_prausta', 'TugasAkhir')
-          ->whereIn('prausta_master_kode.kode_prausta', ['FA6003', 'TI-6001'])
+          ->whereIn('prausta_master_kode.tipe_prausta', ['TugasAkhir', 'Skripsi'])
+          ->whereIn('prausta_master_kode.kode_prausta', [
+            'FA-602', 'TK-602', 'TI-602', 'FA/6003', 'TI/6001', 'PL/8001'
+          ])
           ->select('prausta_master_kode.id_masterkode_prausta')
           ->first();
-
+      
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
           ->where('id_masterkode_prausta', $kode1->id_masterkode_prausta)
           ->where('status', 'ACTIVE')
