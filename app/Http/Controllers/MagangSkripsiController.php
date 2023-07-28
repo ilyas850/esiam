@@ -194,7 +194,15 @@ class MagangSkripsiController extends Controller
                     ->where('prausta_setting_relasi.status', 'ACTIVE')
                     ->count();
 
-                return view('mhs/magang_skripsi/magang_mhs', compact('data', 'validasi', 'databimb', 'bim', 'angkatan', 'jml_bim', 'hasil_spp'));
+                //cek nilai dan file seminar magang
+                $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+                    ->where('prausta_setting_relasi.id_student', $id)
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [24, 27, 30])
+                    ->where('prausta_setting_relasi.status', 'ACTIVE')
+                    ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
+                    ->first();
+
+                return view('mhs/magang_skripsi/magang_mhs', compact('data', 'validasi', 'databimb', 'bim', 'angkatan', 'jml_bim', 'hasil_spp', 'cekdata_nilai'));
             }
         }
     }
@@ -692,7 +700,7 @@ class MagangSkripsiController extends Controller
             $id_nilai1 = $id_penilaian1[$i];
             $n1 = $nilai1[$i];
 
-           Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)->update([
+            Prausta_trans_penilaian::where('id_trans_penilaian', $id_nilai1)->update([
                 'nilai' => $n1,
                 'updated_by' => Auth::user()->name,
             ]);
