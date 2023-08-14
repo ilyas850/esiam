@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Pengajuan Cuti Mahasiswa Program Studi {{ $cekkprd->prodi }}</h3>
+                <h3 class="box-title">Data Mengundurkan Diri Mahasiswa Prodi</h3>
             </div>
             <div class="box-body">
                 <table id="example8" class="table table-bordered table-striped">
@@ -33,19 +33,13 @@
                                 <center>Kelas</center>
                             </th>
                             <th rowspan="2">
-                                <center>SKS Tempuh</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Cuti sebelumnya</center>
+                                <center>Semester</center>
                             </th>
                             <th rowspan="2">
                                 <center>Alasan</center>
                             </th>
                             <th rowspan="2">
                                 <center>No. HP</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Alamat</center>
                             </th>
                             <th colspan="4">
                                 <center>Validasi</center>
@@ -76,11 +70,9 @@
                                 <td align="center">{{ $item->nim }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td align="center">{{ $item->kelas }}</td>
-                                <td align="center">{{ $item->sks_ditempuh }} SKS</td>
-                                <td align="center">{{ $item->cuti_sebelumnya }}</td>
+                                <td align="center">Semester {{ $item->semester_keluar }}</td>
                                 <td>{{ $item->alasan }}</td>
                                 <td align="center">{{ $item->no_hp }}</td>
-                                <td>{{ $item->alamat }}</td>
                                 <td align="center">
                                     @if ($item->val_bauk == 'BELUM')
                                         <span class="badge bg-yellow">{{ $item->val_bauk }}</span>

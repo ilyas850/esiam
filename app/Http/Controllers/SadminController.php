@@ -6351,7 +6351,7 @@ class SadminController extends Controller
         } elseif ($id == '3') {
             return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori'));
         } elseif ($id == '4') {
-            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori'));
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahprodi', compact('data', 'kategori'));
         }
     }
 

@@ -1389,7 +1389,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('nilai_sempro_skripsi_kprd', 'KaprodiController@nilai_sempro_skripsi_kprd');
     Route::get('nilai_skripsi_kprd', 'KaprodiController@nilai_skripsi_kprd');
 
-    #data cuti
+    #data cuti mhs bimbingan
     Route::get('data_cuti_kprd_bim', 'KaprodiController@data_cuti_kprd_bim');
     Route::get('val_pengajuan_kprd/{id}', 'KaprodiController@val_pengajuan_kprd');
     Route::get('batal_val_pengajuan_kprd/{id}', 'KaprodiController@batal_val_pengajuan_kprd');
@@ -1399,11 +1399,17 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('val_pengajuan_kprd_prd/{id}', 'KaprodiController@val_pengajuan_kprd_prd');
     Route::get('batal_val_pengajuan_kprd_prd/{id}', 'KaprodiController@batal_val_pengajuan_kprd_prd');
 
-    #data mengundurkan diri
-    Route::get('data_mengundurkan_diri_dsn_pa', 'KaprodiController@data_mengundurkan_diri_dsn_pa');
+    #data mengundurkan diri mhs bimbingan
+    Route::get('data_mengundurkan_diri_kprd_bim', 'KaprodiController@data_mengundurkan_diri_kprd_bim');
 
-    #data pindah kelas
-    Route::get('data_pindah_kelas_dsn_pa', 'KaprodiController@data_pindah_kelas_dsn_pa');
+    #data mengundurkan diri mhs prodi
+    Route::get('data_mengundurkan_diri_kprd_prodi', 'KaprodiController@data_mengundurkan_diri_kprd_prodi');
+
+    #data pindah kelas mhs bimbingan
+    Route::get('data_pindah_kelas_kprd_bim', 'KaprodiController@data_pindah_kelas_kprd_bim');
+
+    #data pindah kelas mhs prodi
+    Route::get('data_pindah_kelas_kprd_prodi', 'KaprodiController@data_pindah_kelas_kprd_prodi');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

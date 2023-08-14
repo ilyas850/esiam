@@ -9581,4 +9581,174 @@ class KaprodiController extends Controller
     Alert::success('', 'Berhasil')->autoclose(3500);
     return redirect()->back();
   }
+
+  public function data_mengundurkan_diri_kprd_bim()
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 2)
+      ->where('dosen_pembimbing.id_dosen', $id_dosen)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.semester_keluar',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    return view('kaprodi/pengajuan/data_undurdiri_mhs_bim', compact('data'));
+  }
+
+  public function data_mengundurkan_diri_kprd_prodi()
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $cekkprd = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('dosen.iddosen', $id_dosen)
+      ->select('dosen.nama', 'dosen.akademik', 'dosen.nik', 'prodi.kodeprodi', 'prodi.prodi')
+      ->first();
+
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 2)
+      ->where('student.kodeprodi', $cekkprd->kodeprodi)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.semester_keluar',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    return view('kaprodi/pengajuan/data_undurdiri_mhs_prodi', compact('data'));
+  }
+
+  public function data_pindah_kelas_kprd_bim()
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+      ->where('dosen_pembimbing.id_dosen', $id_dosen)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.kelas_sebelum',
+        'pengajuan_trans.kelas_tujuan',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    $kelas = Kelas::orderBy('kelas', 'ASC')->get();
+
+    return view('kaprodi/pengajuan/data_pindahkelas_mhs_bim', compact('data', 'kelas'));
+  }
+
+  public function data_pindah_kelas_kprd_prodi() 
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $cekkprd = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('dosen.iddosen', $id_dosen)
+      ->select('dosen.nama', 'dosen.akademik', 'dosen.nik', 'prodi.kodeprodi', 'prodi.prodi')
+      ->first();
+
+      $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+      ->where('student.kodeprodi', $cekkprd->kodeprodi)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.kelas_sebelum',
+        'pengajuan_trans.kelas_tujuan',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    $kelas = Kelas::orderBy('kelas', 'ASC')->get();
+
+    return view('kaprodi/pengajuan/data_pindahkelas_mhs_prodi', compact('data', 'kelas'));
+  }
 }

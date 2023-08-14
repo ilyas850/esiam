@@ -6071,6 +6071,7 @@ class DosenController extends Controller
 
     public function data_pindah_kelas_dsn_pa()
     {
+        $id_dosen = Auth::user()->id_user;
         $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
@@ -6079,8 +6080,10 @@ class DosenController extends Controller
                     ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
             ->where('pengajuan_trans.status', 'ACTIVE')
             ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+            ->where('dosen_pembimbing.id_dosen', $id_dosen)
             ->select(
                 'pengajuan_trans.id_trans_pengajuan',
                 'periode_tahun.periode_tahun',

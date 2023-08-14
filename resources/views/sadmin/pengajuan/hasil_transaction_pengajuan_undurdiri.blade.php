@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Pengajuan Cuti Mahasiswa Program Studi {{ $cekkprd->prodi }}</h3>
+                <h3 class="box-title">Data Pengajuan Mengundurkan Diri Mahasiswa</h3>
             </div>
             <div class="box-body">
                 <table id="example8" class="table table-bordered table-striped">
@@ -94,28 +94,32 @@
                                     @else
                                         <span class="badge bg-green">{{ $item->val_dsn_pa }}</span>
                                     @endif
+
+
+                                    
                                 </td>
                                 <td align="center">
-                                    @if ($item->val_dsn_pa == 'BELUM')
+                                    @if ($item->val_kaprodi == 'BELUM')
+                                        <span class="badge bg-yellow">{{ $item->val_kaprodi }}</span>
+                                    @else
+                                        <span class="badge bg-green">{{ $item->val_kaprodi }}</span>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->val_kaprodi == 'BELUM')
                                         <span class="badge bg-red">Belum valid</span>
-                                    @elseif ($item->val_dsn_pa == 'SUDAH')
-                                        @if ($item->val_kaprodi == 'BELUM')
-                                            <a href="/val_pengajuan_kprd_prd/{{ $item->id_trans_pengajuan }}"
+                                    @elseif ($item->val_kaprodi == 'SUDAH')
+                                        @if ($item->val_baak == 'BELUM')
+                                            <a href="/val_pengajuan_baak/{{ $item->id_trans_pengajuan }}"
                                                 class="btn btn-success btn-xs" title="klik untuk validasi"><i
                                                     class="fa fa-check"></i></a>
-                                        @elseif ($item->val_kaprodi == 'SUDAH')
-                                            <a href="/batal_val_pengajuan_kprd_prd/{{ $item->id_trans_pengajuan }}"
+                                        @elseif ($item->val_baak == 'SUDAH')
+                                            <a href="/batal_val_pengajuan_baak/{{ $item->id_trans_pengajuan }}"
                                                 class="btn btn-danger btn-xs" title="klik untuk batal"><i
                                                     class="fa fa-close"></i></a>
                                         @endif
                                     @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->val_baak == 'BELUM')
-                                        <span class="badge bg-yellow">{{ $item->val_baak }}</span>
-                                    @else
-                                        <span class="badge bg-green">{{ $item->val_baak }}</span>
-                                    @endif
+
                                 </td>
                             </tr>
                         @endforeach
