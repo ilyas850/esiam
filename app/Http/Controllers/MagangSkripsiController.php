@@ -131,9 +131,9 @@ class MagangSkripsiController extends Controller
                 $biaya = Biaya::where('idangkatan', $idangkatan)
                     ->where('idstatus', $idstatus)
                     ->where('kodeprodi', $kodeprodi)
-                    ->select('spp6')
+                    ->select('spp6', 'prakerin')
                     ->first();
-
+                dd($biaya);
                 #cek beasiswa mahasiswa
                 $cb = Beasiswa::where('idstudent', $id)->first();
 
@@ -153,7 +153,7 @@ class MagangSkripsiController extends Controller
                     ->sum('bayar.bayar');
 
                 $hasil_spp = $sisaspp - $spp;
-
+                dd($sisaspp);
                 if ($hasil_spp == 0 or $hasil_spp > 0) {
                     $validasi = 'Sudah Lunas';
                 } elseif ($hasil_spp < 0) {

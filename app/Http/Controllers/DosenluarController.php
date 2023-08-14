@@ -379,7 +379,7 @@ class DosenluarController extends Controller
     {
         //cek mahasiswa
         $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
-dd($kelas_gabungan);
+
         $keymkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
         $kmkl = $keymkl->id_makul;

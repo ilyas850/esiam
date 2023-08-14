@@ -78,15 +78,15 @@
                                     @elseif ($item->item == 'Biaya SPP 13')
                                         @currency ( $biaya->spp13)
                                     @elseif ($item->item == 'Biaya SPP 14')
-                                        @currency ( $biaya->spp14 )
+                                        @currency ( $biaya->spp14)
                                     @elseif ($item->item == 'Prakerin')
                                         @currency ( $biaya->prakerin )
                                     @elseif ($item->item == 'Seminar')
                                         @currency ( $biaya->seminar)
                                     @elseif ($item->item == 'Sidang')
-                                        @currency ( $biaya->sidang )
+                                        @currency ( $biaya->sidang)
                                     @elseif ($item->item == 'Wisuda')
-                                        @currency ( $biaya->wisuda )
+                                        @currency ( $biaya->wisuda)
                                     @endif
                                 </td>
                                 <td>

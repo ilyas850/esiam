@@ -63,6 +63,8 @@ use App\Permohonan_ujian;
 use App\Perwalian_trans_bimbingan;
 use App\Soal_ujian;
 use App\Min_biaya;
+use App\Pengajuan_kategori;
+use App\Pengajuan_trans;
 use Carbon\Carbon;
 use Hamcrest\Core\IsNull;
 use Illuminate\Http\Request;
@@ -6340,5 +6342,467 @@ class MhsController extends Controller
         }
         Alert::success('', 'Pengisian Kuisioner anda berhasil ')->autoclose(3500);
         return redirect('home');
+    }
+
+    public function cuti_mhs()
+    {
+        $id = Auth()->user()->id_user;
+
+        $tahun_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tahun = Periode_tahun::where('id_periodetahun', '>=', $tahun_aktif->id_periodetahun)->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 1)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'pengajuan_trans.id_periodetahun',
+                'pengajuan_trans.id_periodetipe',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.alamat',
+                'pengajuan_trans.sks_ditempuh',
+                'pengajuan_trans.tgl_pengajuan',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.cuti_sebelumnya',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->get();
+
+        return view('mhs/pengajuan/pengajuan_cuti', compact('data', 'tahun', 'tipe'));
+    }
+
+    public function post_pengajuan_cuti(Request $request)
+    {
+        $id = Auth()->user()->id_user;
+
+        #cek pengajuan cuti sebelumnya
+        $data_cuti = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 1)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan'
+            )
+            ->count();
+
+        if ($data_cuti < 2) {
+
+            if ($data_cuti == 1) {
+                #cek pengajuan semester
+                $data_semester_cuti = Pengajuan_trans::where('pengajuan_trans.id_kategori_pengajuan', 1)
+                    ->where('pengajuan_trans.id_student', $id)
+                    ->select(
+                        'pengajuan_trans.id_trans_pengajuan',
+                        'pengajuan_trans.id_periodetahun',
+                        'pengajuan_trans.id_periodetipe',
+                    )
+                    ->first();
+
+                $cek_tahun = $data_semester_cuti->id_periodetahun;
+                $cek_tipe = $data_semester_cuti->id_periodetipe;
+
+                if ($request->id_periodetahun == $cek_tahun && $request->id_periodetipe ==  $cek_tipe) {
+                    Alert::warning('', 'Maaf Pengajuan Cuti berlaku 1 semester, jika ingin perpanjang harap ajukan semester berikutnya')->autoclose(3500);
+                    return redirect('cuti_mhs');
+                } else {
+                    #cek nilai dan sks
+                    $data_sks = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                        ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                        ->where('student_record.id_student', $id)
+                        ->where('student_record.status', 'TAKEN')
+                        ->whereNotIn('student_record.nilai_AKHIR', ['D', 'E'])
+                        ->select(DB::raw('SUM(matakuliah.akt_sks_teori + matakuliah.akt_sks_praktek) as sks'))
+                        ->first();
+
+                    $new = new Pengajuan_trans;
+                    $new->id_periodetahun = $request->id_periodetahun;
+                    $new->id_periodetipe = $request->id_periodetipe;
+                    $new->id_student = $id;
+                    $new->id_kategori_pengajuan = 1;
+                    $new->alasan = $request->alasan;
+                    $new->cuti_sebelumnya = $request->cuti_sebelumnya;
+                    $new->sks_ditempuh = $data_sks->sks;
+                    $new->alamat = $request->alamat;
+                    $new->no_hp = $request->no_hp;
+                    $new->save();
+
+                    Alert::success('', 'Pengajuan Cuti berhasil ditambahkan')->autoclose(3500);
+                    return redirect('cuti_mhs');
+                }
+            } elseif ($data_cuti == 0) {
+                #cek nilai dan sks
+                $data_sks = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                    ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                    ->where('student_record.id_student', $id)
+                    ->where('student_record.status', 'TAKEN')
+                    ->whereNotIn('student_record.nilai_AKHIR', ['D', 'E'])
+                    ->select(DB::raw('SUM(matakuliah.akt_sks_teori + matakuliah.akt_sks_praktek) as sks'))
+                    ->first();
+
+                $new = new Pengajuan_trans;
+                $new->id_periodetahun = $request->id_periodetahun;
+                $new->id_periodetipe = $request->id_periodetipe;
+                $new->id_student = $id;
+                $new->id_kategori_pengajuan = 1;
+                $new->alasan = $request->alasan;
+                $new->cuti_sebelumnya = $request->cuti_sebelumnya;
+                $new->sks_ditempuh = $data_sks->sks;
+                $new->alamat = $request->alamat;
+                $new->no_hp = $request->no_hp;
+                $new->save();
+
+                Alert::success('', 'Pengajuan Cuti berhasil ditambahkan')->autoclose(3500);
+                return redirect('cuti_mhs');
+            }
+        } elseif ($data_cuti == 2) {
+            Alert::warning('', 'Maaf Pengajuan Cuti Maksimal 2 kali selama perkuliahan')->autoclose(3500);
+            return redirect('cuti_mhs');
+        }
+    }
+
+    public function put_pengajuan_cuti(Request $request, $id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $cek_edit_cuti = Pengajuan_trans::where('pengajuan_trans.id_kategori_pengajuan', 1)
+            ->where('pengajuan_trans.id_student', $ids)
+            ->where('pengajuan_trans.id_periodetahun', $request->id_periodetahun)
+            ->where('pengajuan_trans.id_periodetipe', $request->id_periodetipe)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'pengajuan_trans.id_periodetahun',
+                'pengajuan_trans.id_periodetipe',
+            )
+            ->count();
+
+        if ($cek_edit_cuti == 0) {
+            #cek nilai dan sks
+            $data_sks = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                ->where('student_record.id_student', $ids)
+                ->where('student_record.status', 'TAKEN')
+                ->whereNotIn('student_record.nilai_AKHIR', ['D', 'E'])
+                ->select(DB::raw('SUM(matakuliah.akt_sks_teori + matakuliah.akt_sks_praktek) as sks'))
+                ->first();
+
+            $new = Pengajuan_trans::find($id);
+            $new->id_periodetahun = $request->id_periodetahun;
+            $new->id_periodetipe = $request->id_periodetipe;
+            $new->id_student = $ids;
+            $new->id_kategori_pengajuan = 1;
+            $new->alasan = $request->alasan;
+            $new->cuti_sebelumnya = $request->cuti_sebelumnya;
+            $new->alasan = $request->alasan;
+            $new->sks_ditempuh = $data_sks->sks;
+            $new->alamat = $request->alamat;
+            $new->no_hp = $request->no_hp;
+            $new->save();
+
+            Alert::success('', 'Pengajuan Cuti berhasil diedit')->autoclose(3500);
+            return redirect('cuti_mhs');
+        } else {
+            Alert::warning('', 'Maaf Pengajuan Cuti tidak boleh di Tahun Akademik yang sama')->autoclose(3500);
+            return redirect('cuti_mhs');
+        }
+    }
+
+    public function batal_pengajuan_cuti($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pengajuan Cuti berhasil dihapus')->autoclose(3500);
+        return redirect('cuti_mhs');
+    }
+
+    public function mengundurkan_diri_mhs()
+    {
+        $id = Auth()->user()->id_user;
+
+        $tahun_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tahun = Periode_tahun::where('id_periodetahun', '>=', $tahun_aktif->id_periodetahun)->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 2)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'pengajuan_trans.id_periodetahun',
+                'pengajuan_trans.id_periodetipe',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.alamat',
+                'pengajuan_trans.tgl_pengajuan',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.semester_keluar',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->get();
+
+        return view('mhs/pengajuan/pengajuan_mengundurkan_diri', compact('data', 'tahun', 'tipe'));
+    }
+
+    public function post_pengunduran_diri(Request $request)
+    {
+        $id = Auth()->user()->id_user;
+
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi',
+                'student.intake'
+            )
+            ->first();
+
+        $idangkatan = $datamhs->idangkatan;
+        $idstatus = $datamhs->idstatus;
+        $kodeprodi = $datamhs->kodeprodi;
+        $idprodi = $datamhs->id_prodi;
+        $intake = $datamhs->intake;
+
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $id_tahun = $periode_tahun->id_periodetahun;
+        $id_tipe = $periode_tipe->id_periodetipe;
+
+        //cek semester
+        $sub_thn = substr($periode_tahun->periode_tahun, 6, 2);
+
+        $smt = $sub_thn . $id_tipe;
+
+        if ($smt % 2 != 0) {
+            if ($id_tipe == 1) {
+                //ganjil
+                $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                if ($intake == 2) {
+                    $c = ($b * 2) - 1 - 1;
+                } elseif ($intake == 1) {
+                    $c = ($b * 2) - 1;
+                } // 2 * 2 - 1 = 3
+            } elseif ($id_tipe == 3) {
+                //pendek
+                $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                // $c = ($b * 2);
+                if ($intake == 2) {
+                    $c = $b * 2 - 1;
+                } elseif ($intake == 1) {
+                    $c = $b * 2;
+                }
+            }
+        } else {
+            //genap
+            $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
+            $b = $a - $idangkatan; // 22 - 20 = 2
+            // 2 * 2 = 4
+            if ($intake == 2) {
+                $c = $b * 2 - 1;
+            } elseif ($intake == 1) {
+                $c = $b * 2;
+            }
+        }
+
+        #cek pengajuan 
+        $data_cuti = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 2)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan'
+            )
+            ->count();
+
+        if ($data_cuti == 0) {
+            $new = new Pengajuan_trans;
+            $new->id_periodetahun = $request->id_periodetahun;
+            $new->id_periodetipe = $request->id_periodetipe;
+            $new->id_student = $id;
+            $new->id_kategori_pengajuan = 2;
+            $new->alasan = $request->alasan;
+            $new->no_hp = $request->no_hp;
+            $new->semester_keluar = $c;
+            $new->save();
+
+            Alert::success('', 'Pengajuan Pengunduran Diri berhasil ditambahkan')->autoclose(3500);
+            return redirect('mengundurkan_diri_mhs');
+        } elseif ($data_cuti > 0) {
+            Alert::warning('', 'Maaf anda telah mengajukan Pengunduran diri sebelumnya')->autoclose(3500);
+            return redirect('mengundurkan_diri_mhs');
+        }
+    }
+
+    public function put_pengajuan_resign(Request $request, $id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $new = Pengajuan_trans::find($id);
+        $new->id_periodetahun = $request->id_periodetahun;
+        $new->id_periodetipe = $request->id_periodetipe;
+        $new->id_student = $ids;
+        $new->id_kategori_pengajuan = 2;
+        $new->alasan = $request->alasan;
+        $new->no_hp = $request->no_hp;
+        $new->save();
+
+        Alert::success('', 'Pengajuan Pengunduran Diri berhasil diedit')->autoclose(3500);
+        return redirect('mengundurkan_diri_mhs');
+    }
+
+    public function batal_pengajuan_resign($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pengajuan Pengunduran Diri berhasil dihapus')->autoclose(3500);
+        return redirect('mengundurkan_diri_mhs');
+    }
+
+    public function perpindahan_kelas_mhs()
+    {
+        $id = Auth()->user()->id_user;
+
+        $tahun_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tahun = Periode_tahun::where('id_periodetahun', '>=', $tahun_aktif->id_periodetahun)->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+
+        $kelas = Kelas::orderBy('kelas', 'ASC')->get();
+
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi',
+                'student.intake'
+            )
+            ->first();
+
+
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'pengajuan_trans.id_periodetahun',
+                'pengajuan_trans.id_periodetipe',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.kelas_sebelum',
+                'pengajuan_trans.kelas_tujuan',
+                'pengajuan_trans.tgl_pengajuan',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->get();
+
+        return view('mhs/pengajuan/pengajuan_pindah_kelas', compact('kelas', 'data', 'tahun', 'tipe', 'datamhs'));
+    }
+
+    public function post_pindah_kelas(Request $request)
+    {
+        $id = Auth()->user()->id_user;
+        #cek pengajuan 
+        $data_pindah = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+            ->where('pengajuan_trans.id_student', $id)
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan'
+            )
+            ->count();
+
+        if ($data_pindah == 0) {
+            $new = new Pengajuan_trans;
+            $new->id_periodetahun = $request->id_periodetahun;
+            $new->id_periodetipe = $request->id_periodetipe;
+            $new->id_student = $id;
+            $new->id_kategori_pengajuan = 3;
+            $new->alasan = $request->alasan;
+            $new->no_hp = $request->no_hp;
+            $new->kelas_sebelum = $request->kelas_sebelum;
+            $new->kelas_tujuan = $request->kelas_tujuan;
+            $new->save();
+
+            Alert::success('', 'Pengajuan Pindah Kelas berhasil ditambahkan')->autoclose(3500);
+            return redirect('perpindahan_kelas_mhs');
+        } elseif ($data_pindah > 0) {
+            Alert::warning('', 'Maaf anda telah mengajukan Pindah Kelas sebelumnya')->autoclose(3500);
+            return redirect('perpindahan_kelas_mhs');
+        }
+    }
+
+    public function put_pengajuan_pindah_kelas(Request $request, $id)
+    {
+        $ids = Auth::user()->id_user;
+
+        $new = Pengajuan_trans::find($id);
+        $new->id_periodetahun = $request->id_periodetahun;
+        $new->id_periodetipe = $request->id_periodetipe;
+        $new->id_student = $ids;
+        $new->id_kategori_pengajuan = 3;
+        $new->alasan = $request->alasan;
+        $new->no_hp = $request->no_hp;
+        $new->kelas_sebelum = $request->kelas_sebelum;
+        $new->kelas_tujuan = $request->kelas_tujuan;
+        $new->save();
+
+        Alert::success('', 'Pengajuan Pindah Kelas berhasil diedit')->autoclose(3500);
+        return redirect('perpindahan_kelas_mhs');
+    }
+
+    public function batal_pengajuan_pindah_kelas($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['status' => 'NOT ACTIVE']);
+
+        Alert::success('', 'Pengajuan Pindah Kelas berhasil dihapus')->autoclose(3500);
+        return redirect('perpindahan_kelas_mhs');
     }
 }

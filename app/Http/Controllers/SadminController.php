@@ -67,6 +67,8 @@ use App\Kritiksaran_kategori;
 use App\Kritiksaran_transaction;
 use App\Kalender_akademik;
 use App\Konversi_makul;
+use App\Pengajuan_kategori;
+use App\Pengajuan_trans;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -6277,5 +6279,95 @@ class SadminController extends Controller
             return view('sadmin/edom/hasil_absen_edom', compact('data'));
         }
         dd($request);
+    }
+
+    public function master_kategori_pengajuan()
+    {
+        $data = Pengajuan_kategori::where('status', 'ACTIVE')->get();
+
+        return view('sadmin/pengajuan/kategori_pengajuan', compact('data'));
+    }
+
+    public function simpan_kategori_pengajuan(Request $request)
+    {
+        $ang = new Pengajuan_kategori();
+        $ang->kategori = $request->kategori;
+        $ang->created_by = Auth::user()->name;
+        $ang->save();
+
+        Alert::success('', 'Master Kategori Pengajuan berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_kategori_pengajuan');
+    }
+
+    public function master_trans_pengajuan()
+    {
+        $data = Pengajuan_kategori::leftjoin('pengajuan_trans', 'pengajuan_kategori.id_kategori_pengajuan', '=', 'pengajuan_trans.id_kategori_pengajuan')
+            ->select('pengajuan_kategori.id_kategori_pengajuan', 'pengajuan_kategori.kategori', DB::raw('count(pengajuan_trans.id_kategori_pengajuan) as jml_pengajuan'))
+            ->groupBy('pengajuan_kategori.id_kategori_pengajuan', 'pengajuan_kategori.kategori')
+            ->get();
+
+        return view('sadmin/pengajuan/trans_pengajuan', compact('data'));
+    }
+
+    public function cek_trans_pengajuan($id)
+    {
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->where('pengajuan_trans.id_kategori_pengajuan', $id)
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'pengajuan_trans.sks_ditempuh',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.cuti_sebelumnya',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.alamat',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->orderBy('pengajuan_trans.val_baak', 'ASC')
+            ->get();
+
+        $kategori = Pengajuan_kategori::where('id_kategori_pengajuan', $id)->first();
+
+        if ($id == '1') {
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_cuti', compact('data', 'kategori'));
+        } elseif ($id == '2') {
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_undurdiri', compact('data', 'kategori'));
+        } elseif ($id == '3') {
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori'));
+        } elseif ($id == '4') {
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori'));
+        }
+    }
+
+    public function val_pengajuan_baak($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_baak' => 'SUDAH']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function batal_val_pengajuan_baak($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_baak' => 'SUDAH']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
     }
 }

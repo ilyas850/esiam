@@ -51,6 +51,7 @@ use App\Yudisium;
 use App\Wisuda;
 use App\Absen_ujian;
 use App\Permohonan_ujian;
+use App\Pengajuan_trans;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -3780,7 +3781,7 @@ class KaprodiController extends Controller
 
   public function tolak_seminar_pkl($id)
   {
- 
+
     Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['acc_seminar_sidang' => 'TOLAK']);
 
     Alert::success('', 'Berhasil')->autoclose(3500);
@@ -9432,7 +9433,6 @@ class KaprodiController extends Controller
     return redirect()->back();
   }
 
-
   public function pembimbing_skripsi_kprd()
   {
     $id = Auth::user()->id_user;
@@ -9447,11 +9447,138 @@ class KaprodiController extends Controller
       ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
       ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
-      ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+      ->select(
+        DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+        'student.nim',
+        'student.nama',
+        'prodi.prodi',
+        'kelas.kelas',
+        'angkatan.angkatan',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'prausta_setting_relasi.validasi_baak'
+      )
       ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
       ->orderBy('student.nim', 'ASC')
       ->get();
 
     return view('kaprodi/magang_skripsi/pembimbing_skripsi', compact('data'));
+  }
+
+  public function data_cuti_kprd_bim()
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 1)
+      ->where('dosen_pembimbing.id_dosen', $id_dosen)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.sks_ditempuh',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.cuti_sebelumnya',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.alamat',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    return view('kaprodi/pengajuan/data_cuti_mhs_bim', compact('data'));
+  }
+
+  public function val_pengajuan_kprd($id)
+  {
+    Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_dsn_pa' => 'SUDAH']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function batal_val_pengajuan_kprd($id)
+  {
+    Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_dsn_pa' => 'BELUM']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function data_cuti_kprd_prodi()
+  {
+    $id_dosen = Auth::user()->id_user;
+
+    $cekkprd = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('dosen.iddosen', $id_dosen)
+      ->select('dosen.nama', 'dosen.akademik', 'dosen.nik', 'prodi.kodeprodi', 'prodi.prodi')
+      ->first();
+
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', (function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+      ->where('pengajuan_trans.status', 'ACTIVE')
+      ->where('pengajuan_trans.id_kategori_pengajuan', 1)
+      ->where('student.kodeprodi', $cekkprd->kodeprodi)
+      ->select(
+        'pengajuan_trans.id_trans_pengajuan',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe',
+        'student.nim',
+        'student.nama',
+        'kelas.kelas',
+        'prodi.prodi',
+        'pengajuan_trans.sks_ditempuh',
+        'pengajuan_trans.alasan',
+        'pengajuan_trans.cuti_sebelumnya',
+        'pengajuan_trans.no_hp',
+        'pengajuan_trans.alamat',
+        'pengajuan_trans.val_bauk',
+        'pengajuan_trans.val_dsn_pa',
+        'pengajuan_trans.val_baak',
+        'pengajuan_trans.val_kaprodi'
+      )
+      ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+      ->get();
+
+    return view('kaprodi/pengajuan/data_cuti_mhs_prodi', compact('data', 'cekkprd'));
+  }
+
+  public function val_pengajuan_kprd_prd($id)
+  {
+    Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_kaprodi' => 'SUDAH']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function batal_val_pengajuan_kprd_prd($id)
+  {
+    Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_kaprodi' => 'BELUM']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
   }
 }

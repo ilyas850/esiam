@@ -168,7 +168,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('jadwal_magang_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi </a></li>
+            <li><a href="{{ url('jadwal_magang_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Jadwal Magang &
+                    Skripsi </a></li>
             <li class="treeview">
                 <a href="#"><i class="fa fa-circle-o"></i> Pembimbing
                     <span class="pull-right-container">
@@ -177,9 +178,11 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="{{ url('pembimbing_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang</a></li>
-                    <li><a href="{{ url('pembimbing_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> SEMPRO</a>
+                    <li><a href="{{ url('pembimbing_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i>
+                            SEMPRO</a>
                     </li>
-                    <li><a href="{{ url('pembimbing_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a></li>
+                    <li><a href="{{ url('pembimbing_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a>
+                    </li>
                 </ul>
             </li>
             <li class="treeview">
@@ -205,9 +208,11 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ url('bimbingan_magang_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan
                             Magang</a></li>
-                    <li><a href="{{ url('bimbingan_sempro_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan SEMPRO</a>
+                    <li><a href="{{ url('bimbingan_sempro_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan
+                            SEMPRO</a>
                     </li>
-                    <li><a href="{{ url('bimbingan_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan Skripsi</a></li>
+                    <li><a href="{{ url('bimbingan_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Bimbingan
+                            Skripsi</a></li>
                     <li><a href="{{ url('nilai_magang_kprd') }}"><i class="fa fa-circle-o"></i> <span>
                                 Nilai Magang</span></a></li>
                     <li><a href="{{ url('nilai_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> <span>
@@ -233,9 +238,68 @@
                         Prodi</span></a></li>
         </ul>
     </li>
-    <li>
-        <a href="{{ url('data_pengajuan_keringanan_absen_kprd') }}">
-            <i class="fa fa-list"></i> <span>Pengajuan Absen</span>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Master Pengajuan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
         </a>
+        <ul class="treeview-menu">
+            <li>
+                <a href="{{ url('data_pengajuan_keringanan_absen_kprd') }}">
+                    <i class="fa fa-circle-o"></i> <span>Pengajuan Absen</span>
+                </a>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-circle-o"></i> <span>Cuti</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('data_cuti_kprd_bim') }}"><i class="fa fa-circle-o"></i> Mahasiswa
+                            Bimbingan</a></li>
+                    <li><a href="{{ url('data_cuti_kprd_prodi') }}"><i class="fa fa-circle-o"></i> Mahasiswa
+                            Prodi</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-circle-o"></i> <span>Mengundurkan Diri</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('data_mengundurkan_diri_kprd_bim') }}"><i class="fa fa-circle-o"></i>
+                            Mahasiswa Bimbingan</a></li>
+                    <li><a href="{{ url('data_mengundurkan_diri_kprd_prodi') }}"><i class="fa fa-circle-o"></i>
+                            Mahasiswa Prodi</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-circle-o"></i> <span>Pindah Kelas</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('data_pindah_kelas_kprd_bim') }}"><i class="fa fa-circle-o"></i> Mahasiswa
+                            Bimbingan</a></li>
+                    <li><a href="{{ url('data_pindah_kelas_kprd_prodi') }}"><i class="fa fa-circle-o"></i> Mahasiswa
+                            Prodi</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </li>
 </ul>

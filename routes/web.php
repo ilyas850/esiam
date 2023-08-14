@@ -416,13 +416,25 @@ Route::group(['middleware' => 'sadmin'], function () {
     #filter konversi
     Route::post('filter_konversi', 'SadminController@filter_konversi');
 
-    #Download 
+    #Download
     Route::get('download_bap_dosen/{id}', 'SadminController@download_bap_dosen');
     Route::get('download_absensi_mhs/{id}', 'SadminController@download_absensi_mhs');
 
     #Report Absen EDOM
     Route::get('absen_edom', 'SadminController@absen_edom');
     Route::post('report_absen_edom', 'SadminController@report_absen_edom');
+
+    #master kategori pengajuan
+    Route::get('master_kategori_pengajuan', 'SadminController@master_kategori_pengajuan');
+    Route::post('simpan_kategori_pengajuan', 'SadminController@simpan_kategori_pengajuan');
+
+    #transaction pengajuan
+    Route::get('master_trans_pengajuan', 'SadminController@master_trans_pengajuan');
+    Route::get('cek_trans_pengajuan/{id}', 'SadminController@cek_trans_pengajuan');
+
+    #validasi pengajuan BAAK
+    Route::get('val_pengajuan_baak/{id}', 'SadminController@val_pengajuan_baak');
+    Route::get('batal_val_pengajuan_baak/{id}', 'SadminController@batal_val_pengajuan_baak');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -506,7 +518,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('tolak_seminar_pkl/{id}', 'DosenController@tolak_seminar_pkl');
     route::put('komentar_bimbingan/{id}', 'DosenController@komentar_bimbingan');
 
-    //penguji PKL
+    #penguji PKL
     Route::get('penguji_pkl', 'DosenController@penguji_pkl');
     Route::get('isi_form_nilai_pkl/{id}', 'DosenController@isi_form_nilai_pkl');
     Route::post('simpan_nilai_prakerin', 'DosenController@simpan_nilai_prakerin');
@@ -619,6 +631,17 @@ Route::group(['middleware' => 'dosen'], function () {
     #SK Mengajar
     Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
     Route::get('unduh_lkd_dosen_dlm/{id}', 'DosenController@unduh_lkd_dosen_dlm');
+
+    #data cuti
+    Route::get('data_cuti_dsn_pa', 'DosenController@data_cuti_dsn_pa');
+    Route::get('val_pengajuan_dsn_pa/{id}', 'DosenController@val_pengajuan_dsn_pa');
+    Route::get('batal_val_pengajuan_dsn_pa/{id}', 'DosenController@batal_val_pengajuan_dsn_pa');
+
+    #data mengundurkan diri
+    Route::get('data_mengundurkan_diri_dsn_pa', 'DosenController@data_mengundurkan_diri_dsn_pa');
+
+    #data pindah kelas
+    Route::get('data_pindah_kelas_dsn_pa', 'DosenController@data_pindah_kelas_dsn_pa');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -641,7 +664,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('lihat_semua', 'MhsController@lihat_semua');
     Route::get('lihat/{id}', 'MhsController@lihat');
 
-    //isi KRS
+    #isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');
     // Route::get('input_krs', 'KrsController@input_krs');
 
@@ -675,7 +698,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('pedoman_akademik', 'MhsController@pedoman_akademik');
     Route::get('download/{id}', 'MhsController@download_pedoman');
 
-    //praUSTA
+    #PraUSTA
     Route::get('seminar_prakerin', 'PraustaController@seminar_prakerin');
     Route::get('pengajuan_seminar_prakerin/{id}', 'PraustaController@pengajuan_seminar_prakerin');
     Route::post('simpan_ajuan_prakerin', 'PraustaController@simpan_ajuan_prakerin');
@@ -851,6 +874,24 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('beasiswa_mhs', 'MhsController@beasiswa_mhs');
     Route::get('pengajuan_beasiswa', 'MhsController@pengajuan_beasiswa');
     Route::post('save_pengajuan_beasiswa', 'MhsController@save_pengajuan_beasiswa');
+
+    #pengajuan cuti
+    Route::get('cuti_mhs', 'MhsController@cuti_mhs');
+    Route::post('post_pengajuan_cuti', 'MhsController@post_pengajuan_cuti');
+    Route::put('put_pengajuan_cuti/{id}', 'MhsController@put_pengajuan_cuti');
+    Route::get('batal_pengajuan_cuti/{id}', 'MhsController@batal_pengajuan_cuti');
+
+    #pengajuan mengundurkan diri
+    Route::get('mengundurkan_diri_mhs', 'MhsController@mengundurkan_diri_mhs');
+    Route::post('post_pengunduran_diri', 'MhsController@post_pengunduran_diri');
+    Route::put('put_pengajuan_resign/{id}', 'MhsController@put_pengajuan_resign');
+    Route::get('batal_pengajuan_resign/{id}', 'MhsController@batal_pengajuan_resign');
+
+    #pengajuan pindah kelas
+    Route::get('perpindahan_kelas_mhs', 'MhsController@perpindahan_kelas_mhs');
+    Route::post('post_pindah_kelas', 'MhsController@post_pindah_kelas');
+    Route::put('put_pengajuan_pindah_kelas/{id}', 'MhsController@put_pengajuan_pindah_kelas');
+    Route::get('batal_pengajuan_pindah_kelas/{id}', 'MhsController@batal_pengajuan_pindah_kelas');
 
     #bimbingan perwalian
     Route::get('bim_perwalian', 'MhsController@bim_perwalian');
@@ -1040,7 +1081,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('lihat_semua_kprd', 'KaprodiController@lihat_semua_kprd');
     Route::get('lihat_kprd/{id}', 'KaprodiController@lihat_kprd');
 
-    //master data
+    #master data
     Route::get('mhs_aktif', 'KaprodiController@mhs_aktif');
     Route::get('export_data_mhs', 'KaprodiController@export_data_mhs_aktif');
     Route::post('cari_mhs_aktif', 'KaprodiController@cari_mhs_aktif');
@@ -1052,7 +1093,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('export_nilai_ipk_kprd', 'KaprodiController@export_nilai_ipk_kprd');
     Route::post('export_nilai_ipk_prodi', 'KaprodiController@export_nilai_ipk_prodi');
 
-    //mahasiswa bimbingan
+    #mahasiswa bimbingan
     Route::get('mhs_bim_kprd', 'KaprodiController@mhs_bim');
     Route::get('record_nilai_kprd/{id}', 'KaprodiController@record_nilai');
 
@@ -1218,8 +1259,6 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('edit_nilai_ta_by_dospeng2_kprd/{id}', 'KaprodiController@edit_nilai_ta_by_dospeng2_kprd');
     Route::post('put_nilai_ta_dospeng2_kprd', 'KaprodiController@put_nilai_ta_dospeng2_kprd');
 
-    #
-
     //monitoring prausta
     Route::get('bimbingan_prakerin', 'KaprodiController@bimbingan_prakerin');
     Route::get('detail_bim_prakerin/{id}', 'KaprodiController@detail_bim_prakerin');
@@ -1330,7 +1369,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::put('komentar_bimbingan_sempro_skripsi_kprd/{id}', 'KaprodiController@komentar_bimbingan_sempro_skripsi_kprd');
     Route::get('acc_sempro_skripsi_kprd/{id}', 'KaprodiController@acc_sempro_skripsi_kprd');
 
-    #pembimbing Skripsi 
+    #pembimbing Skripsi
     Route::get('pembimbing_skripsi_kprd', 'KaprodiController@pembimbing_skripsi_kprd');
 
     #penguji magang
@@ -1349,6 +1388,22 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('nilai_magang_kprd', 'KaprodiController@nilai_magang_kprd');
     Route::get('nilai_sempro_skripsi_kprd', 'KaprodiController@nilai_sempro_skripsi_kprd');
     Route::get('nilai_skripsi_kprd', 'KaprodiController@nilai_skripsi_kprd');
+
+    #data cuti
+    Route::get('data_cuti_kprd_bim', 'KaprodiController@data_cuti_kprd_bim');
+    Route::get('val_pengajuan_kprd/{id}', 'KaprodiController@val_pengajuan_kprd');
+    Route::get('batal_val_pengajuan_kprd/{id}', 'KaprodiController@batal_val_pengajuan_kprd');
+
+    #data cuti mhs prodi
+    Route::get('data_cuti_kprd_prodi', 'KaprodiController@data_cuti_kprd_prodi');
+    Route::get('val_pengajuan_kprd_prd/{id}', 'KaprodiController@val_pengajuan_kprd_prd');
+    Route::get('batal_val_pengajuan_kprd_prd/{id}', 'KaprodiController@batal_val_pengajuan_kprd_prd');
+
+    #data mengundurkan diri
+    Route::get('data_mengundurkan_diri_dsn_pa', 'KaprodiController@data_mengundurkan_diri_dsn_pa');
+
+    #data pindah kelas
+    Route::get('data_pindah_kelas_dsn_pa', 'KaprodiController@data_pindah_kelas_dsn_pa');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
@@ -1482,10 +1537,9 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('validate_nilai_magang/{id}', 'AdminPraustaController@validate_nilai_magang');
     Route::get('unvalidate_nilai_magang/{id}', 'AdminPraustaController@unvalidate_nilai_magang');
 
-
     //Nilai Tugas Akhir dan Skripsi
     Route::get('nilai_ta_skripsi', 'AdminPraustaController@nilai_ta_skripsi');
-    
+
     Route::get('data_nilai_ta_mahasiswa', 'AdminPraustaController@data_nilai_ta_mahasiswa');
     Route::get('data_nilai_skripsi_mahasiswa', 'AdminPraustaController@data_nilai_skripsi_mahasiswa');
     Route::post('filter_nilai_skripsi_use_prodi', 'AdminPraustaController@filter_nilai_skripsi_use_prodi');
@@ -1500,17 +1554,16 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('bap_pkl_magang', 'AdminPraustaController@bap_pkl_magang');
     Route::get('data_bap_pkl_mahasiswa', 'AdminPraustaController@data_bap_pkl_mahasiswa');
     Route::post('filter_bap_pkl_use_prodi', 'AdminPraustaController@filter_bap_pkl_use_prodi');
-    
+
     Route::get('data_bap_magang_mahasiswa', 'AdminPraustaController@data_bap_magang_mahasiswa');
     Route::post('filter_bap_magang_use_prodi', 'AdminPraustaController@filter_bap_magang_use_prodi');
-    
+
     Route::get('bap_ta_skripsi', 'AdminPraustaController@bap_ta_skripsi');
     Route::get('data_bap_ta_mahasiswa', 'AdminPraustaController@data_bap_ta_mahasiswa');
     Route::post('filter_bap_ta_use_prodi', 'AdminPraustaController@filter_bap_ta_use_prodi');
 
     Route::get('data_bap_skripsi_mahasiswa', 'AdminPraustaController@data_bap_skripsi_mahasiswa');
     Route::post('filter_bap_skripsi_use_prodi', 'AdminPraustaController@filter_bap_skripsi_use_prodi');
-
 
     Route::get('nilai_prausta', 'PraustaController@nilai_prausta');
     Route::post('kode_prausta', 'PraustaController@kode_prausta');
@@ -1531,7 +1584,6 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('atur_sempro/{id}', 'AdminPraustaController@atur_sempro');
     Route::post('simpan_atur_sempro', 'AdminPraustaController@simpan_atur_sempro');
 
-    
     Route::get('atur_ta/{id}', 'AdminPraustaController@atur_ta');
     Route::post('simpan_atur_ta', 'AdminPraustaController@simpan_atur_ta');
 
@@ -1549,7 +1601,6 @@ Route::group(['middleware' => 'prausta'], function () {
 
     //nilai prakerin
     Route::get('nilai_prakerin', 'AdminPraustaController@nilai_prakerin');
-   
 
     //nilai sempro
     Route::get('nilai_sempro', 'AdminPraustaController@nilai_sempro');
@@ -1611,7 +1662,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('validasi_pkl_magang', 'AdminPraustaController@validasi_pkl_magang');
     Route::get('data_val_pkl_mahasiswa', 'AdminPraustaController@data_val_pkl_mahasiswa');
     Route::get('data_val_magang_mahasiswa', 'AdminPraustaController@data_val_magang_mahasiswa');
-   
+
     Route::get('validasi_sempro', 'AdminPraustaController@validasi_sempro');
 
     Route::get('validasi_ta_skripsi', 'AdminPraustaController@validasi_ta_skripsi');
@@ -1640,7 +1691,6 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_honor_skripsi_mahasiswa', 'AdminPraustaController@data_honor_skripsi_mahasiswa');
     Route::post('filter_honor_skripsi', 'AdminPraustaController@filter_honor_skripsi');
 
-
     Route::get('validate_nilai_sempro/{id}', 'AdminPraustaController@validate_nilai_sempro');
     Route::get('unvalidate_nilai_sempro/{id}', 'AdminPraustaController@unvalidate_nilai_sempro');
 
@@ -1663,8 +1713,6 @@ Route::group(['middleware' => 'prausta'], function () {
 
     Route::post('filter_bap_prakerin_use_prodi', 'AdminPraustaController@filter_bap_prakerin_use_prodi');
     Route::post('filter_bap_sempro_use_prodi', 'AdminPraustaController@filter_bap_sempro_use_prodi');
-    
-
 
     Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
     Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
@@ -1679,8 +1727,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('waktu_ta', 'AdminPraustaController@waktu_ta');
 
     //honor prausta
-    
-    
+
     Route::get('honor_ta', 'AdminPraustaController@honor_ta');
     Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
 });
@@ -1718,8 +1765,7 @@ Route::group(['middleware' => 'bauk'], function () {
 
     Route::get('stop_waktu_penangguhan/{id}', 'BaukController@stop_waktu_penangguhan');
 
-
-    //waktu beasiswa
+    #waktu beasiswa
     Route::get('waktu_beasiswa', 'BaukController@waktu_beasiswa');
     Route::post('simpan_waktu_pengajuan_beasiswa', 'BaukController@simpan_waktu_pengajuan_beasiswa');
     Route::post('edit_time_pengajuan_beasiswa', 'BaukController@edit_time_pengajuan_beasiswa');
@@ -1739,10 +1785,18 @@ Route::group(['middleware' => 'bauk'], function () {
     Route::get('min_biaya', 'BaukController@min_biaya');
     Route::post('post_min_biaya', 'BaukController@post_min_biaya');
 
+    #data cuti
+    Route::get('data_cuti_bauk', 'BaukController@data_cuti_bauk');
+    Route::get('validasi_pengajuan_cuti_bauk/{id}', 'BaukController@validasi_pengajuan_cuti_bauk');
+    Route::get('batal_validasi_pengajuan_cuti_bauk/{id}', 'BaukController@batal_validasi_pengajuan_cuti_bauk');
+
+    #data mengundurkan diri
+    Route::get('data_mengundurkan_diri_bauk', 'BaukController@data_mengundurkan_diri_bauk');
+
+    #data pindah kelas
+    Route::get('data_pindah_kelas_bauk', 'BaukController@data_pindah_kelas_bauk');
+
     Route::post('/simpan-otomatis', 'BaukController@store')->name('simpan-otomatis');
-
-    
-
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

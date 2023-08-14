@@ -202,6 +202,20 @@
             <li><a href="/master_trans_penangguhan"><i class="fa fa-circle-o"></i> Data Penangguhan</a></li>
         </ul>
     </li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-th"></i> <span>Master Pengajuan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/master_kategori_pengajuan"><i class="fa fa-circle-o"></i> Kategori Pengajuan</a></li>
+            <li><a href="/master_trans_pengajuan"><i class="fa fa-circle-o"></i> Data Pengajuan</a></li>
+        </ul>
+    </li>
+
     <li class="treeview">
         <a href="#">
             <i class="fa fa-th"></i> <span>Master Kuisioner</span>

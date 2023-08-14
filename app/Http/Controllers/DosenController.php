@@ -55,6 +55,7 @@ use App\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Pertemuan;
 use App\Sk_pengajaran;
+use App\Pengajuan_trans;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -2814,7 +2815,7 @@ class DosenController extends Controller
         $iddsn = Auth::user()->id_user;
 
         $mkul = DB::select('CALL history_makul_diampu_new(?)', [$iddsn]);
-
+        
         return view('dosen/history_makul_dsn', ['makul' => $mkul]);
     }
 
@@ -5970,12 +5971,138 @@ class DosenController extends Controller
         $id = Auth::user()->id_user;
 
         $data = DB::select('CALL lkd_makul(?)', [$id]);
-       
+
         return view('dosen/pengajaran/sk_pengajaran', compact('data'));
     }
 
     public function unduh_lkd_dosen_dlm($id)
     {
+    }
+
+    public function data_cuti_dsn_pa()
+    {
+        $id_dosen = Auth::user()->id_user;
         
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 1)
+            ->where('dosen_pembimbing.id_dosen', $id_dosen)
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'pengajuan_trans.sks_ditempuh',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.cuti_sebelumnya',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.alamat',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+            ->get();
+
+        return view('dosen/pengajuan/data_cuti', compact('data'));
+    }
+
+    public function val_pengajuan_dsn_pa($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_dsn_pa' => 'SUDAH']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function batal_val_pengajuan_dsn_pa($id)
+    {
+        Pengajuan_trans::where('id_trans_pengajuan', $id)->update(['val_dsn_pa' => 'BELUM']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    public function data_mengundurkan_diri_dsn_pa()
+    {
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 2)
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'pengajuan_trans.semester_keluar',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+            ->get();
+
+        return view('dosen/pengajuan/data_mengundurkan_diri', compact('data'));
+    }
+
+    public function data_pindah_kelas_dsn_pa()
+    {
+        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('pengajuan_trans.status', 'ACTIVE')
+            ->where('pengajuan_trans.id_kategori_pengajuan', 3)
+            ->select(
+                'pengajuan_trans.id_trans_pengajuan',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'student.nim',
+                'student.nama',
+                'kelas.kelas',
+                'prodi.prodi',
+                'pengajuan_trans.kelas_sebelum',
+                'pengajuan_trans.kelas_tujuan',
+                'pengajuan_trans.alasan',
+                'pengajuan_trans.no_hp',
+                'pengajuan_trans.val_bauk',
+                'pengajuan_trans.val_dsn_pa',
+                'pengajuan_trans.val_baak',
+                'pengajuan_trans.val_kaprodi'
+            )
+            ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
+            ->get();
+
+        $kelas = Kelas::orderBy('kelas', 'ASC')->get();
+
+        return view('dosen/pengajuan/data_pindah_kelas', compact('data', 'kelas'));
     }
 }

@@ -83,10 +83,27 @@
             <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang</a></li>
         </ul>
     </li>
-    <li>
-        <a href="{{ url('data_pengajuan_keringanan_absen_dlm') }}">
-            <i class="fa fa-list"></i> <span>Pengajuan Absen</span>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-list"></i> <span>Master Pengajuan</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
         </a>
+        <ul class="treeview-menu">
+            <li>
+                <a href="{{ url('data_pengajuan_keringanan_absen_dlm') }}">
+                    <i class="fa fa-circle-o"></i> <span>Pengajuan Absen</span>
+                </a>
+            </li>
+            <li><a href="{{ url('data_cuti_dsn_pa') }}"><i class="fa fa-circle-o"></i> <span>Cuti</span></a>
+            </li>
+            <li><a href="{{ url('data_mengundurkan_diri_dsn_pa') }}"><i class="fa fa-circle-o"></i> <span>Mengundurkan
+                        diri</span></a></li>
+            <li><a href="{{ url('data_pindah_kelas_dsn_pa') }}"><i class="fa fa-circle-o"></i> <span>Pindah
+                        Kelas</span></a></li>
+        </ul>
     </li>
     {{-- <li class="treeview">
         <a href="#">

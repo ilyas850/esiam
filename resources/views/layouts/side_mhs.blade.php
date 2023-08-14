@@ -151,6 +151,12 @@
             </li>
             <li><a href="{{ url('beasiswa_mhs') }}"><i class="fa fa-circle-o"></i> <span>Beasiswa</span></a>
             </li>
+            <li><a href="{{ url('cuti_mhs') }}"><i class="fa fa-circle-o"></i> <span>Cuti</span></a>
+            </li>
+            <li><a href="{{ url('mengundurkan_diri_mhs') }}"><i class="fa fa-circle-o"></i> <span>Mengundurkan Diri</span></a>
+            </li>
+            <li><a href="{{ url('perpindahan_kelas_mhs') }}"><i class="fa fa-circle-o"></i> <span>Pindah Kelas</span></a>
+            </li>
         </ul>
     </li>
     <li><a href="{{ url('kuisioner') }}"><i class="fa fa-pencil-square-o"></i> <span>Kuisioner</span></a>
