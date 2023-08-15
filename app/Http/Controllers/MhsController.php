@@ -3617,7 +3617,7 @@ class MhsController extends Controller
                 'nik' => 'required',
                 'file_ijazah'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
                 'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
-                'file_foto'     => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                // 'file_foto'     => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
             ],
             $message,
         );
@@ -3645,13 +3645,13 @@ class MhsController extends Controller
             $bap->file_ktp = $nama_file;
         }
 
-        if ($request->hasFile('file_foto')) {
-            $file = $request->file('file_foto');
-            $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
-            $tujuan_upload = 'File Yudisium/' . $request->id_student;
-            $file->move($tujuan_upload, $nama_file);
-            $bap->file_foto = $nama_file;
-        }
+        // if ($request->hasFile('file_foto')) {
+        //     $file = $request->file('file_foto');
+        //     $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+        //     $tujuan_upload = 'File Yudisium/' . $request->id_student;
+        //     $file->move($tujuan_upload, $nama_file);
+        //     $bap->file_foto = $nama_file;
+        // }
 
         $bap->save();
 
@@ -3707,24 +3707,24 @@ class MhsController extends Controller
             }
         }
 
-        if ($bap->file_foto) {
-            if ($request->hasFile('file_foto')) {
-                File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_foto);
-                $file = $request->file('file_foto');
-                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_foto = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_foto')) {
-                $file = $request->file('file_foto');
-                $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $bap->file_foto = $nama_file;
-            }
-        }
+        // if ($bap->file_foto) {
+        //     if ($request->hasFile('file_foto')) {
+        //         File::delete('File Yudisium/' . Auth::user()->id_user . '/' . $bap->file_foto);
+        //         $file = $request->file('file_foto');
+        //         $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $bap->file_foto = $nama_file;
+        //     }
+        // } else {
+        //     if ($request->hasFile('file_foto')) {
+        //         $file = $request->file('file_foto');
+        //         $nama_file = 'File Foto' . '-' . $request->nama_lengkap . '-' . $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Yudisium/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $bap->file_foto = $nama_file;
+        //     }
+        // }
 
         $bap->save();
 

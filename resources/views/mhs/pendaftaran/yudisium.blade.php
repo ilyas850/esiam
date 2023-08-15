@@ -54,11 +54,11 @@
                             <input type="file" class="form-control" name="file_ktp" required>
                             <span>File size max. 4mb dan format file .jpg</span>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>File Foto</label>
                             <input type="file" class="form-control" name="file_foto" required>
                             <span>File size max. 4mb dan format file .jpg</span>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="form-group">
                         <div class="box-footer">

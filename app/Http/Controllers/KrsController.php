@@ -193,7 +193,7 @@ class KrsController extends Controller
       $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
-      
+
       //test lagi
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 20 / 100)) - $total_semua_dibayar;
@@ -238,7 +238,7 @@ class KrsController extends Controller
       } elseif ($c == 14) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13) - $total_semua_dibayar;
       }
-      
+
       if ($cekbyr < 0 or $cekbyr == 0) {
 
         //data KRS yang diambil
@@ -451,7 +451,7 @@ class KrsController extends Controller
         alert()->warning('Anda tidak dapat melakukan KRS karena Anda belum memiliki konsentrasi', 'Hubungi Prodi masing-masing')->autoclose(5000);
         return redirect()->back();
       } else {
-        
+
         if ($tipe == 3) {
           $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
             ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
@@ -534,6 +534,7 @@ class KrsController extends Controller
       }
     } elseif ($kodeprodi == 24) {
       if ($tipe == 3) {
+
         $add_krs = Kurikulum_transaction::join('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
           ->join('kurikulum_periode', 'matakuliah_bom.slave_idmakul', '=', 'kurikulum_periode.id_makul')
           ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -548,7 +549,7 @@ class KrsController extends Controller
           ->where('kurikulum_transaction.id_angkatan', $idangkatan)
           ->where('kurikulum_periode.status', 'ACTIVE')
           ->where('matakuliah_bom.status', 'ACTIVE');
-
+       
         $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
           ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
           ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -587,7 +588,7 @@ class KrsController extends Controller
           ->where('kurikulum_periode.status', 'ACTIVE')
           ->where('kurikulum_transaction.pelaksanaan_paket', 'OPEN')
           ->where('matakuliah_bom.status', 'ACTIVE');
-
+         
         $final_krs = Kurikulum_transaction::leftjoin('matakuliah_bom', 'kurikulum_transaction.id_makul', '=', 'matakuliah_bom.master_idmakul')
           ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
           ->join('semester', 'kurikulum_transaction.id_semester', '=', 'semester.idsemester')

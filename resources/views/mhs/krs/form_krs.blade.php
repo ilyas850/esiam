@@ -22,8 +22,9 @@
                                             <center>Pilih</center>
                                         </th>
                                         <th>Semester</th>
-                                        <th>Kode</th>
+                                        
                                         <th>Matakuliah</th>
+                                        <th>SKS</th>
                                         <th>Dosen</th>
                                     </tr>
                                 </thead>
@@ -37,8 +38,9 @@
                                                 </center>
                                             </td>
                                             <td>{{ $item->semester }}</td>
-                                            <td>{{ $item->kode }}</td>
-                                            <td>{{ $item->makul }}</td>
+                                            
+                                            <td>{{ $item->kode }} - {{ $item->makul }}</td>
+                                            <td></td>
                                             <td>{{ $item->nama }}</td>
 
                                         </tr>
