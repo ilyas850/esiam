@@ -1727,7 +1727,7 @@ class MhsController extends Controller
             ->first();
 
         $dosen_ta = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.id_student', $id)
             ->select('dosen.nama')
             ->first();
@@ -3497,7 +3497,7 @@ class MhsController extends Controller
         if ($hasil_semua < 0 or $hasil_semua == 0) {
             $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select(
@@ -5579,7 +5579,7 @@ class MhsController extends Controller
         } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                 ->where('prausta_setting_relasi.id_student', $ids)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -5596,7 +5596,7 @@ class MhsController extends Controller
                             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                     }))
                     ->where('student.idstudent', $ids)
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
                     ->first();
 
@@ -5708,7 +5708,7 @@ class MhsController extends Controller
         } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                 ->where('prausta_setting_relasi.id_student', $ids)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -5732,7 +5732,7 @@ class MhsController extends Controller
                                 ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                         }))
                         ->where('student.idstudent', $ids)
-                        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                         ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_1')
                         ->first();
 
@@ -5845,7 +5845,7 @@ class MhsController extends Controller
         } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                 ->where('prausta_setting_relasi.id_student', $ids)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -5868,7 +5868,7 @@ class MhsController extends Controller
                                 ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                         }))
                         ->where('student.idstudent', $ids)
-                        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+                        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
                         ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_2')
                         ->first();
 
