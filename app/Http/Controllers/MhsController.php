@@ -1861,10 +1861,10 @@ class MhsController extends Controller
 
         $hasil_krs = count($cek);
 
-        if ($hasil_krs == 0) {
-            Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
-            return redirect('kuisioner');
-        } elseif ($hasil_krs > 0) {
+        // if ($hasil_krs == 0) {
+        //     Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
+        //     return redirect('kuisioner');
+        // } elseif ($hasil_krs > 0) {
             //cek nilai dan file seminar prakerin
             $cekdata_bim = Prausta_setting_relasi::where('prausta_setting_relasi.id_student', $ids)
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
@@ -1922,7 +1922,7 @@ class MhsController extends Controller
                     return view('mhs/kuisioner/kuisioner_dsn_pkl', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
                 }
             }
-        }
+        // }
     }
 
     public function save_kuisioner_dsn_pkl(Request $request)
@@ -1989,10 +1989,10 @@ class MhsController extends Controller
 
         $hasil_krs = count($cek);
 
-        if ($hasil_krs == 0) {
-            Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
-            return redirect('kuisioner');
-        } elseif ($hasil_krs > 0) {
+        // if ($hasil_krs == 0) {
+        //     Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
+        //     return redirect('kuisioner');
+        // } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -2051,7 +2051,7 @@ class MhsController extends Controller
                     return view('mhs/kuisioner/kuisioner_dsn_ta', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
                 }
             }
-        }
+        // }
     }
 
     public function save_kuisioner_dsn_ta(Request $request)
@@ -2118,10 +2118,10 @@ class MhsController extends Controller
 
         $hasil_krs = count($cek);
 
-        if ($hasil_krs == 0) {
-            Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
-            return redirect('kuisioner');
-        } elseif ($hasil_krs > 0) {
+        // if ($hasil_krs == 0) {
+        //     Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
+        //     return redirect('kuisioner');
+        // } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -2188,7 +2188,7 @@ class MhsController extends Controller
                     }
                 }
             }
-        }
+        // }
     }
 
     public function save_kuisioner_dsn_ta_peng1(Request $request)
@@ -2255,10 +2255,10 @@ class MhsController extends Controller
 
         $hasil_krs = count($cek);
 
-        if ($hasil_krs == 0) {
-            Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
-            return redirect('kuisioner');
-        } elseif ($hasil_krs > 0) {
+        // if ($hasil_krs == 0) {
+        //     Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
+        //     return redirect('kuisioner');
+        // } elseif ($hasil_krs > 0) {
             $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
@@ -2324,7 +2324,7 @@ class MhsController extends Controller
                     }
                 }
             }
-        }
+        // }
     }
 
     public function save_kuisioner_dsn_ta_peng2(Request $request)
@@ -5445,10 +5445,10 @@ class MhsController extends Controller
 
         $hasil_krs = count($cek);
 
-        if ($hasil_krs == 0) {
-            Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
-            return redirect('kuisioner_mahasiswa');
-        } elseif ($hasil_krs > 0) {
+        // if ($hasil_krs == 0) {
+        //     Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
+        //     return redirect('kuisioner_mahasiswa');
+        // } elseif ($hasil_krs > 0) {
             //cek nilai dan file seminar prakerin
             $cekdata_bim = Prausta_setting_relasi::where('prausta_setting_relasi.id_student', $ids)
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
@@ -5506,7 +5506,7 @@ class MhsController extends Controller
                     return view('mhs/kuisioner_new/kuisioner_dsn_pkl', compact('data', 'prodi', 'nama_dsn', 'periodetahun', 'periodetipe', 'ids', 'idthn', 'idtp', 'id_dsn'));
                 }
             }
-        }
+        // }
     }
 
     public function save_kuisioner_dsn_pkl_new(Request $request)
