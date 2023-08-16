@@ -1218,6 +1218,7 @@ class PraustaController extends Controller
                         ->where('kuitansi.idstudent', $id)
                         ->where('bayar.iditem', 15)
                         ->sum('bayar.bayar');
+                        
                 } elseif ($cek_study->study_year == 4) {
 
                     $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')

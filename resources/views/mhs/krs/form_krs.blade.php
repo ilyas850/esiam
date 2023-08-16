@@ -21,11 +21,19 @@
                                         <th>
                                             <center>Pilih</center>
                                         </th>
-                                        <th>Semester</th>
-                                        
-                                        <th>Matakuliah</th>
-                                        <th>SKS</th>
-                                        <th>Dosen</th>
+                                        <th>
+                                            <center>Semester</center>
+                                        </th>
+
+                                        <th>
+                                            <center>Matakuliah</center>
+                                        </th>
+                                        <th>
+                                            <center>SKS (T/P)</center>
+                                        </th>
+                                        <th>
+                                            <center>Dosen</center>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -34,13 +42,15 @@
                                             <td>
                                                 <center>
                                                     <input type="checkbox" name="id_kurperiode[]"
-                                                        value="{{ $item->id_kurperiode }},{{ $item->idkurtrans }}">
+                                                        value="{{ $item->id_kurperiode }},{{ $item->idkurtrans }},{{ $item->akt_sks_teori + $item->akt_sks_praktek }}">
+
                                                 </center>
                                             </td>
-                                            <td>{{ $item->semester }}</td>
-                                            
+                                            <td align="center">{{ $item->semester }}</td>
+
                                             <td>{{ $item->kode }} - {{ $item->makul }}</td>
-                                            <td></td>
+                                            <td align="center">{{ $item->akt_sks_teori }} / {{ $item->akt_sks_praktek }}
+                                            </td>
                                             <td>{{ $item->nama }}</td>
 
                                         </tr>
