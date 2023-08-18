@@ -918,6 +918,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::put('edit_bimbingan_magang/{id}', 'MagangSkripsiController@edit_bimbingan_magang');
     Route::get('download_bimbingan_magang_mhs/{id}', 'MagangSkripsiController@download_bimbingan_magang_mhs');
     Route::post('ajukan_seminar_magang', 'MagangSkripsiController@ajukan_seminar_magang');
+    Route::post('simpan_draft_magang', 'MagangSkripsiController@simpan_draft_magang');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {

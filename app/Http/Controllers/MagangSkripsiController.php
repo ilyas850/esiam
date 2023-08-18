@@ -361,6 +361,41 @@ class MagangSkripsiController extends Controller
         return redirect('magang_mhs');
     }
 
+    public function simpan_draft_magang(Request $request)
+    {
+        $this->validate($request, [
+            'file_laporan_revisi' => 'mimes:pdf|max:6000',
+        ]);
+
+        $id = $request->id_settingrelasi_prausta;
+
+        $bap = Prausta_setting_relasi::find($id);
+
+        if ($bap->file_laporan_revisi) {
+            if ($request->hasFile('file_laporan_revisi')) {
+                File::delete('File Laporan Revisi/' . Auth::user()->id_user . '/' . $bap->file_laporan_revisi);
+                $file = $request->file('file_laporan_revisi');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Laporan Revisi/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_laporan_revisi = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_laporan_revisi')) {
+                $file = $request->file('file_laporan_revisi');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Laporan Revisi/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_laporan_revisi = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect('magang_mhs');
+    }
+
     public function pembimbing_magang()
     {
         $id = Auth::user()->id_user;

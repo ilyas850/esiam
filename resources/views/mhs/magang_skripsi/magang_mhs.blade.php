@@ -380,7 +380,7 @@
                                                                                 <input type="file"
                                                                                     name="file_bimbingan"
                                                                                     class="form-control"><a
-                                                                                    href="/File Bimbingan PKL/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
+                                                                                    href="/File Bimbingan Magang/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                                     target="_blank">
                                                                                     {{ $key->file_bimbingan }}</a>
                                                                             </div>
@@ -508,8 +508,8 @@
                                                 @if ($data->validasi_baak == 'BELUM')
                                                     <div class="col-md-4">
                                                         <div class="info-box">
-                                                            <form action="{{ url('ajukan_seminar_magang') }}" method="post"
-                                                                enctype="multipart/form-data">
+                                                            <form action="{{ url('ajukan_seminar_magang') }}"
+                                                                method="post" enctype="multipart/form-data">
                                                                 {{ csrf_field() }}
                                                                 <input type="hidden" name="id_settingrelasi_prausta"
                                                                     value="{{ $data->id_settingrelasi_prausta }}">
@@ -674,7 +674,7 @@
                                                     <span class="info-box-icon bg-red"><i
                                                             class="fa fa-files-o"></i></span>
                                                     <div class="info-box-content">
-                                                        <span class="info-box-text">Draft Laporan PKL</span>
+                                                        <span class="info-box-text">Draft Laporan Magang</span>
                                                         <span class="info-box-number">
                                                             @if ($data->file_draft_laporan == null)
                                                                 Belum ada
@@ -689,7 +689,7 @@
                                             @if ($data->validasi_baak == 'BELUM')
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_pkl') }}" method="post"
+                                                        <form action="{{ url('ajukan_seminar_magang') }}" method="post"
                                                             enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
@@ -817,7 +817,7 @@
                                                     @if ($data->validasi_baak == 'BELUM')
                                                         <div class="col-md-4">
                                                             <div class="info-box">
-                                                                <form action="{{ url('simpan_draft_prakerin') }}"
+                                                                <form action="{{ url('simpan_draft_magang') }}"
                                                                     method="post" enctype="multipart/form-data">
                                                                     {{ csrf_field() }}
                                                                     <input type="hidden" name="id_settingrelasi_prausta"
