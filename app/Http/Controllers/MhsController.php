@@ -3292,6 +3292,7 @@ class MhsController extends Controller
 
     public function post_sertifikat(Request $request)
     {
+        
         $this->validate($request, [
             'nama_kegiatan' => 'required',
             'file_sertifikat' => 'mimes:jpeg,jpg,png,JPEG,JPG,PNG|max:4000',

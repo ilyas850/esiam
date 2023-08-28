@@ -13,6 +13,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="/master_chart_akademik"><i class="fa fa-circle-o"></i> Chart Akademik</a></li>
             <li><a href="/master_kalender_akademik"><i class="fa fa-circle-o"></i> Kalender Akademik</a></li>
             <li><a href="/master_kurikulum_standar"><i class="fa fa-circle-o"></i> Kurikulum Standar</a></li>
             <li><a href="/master_angkatan"><i class="fa fa-circle-o"></i> Angkatan</a></li>
@@ -170,6 +171,7 @@
             <li><a href="{{ url('transkrip_nilai_final') }}"><i class="fa fa-circle-o"></i> Transkrip Nilai
                     Final</a></li>
             <li><a href="{{ url('nilai_mhs') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a></li>
+            <li><a href="{{ url('input_nilai_mhs_admin') }}"><i class="fa fa-circle-o"></i> Input Nilai Mahasiswa</a></li>
         </ul>
     </li>
     <li class="treeview">

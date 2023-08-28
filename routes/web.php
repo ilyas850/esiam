@@ -435,6 +435,21 @@ Route::group(['middleware' => 'sadmin'], function () {
     #validasi pengajuan BAAK
     Route::get('val_pengajuan_baak/{id}', 'SadminController@val_pengajuan_baak');
     Route::get('batal_val_pengajuan_baak/{id}', 'SadminController@batal_val_pengajuan_baak');
+
+    #master chart akademik
+    Route::get('master_chart_akademik', 'SadminController@master_chart_akademik');
+
+
+    #input nilai mahasiswa
+    Route::get('input_nilai_mhs_admin', 'SadminController@input_nilai_mhs_admin');
+    Route::get('list_mahasiswa_makul/{id}', 'SadminController@list_mahasiswa_makul');
+    Route::get('input_kat_admin/{id}', 'SadminController@input_kat_admin');
+    Route::post('save_nilai_KAT_admin', 'SadminController@save_nilai_KAT_admin');
+    Route::get('input_uts_admin/{id}', 'SadminController@input_uts_admin');
+    Route::post('save_nilai_UTS_admin', 'SadminController@save_nilai_UTS_admin');
+    Route::get('input_uas_admin/{id}', 'SadminController@input_uas_admin');
+    Route::post('save_nilai_UAS_admin', 'SadminController@save_nilai_UAS_admin');
+    Route::post('generate_nilai_akhir_admin', 'SadminController@generate_nilai_akhir_admin');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -714,7 +729,7 @@ Route::group(['middleware' => 'mhs'], function () {
     //upload draft prakerin
     Route::post('simpan_draft_prakerin', 'PraustaController@simpan_draft_prakerin');
 
-    //seminar proposal
+    #seminar proposal
     Route::get('seminar_proposal', 'PraustaController@seminar_proposal');
     Route::get('pengajuan_seminar_proposal/{id}', 'PraustaController@pengajuan_seminar_proposal');
     Route::post('simpan_ajuan_proposal', 'PraustaController@simpan_ajuan_proposal');
@@ -722,7 +737,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('ajukan_seminar_lagi/{id}', 'PraustaController@ajukan_seminar_lagi');
     Route::put('put_proposal/{id}', 'PraustaController@put_proposal');
 
-    //bimbingan sempro
+    #bimbingan sempro
     Route::post('simpan_bimbingan_sempro', 'PraustaController@simpan_bimbingan_sempro');
     Route::put('edit_bimbingan_sempro/{id}', 'PraustaController@edit_bimbingan_sempro');
 

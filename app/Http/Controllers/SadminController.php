@@ -69,6 +69,7 @@ use App\Kalender_akademik;
 use App\Konversi_makul;
 use App\Pengajuan_kategori;
 use App\Pengajuan_trans;
+use App\Setting_nilai;
 use PhpOffice\PhpWord\TemplateProcessor;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiKHSExport;
@@ -6369,5 +6370,422 @@ class SadminController extends Controller
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    public function master_chart_akademik()
+    {
+        $tahun = Periode_tahun::select('periode_tahun')
+            ->limit(5)
+            ->orderBy('periode_tahun', 'DESC')
+            ->get();
+
+        $dataArray = DB::select('CALL periode_tahun');
+
+
+
+        // dd($dataArray[0]->periode_tahun);
+
+        $periodeTahunArray = array_map(function ($item) {
+            return $item->periode_tahun;
+        }, $dataArray);
+
+        $periodeTahunString = implode(', ', $periodeTahunArray);
+
+        // dd($periodeTahunString);
+
+        $elemen = explode(', ', $periodeTahunString);
+
+        // Mengelilingi masing-masing elemen dengan tanda kutip tunggal
+        $elemenDenganTandaKutip = array_map(function ($item) {
+            return "'" . $item . "'";
+        }, $elemen);
+
+        // Menggabungkan elemen-elemen yang telah dikelilingi tanda kutip
+        $barisHasilTahun = implode(', ', $elemenDenganTandaKutip);
+
+        $labelsArray = explode(', ', $barisHasilTahun);
+
+        $labelsJSON = json_encode($labelsArray);
+
+
+        return view('sadmin/masterakademik/master_chart_akademik', compact('barisHasilTahun', 'dataArray', 'labelsJSON', 'periodeTahunString'));
+    }
+
+
+    public function input_nilai_mhs_admin()
+    {
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $id_tahun = $tahun->id_periodetahun;
+        $id_tipe = $tipe->id_periodetipe;
+
+        $data = DB::select('CALL list_makul_admin(?,?)', [$id_tahun, $id_tipe]);
+
+        return view('sadmin/nilai/input_nilai', compact('data', 'tahun', 'tipe'));
+    }
+
+    public function list_mahasiswa_makul($id)
+    {
+        $nilai = Setting_nilai::where('id_kurperiode', $id)->first();
+
+        $data = DB::select('CALL absen_mahasiswa_new(?)', [$id]);
+
+        return view('sadmin/nilai/list_mahasiswa', compact('data', 'nilai', 'id'));
+    }
+
+    public function input_kat_admin($id)
+    {
+        $data = DB::select('CALL absen_mahasiswa_new(?)', [$id]);
+
+        return view('sadmin/nilai/input_kat', compact('data', 'id'));
+    }
+
+    public function save_nilai_KAT_admin(Request $request)
+    {
+        $jumlahid = $request->id_student;
+        $jmlids = $request->id_studentrecord;
+        $jmlnil = $request->nilai_KAT;
+        $idkurperiode = $request->id_kurperiode;
+
+        $jml = count($jmlnil);
+
+        for ($i = 0; $i < $jml; $i++) {
+            $idstu = $jumlahid[$i];
+            $pisah = explode(',', $idstu, 2);
+            $stu = $pisah[0];
+            $kur = $pisah[1];
+
+            $cekid = Student_record::where('id_student', $stu)
+                ->where('id_kurtrans', $kur)
+                ->select('id_studentrecord')
+                ->get();
+
+            $banyak = count($cekid);
+
+            $nilai = $request->nilai_KAT[$i];
+            $id_kur = $jmlids[$i];
+            $ceknl = $nilai;
+
+            if ($banyak == 1) {
+                if ($ceknl == null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_KAT = 0;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                } elseif ($ceknl != null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_KAT = $nilai;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                }
+            } elseif ($banyak > 1) {
+                if ($ceknl == null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_KAT' => 0,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                } elseif ($ceknl != null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_KAT' => $nilai,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                }
+            }
+        }
+
+        Alert::success('', 'Nilai KAT berhasil dirubah')->autoclose(3500);
+        return redirect('/list_mahasiswa_makul/' . $idkurperiode);
+    }
+
+    public function input_uts_admin($id)
+    {
+        $data = DB::select('CALL absen_mahasiswa_new(?)', [$id]);
+
+        return view('sadmin/nilai/input_uts', compact('data', 'id'));
+    }
+
+    public function save_nilai_UTS_admin(Request $request)
+    {
+        $jumlahid = $request->id_student;
+        $jmlids = $request->id_studentrecord;
+        $jmlnil = $request->nilai_UTS;
+        $idkurperiode = $request->id_kurperiode;
+
+        $jml = count($jmlnil);
+
+        for ($i = 0; $i < $jml; $i++) {
+            $idstu = $jumlahid[$i];
+            $pisah = explode(',', $idstu, 2);
+            $stu = $pisah[0];
+            $kur = $pisah[1];
+
+            $cekid = Student_record::where('id_student', $stu)
+                ->where('id_kurtrans', $kur)
+                ->select('id_studentrecord')
+                ->get();
+
+            $banyak = count($cekid);
+
+            $nilai = $request->nilai_UTS[$i];
+            $id_kur = $jmlids[$i];
+            $ceknl = $nilai;
+
+            if ($banyak == 1) {
+                if ($ceknl == null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_UTS = 0;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                } elseif ($ceknl != null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_UTS = $nilai;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                }
+            } elseif ($banyak > 1) {
+                if ($ceknl == null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_UTS' => 0,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                } elseif ($ceknl != null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_UTS' => $nilai,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                }
+            }
+        }
+
+        Alert::success('', 'Nilai UTS berhasil dirubah')->autoclose(3500);
+        return redirect('/list_mahasiswa_makul/' . $idkurperiode);
+    }
+
+    public function input_uas_admin($id)
+    {
+        $data = DB::select('CALL absen_mahasiswa_new(?)', [$id]);
+
+        return view('sadmin/nilai/input_uas', compact('data', 'id'));
+    }
+
+    public function save_nilai_UAS_admin(Request $request)
+    {
+        $jumlahid = $request->id_student;
+        $jmlids = $request->id_studentrecord;
+        $jmlnil = $request->nilai_UAS;
+        $idkurperiode = $request->id_kurperiode;
+
+        $jml = count($jmlnil);
+
+        for ($i = 0; $i < $jml; $i++) {
+            $idstu = $jumlahid[$i];
+            $pisah = explode(',', $idstu, 2);
+            $stu = $pisah[0];
+            $kur = $pisah[1];
+
+            $cekid = Student_record::where('id_student', $stu)
+                ->where('id_kurtrans', $kur)
+                ->select('id_studentrecord')
+                ->get();
+
+            $banyak = count($cekid);
+
+            $nilai = $request->nilai_UAS[$i];
+            $id_kur = $jmlids[$i];
+            $ceknl = $nilai;
+
+            if ($banyak == 1) {
+                if ($ceknl == null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_UAS = 0;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                } elseif ($ceknl != null) {
+                    $id = $id_kur;
+                    $entry = Student_record::find($id);
+                    $entry->nilai_UAS = $nilai;
+                    $entry->data_origin = 'eSIAM';
+                    $entry->save();
+                }
+            } elseif ($banyak > 1) {
+                if ($ceknl == null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_UAS' => 0,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                } elseif ($ceknl != null) {
+                    Student_record::where('id_student', $stu)
+                        ->where('id_kurtrans', $kur)
+                        ->update([
+                            'nilai_UAS' => $nilai,
+                            'data_origin' => 'eSIAM'
+                        ]);
+                }
+            }
+        }
+
+        Alert::success('', 'Nilai UAS berhasil dirubah')->autoclose(3500);
+        return redirect('/list_mahasiswa_makul/' . $idkurperiode);
+    }
+
+    public function generate_nilai_akhir_admin(Request $request)
+    {
+        $idkur = $request->id_kurperiode;
+
+        $set_nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
+        $kat = $set_nilai->kat;
+        $uts = $set_nilai->uts;
+        $uas = $set_nilai->uas;
+
+        $data = DB::select('CALL absen_mahasiswa_new(?)', [$idkur]);
+
+        $jml_mhs = count($data);
+
+        for ($i = 0; $i < $jml_mhs; $i++) {
+            $nilai = $data[$i];
+
+            $id_record = $nilai->id_studentrecord;
+            $id_student = $nilai->id_student;
+            $n_kat = $nilai->nilai_KAT;
+            $n_uts = $nilai->nilai_UTS;
+            $n_uas = $nilai->nilai_UAS;
+            $id_kurtrans = $nilai->id_kurtrans;
+
+            $cek_id = Student_record::where('id_student', $id_student)
+                ->where('id_kurtrans', $id_kurtrans)
+                ->get();
+
+            $banyak_id = count($cek_id);
+
+            $hsl_kat = ($n_kat * $kat) / 100;
+            $hsl_uts = ($n_uts * $uts) / 100;
+            $hsl_uas = ($n_uas * $uas) / 100;
+
+            $n_total = $hsl_kat + $hsl_uts + $hsl_uas;
+
+            if ($banyak_id == 1) {
+                $id = $id_record;
+                $ceknilai = Student_record::find($id);
+                $ceknilai->nilai_AKHIR_angka = $n_total;
+                $ceknilai->save();
+
+                if ($n_total < 50) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'E';
+                    $ceknilai->nilai_ANGKA = '0';
+                    $ceknilai->save();
+                } elseif ($n_total < 60) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'D';
+                    $ceknilai->nilai_ANGKA = '1';
+                    $ceknilai->save();
+                } elseif ($n_total < 65) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'C';
+                    $ceknilai->nilai_ANGKA = '2';
+                    $ceknilai->save();
+                } elseif ($n_total < 70) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'C+';
+                    $ceknilai->nilai_ANGKA = '2.5';
+                    $ceknilai->save();
+                } elseif ($n_total < 75) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'B';
+                    $ceknilai->nilai_ANGKA = '3';
+                    $ceknilai->save();
+                } elseif ($n_total < 80) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'B+';
+                    $ceknilai->nilai_ANGKA = '3.5';
+                    $ceknilai->save();
+                } elseif ($n_total <= 100) {
+                    $id = $id_record;
+                    $ceknilai = Student_record::find($id);
+                    $ceknilai->nilai_AKHIR = 'A';
+                    $ceknilai->nilai_ANGKA = '4';
+                    $ceknilai->save();
+                }
+            } elseif ($banyak_id > 1) {
+                Student_record::where('id_student', $id_student)
+                    ->where('id_kurtrans', $id_kurtrans)
+                    ->update(['nilai_AKHIR_angka' => $n_total]);
+
+                if ($n_total < 50) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'E',
+                            'nilai_ANGKA' => '0',
+                        ]);
+                } elseif ($n_total < 60) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'D',
+                            'nilai_ANGKA' => '1',
+                        ]);
+                } elseif ($n_total < 65) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'C',
+                            'nilai_ANGKA' => '2',
+                        ]);
+                } elseif ($n_total < 70) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'C+',
+                            'nilai_ANGKA' => '2.5',
+                        ]);
+                } elseif ($n_total < 75) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'B',
+                            'nilai_ANGKA' => '3',
+                        ]);
+                } elseif ($n_total < 80) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'B+',
+                            'nilai_ANGKA' => '3.5',
+                        ]);
+                } elseif ($n_total <= 100) {
+                    Student_record::where('id_student', $id_student)
+                        ->where('id_kurtrans', $id_kurtrans)
+                        ->update([
+                            'nilai_AKHIR' => 'A',
+                            'nilai_ANGKA' => '4',
+                        ]);
+                }
+            }
+        }
+
+        Alert::success('', 'Nilai Akhir berhasil di Generate')->autoclose(3500);
+        return redirect('/list_mahasiswa_makul/' . $idkur);
     }
 }

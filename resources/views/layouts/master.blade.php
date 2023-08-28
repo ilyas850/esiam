@@ -417,6 +417,8 @@
     <!-- CK Editor -->
     <!-- Bootstrap WYSIHTML5 -->
     <script src="{{ asset('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
+
+    <script src="{{ asset('adminlte/bower_components/chart.js/Chart.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.sidebar-menu').tree()
