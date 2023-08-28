@@ -60,6 +60,9 @@
                                 <center>Kelas</center>
                             </th>
                             <th>
+                                <center>Semester</center>
+                            </th>
+                            <th>
                                 <center>Dosen</center>
                             </th>
                             <th>
@@ -81,6 +84,9 @@
                                 </td>
                                 <td>
                                     <center>{{ $item->kelas }}</center>
+                                </td>
+                                <td>
+                                    <center>{{ $item->semester }}</center>
                                 </td>
                                 <td>
                                     {{ $item->nama }}

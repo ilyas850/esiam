@@ -6382,7 +6382,6 @@ class SadminController extends Controller
         $dataArray = DB::select('CALL periode_tahun');
 
 
-
         // dd($dataArray[0]->periode_tahun);
 
         $periodeTahunArray = array_map(function ($item) {
@@ -6406,7 +6405,6 @@ class SadminController extends Controller
         $labelsArray = explode(', ', $barisHasilTahun);
 
         $labelsJSON = json_encode($labelsArray);
-
 
         return view('sadmin/masterakademik/master_chart_akademik', compact('barisHasilTahun', 'dataArray', 'labelsJSON', 'periodeTahunString'));
     }
