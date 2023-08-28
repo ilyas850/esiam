@@ -443,6 +443,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     #input nilai mahasiswa
     Route::get('input_nilai_mhs_admin', 'SadminController@input_nilai_mhs_admin');
     Route::get('list_mahasiswa_makul/{id}', 'SadminController@list_mahasiswa_makul');
+    Route::post('filter_data_input_nilai', 'SadminController@filter_data_input_nilai');
     Route::get('input_kat_admin/{id}', 'SadminController@input_kat_admin');
     Route::post('save_nilai_KAT_admin', 'SadminController@save_nilai_KAT_admin');
     Route::get('input_uts_admin/{id}', 'SadminController@input_uts_admin');

@@ -6,6 +6,7 @@
 
 @section('content')
     <section class="content">
+       
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Data List Mahasiswa</h3>

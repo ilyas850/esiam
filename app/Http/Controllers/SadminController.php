@@ -6414,6 +6414,9 @@ class SadminController extends Controller
 
     public function input_nilai_mhs_admin()
     {
+        $dt_tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $dt_tipe = Periode_tipe::all();
+
         $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
         $id_tahun = $tahun->id_periodetahun;
@@ -6421,7 +6424,22 @@ class SadminController extends Controller
 
         $data = DB::select('CALL list_makul_admin(?,?)', [$id_tahun, $id_tipe]);
 
-        return view('sadmin/nilai/input_nilai', compact('data', 'tahun', 'tipe'));
+        return view('sadmin/nilai/input_nilai', compact('data', 'tahun', 'tipe', 'dt_tahun', 'dt_tipe'));
+    }
+
+    public function filter_data_input_nilai(Request $request)
+    {
+        $dt_tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $dt_tipe = Periode_tipe::all();
+
+        $tahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $tipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $id_tahun = $tahun->id_periodetahun;
+        $id_tipe = $tipe->id_periodetipe;
+
+        $data = DB::select('CALL list_makul_admin(?,?)', [$id_tahun, $id_tipe]);
+
+        return view('sadmin/nilai/input_nilai', compact('data', 'tahun', 'tipe', 'dt_tahun', 'dt_tipe'));
     }
 
     public function list_mahasiswa_makul($id)
