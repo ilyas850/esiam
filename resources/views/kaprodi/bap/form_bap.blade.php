@@ -4,23 +4,8 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_kprd') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap_kprd/{{ $id }}"> BAP</a></li>
-            <li class="active">Form BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
-
         @if (count($errors) > 0)
             <div class="alert alert-danger">
                 Validasi Upload Error<br><br>
@@ -32,7 +17,6 @@
             </div>
         @endif
         <div class="box box-info">
-
             <form class="form-horizontal" method="POST" action="{{ url('save_bap_kprd') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_kurperiode" value="{{ $id }}">
@@ -46,7 +30,11 @@
                                 </label>
                                 <select class="form-control" name="pertemuan" required>
                                     <option></option>
-                                    <option value="1">Pertemuan Ke-1</option>
+                                    @foreach ($nilai_pertemuan as $item)
+                                        <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
+                                        </option>
+                                    @endforeach
+                                    {{-- <option value="1">Pertemuan Ke-1</option>
                                     <option value="2">Pertemuan Ke-2</option>
                                     <option value="3">Pertemuan Ke-3</option>
                                     <option value="4">Pertemuan Ke-4</option>
@@ -61,7 +49,7 @@
                                     <option value="13">Pertemuan Ke-13</option>
                                     <option value="14">Pertemuan Ke-14</option>
                                     <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option>
+                                    <option value="16">Pertemuan Ke-16</option> --}}
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -81,46 +69,27 @@
                                     </span>
                                 @endif
                             </div>
-
                             <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Jam Mulai
                                 </label>
-                                {{-- <input type="text" class="form-control" name="jam_mulai" placeholder="Contoh 12:00" id="country_name" required>
-                            <div id="countryList">
-                            </div> --}}
                                 <select class="form-control" name="jam_mulai" required>
-
                                     <option></option>
                                     @foreach ($jam as $key)
                                         <option value="{{ $key->jam }}">{{ $key->jam }}</option>
                                     @endforeach
-
                                 </select>
-                                {{-- @if ($errors->has('jam_mulai'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('jam_mulai') }}</strong>
-                                </span>
-                            @endif --}}
                             </div>
                             <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
                                 <select class="form-control" name="jam_selsai" required>
-
                                     <option></option>
                                     @foreach ($jam as $key)
                                         <option value="{{ $key->jam }}">{{ $key->jam }}</option>
                                     @endforeach
-
                                 </select>
-                                {{-- <input type="text" class="form-control" name="jam_selsai" placeholder="Contoh 16:00" required>
-                            @if ($errors->has('jam_selsai'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('jam_selsai') }}</strong>
-                                </span>
-                            @endif --}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -158,17 +127,23 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label>
-                                    <font color="red-text">*</font>Materi Kuliah/Ujian
+                                    <font color="red-text">*</font>Materi Kuliah
                                 </label>
-                                <textarea class="form-control" rows="3" name="materi_kuliah" required></textarea>
+                                <textarea class="form-control" rows="5" name="materi_kuliah" required></textarea>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label>
-                                    <font color="red-text">*</font>Media Pembelajaran/Ujian
+                                    Materi Praktikum
                                 </label>
-                                <textarea class="form-control" rows="3" name="media_pembelajaran" required></textarea>
+                                <textarea class="form-control" rows="5" name="praktikum"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <font color="red-text">*</font>Media Pembelajaran
+                                </label>
+                                <textarea class="form-control" rows="5" name="media_pembelajaran" required></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -183,14 +158,16 @@
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
                             </div>
                             <div class="col-md-3">
-                                <label>Upload File Materi Kuliah</label>
-                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah">
+                                <label>
+                                    <font color="red-text">*</font>Upload File Materi Kuliah
+                                </label>
+                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah" required>
                                 @if ($errors->has('file_materi_kuliah'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
                                     </span>
                                 @endif
-                                <p class="help-block">Max. size 4 mb dengan format .png .jpg .jpeg .pdf .doc</p>
+                                <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>

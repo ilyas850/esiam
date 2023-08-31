@@ -1106,6 +1106,7 @@ class KaprodiController extends Controller
         'bap.jam_selsai',
         'bap.materi_kuliah',
         'bap.metode_kuliah',
+        'bap.praktikum',
         'kuliah_tipe.tipe_kuliah',
         'bap.jenis_kuliah',
         'bap.hadir',
@@ -1119,8 +1120,25 @@ class KaprodiController extends Controller
 
   public function input_bap($id)
   {
-    $jam = Kurikulum_jam::all();
-    return view('kaprodi/bap/form_bap', ['id' => $id, 'jam' => $jam]);
+    $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
+
+    $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
+      ->where('kuliah_transaction.id_kurperiode', $id)
+      ->get();
+
+    $nilai_pertemuan = DB::table('pertemuan')
+      ->select('pertemuan.id_pertemuan')
+
+      ->leftJoin('bap', function ($join) use ($id) {
+        $join->on('pertemuan.pertemuan', '=', 'bap.pertemuan')
+          ->where('bap.id_kurperiode', '=', $id)
+          ->where('bap.status', 'ACTIVE');
+      })
+
+      ->whereNull('bap.pertemuan')
+      ->get();
+
+    return view('kaprodi/bap/form_bap', compact('id', 'jam', 'nilai_pertemuan'));
   }
 
   public function save_bap(Request $request)
@@ -1140,7 +1158,7 @@ class KaprodiController extends Controller
       'metode_kuliah'           => 'required',
       'materi_kuliah'           => 'required',
       'file_kuliah_tatapmuka'   => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
-      'file_materi_kuliah'      => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
+      'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
       'file_materi_tugas'       => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
     ], $message);
 
@@ -1194,6 +1212,7 @@ class KaprodiController extends Controller
         $bap->id_tipekuliah = $request->id_tipekuliah;
         $bap->metode_kuliah = $request->metode_kuliah;
         $bap->materi_kuliah = $request->materi_kuliah;
+        $bap->praktikum = $request->praktikum;
         $bap->media_pembelajaran = $request->media_pembelajaran;
 
         if ($i == 0) {
@@ -1620,7 +1639,7 @@ class KaprodiController extends Controller
       'metode_kuliah'           => 'required',
       'materi_kuliah'           => 'required',
       'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
-      'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
+      'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
       'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
 
     ]);
@@ -1635,6 +1654,7 @@ class KaprodiController extends Controller
     $bap->id_tipekuliah         = $request->id_tipekuliah;
     $bap->metode_kuliah         = $request->metode_kuliah;
     $bap->materi_kuliah         = $request->materi_kuliah;
+    $bap->praktikum             = $request->praktikum;
     $bap->media_pembelajaran    = $request->media_pembelajaran;
     $bap->updated_by            = Auth::user()->name;
 

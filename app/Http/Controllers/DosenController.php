@@ -1396,7 +1396,6 @@ class DosenController extends Controller
 
         $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
             ->where('kuliah_transaction.id_kurperiode', $id)
-
             ->get();
 
         $nilai_pertemuan = DB::table('pertemuan')
@@ -1433,7 +1432,7 @@ class DosenController extends Controller
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
                 'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
+                'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
@@ -1488,6 +1487,7 @@ class DosenController extends Controller
                 $bap->id_tipekuliah = $request->id_tipekuliah;
                 $bap->metode_kuliah = $request->metode_kuliah;
                 $bap->materi_kuliah = $request->materi_kuliah;
+                $bap->praktikum = $request->praktikum;
                 $bap->media_pembelajaran = $request->media_pembelajaran;
 
                 if ($i == 0) {
@@ -1830,8 +1830,6 @@ class DosenController extends Controller
 
         $date = $dtbp->tanggal;
 
-
-
         // dd($bp->tanggal);
         // $tanggalIndonesia = Carbon::createFromFormat('Y-m-d', $dtbp->tanggal)->format('d-m-Y');
 
@@ -1924,8 +1922,8 @@ class DosenController extends Controller
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
-            'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
-            'file_materi_tugas' => 'mimes:jpg,jpeg,png|max:2000',
+            'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+            'file_materi_tugas'     => 'mimes:jpg,jpeg,png|max:2000',
         ]);
 
         $data_bap = Bap::where('id_bap', $id)->first();
@@ -1981,6 +1979,7 @@ class DosenController extends Controller
             $bap->id_tipekuliah = $request->id_tipekuliah;
             $bap->metode_kuliah = $request->metode_kuliah;
             $bap->materi_kuliah = $request->materi_kuliah;
+            $bap->praktikum = $request->praktikum;
             $bap->media_pembelajaran = $request->media_pembelajaran;
 
             if ($i == 0) {

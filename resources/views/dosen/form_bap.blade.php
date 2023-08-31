@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap/{{ $id }}"> BAP</a></li>
-            <li class="active">Form BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         @if (count($errors) > 0)
@@ -31,7 +17,6 @@
             </div>
         @endif
         <div class="box box-info">
-
             <form class="form-horizontal" method="POST" action="{{ url('save_bap') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_kurperiode" value="{{ $id }}">
@@ -44,11 +29,11 @@
                                 </label>
                                 <select class="form-control" name="pertemuan" required>
                                     <option></option>
-                                    {{-- @foreach ($nilai_pertemuan as $item)
+                                    @foreach ($nilai_pertemuan as $item)
                                         <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
                                         </option>
-                                    @endforeach --}}
-                                    <option value="1">Pertemuan Ke-1</option>
+                                    @endforeach
+                                    {{-- <option value="1">Pertemuan Ke-1</option>
                                     <option value="2">Pertemuan Ke-2</option>
                                     <option value="3">Pertemuan Ke-3</option>
                                     <option value="4">Pertemuan Ke-4</option>
@@ -63,7 +48,7 @@
                                     <option value="13">Pertemuan Ke-13</option>
                                     <option value="14">Pertemuan Ke-14</option>
                                     <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option>
+                                    <option value="16">Pertemuan Ke-16</option> --}}
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -182,14 +167,14 @@
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
                             </div>
                             <div class="col-md-3">
-                                <label>Upload File Materi Kuliah</label>
-                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah">
+                                <label><font color="red-text">*</font>Upload File Materi Kuliah</label>
+                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah" required>
                                 @if ($errors->has('file_materi_kuliah'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
                                     </span>
                                 @endif
-                                <p class="help-block">Max. size 4 mb dengan format .jpg .jpeg .pdf .png .doc</p>
+                                <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>

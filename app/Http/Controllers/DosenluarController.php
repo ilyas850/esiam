@@ -783,6 +783,7 @@ class DosenluarController extends Controller
                 'bap.jam_selsai',
                 'bap.materi_kuliah',
                 'bap.metode_kuliah',
+                'bap.praktikum',
                 'kuliah_tipe.tipe_kuliah',
                 'bap.jenis_kuliah',
                 'bap.hadir',
@@ -796,9 +797,25 @@ class DosenluarController extends Controller
 
     public function input_bap($id)
     {
-        $jam = Kurikulum_jam::all();
+        $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
 
-        return view('dosenluar/form_bap', ['id' => $id, 'jam' => $jam]);
+        $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
+            ->where('kuliah_transaction.id_kurperiode', $id)
+            ->get();
+
+        $nilai_pertemuan = DB::table('pertemuan')
+            ->select('pertemuan.id_pertemuan')
+
+            ->leftJoin('bap', function ($join) use ($id) {
+                $join->on('pertemuan.pertemuan', '=', 'bap.pertemuan')
+                    ->where('bap.id_kurperiode', '=', $id)
+                    ->where('bap.status', 'ACTIVE');
+            })
+
+            ->whereNull('bap.pertemuan')
+            ->get();
+
+        return view('dosenluar/form_bap', compact('id', 'jam', 'nilai_pertemuan'));
     }
 
     public function save_bap(Request $request)
@@ -819,9 +836,9 @@ class DosenluarController extends Controller
                 'id_tipekuliah' => 'required',
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
-                'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
-                'file_materi_tugas' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'file_kuliah_tatapmuka'     => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+                'file_materi_tugas'         => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
         );
@@ -876,6 +893,7 @@ class DosenluarController extends Controller
                 $bap->id_tipekuliah = $request->id_tipekuliah;
                 $bap->metode_kuliah = $request->metode_kuliah;
                 $bap->materi_kuliah = $request->materi_kuliah;
+                $bap->praktikum = $request->praktikum;
                 $bap->media_pembelajaran = $request->media_pembelajaran;
 
                 if ($i == 0) {
@@ -1067,7 +1085,6 @@ class DosenluarController extends Controller
 
     public function save_edit_absensi(Request $request)
     {
-        
         #id BAP
         $id_bp = $request->id_bap;
         
@@ -1222,9 +1239,9 @@ class DosenluarController extends Controller
             'id_tipekuliah' => 'required',
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
-            'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2048',
-            'file_materi_kuliah' => 'mimes:jpg,jpeg,JPG,JPEG,pdf,png,PNG,docx,DOCX,PDF|max:4000',
-            'file_materi_tugas' => 'mimes:jpg,jpeg,png|max:2048',
+            'file_kuliah_tatapmuka'     => 'mimes:jpg,jpeg,png|max:2048',
+            'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+            'file_materi_tugas'         => 'mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data_bap = Bap::where('id_bap', $id)->first();
@@ -1278,6 +1295,7 @@ class DosenluarController extends Controller
             $bap->id_tipekuliah = $request->id_tipekuliah;
             $bap->metode_kuliah = $request->metode_kuliah;
             $bap->materi_kuliah = $request->materi_kuliah;
+            $bap->praktikum = $request->praktikum;
             $bap->media_pembelajaran = $request->media_pembelajaran;
 
             if ($i == 0) {
