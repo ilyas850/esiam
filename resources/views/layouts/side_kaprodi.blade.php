@@ -31,8 +31,7 @@
                         Bimbingan</span></a></li>
             <li><a href="{{ url('data_ipk_kprd') }}"><i class="fa fa-circle-o"></i> IPK Mahasiswa Aktif</a>
             </li>
-            <li><a href="{{ url('nilai_mhs_kprd') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a>
-            </li>
+
 
             <li><a href="{{ url('record_pembayaran_mahasiswa_kprd') }}"><i class="fa fa-circle-o"></i>Pembayaran
                     Mahasiswa</a></li>
@@ -299,6 +298,21 @@
                             Prodi</a>
                     </li>
                 </ul>
+            </li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master Nilai</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('rekap_nilai_mhs_prd_kprd') }}"><i class="fa fa-circle-o"></i> <span>Rekap Nilai
+                        Mahasiswa
+                    </span></a></li>
+            <li><a href="{{ url('nilai_mhs_kprd') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Matakuliah</a>
             </li>
         </ul>
     </li>

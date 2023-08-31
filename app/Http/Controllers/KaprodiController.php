@@ -9811,4 +9811,36 @@ class KaprodiController extends Controller
 
     return view('kaprodi/pengajuan/data_pindahkelas_mhs_prodi', compact('data', 'kelas'));
   }
+
+  public function rekap_nilai_mhs_prd_kprd()
+  {
+    $id = Auth::user()->id_user;
+
+    $prd = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->where('kaprodi.id_dosen', $id)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
+      ->first();
+
+    $kodeprodi = $prd->kodeprodi;
+
+    $data = DB::select('CALL rekap_nilai_prodi(?)', [$kodeprodi]);
+
+    return view('kaprodi/nilai/rekap_nilai_mhs_prd', compact('data'));
+  }
+
+  public function cek_rekap_nilai_mhs_kprd($id)
+  {
+    $mhs = Student::leftJoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $id)
+      ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+      ->first();
+
+    $data = DB::select('CALL cek_rekap_nilai_mhs(?)', [$id]);
+
+    return view('kaprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'mhs'));
+  }
 }

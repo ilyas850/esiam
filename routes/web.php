@@ -1110,7 +1110,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('cari_mhs_aktif', 'KaprodiController@cari_mhs_aktif');
     Route::post('export_data', 'KaprodiController@export_xls_mhs_aktif');
 
-    //data ipk
+    #data ipk
     Route::get('data_ipk_kprd', 'KaprodiController@data_ipk_kprd');
     Route::post('filter_ipk_mhs', 'KaprodiController@filter_ipk_mhs');
     Route::get('export_nilai_ipk_kprd', 'KaprodiController@export_nilai_ipk_kprd');
@@ -1120,14 +1120,14 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('mhs_bim_kprd', 'KaprodiController@mhs_bim');
     Route::get('record_nilai_kprd/{id}', 'KaprodiController@record_nilai');
 
-    //validasi krs
+    #validasi krs
     Route::get('val_krs_kprd', 'KaprodiController@val_krs');
     Route::post('krs_validasi_kprd', 'KaprodiController@krs_validasi');
     Route::get('cek_krs_kprd/{id}', 'KaprodiController@cek_krs');
     Route::post('savekrs_new_kprd', 'KaprodiController@savekrs_new');
     Route::post('hapuskrsmhs_kprd', 'KaprodiController@hapuskrsmhs');
 
-    //batal validasi krs
+    #batal validasi krs
     Route::post('batal_krs_validasi_kprd', 'KaprodiController@batal_krs_validasi_kprd');
 
     //cek matakuliah mengulang
@@ -1433,6 +1433,10 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     #data pindah kelas mhs prodi
     Route::get('data_pindah_kelas_kprd_prodi', 'KaprodiController@data_pindah_kelas_kprd_prodi');
+
+    #master nilai
+    Route::get('rekap_nilai_mhs_prd_kprd', 'KaprodiController@rekap_nilai_mhs_prd_kprd');
+    Route::get('/cek_rekap_nilai_mhs_kprd/{id}', 'KaprodiController@cek_rekap_nilai_mhs_kprd');
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {
