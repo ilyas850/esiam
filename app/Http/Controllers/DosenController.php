@@ -15,7 +15,7 @@ use App\User;
 use App\Dosen;
 use App\Kelas;
 use App\Prodi;
-use App\Ruangan;
+use App\Waktu_krs;
 use App\Kuitansi;
 use App\Biaya;
 use App\Beasiswa;
@@ -56,6 +56,7 @@ use App\Permohonan_ujian;
 use App\Pertemuan;
 use App\Sk_pengajaran;
 use App\Pengajuan_trans;
+use App\Informasi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +66,29 @@ use Illuminate\Support\Facades\Response;
 
 class DosenController extends Controller
 {
+    public function dosen_home()
+    {
+        $id = Auth::user()->id_user;
+
+        $dsn = Dosen::leftjoin('agama', 'dosen.idagama', '=', 'agama.idagama')
+            ->leftjoin('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
+            ->where('dosen.iddosen', $id)
+            ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
+            ->first();
+
+        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $time = Waktu_krs::first();
+
+        $info = Informasi::orderBy('created_at', 'DESC')->paginate(5);
+
+        $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
+
+        return view('home', compact('dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang'));
+    }
+
     public function mhs_bim()
     {
         $id = Auth::user()->id_user;
@@ -2815,7 +2839,7 @@ class DosenController extends Controller
         $iddsn = Auth::user()->id_user;
 
         $mkul = DB::select('CALL history_makul_diampu_new(?)', [$iddsn]);
-        
+
         return view('dosen/history_makul_dsn', ['makul' => $mkul]);
     }
 
@@ -5982,7 +6006,7 @@ class DosenController extends Controller
     public function data_cuti_dsn_pa()
     {
         $id_dosen = Auth::user()->id_user;
-        
+
         $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')

@@ -45,7 +45,7 @@ use App\Standar;
 use App\Sertifikat;
 use App\Pedoman_akademik;
 use App\Pedoman_khusus;
-use App\Penangguhan_kategori;
+use App\Waktu_krs;
 use App\Penangguhan_trans;
 use App\Yudisium;
 use App\Wisuda;
@@ -68,6 +68,46 @@ use Illuminate\Support\Facades\Response;
 
 class KaprodiController extends Controller
 {
+  public function kaprodi_home()
+  {
+    $id = Auth::user()->id_user;
+
+    $dsn = Dosen::leftjoin('agama', 'dosen.idagama', '=', 'agama.idagama')
+      ->leftjoin('kelamin', 'dosen.idkelamin', '=', 'kelamin.idkelamin')
+      ->where('dosen.iddosen', $id)
+      ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
+      ->first();
+
+    $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+
+    $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $time = Waktu_krs::first();
+
+    $info = Informasi::orderBy('created_at', 'DESC')->paginate(5);
+
+    $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
+
+    $ti = Student::where('kodeprodi', 23)
+      ->where('active', 1)
+      ->count('idstudent');
+
+    $tk = Student::whereIn('kodeprodi', [22, 25])
+      ->where('active', 1)
+      ->count('idstudent');
+
+    $fa = Student::where('kodeprodi', 24)
+      ->where('active', 1)
+      ->count('idstudent');
+
+    $prd = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
+      ->where('kaprodi.id_dosen', Auth::user()->id_user)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
+      ->first();
+
+    return view('home', compact('prd', 'ti', 'fa', 'tk', 'dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang'));
+  }
   public function change_pass_kaprodi($id)
   {
     return view('kaprodi/change_pwd_kaprodi', ['dsn' => $id]);
@@ -9705,7 +9745,7 @@ class KaprodiController extends Controller
     return view('kaprodi/pengajuan/data_pindahkelas_mhs_bim', compact('data', 'kelas'));
   }
 
-  public function data_pindah_kelas_kprd_prodi() 
+  public function data_pindah_kelas_kprd_prodi()
   {
     $id_dosen = Auth::user()->id_user;
 
@@ -9715,7 +9755,7 @@ class KaprodiController extends Controller
       ->select('dosen.nama', 'dosen.akademik', 'dosen.nik', 'prodi.kodeprodi', 'prodi.prodi')
       ->first();
 
-      $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+    $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', (function ($join) {

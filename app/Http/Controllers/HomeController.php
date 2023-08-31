@@ -95,7 +95,6 @@ class HomeController extends Controller
 
     $angk = Angkatan::all();
 
-
     if ($akses == 1) {
       $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
       $tp = Periode_tipe::orderBy('periode_tipe', 'DESC')->get();
@@ -114,11 +113,10 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
     } elseif ($akses == 2) {
 
-      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info]);
+      return redirect('dosen_home');
     } elseif ($akses == 3) {
 
       $waktu_edom = Waktu_edom::select('status', 'waktu_awal', 'waktu_Akhir')
@@ -285,28 +283,8 @@ class HomeController extends Controller
 
       return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 6) {
-      $mhs_ti = Student::where('kodeprodi', 23)
-        ->where('active', 1)
-        ->count('idstudent');
 
-      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
-        ->where('active', 1)
-        ->count('idstudent');
-
-      $mhs_fa = Student::where('kodeprodi', 24)
-        ->where('active', 1)
-        ->count('idstudent');
-
-      $cek = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
-        ->join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
-        ->where('kaprodi.id_dosen', Auth::user()->id_user)
-        ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
-        ->get();
-      foreach ($cek as $key) {
-        // code...
-      }
-
-      return view('home', ['prd' => $key, 'fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
+      return redirect('kaprodi_home');
     } elseif ($akses == 7) {
       $mhs_ti = Student::where('kodeprodi', 23)
         ->where('active', 1)

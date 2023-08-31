@@ -454,7 +454,10 @@ Route::group(['middleware' => 'sadmin'], function () {
 });
 
 Route::group(['middleware' => 'dosen'], function () {
-    //mahasiswa bimbingan
+    #dashboard dosen
+    Route::get('dosen_home', 'DosenController@dosen_home');
+
+    #mahasiswa bimbingan
     Route::get('mhs_bim', 'DosenController@mhs_bim');
     Route::get('record_nilai/{id}', 'DosenController@record_nilai');
 
@@ -598,7 +601,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('simpan_soal_uts_dsn_dlm', 'DosenController@simpan_soal_uts_dsn_dlm');
     Route::post('simpan_soal_uas_dsn_dlm', 'DosenController@simpan_soal_uas_dsn_dlm');
 
-    //record pembayaran
+    #record pembayaran
     Route::get('record_pembayaran_mhs/{id}', 'DosenController@record_pembayaran_mhs');
 
     //download BAP prausta
@@ -606,7 +609,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('download_bap_sempro_dsn_dlm/{id}', 'DosenController@download_bap_sempro_dsn_dlm');
     Route::get('download_bap_ta_dsn_dlm/{id}', 'DosenController@download_bap_ta_dsn_dlm');
 
-    //standar operasional prosedur
+    #standar operasional prosedur
     Route::get('sop_dsn_dlm', 'DosenController@sop_dsn_dlm');
 
     //pedoman akademik
@@ -1093,6 +1096,9 @@ Route::group(['middleware' => 'dosenluar'], function () {
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
+    #dashboard dosen
+    Route::get('kaprodi_home', 'KaprodiController@kaprodi_home');
+
     Route::get('change_pass_kaprodi/{id}', 'KaprodiController@change_pass_kaprodi');
     Route::put('pwd_kaprodi/{id}', 'KaprodiController@store_pwd_kaprodi');
     Route::get('lihat_semua_kprd', 'KaprodiController@lihat_semua_kprd');

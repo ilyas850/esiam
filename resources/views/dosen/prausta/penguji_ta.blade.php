@@ -27,19 +27,19 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="3%">
+                            <th>
                                 <center>No</center>
                             </th>
                             <th>
                                 <center>Nama Mahasiswa</center>
                             </th>
-                            <th width="5%">
+                            <th>
                                 <center>NIM</center>
                             </th>
-                            <th width="11%">
+                            <th>
                                 <center>Program Studi</center>
                             </th>
-                            <th width="6%">
+                            <th>
                                 <center>Kelas</center>
                             </th>
                             <th>

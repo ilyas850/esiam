@@ -5,7 +5,7 @@
           @if ($prd->kodeprodi == 22 or $prd->kodeprodi == 25) alert-info
           @elseif ($prd->kodeprodi == 23)
             alert-danger
-          @elseif ($prd->kodeprodi == 34)
+          @elseif ($prd->kodeprodi == 24)
             alert-success @endif
           alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -30,7 +30,7 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ $tk }} orang</h3>
-                <p>Mahasiswa Teknik Komputer</p>
+                <p>Mahasiswa TRPL</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person"></i>
@@ -180,6 +180,42 @@
             </div>
             <div class="box-footer text-center">
                 <a href="/lihat_semua_kprd" class="uppercase">Lihat Semua Informasi</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <h3 class="box-title">Data Mahasiswa Mengulang</h3>
+            </div>
+            <div class="box-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Mahasiswa</th>
+                            <th>Matakuliah</th>
+                            <th>Nilai</th>
+                            <th>Tahun Akademik</th>
+                            <th>Dosen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        @foreach ($makul_mengulang as $item)
+                            <tr>
+                                <td align="center">{{ $no++ }}</td>
+                                <td>{{ $item->mhs }}</td>
+                                <td>{{ $item->makul }}</td>
+                                <td align="center">{{ $item->nilai_AKHIR }}</td>
+                                <td>{{ $item->periode_tahun }}-{{ $item->periode_tipe }}</td>
+                                <td>{{ $item->nama }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
