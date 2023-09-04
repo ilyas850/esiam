@@ -155,6 +155,7 @@ class HomeController extends Controller
             ->where('kuisioner_transaction.id_periodetahun', $tahun->id_periodetahun)
             ->where('kuisioner_transaction.id_periodetipe', $tipe->id_periodetipe)
             ->get();
+          
           if (count($cek_kuis_pa) > 0) {
             #cek kuisioner BAAK
             $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
