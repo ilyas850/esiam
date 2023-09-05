@@ -13,7 +13,6 @@
         @elseif (Auth::user()->role == 3)
             @include('layouts.mhs_home')
         @elseif (Auth::user()->role == 4)
-            #mahasiswa belum aktif
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                     <div class="box box-info">
