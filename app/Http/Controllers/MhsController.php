@@ -4522,23 +4522,55 @@ class MhsController extends Controller
         $smt = $sub_thn . $tp;
         $angk = $idangkatan;
 
+        // if ($smt % 2 != 0) {
+        //     if ($tp == 1) {
+        //         #ganjil
+        //         $a = (($smt + 10) - 1) / 10;
+        //         $b = $a - $idangkatan;
+
+        //         if ($intake == 2) {
+        //             $c = ($b * 2) - 1 - 1;
+        //         } elseif ($intake == 1) {
+        //             $c = ($b * 2) - 1;
+        //         }
+        //     }
+        // } else {
+        //     #genap
+        //     $a = (($smt + 10) - 2) / 10;
+        //     $b = $a - $idangkatan;
+        //     if ($intake == 2) {
+        //         $c = $b * 2 - 1;
+        //     } elseif ($intake == 1) {
+        //         $c = $b * 2;
+        //     }
+        // }
 
         if ($smt % 2 != 0) {
             if ($tp == 1) {
                 #ganjil
-                $a = (($smt + 10) - 1) / 10;
-                $b = $a - $idangkatan;
-
+                $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
                 if ($intake == 2) {
                     $c = ($b * 2) - 1 - 1;
                 } elseif ($intake == 1) {
                     $c = ($b * 2) - 1;
+                } // 2 * 2 - 1 = 3
+            } elseif ($tp == 3) {
+                #pendek
+                $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
+                $b = $a - $idangkatan; // 22 - 20 = 2
+                // $c = ($b * 2);
+                if ($intake == 2) {
+                    $c = $b * 2 - 1;
+                } elseif ($intake == 1) {
+                    $c = $b * 2;
                 }
             }
         } else {
             #genap
-            $a = (($smt + 10) - 2) / 10;
-            $b = $a - $idangkatan;
+            $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
+            $b = $a - $idangkatan; // 22 - 20 = 2
+            // 2 * 2 = 4
             if ($intake == 2) {
                 $c = $b * 2 - 1;
             } elseif ($intake == 1) {
@@ -4546,9 +4578,10 @@ class MhsController extends Controller
             }
         }
 
+        #cek id tahun untuk IPK
         if ($tp == 1) {
             $id_thn = $periode_tahun->id_periodetahun - 1;
-            $id_tp = 2.3;
+            $id_tp = 2;
         } elseif ($tp == 2) {
             $id_thn = $periode_tahun->id_periodetahun;
             $id_tp = 1;
@@ -5406,7 +5439,7 @@ class MhsController extends Controller
             ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
             ->where('kuisioner_master.id_kategori_kuisioner', 1)
             ->get();
-        
+
         if (count($cek_kuis) > 0) {
             Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
             return redirect('kuisioner_mahasiswa');
