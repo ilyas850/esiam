@@ -87,12 +87,12 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{ $item->jml_mhs }}
+                                        {{ $item->mhs_qty }}
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        {{ $item->mhs_isi_edom }}
+                                        {{ $item->edom_qty }}
                                     </center>
                                 </td>
                                 <td>

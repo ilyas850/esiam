@@ -77,12 +77,12 @@
                     </td>
                     <td>
                         <center>
-                            <span style="font-size:85%"> {{ $item->jml_mhs }}</span>
+                            <span style="font-size:85%"> {{ $item->mhs_qty }}</span>
                         </center>
                     </td>
                     <td>
                         <center>
-                            <span style="font-size:85%"> {{ $item->mhs_isi_edom }}</span>
+                            <span style="font-size:85%"> {{ $item->edom_qty }}</span>
                         </center>
                     </td>
                     <td>

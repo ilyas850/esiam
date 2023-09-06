@@ -507,7 +507,7 @@ class EdomController extends Controller
       } elseif ($idperiodetahun < 6) {
         $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
       } elseif ($idperiodetahun > 6) {
-        $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+        $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
       }
 
       // $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
@@ -591,7 +591,7 @@ class EdomController extends Controller
     $tp = $periodetipe->periode_tipe;
     $prd = $prodi->prodi;
 
-    $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+    $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
 
     $pdf = PDF::loadView('sadmin/edom/pdf_report_edom_makul', compact('data', 'thn', 'tp', 'prd'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Matakuliah' . ' ' . $thn . ' ' . $tp . ' ' . $prd . '.pdf');
