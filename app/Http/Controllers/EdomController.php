@@ -588,13 +588,14 @@ class EdomController extends Controller
     $prodi = Prodi::where('kodeprodi', $idprodi)->first();
 
     $thn = $periodetahun->periode_tahun;
+    $ganti = str_replace('/', '_', $thn);
     $tp = $periodetipe->periode_tipe;
     $prd = $prodi->prodi;
 
     $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
 
     $pdf = PDF::loadView('sadmin/edom/pdf_report_edom_makul', compact('data', 'thn', 'tp', 'prd'))->setPaper('a4', 'landscape');
-    return $pdf->download('Report EDOM Matakuliah' . ' ' . $thn . ' ' . $tp . ' ' . $prd . '.pdf');
+    return $pdf->download('Report EDOM Matakuliah' . ' ' . $ganti . ' ' . $tp . ' ' . $prd . '.pdf');
   }
 
   //download report edom dosen PDF
