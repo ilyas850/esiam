@@ -1437,6 +1437,17 @@ Route::group(['middleware' => 'kaprodi'], function () {
     #master nilai
     Route::get('rekap_nilai_mhs_prd_kprd', 'KaprodiController@rekap_nilai_mhs_prd_kprd');
     Route::get('/cek_rekap_nilai_mhs_kprd/{id}', 'KaprodiController@cek_rekap_nilai_mhs_kprd');
+
+    #master EDOM
+    Route::get('report_edom_kprd', 'KaprodiController@report_edom_kprd');
+    Route::post('filter_edom_kprd', 'KaprodiController@filter_edom_kprd');
+    Route::post('download_report_edom_by_dosen_kprd', 'KaprodiController@download_report_edom_by_dosen_kprd');
+    Route::post('download_report_edom_by_makul_kprd', 'KaprodiController@download_report_edom_by_makul_kprd');
+    Route::post('detail_edom_makul_kprd', 'KaprodiController@detail_edom_makul_kprd');
+    Route::post('download_detail_edom_makul_kprd', 'KaprodiController@download_detail_edom_makul_kprd');
+    Route::post('detail_edom_dosen_kprd', 'KaprodiController@detail_edom_dosen_kprd');
+    Route::post('download_detail_edom_dosen_kprd', 'KaprodiController@download_detail_edom_dosen_kprd');
+
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

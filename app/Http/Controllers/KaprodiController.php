@@ -9843,4 +9843,212 @@ class KaprodiController extends Controller
 
     return view('kaprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'mhs'));
   }
+
+  public function report_edom_kprd()
+  {
+    $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
+    $periodetipe = Periode_tipe::orderBy('id_periodetipe', 'DESC')->get();
+    $prodi = Prodi::select('kodeprodi', 'prodi')
+      ->groupBy('kodeprodi', 'prodi')
+      ->orderBy('kodeprodi', 'DESC')
+      ->get();
+
+    return view('kaprodi/edom/report_edom', compact('periodetahun', 'periodetipe', 'prodi'));
+  }
+
+  public function filter_edom_kprd(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idprodi = $request->kodeprodi;
+    $tipe = $request->tipe_laporan;
+
+    $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+    $prodii = Prodi::where('kodeprodi', $idprodi)->first();
+
+    $thn = $periodetahun->periode_tahun;
+    $tp = $periodetipe->periode_tipe;
+    $prd = $prodii->prodi;
+
+    if ($tipe == 'by_makul') {
+
+      if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+        $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun < 6) {
+        $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      } elseif ($idperiodetahun > 6) {
+        $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+      }
+
+      return view('kaprodi/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe', 'idprodi'));
+    } elseif ($tipe == 'by_dosen') {
+
+      $data = DB::select('CALL edom_by_dosen_new(?,?)', array($idperiodetahun, $idperiodetipe));
+
+      return view('kaprodi/edom/report_edom_by_dosen', compact('data', 'thn', 'tp', 'idperiodetahun', 'idperiodetipe'));
+    }
+  }
+
+  public function detail_edom_dosen_kprd(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $iddosen = $request->id_dosen;
+    $periodetahun = $request->periodetahun;
+    $periodetipe = $request->periodetipe;
+    $nama = $request->nama;
+
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    }
+
+    return view('kaprodi/edom/detail_edom_dosen', compact('data', 'nama', 'periodetahun', 'periodetipe'));
+  }
+
+  public function detail_edom_makul_kprd(Request $request)
+  {
+    $idkurperiode = $request->id_kurperiode;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    }
+
+    $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->where('kurikulum_periode.id_kurperiode', $idkurperiode)
+      ->select('dosen.nama', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'matakuliah.makul')
+      ->first();
+
+    return view('kaprodi/edom/detail_edom_makul', compact('data', 'data_mk'));
+  }
+
+  #download report edom PDF
+  public function download_report_edom_by_makul_kprd(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idprodi = $request->kodeprodi;
+
+    $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+    $prodi = Prodi::where('kodeprodi', $idprodi)->first();
+
+    $thn = $periodetahun->periode_tahun;
+    $ganti = str_replace('/', '_', $thn);
+    $tp = $periodetipe->periode_tipe;
+    $prd = $prodi->prodi;
+
+    $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+
+    $pdf = PDF::loadView('kaprodi/edom/pdf_report_edom_makul', compact('data', 'thn', 'tp', 'prd'))->setPaper('a4', 'landscape');
+    return $pdf->download('Report EDOM Matakuliah' . ' ' . $ganti . ' ' . $tp . ' ' . $prd . '.pdf');
+  }
+
+  //download report edom dosen PDF
+  public function download_report_edom_by_dosen_kprd(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+
+    $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+
+    $thn = $periodetahun->periode_tahun;
+    $tp = $periodetipe->periode_tipe;
+
+    $data = DB::select('CALL edom_by_dosen_new(?,?)', array($idperiodetahun, $idperiodetipe));
+
+    $pdf = PDF::loadView('kaprodi/edom/pdf_report_edom_dosen', compact('data', 'thn', 'tp'))->setPaper('a4', 'landscape');
+    return $pdf->download('Report EDOM Dosen' . ' ' . $thn . ' ' . $tp . '.pdf');
+  }
+
+  //download detail edom
+  public function download_detail_edom_makul_kprd(Request $request)
+  {
+    $idkurperiode = $request->id_kurperiode;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+    }
+
+    $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kurikulum_periode.id_kurperiode', $idkurperiode)
+      ->select('dosen.nama', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'matakuliah.makul', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+
+    $thn = $data_mk->periode_tahun;
+    $tp = $data_mk->periode_tipe;
+    $nama_mk = $data_mk->makul;
+    $nama_dsn = $data_mk->nama;
+    $nama_kls = $data_mk->kelas;
+    $nama_prd = $data_mk->prodi;
+
+    $pdf = PDF::loadView('kaprodi/edom/pdf_detail_report_edom_makul', compact('data', 'thn', 'tp', 'nama_prd', 'nama_dsn', 'nama_mk', 'nama_kls'))->setPaper('a4', 'landscape');
+    return $pdf->download('Report EDOM Matakuliah' . ' ' . $nama_mk . ' ' . $nama_kls . '.pdf');
+  }
+
+  public function download_detail_edom_dosen_kprd(Request $request)
+  {
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $iddosen = $request->id_dosen;
+    $periodetahun = $request->periodetahun;
+    $periodetipe = $request->periodetipe;
+    $nama = $request->nama;
+
+    if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun < 6) {
+      $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    } elseif ($idperiodetahun > 6) {
+      $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+    }
+
+    $pdf = PDF::loadView('kaprodi/edom/pdf_detail_report_edom_dosen', compact('data', 'periodetahun', 'periodetipe', 'nama'))->setPaper('a4', 'landscape');
+    return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+  }
 }

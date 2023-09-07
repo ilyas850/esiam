@@ -7,24 +7,19 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title"> <b> Laporan Rekapitulasi EDOM (Per Matakuliah)</b></h3>
+                <h3 class="box-title"> <b> Laporan Rekapitulasi EDOM (Per Dosen)</b></h3>
                 <table width="100%">
                     <tr>
                         <td width="20%">Tahun Akademik / Semester</td>
                         <td>:</td>
-                        <td>{{ $thn }} - {{ $tp }}</td>
-                    </tr>
-                    <tr>
-                        <td>Program Studi</td>
-                        <td>:</td>
-                        <td>{{ $prd }}</td>
+                        <td>{{ $thn }} / {{ $tp }}</td>
                     </tr>
                 </table>
             </div>
             <div class="box-body">
-                <form action="{{ url('download_report_edom_by_makul') }}" method="POST">
+                <form action="{{ url('download_report_edom_by_dosen_kprd') }}" method="POST">
                     {{ csrf_field() }}
-                    <input type="hidden" name="kodeprodi" value="{{ $idprodi }}">
+
                     <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                     <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                     <input type="hidden" name="periodetahun" value="{{ $thn }}">
@@ -42,10 +37,7 @@
                                 <center>Dosen</center>
                             </th>
                             <th>
-                                <center>Matakuliah</center>
-                            </th>
-                            <th>
-                                <center>Kelas</center>
+                                <center>MAKUL Qty</center>
                             </th>
                             <th>
                                 <center>MHS Qty</center>
@@ -78,12 +70,10 @@
                                     {{ $item->nama }}
                                 </td>
                                 <td>
-                                    {{ $item->makul }}
-                                </td>
-                                <td>
                                     <center>
-                                        {{ $item->kelas }}
+                                        {{ $item->makul_qty }}
                                     </center>
+
                                 </td>
                                 <td>
                                     <center>
@@ -97,8 +87,7 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{ $item->nilai_edom }}
-                                        {{-- @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
                                             {{ $item->nilai_edom }}
                                         @elseif($item->id_periodetahun > 6)
                                             {{ $item->nilai_edom }}
@@ -108,27 +97,12 @@
                                             {{ $item->nilai_edom_old }}
                                         @elseif($item->id_periodetahun == 6 && $item->id_periodetipe == 2)
                                             {{ $item->nilai_edom_old }}
-                                        @endif --}}
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        @if ($item->nilai_edom >= 80)
-                                            A
-                                        @elseif ($item->nilai_edom >= 75)
-                                            B+
-                                        @elseif ($item->nilai_edom >= 70)
-                                            B
-                                        @elseif ($item->nilai_edom >= 65)
-                                            C+
-                                        @elseif ($item->nilai_edom >= 60)
-                                            C
-                                        @elseif ($item->nilai_edom >= 50)
-                                            D
-                                        @elseif ($item->nilai_edom >= 0)
-                                            E
                                         @endif
-                                        {{-- @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        @if ($item->id_periodetahun == 6 && $item->id_periodetipe == 3)
                                             @if ($item->nilai_edom >= 80)
                                                 A
                                             @elseif ($item->nilai_edom >= 75)
@@ -208,35 +182,37 @@
                                             @elseif ($item->nilai_edom_old >= 0)
                                                 E
                                             @endif
-                                        @endif --}}
+                                        @endif
+
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="detail_edom_makul" method="POST">
+                                        <form action="detail_edom_dosen_kprd" method="POST">
                                             {{ csrf_field() }}
-
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
-                                            <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
-                                            <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
-                                            {{-- <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
+                                            <input type="hidden" name="id_dosen" value="{{ $item->iddosen }}">
                                             <input type="hidden" name="nama" value="{{ $item->nama }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
                                             <input type="hidden" name="periodetahun" value="{{ $thn }}">
-                                            <input type="hidden" name="periodetipe" value="{{ $tp }}"> --}}
+                                            <input type="hidden" name="periodetipe" value="{{ $tp }}">
 
                                             <button type="submit" class="btn btn-success btn-xs">Detail</button>
                                         </form>
+                                        {{-- <a href="/detail_edom_dosen/{{ $item->id_dosen }}"
+                                            class="btn btn-success btn-xs">Detail</a> --}}
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="download_detail_edom_makul" method="POST">
+                                        <form action="download_detail_edom_dosen_kprd" method="POST">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                            <input type="hidden" name="id_dosen" value="{{ $item->iddosen }}">
+                                            <input type="hidden" name="nama" value="{{ $item->nama }}">
                                             <input type="hidden" name="id_periodetahun" value="{{ $idperiodetahun }}">
                                             <input type="hidden" name="id_periodetipe" value="{{ $idperiodetipe }}">
+                                            <input type="hidden" name="periodetahun" value="{{ $thn }}">
+                                            <input type="hidden" name="periodetipe" value="{{ $tp }}">
 
                                             <button type="submit" class="btn btn-danger btn-xs">PDF</button>
                                         </form>

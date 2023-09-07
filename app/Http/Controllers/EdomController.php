@@ -503,7 +503,7 @@ class EdomController extends Controller
       } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
         $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
       } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
-        $data = DB::select('CALL edom_by_makul_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+        $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
       } elseif ($idperiodetahun < 6) {
         $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
       } elseif ($idperiodetahun > 6) {
@@ -541,7 +541,6 @@ class EdomController extends Controller
     } elseif ($idperiodetahun > 6) {
       $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
     }
-
 
     return view('sadmin/edom/detail_edom_dosen', compact('data', 'nama', 'periodetahun', 'periodetipe'));
   }
