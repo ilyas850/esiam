@@ -8008,12 +8008,13 @@ class KaprodiController extends Controller
       ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
       ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
       ->get();
+    $hit_data = count($data);
 
-    if (count($data) > 0) {
+    if ($git_data = 0) {
       return view('kaprodi/perkuliahan/makul_mengulang', compact('data'));
-    } else {
+    } elseif (($hit_data) == 0) {
       Alert::warning('Mahasiswa ini tidak ada matakuliah mengulang');
-      return redirect('mhs_bim');
+      return redirect('mhs_bim_kprd');
     }
   }
 

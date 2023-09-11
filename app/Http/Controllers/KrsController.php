@@ -510,9 +510,18 @@ class KrsController extends Controller
           $sk += $ks;
         }
         $hasil_sks_sama = ($sk / count($as));
+      }elseif (count($as) == 1) {
+        $sk = 0;
+        for ($z = 0; $z < count($as); $z++) {
+          $g = $as[$z];
+          $ks = $g->akt_sks_teori + $g->akt_sks_praktek;
+          $sk += $ks;
+        }
+        $hasil_sks_sama = ($sk / count($as));
       }
     }
-
+    
+    
     $hasil_dari_sks = $k - $hasil_sks_sama;
 
     if ($idtipe == 1 or $idtipe == 2) {
@@ -522,7 +531,7 @@ class KrsController extends Controller
       } elseif ($hasil_dari_sks <= 24) {
         for ($i = 0; $i < $jml; $i++) {
           $kurp = $request->id_kurperiode[$i];
-          $idr = explode(',', $kurp, 2);
+          $idr = explode(',', $kurp, 3);
           $tra = $idr[0];
           $trs = $idr[1];
           $cekkrs = Student_record::where('id_student', $id)
@@ -551,7 +560,7 @@ class KrsController extends Controller
       } elseif ($hasil_dari_sks <= 9) {
         for ($i = 0; $i < $jml; $i++) {
           $kurp = $request->id_kurperiode[$i];
-          $idr = explode(',', $kurp, 2);
+          $idr = explode(',', $kurp, 3);
           $tra = $idr[0];
           $trs = $idr[1];
           $cekkrs = Student_record::where('id_student', $id)

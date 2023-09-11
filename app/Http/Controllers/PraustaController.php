@@ -168,7 +168,7 @@ class PraustaController extends Controller
             Alert::error('Maaf anda belum melakukan pengisian KRS Kerja Praktek/Prakerin', 'MAAF !!');
             return redirect('home');
         } elseif ($hasil_krs > 0) {
-            //data prakerin
+            #data prakerin
             $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->leftJoin('prodi', (function ($join) {
                     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -209,7 +209,7 @@ class PraustaController extends Controller
 
             $cekdata = count($data);
 
-            // data untuk keuangan
+            #data untuk keuangan
             $maha = Student::where('idstudent', $id)
                 ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
                 ->first();
@@ -232,7 +232,7 @@ class PraustaController extends Controller
                 ->select('spp5', 'spp6')
                 ->first();
 
-            //cek beasiswa mahasiswa
+            #cek beasiswa mahasiswa
             $cb = Beasiswa::where('idstudent', $id)->first();
 
             if ($cek_study->study_year == 3) {
@@ -309,13 +309,32 @@ class PraustaController extends Controller
                 ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
                 ->first();
 
-            //cek nilai dan file seminar prakerin
+            #cek nilai dan file seminar prakerin
             $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
                 ->first();
+
+            #cek nilai D atau E
+            $data_nilai_ulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+                ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+                ->join('prodi', function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                })
+                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+                ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+                ->where('student.idstudent', $id)
+                ->where('student_record.status', 'TAKEN')
+                ->whereIn('student.active', [1, 5])
+                ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                ->get();
+            dd($data_nilai_ulang);
 
             if ($cekdata == 0) {
                 Alert::error('Maaf dosen pembimbbing anda belum disetting untuk Kerja Praktek/Prakerin', 'MAAF !!');
@@ -1218,7 +1237,6 @@ class PraustaController extends Controller
                         ->where('kuitansi.idstudent', $id)
                         ->where('bayar.iditem', 15)
                         ->sum('bayar.bayar');
-                        
                 } elseif ($cek_study->study_year == 4) {
 
                     $sisasidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
