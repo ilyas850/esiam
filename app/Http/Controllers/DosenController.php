@@ -116,7 +116,8 @@ class DosenController extends Controller
                 'kelas.kelas',
                 'prodi.prodi',
                 'periode_tahun.periode_tahun',
-                'periode_tipe.periode_tipe'
+                'periode_tipe.periode_tipe',
+                'student.hp'
             )
             ->whereIn('student_record.id_studentrecord', function ($query) {
                 $query

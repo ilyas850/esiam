@@ -302,7 +302,8 @@ class KaprodiController extends Controller
         'kelas.kelas',
         'prodi.prodi',
         'periode_tahun.periode_tahun',
-        'periode_tipe.periode_tipe'
+        'periode_tipe.periode_tipe',
+        'student.hp'
       )
       ->whereIn('student_record.id_studentrecord', (function ($query) {
         $query->from('student_record')
@@ -698,7 +699,7 @@ class KaprodiController extends Controller
       ->where('student.active', 1)
       ->where('dosen_pembimbing.id_dosen', $ids)
       ->where('dosen_pembimbing.status', 'ACTIVE')
-      ->select('dosen_pembimbing.id_student', 'student.nama', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'kelas.kelas')
+      ->select('dosen_pembimbing.id_student', 'student.nama', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'kelas.kelas', 'student.hp')
       ->get();
 
     $bim = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
