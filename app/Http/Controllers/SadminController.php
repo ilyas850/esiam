@@ -606,53 +606,6 @@ class SadminController extends Controller
         return view('sadmin/nilai/data_nilai', ['nilai' => $nilai]);
     }
 
-    public function cek_nilai(Request $request)
-    {
-        dd($request);
-        $id = $request->id_student;
-        #data mahasiswa
-        $mhs = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->where('student.idstudent', $id)
-            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
-            ->first();
-
-        $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->select(
-                'student_record.id_student',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'matakuliah.akt_sks_praktek',
-                'matakuliah.akt_sks_teori',
-                'student_record.id_studentrecord',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_ANGKA'
-            )
-            ->groupBy(
-                'student_record.id_student',
-                'matakuliah.akt_sks_praktek',
-                'matakuliah.akt_sks_teori',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'student_record.id_studentrecord',
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_ANGKA'
-            )
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
-
-
-        $data = DB::select('CALL cek_nilai(?)', [$id]);
-
-        return view('sadmin/nilai/ceknilai', ['cek' => $data, 'key' => $id, 'mhs' => $mhs]);
-    }
-
     public function cek_nilai_mhs_admin($id)
     {
         $mhs = Student::leftJoin('prodi', function ($join) {

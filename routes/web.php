@@ -130,7 +130,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('data_nilai', 'SadminController@data_nilai');
     Route::get('tes_table', 'SadminController@tes_table');
     Route::post('save_nilai_angka', 'SadminController@save_nilai_angka');
-    Route::post('cek_nilai', 'SadminController@cek_nilai');
+    
     #cek nilai mahasiswa
     Route::get('/cek_nilai_mhs_admin/{id}', 'SadminController@cek_nilai_mhs_admin');
     #nonaktifkan krs mahasiswa
