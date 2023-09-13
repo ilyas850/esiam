@@ -631,6 +631,16 @@ class SadminController extends Controller
         return redirect()->back();
     }
 
+    public function aktifkan_krs_mhs($id)
+    {
+        Student_record::where('id_studentrecord', $id)->update([
+            'status' => 'TAKEN'
+        ]);
+
+        Alert::success('', 'Matakuliah berhasil diaktifkan')->autoclose(3500);
+        return redirect()->back();
+    }
+
     public function save_nilai_angka(Request $request)
     {
         $jml = count($request->nilai_ANGKA);

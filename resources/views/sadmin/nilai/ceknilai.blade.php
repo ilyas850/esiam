@@ -125,10 +125,18 @@
                                         @endif
                                     </td>
                                     <td align="center">
+                                        @if ($key->status == 'TAKEN')
                                         <a href="/nonaktifkan_krs_mhs/{{ $key->id_studentrecord }}"
                                             class="btn btn-danger btn-xs" title="klik untuk nonaktifkan"
                                             onclick="return confirm('anda yakin akan menghapus ini?')"><i
                                                 class="fa fa-close"></i></a>
+                                                @elseif ($key->status == 'DROPPED')
+                                                <a href="/aktifkan_krs_mhs/{{ $key->id_studentrecord }}"
+                                                    class="btn btn-success btn-xs" title="klik untuk aktifkan"
+                                                    onclick="return confirm('anda yakin akan mengaktifkan ini?')"><i
+                                                        class="fa fa-check"></i></a>
+                                        @endif
+                                        
                                     </td>
                                 </tr>
                             @endforeach

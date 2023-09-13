@@ -135,6 +135,8 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('/cek_nilai_mhs_admin/{id}', 'SadminController@cek_nilai_mhs_admin');
     #nonaktifkan krs mahasiswa
     Route::get('/nonaktifkan_krs_mhs/{id}', 'SadminController@nonaktifkan_krs_mhs');
+    #aktifkan KRS mahasiwa
+    Route::get('/aktifkan_krs_mhs/{id}', 'SadminController@aktifkan_krs_mhs');
 
     Route::get('pembimbing', 'SadminController@pembimbing');
     Route::get('data_admin', 'SadminController@data_admin');
