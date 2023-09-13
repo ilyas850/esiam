@@ -61,6 +61,7 @@
 
                                 <td>
                                     <center>
+                                        <a href="/cek_nilai_mhs_admin/{{$key->id_student}}" class="btn btn-info btn-xs">Cek Nilai</a>
                                         <form action="{{ url('cek_nilai') }}" method="post">
                                             <input type="hidden" name="id_student" value="{{ $key->id_student }}">
                                             {{ csrf_field() }}

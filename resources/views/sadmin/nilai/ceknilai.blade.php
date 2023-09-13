@@ -46,47 +46,54 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th rowspan="2" width="4px">
+                                <th>
                                     <center>No</center>
                                 </th>
 
-                                <th rowspan="2">
+                                <th>
                                     <center>Matakuliah</center>
                                 </th>
-                                <th colspan="2">
+                                <th>
                                     <center>SKS</center>
                                 </th>
-                                <th rowspan="2">
+                                <th>
+                                    <center>
+                                        Tahun Akademik
+                                    </center>
+                                </th>
+                                <th>
+                                    <center>
+                                        Semester
+                                    </center>
+                                </th>
+                                <th>
                                     <center>Nilai Huruf</center>
                                 </th>
-                                <th rowspan="2">
+                                <th>
                                     <center>Nilai Angka</center>
                                 </th>
-                                <th rowspan="2">
+                                <th>
                                     <center>Pilih</center>
                                 </th>
-                            </tr>
-                            <tr>
                                 <th>
-                                    <center>Teori</center>
-                                </th>
-                                <th>
-                                    <center>Praktek</center>
+                                    <center>Aksi</center>
                                 </th>
                             </tr>
+
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($cek as $key)
+                            @foreach ($data as $key)
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $key->makul }}</td>
                                     <td>
-                                        <center>{{ $key->akt_sks_teori }}</center>
+                                        <center>{{ $key->sks }}</center>
                                     </td>
                                     <td>
-                                        <center>{{ $key->akt_sks_praktek }}</center>
+                                        <center>{{ $key->periode_tahun }} - {{ $key->periode_tipe }}</center>
                                     </td>
+                                    <td align="center">{{ $key->semester }}</td>
                                     <td>
                                         <center>{{ $key->nilai_AKHIR }}</center>
                                     </td>
@@ -97,33 +104,38 @@
                                         @if ($key->nilai_ANGKA == null)
                                             <center><input type="checkbox" name="nilai_ANGKA[]"
                                                     value="{{ $key->id_studentrecord }},
-                            @if ($key->nilai_AKHIR == 'A') 4
-                            @elseif ($key->nilai_AKHIR == 'B+')
-                              3.5
-                            @elseif ($key->nilai_AKHIR == 'B')
-                              3
-                            @elseif ($key->nilai_AKHIR == 'C+')
-                              2.5
-                            @elseif ($key->nilai_AKHIR == 'C')
-                              2
-                            @elseif ($key->nilai_AKHIR == 'D')
-                              1
-                            @elseif ($key->nilai_AKHIR == 'E')
-                              0 @endif">
+                                                            @if ($key->nilai_AKHIR == 'A') 4
+                                                            @elseif ($key->nilai_AKHIR == 'B+')
+                                                            3.5
+                                                            @elseif ($key->nilai_AKHIR == 'B')
+                                                            3
+                                                            @elseif ($key->nilai_AKHIR == 'C+')
+                                                            2.5
+                                                            @elseif ($key->nilai_AKHIR == 'C')
+                                                            2
+                                                            @elseif ($key->nilai_AKHIR == 'D')
+                                                            1
+                                                            @elseif ($key->nilai_AKHIR == 'E')
+                                                            0 @endif">
                                             </center>
                                         @else
                                             <center>
                                                 sudah
                                             </center>
                                         @endif
-
+                                    </td>
+                                    <td align="center">
+                                        <a href="/nonaktifkan_krs_mhs/{{ $key->id_studentrecord }}"
+                                            class="btn btn-danger btn-xs" title="klik untuk nonaktifkan"
+                                            onclick="return confirm('anda yakin akan menghapus ini?')"><i
+                                                class="fa fa-close"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <hr>
-                    <input type="hidden" name="id_student" value="{{ $key->id_student }}">
+                    <input type="hidden" name="id_student" value="{{ $id }}">
                     <input name="Check_All" value="Tandai Semua" onclick="check_all()" type="button"
                         class="btn btn-warning">
                     <input name="Un_CheckAll" value="Hilangkan Semua Tanda" onclick="uncheck_all()" type="button"

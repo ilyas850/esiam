@@ -608,8 +608,9 @@ class SadminController extends Controller
 
     public function cek_nilai(Request $request)
     {
+        dd($request);
         $id = $request->id_student;
-        //data mahasiswa
+        #data mahasiswa
         $mhs = Student::leftJoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
@@ -623,13 +624,58 @@ class SadminController extends Controller
             ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
             ->where('student_record.id_student', $id)
             ->where('student_record.status', 'TAKEN')
-            ->select('student_record.id_student', 'matakuliah.makul', 'matakuliah.akt_sks_praktek', 'matakuliah.akt_sks_teori', 'student_record.id_studentrecord', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA')
-            ->groupBy('student_record.id_student', 'matakuliah.akt_sks_praktek', 'matakuliah.akt_sks_teori', 'matakuliah.makul', 'student_record.id_studentrecord', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA')
+            ->select(
+                'student_record.id_student',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'matakuliah.akt_sks_praktek',
+                'matakuliah.akt_sks_teori',
+                'student_record.id_studentrecord',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_ANGKA'
+            )
+            ->groupBy(
+                'student_record.id_student',
+                'matakuliah.akt_sks_praktek',
+                'matakuliah.akt_sks_teori',
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'student_record.id_studentrecord',
+                'student_record.nilai_AKHIR',
+                'student_record.nilai_ANGKA'
+            )
+            ->orderBy('matakuliah.kode', 'ASC')
             ->get();
-        foreach ($cek as $key) {
-            // code...
-        }
-        return view('sadmin/nilai/ceknilai', ['cek' => $cek, 'key' => $key, 'mhs' => $mhs]);
+
+
+        $data = DB::select('CALL cek_nilai(?)', [$id]);
+
+        return view('sadmin/nilai/ceknilai', ['cek' => $data, 'key' => $id, 'mhs' => $mhs]);
+    }
+
+    public function cek_nilai_mhs_admin($id)
+    {
+        $mhs = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+            ->first();
+
+        $data = DB::select('CALL cek_nilai(?)', [$id]);
+
+        return view('sadmin/nilai/ceknilai', compact('mhs', 'data', 'id'));
+    }
+
+    public function nonaktifkan_krs_mhs($id)
+    {
+        Student_record::where('id_studentrecord', $id)->update([
+            'status' => 'DROPPED'
+        ]);
+
+        Alert::success('', 'Matakuliah berhasil dihapus')->autoclose(3500);
+        return redirect()->back();
     }
 
     public function save_nilai_angka(Request $request)
