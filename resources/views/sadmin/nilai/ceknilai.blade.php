@@ -54,7 +54,7 @@
                                     <center>Matakuliah</center>
                                 </th>
                                 <th>
-                                    <center>SKS</center>
+                                    <center>SKS(T/P)</center>
                                 </th>
                                 <th>
                                     <center>
