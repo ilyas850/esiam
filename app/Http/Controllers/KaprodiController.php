@@ -1035,8 +1035,6 @@ class KaprodiController extends Controller
 
   public function unduh_pdf_nilai($id)
   {
-    // $id = $request->id_kurperiode;
-
     $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')
@@ -8011,7 +8009,8 @@ class KaprodiController extends Controller
       ->get();
     $hit_data = count($data);
 
-    if ($git_data = 0) {
+    if ($hit_data > 0) {
+
       return view('kaprodi/perkuliahan/makul_mengulang', compact('data'));
     } elseif (($hit_data) == 0) {
       Alert::warning('Mahasiswa ini tidak ada matakuliah mengulang');
