@@ -633,6 +633,8 @@ class KrsController extends Controller
       ->where('kurikulum_periode.id_periodetipe', $idtp)
       ->where('kurikulum_periode.id_periodetahun', $idthn)
       ->where('student_record.status', 'TAKEN')
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->where('kurikulum_transaction.status', 'ACTIVE')
       ->select('student_record.tanggal_krs', 'semester.semester', 'matakuliah.kode', 'matakuliah.makul', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama')
       ->orderBy('kurikulum_periode.id_hari', 'ASC')
       ->orderBy('kurikulum_periode.id_jam', 'ASC')
@@ -645,6 +647,7 @@ class KrsController extends Controller
       ->where('kurikulum_periode.id_periodetipe', $idtp)
       ->where('kurikulum_periode.id_periodetahun', $idthn)
       ->where('student_record.status', 'TAKEN')
+      ->where('kurikulum_periode.status', 'ACTIVE')
       ->select('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
       ->groupBy('student_record.id_kurtrans', 'matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
       ->get();
