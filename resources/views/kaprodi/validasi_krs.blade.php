@@ -81,7 +81,8 @@
                                     </center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->angkatan }}
+                                    <center>
+                                        {{ $key->angkatan }}
                                     </center>
                                 </td>
                                 <td align="center">
@@ -89,47 +90,37 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @foreach ($bim as $item)
-                                            @if ($key->id_student == $item->id_student)
-                                                {{ $item->jml_krs }}
-                                            @endif
-                                        @endforeach
+                                        {{ $key->jml_krs }}
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        @foreach ($bim as $item)
-                                            @if ($key->id_student == $item->id_student)
-                                                @if ($item->remark == 1)
-                                                    <form action="{{ url('batal_krs_validasi_kprd') }}" method="post">
-                                                        <input type="hidden" name="id_student"
-                                                            value="{{ $key->id_student }}">
-                                                        <input type="hidden" name="remark" value="0">
-                                                        {{ csrf_field() }}
-                                                        <button type="submit" class="btn btn-danger btn-xs"
-                                                            data-toggle="tooltip" data-placement="right">Batal</button>
-                                                    </form>
-                                                @elseif ($item->remark == 0)
-                                                    <form class="" action="{{ url('krs_validasi_kprd') }}"
-                                                        method="post">
-                                                        <input type="hidden" name="id_student"
-                                                            value="{{ $item->id_student }}">
-                                                        <input type="hidden" name="remark" value="1">
-                                                        {{ csrf_field() }}
-                                                        <button type="submit" class="btn btn-success btn-xs"
-                                                            data-toggle="tooltip" data-placement="right">Validasi</button>
-                                                    </form>
-                                                @endif
+                                        @if ($key->jml_krs == 0)
+                                        @elseif($key->jml_krs > 0)
+                                            @if ($key->remark == 1)
+                                                {{-- <span class="badge bg-yellow">Sudah divalidasi</span> --}}
+                                                <form action="{{ url('batal_krs_validasi_kprd') }}" method="post">
+                                                    <input type="hidden" name="id_student" value="{{ $key->id_student }}">
+                                                    <input type="hidden" name="remark" value="0">
+                                                    {{ csrf_field() }}
+                                                    <button type="submit" class="btn btn-danger btn-xs"
+                                                        data-toggle="tooltip" data-placement="right">Batal</button>
+                                                </form>
+                                            @elseif ($key->remark == 0)
+                                                <form action="{{ url('krs_validasi_kprd') }}" method="post">
+                                                    <input type="hidden" name="id_student" value="{{ $key->id_student }}">
+                                                    <input type="hidden" name="remark" value="1">
+                                                    {{ csrf_field() }}
+                                                    <button type="submit" class="btn btn-success btn-xs"
+                                                        data-toggle="tooltip" data-placement="right">Validasi</button>
+                                                </form>
                                             @endif
-                                        @endforeach
-
-
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a class="btn btn-info btn-xs" href="/cek_krs_kprd/{{ $key->id_student }}">Cek
-                                            KRS</a>
+                                        <a class="btn btn-info btn-xs" href="/cek_krs_kprd/{{ $key->id_student }}">Cek KRS</a>
                                     </center>
                                 </td>
                             </tr>

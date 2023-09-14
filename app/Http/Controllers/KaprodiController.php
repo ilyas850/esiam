@@ -715,6 +715,9 @@ class KaprodiController extends Controller
     $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
     $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
+    $data_mhs = DB::select('CALL validasi_krs(' . $ids . ')');
+    
+
     $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', (function ($join) {
         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -742,7 +745,7 @@ class KaprodiController extends Controller
       ->groupBy('student_record.remark', 'student_record.id_student')
       ->get();
 
-    return view('kaprodi/validasi_krs', ['mhs' => $mhs, 'bim' => $bim, 'tahun' => $tahun, 'tipe' => $tipe]);
+    return view('kaprodi/validasi_krs', ['mhs' => $data_mhs, 'bim' => $bim, 'tahun' => $tahun, 'tipe' => $tipe]);
   }
 
   public function krs_validasi(Request $request)
