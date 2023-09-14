@@ -130,7 +130,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('data_nilai', 'SadminController@data_nilai');
     Route::get('tes_table', 'SadminController@tes_table');
     Route::post('save_nilai_angka', 'SadminController@save_nilai_angka');
-    
+
     #cek nilai mahasiswa
     Route::get('/cek_nilai_mhs_admin/{id}', 'SadminController@cek_nilai_mhs_admin');
     #nonaktifkan krs mahasiswa
@@ -445,7 +445,6 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     #master chart akademik
     Route::get('master_chart_akademik', 'SadminController@master_chart_akademik');
-
 
     #input nilai mahasiswa
     Route::get('input_nilai_mhs_admin', 'SadminController@input_nilai_mhs_admin');
@@ -1126,6 +1125,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     #mahasiswa bimbingan
     Route::get('mhs_bim_kprd', 'KaprodiController@mhs_bim');
     Route::get('record_nilai_kprd/{id}', 'KaprodiController@record_nilai');
+    Route::get('cek_bim_perwalian_kprd/{id}', 'KaprodiController@cek_bim_perwalian_kprd');
+    Route::get('val_bim_perwalian_kprd/{id}', 'KaprodiController@val_bim_perwalian_kprd');
 
     #validasi krs
     Route::get('val_krs_kprd', 'KaprodiController@val_krs');
@@ -1454,7 +1455,6 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('download_detail_edom_makul_kprd', 'KaprodiController@download_detail_edom_makul_kprd');
     Route::post('detail_edom_dosen_kprd', 'KaprodiController@detail_edom_dosen_kprd');
     Route::post('download_detail_edom_dosen_kprd', 'KaprodiController@download_detail_edom_dosen_kprd');
-
 });
 
 Route::group(['middleware' => 'adminprodi'], function () {

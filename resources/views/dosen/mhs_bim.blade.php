@@ -92,7 +92,7 @@
                                             {{ $key->thn_krs }} - {{ $key->periode_tipe }}
                                         @endif --}}
 
-                                        {{-- {{ substr($key->tanggal_krs, 0, 4) }} - {{ $key->periode_tipe }} --}}
+                                        {{-- {{ substr($key->tanggal_krs, 0, 4) }} - {{ $key->periode_tipe }} --}} 
 
                                         {{ $key->periode_tahun }} - {{ $key->periode_tipe }}
                                     </center>

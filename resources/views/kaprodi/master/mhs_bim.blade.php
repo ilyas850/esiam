@@ -106,6 +106,9 @@
                                         <a class="btn btn-warning btn-xs"
                                             href="/cek_makul_mengulang_kprd/{{ $key->idstudent }}"><i class="fa fa-repeat"
                                                 title="Klik untuk cek matakuliah mengulang"></i></a>
+                                        <a class="btn btn-success btn-xs"
+                                            href="/cek_bim_perwalian_kprd/{{ $key->idstudent }}"><i class="fa fa-wechat"
+                                                title="Klik untuk cek bimbingan perwalian"></i></a>
                                     </center>
                                 </td>
                             </tr>

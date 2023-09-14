@@ -52,6 +52,7 @@ use App\Wisuda;
 use App\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Pengajuan_trans;
+use App\Perwalian_trans_bimbingan;
 use App\Exports\DataNilaiIpkMhsExport;
 use App\Exports\DataNilaiIpkMhsProdiExport;
 use App\Exports\DataNilaiExport;
@@ -681,6 +682,31 @@ class KaprodiController extends Controller
       Alert::warning('Maaf anda tidak dapat melihat nilai mahasiswa ini karena keuangannya belum memenuhi syarat');
       return redirect('mhs_bim_kprd');
     }
+  }
+
+  public function cek_bim_perwalian_kprd($id)
+  {
+    $data = Perwalian_trans_bimbingan::join('dosen_pembimbing', 'perwalian_trans_bimbingan.id_dosbim_pa', '=', 'dosen_pembimbing.id')
+      ->join('periode_tahun', 'perwalian_trans_bimbingan.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->join('periode_tipe', 'perwalian_trans_bimbingan.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+      ->where('dosen_pembimbing.id_student', $id)
+      ->where('perwalian_trans_bimbingan.status', 'ACTIVE')
+      ->select(
+        'perwalian_trans_bimbingan.*',
+        'periode_tahun.periode_tahun',
+        'periode_tipe.periode_tipe'
+      )
+      ->get();
+
+    return view('kaprodi/mhs/perwalian', compact('data'));
+  }
+
+  public function val_bim_perwalian_kprd($id)
+  {
+    Perwalian_trans_bimbingan::where('id_transbim_perwalian', $id)->update(['validasi' => 'SUDAH']);
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
   }
 
   public function val_krs()
