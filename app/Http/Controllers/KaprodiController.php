@@ -177,7 +177,7 @@ class KaprodiController extends Controller
       ->where('periode_tipe.status', 'ACTIVE')
       ->where('student_record.status', 'TAKEN')
       ->where('student.active', 1)
-      ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama')
+      ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'student.intake')
       ->orderBy('student.nim', 'ASC')
       ->orderBy('student.idangkatan', 'ASC')
       ->get();
@@ -208,7 +208,7 @@ class KaprodiController extends Controller
       ->where('student_record.status', 'TAKEN')
       ->where('student.active', 1)
       ->where('student.kodeprodi', $request->kodeprodi)
-      ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'prodi.kodeprodi')
+      ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'prodi.kodeprodi', 'student.intake')
       ->orderBy('student.nim', 'ASC')
       ->orderBy('student.idangkatan', 'ASC')
       ->get();
@@ -716,7 +716,7 @@ class KaprodiController extends Controller
     $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
     $data_mhs = DB::select('CALL validasi_krs(' . $ids . ')');
-    
+
     return view('kaprodi/validasi_krs', ['mhs' => $data_mhs, 'tahun' => $tahun, 'tipe' => $tipe]);
   }
 

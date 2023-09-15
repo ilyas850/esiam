@@ -86,6 +86,9 @@
                         <th><center>Program Studi</center></th>
                         <th><center>Kelas</center></th>
                         <th><center>Angkatan</center></th>
+                        <th>
+                            <center>Intake</center>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,6 +101,13 @@
                         <td><center>{{$key->prodi}}</center></td>
                         <td><center>{{$key->kelas}}</center></td>
                         <td><center>{{$key->angkatan}}</center></td>
+                        <td align="center">
+                            @if ($key->intake == 1)
+                                Ganjil
+                            @elseif($key->intake == 2)
+                                Genap
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
