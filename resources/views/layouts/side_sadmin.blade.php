@@ -58,7 +58,9 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="/show_mhs"><i class="fa fa-circle-o"></i> Mahasiswa Aktif</a></li>
+            {{-- <li><a href="/show_mhs"><i class="fa fa-circle-o"></i> Mahasiswa Aktif</a></li> --}}
+            <li><a href="{{ url('data_mahasiswa_aktif_admin') }}"><i class="fa fa-circle-o"></i> Mahasiswa Aktif</a>
+            </li>
             <li><a href="/data_nilai"><i class="fa fa-circle-o"></i> Nilai Mahasiswa</a></li>
             <li><a href="/data_ipk"><i class="fa fa-circle-o"></i> IPK Mahasiswa</a></li>
             <li><a href="/data_ktm"><i class="fa fa-circle-o"></i> KTM Mahasiswa</a></li>
@@ -171,7 +173,8 @@
             <li><a href="{{ url('transkrip_nilai_final') }}"><i class="fa fa-circle-o"></i> Transkrip Nilai
                     Final</a></li>
             <li><a href="{{ url('nilai_mhs') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Mahasiswa</a></li>
-            <li><a href="{{ url('input_nilai_mhs_admin') }}"><i class="fa fa-circle-o"></i> Input Nilai Mahasiswa</a></li>
+            <li><a href="{{ url('input_nilai_mhs_admin') }}"><i class="fa fa-circle-o"></i> Input Nilai Mahasiswa</a>
+            </li>
         </ul>
     </li>
     <li class="treeview">

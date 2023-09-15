@@ -78,6 +78,8 @@ use App\Exports\DataPrakerinExport;
 use App\Exports\DataAkmMhsExport;
 use App\Exports\DataMhsExportAngkatan;
 use App\Imports\ImportMicrosoftUser;
+use App\Exports\DataMhsAllExport;
+use App\Exports\DataMhsExport;
 use App\Ujian_transaction;
 use App\Wisuda;
 use Illuminate\Http\Request;
@@ -6812,5 +6814,101 @@ class SadminController extends Controller
 
         Alert::success('', 'Nilai Akhir berhasil di Generate')->autoclose(3500);
         return redirect('/list_mahasiswa_makul/' . $idkur);
+    }
+
+    public function data_mahasiswa_aktif_admin()
+    {
+        $tahun = Periode_tahun::whereNotIn('id_periodetahun', [1, 3, 4])
+            ->orderBy('periode_tahun', 'ASC')
+            ->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        $data1 = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->Join('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->where('periode_tipe.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->where('student.active', 1)
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'student.intake')
+            ->orderBy('student.nim', 'ASC')
+            ->orderBy('student.idangkatan', 'ASC')
+            ->get();
+
+        $data = DB::select('CALL data_mhs_aktif');
+
+        return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'data', 'prodi'));
+    }
+
+    public function cari_mhs_aktif_admin(Request $request)
+    {
+        $idthn = $request->id_periodetahun;
+        $idtp = $request->id_periodetipe;
+        $kd = $request->kodeprodi;
+
+        $data = DB::select('CALL data_mhs_aktif_filter(?,?,?)', [$idthn, $idtp, $kd]);
+
+        $tahun = Periode_tahun::whereNotIn('id_periodetahun', [1, 3, 4])
+            ->orderBy('periode_tahun', 'ASC')
+            ->get();
+        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
+
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        $thun = Periode_tahun::where('id_periodetahun', $idthn)->first();
+        $ta = $thun->periode_tahun;
+        $tip = Periode_tipe::where('id_periodetipe', $idtp)->first();
+        $tpe = $tip->periode_tipe;
+        $prdi = Prodi::where('kodeprodi', $kd)->first();
+        $prod = $prdi->prodi;
+
+        return view('sadmin/datamahasiswa/data_mhs_aktif_filter', compact('data', 'tahun', 'tipe', 'prodi', 'ta', 'tpe', 'prod', 'idthn', 'idtp', 'kd'));
+    }
+
+    public function export_data_mhs_admin()
+    {
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tahun = $thn->periode_tahun;
+
+        $ganti = str_replace("/", "_", $tahun);
+
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $tipe = $tp->periode_tipe;
+
+        $nama_file = 'Data Mahasiswa Aktif ' . ' ' . $ganti . ' ' . $tipe . '.xlsx';
+        return Excel::download(new DataMhsAllExport, $nama_file);
+    }
+
+    public function export_data_mhs_aktif_filter(Request $request)
+    {
+        $prodi = Prodi::where('kodeprodi', $request->kodeprodi)->first();
+        $prd = $prodi->prodi;
+        $nmprd = $request->kodeprodi;
+
+        $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $tahun = $thn->periode_tahun;
+        $nmthun = $request->id_periodetahun;
+
+        $ganti = str_replace("/", "_", $tahun);
+
+        $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $tipe = $tp->periode_tipe;
+        $nmtp = $request->id_periodetipe;
+
+        $nama_file = 'Data Mahasiswa Aktif ' . ' ' . $prd . ' ' . $ganti . ' ' . $tipe . '.xlsx';
+        return Excel::download(new DataMhsExport($nmprd, $nmthun, $nmtp), $nama_file);
     }
 }

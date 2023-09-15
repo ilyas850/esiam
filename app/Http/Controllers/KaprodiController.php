@@ -159,7 +159,10 @@ class KaprodiController extends Controller
       ->orderBy('periode_tahun', 'ASC')
       ->get();
     $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
-    $prodi = Prodi::all();
+    
+    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
 
     $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -217,7 +220,9 @@ class KaprodiController extends Controller
       ->orderBy('periode_tahun', 'ASC')
       ->get();
     $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
-    $prodi = Prodi::all();
+    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
 
     $thun = Periode_tahun::where('id_periodetahun', $thn)->get();
     foreach ($thun as $keythn) {
@@ -236,7 +241,6 @@ class KaprodiController extends Controller
       # code...
     }
     $prod = $keyprd->prodi;
-
 
     return view('kaprodi/master/mhs_aktif_new', ['ta' => $ta, 'tpe' => $tpe, 'prod' => $prod, 'data' => $val, 'idthn' => $thn, 'idtp' => $tp, 'idkd' => $kd, 'thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi]);
   }

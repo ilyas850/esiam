@@ -117,7 +117,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('detail_edom_dosen', 'EdomController@detail_edom_dosen');
     Route::post('detail_edom_makul', 'EdomController@detail_edom_makul');
 
-    //download pdf report edom
+    #download pdf report edom
     Route::post('download_report_edom_by_makul', 'EdomController@download_report_edom_by_makul');
     Route::post('download_report_edom_by_dosen', 'EdomController@download_report_edom_by_dosen');
     Route::post('download_detail_edom_makul', 'EdomController@download_detail_edom_makul');
@@ -206,13 +206,13 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('nilai_mhs', 'SadminController@nilai_mhs');
     Route::get('cek_nilai_mhs/{id}', 'SadminController@cek_nilai_mhs');
 
-    //master soal
+    #master soal
     Route::get('soal_uts', 'SadminController@soal_uts');
     Route::get('download_soal_uts/{id}', 'SadminController@download_soal_uts');
     Route::get('soal_uas', 'SadminController@soal_uas');
     Route::get('download_soal_uas/{id}', 'SadminController@download_soal_uas');
 
-    //master perkuliahan
+    #master perkuliahan
     Route::get('rekap_perkuliahan', 'SadminController@rekap_perkuliahan');
     Route::get('cek_rekapan/{id}', 'SadminController@cek_rekapan');
     Route::get('cek_view_bap/{id}', 'SadminController@cek_view_bap');
@@ -457,6 +457,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('input_uas_admin/{id}', 'SadminController@input_uas_admin');
     Route::post('save_nilai_UAS_admin', 'SadminController@save_nilai_UAS_admin');
     Route::post('generate_nilai_akhir_admin', 'SadminController@generate_nilai_akhir_admin');
+
+    #data mahasiswa aktif
+    Route::get('data_mahasiswa_aktif_admin', 'SadminController@data_mahasiswa_aktif_admin');
+    Route::post('cari_mhs_aktif_admin', 'SadminController@cari_mhs_aktif_admin');
+    Route::get('export_data_mhs_admin', 'SadminController@export_data_mhs_admin');
+    Route::post('export_data_mhs_aktif_filter', 'SadminController@export_data_mhs_aktif_filter');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
