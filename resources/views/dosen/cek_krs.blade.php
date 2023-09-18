@@ -55,9 +55,9 @@
                                     <option value=""><b>-pilih matakuliah-</b></option>
                                     @foreach ($add as $key)
                                         <option value="{{ $key->id_kurperiode }}, {{ $key->idkurtrans }}">
-                                            {{ $key->id_kurperiode }} - {{ $key->semester }} - {{ $key->kode }} -
-                                            {{ $key->makul }} - {{ $key->nama }} - {{ $key->hari }} -
-                                            {{ $key->jam }} ({{ $key->kelas }})
+                                            {{ $key->id_kurperiode }} -
+                                            {{ $key->semester }} - {{ $key->kelas }} - {{ $key->makul }} -
+                                            {{ $key->nama }} - {{ $key->hari }} - {{ $key->jam }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -76,9 +76,6 @@
                             </th>
                             <th>
                                 <center>Semester</center>
-                            </th>
-                            <th>
-                                <center>Kode</center>
                             </th>
                             <th>
                                 <center>Matakuliah</center>
@@ -109,13 +106,12 @@
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
                                 <td align="center">{{ $item->semester }}</td>
-                                <td align="center">{{ $item->kode }}</td>
                                 <td>{{ $item->makul }}</td>
                                 <td align="center">{{ $item->hari }}</td>
                                 <td align="center">{{ $item->jam }}</td>
                                 <td align="center">{{ $item->nama_ruangan }}</td>
                                 <td>
-                                    <center>{{ $item->akt_sks_teori }} / {{ $item->akt_sks_praktek }}</center>
+                                    <center>{{ $item->sks }}</center>
                                 </td>
                                 <td>{{ $item->nama }}</td>
                                 <td>

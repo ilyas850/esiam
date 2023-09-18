@@ -327,8 +327,8 @@ class DosenController extends Controller
 
     public function cek_krs($id)
     {
-        //data mahasiswa politeknik
-        $data_mhs = Student::leftJoin('prodi', function ($join) {
+        #data mahasiswa politeknik
+        $data_mhs1 = Student::leftJoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
@@ -336,10 +336,24 @@ class DosenController extends Controller
             ->where('student.idstudent', $id)
             ->first();
 
-        //kode prodi
-        $prod = Prodi::where('kodeprodi', $data_mhs->kodeprodi)->first();
+        $data_mhs = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('kurikulum_master', 'student.intake', '=', 'kurikulum_master.remark')
+            ->where('student.idstudent', $id)
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'kurikulum_master.id_kurikulum', 'prodi.id_prodi', 'student.idangkatan', 'student.idstatus')
+            ->first();
 
-        //tambah krs
+        $idkurikulum = $data_mhs->id_kurikulum;
+        $idprodi = $data_mhs->id_prodi;
+        $idangkatan = $data_mhs->idangkatan;
+        $idkelas = $data_mhs->idstatus;
+
+
+        #tambah krs
+        $add_krs = DB::select('CALL add_krs_per_mhs(?,?,?,?)', [$idkurikulum, $idprodi, $idangkatan, $idkelas]);
+
         $krs = Kurikulum_transaction::join('kurikulum_master', 'kurikulum_transaction.id_kurikulum', '=', 'kurikulum_master.id_kurikulum')
             ->join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -353,7 +367,6 @@ class DosenController extends Controller
             ->where('kurikulum_master.status', 'ACTIVE')
             ->where('periode_tahun.status', 'ACTIVE')
             ->where('periode_tipe.status', 'ACTIVE')
-
             ->where('kurikulum_periode.id_prodi', $data_mhs->id_prodi)
             ->where('kurikulum_transaction.id_prodi', $data_mhs->id_prodi)
             ->where('kurikulum_transaction.id_angkatan', $data_mhs->idangkatan)
@@ -364,7 +377,9 @@ class DosenController extends Controller
             ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
             ->get();
 
-        //data krs diambil
+        #data krs diambil
+        $data = DB::select('CALL cek_krs_per_mhs(?)', [$id]);
+
         $val = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->leftjoin('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -406,7 +421,7 @@ class DosenController extends Controller
             }
 
             $b = $valuekrs->remark;
-            return view('dosen/cek_krs', ['b' => $b, 'mhss' => $id, 'add' => $krs, 'val' => $val, 'key' => $data_mhs]);
+            return view('dosen/cek_krs', ['b' => $b, 'mhss' => $id, 'add' => $add_krs, 'val' => $data, 'key' => $data_mhs]);
         }
     }
 
