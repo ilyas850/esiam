@@ -819,9 +819,15 @@ class SadminController extends Controller
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('kurikulum_master', 'student.intake', '=', 'kurikulum_master.remark')
             ->where('student.idstudent', $id)
-            ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
+            ->select('student.idstudent', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'kurikulum_master.id_kurikulum', 'prodi.id_prodi', 'student.idangkatan', 'student.idstatus')
             ->first();
+        
+        $idkurikulum = $datamhs->id_kurikulum;
+        $idprodi = $datamhs->id_prodi;
+        $idangkatan = $datamhs->idangkatan;
+        $idkelas = $datamhs->idstatus;
 
         $valkrs = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -841,35 +847,49 @@ class SadminController extends Controller
 
         $b = $valuekrs->remark;
 
-        $kur = Kurikulum_master::where('status', 'ACTIVE')->first();
+        $mhs = $id;
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-
-        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-
-        $maha = Student::where('idstudent', $id)->first();
-
-        $prod = Prodi::where('kodeprodi', $maha->kodeprodi)->first();
-
-        $mhs = $maha->idstudent;
-
-        $krs = Kurikulum_transaction::join('kurikulum_periode', 'kurikulum_transaction.id_makul', '=', 'kurikulum_periode.id_makul')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->where('kurikulum_transaction.id_kurikulum', $kur->id_kurikulum)
-            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-            ->where('kurikulum_periode.id_kelas', $maha->idstatus)
-            ->where('kurikulum_transaction.id_prodi', $prod->id_prodi)
-            ->where('kurikulum_transaction.id_angkatan', $maha->idangkatan)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('matakuliah.makul', 'matakuliah.kode', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'semester.semester', 'dosen.nama')
-            ->get();
+        $add_krs = DB::select('CALL add_krs_per_mhs(?,?,?,?)', [$idkurikulum, $idprodi, $idangkatan, $idkelas]);
 
         $data = DB::select('CALL cek_krs_per_mhs(?)', [$id]);
 
-        return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $krs, 'val' => $data]);
+        return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $add_krs, 'val' => $data]);
+    }
+
+    public function savekrs_new(Request $request)
+    {
+        $this->validate($request, [
+            'id_student' => 'required',
+            'id_kurperiode' => 'required',
+        ]);
+
+        $jml = count($request->id_kurperiode);
+        for ($i = 0; $i < $jml; $i++) {
+            $kurp = $request->id_kurperiode[$i];
+            $idr = explode(',', $kurp, 2);
+            $tra = $idr[0];
+            $trs = $idr[1];
+            $cekkrs = Student_record::where('id_student', $request->id_student)
+                ->where('id_kurperiode', $tra)
+                ->where('id_kurtrans', $trs)
+                ->where('status', 'TAKEN')
+                ->get();
+        }
+
+        if (count($cekkrs) > 0) {
+            Alert::warning('maaf mata kuliah sudah dipilih', 'MAAF !!');
+            return redirect()->back();
+        } elseif (count($cekkrs) == 0) {
+            $krs = new Student_record();
+            $krs->tanggal_krs = date('Y-m-d');
+            $krs->id_student = $request->id_student;
+            $krs->id_kurperiode = $tra;
+            $krs->id_kurtrans = $trs;
+            $krs->save();
+
+            Alert::success('', 'Matakuliah berhasil ditambahkan')->autoclose(3500);
+            return redirect()->back();
+        }
     }
 
     public function cek_makul_mengulang_admin($id)

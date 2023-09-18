@@ -463,6 +463,9 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('cari_mhs_aktif_admin', 'SadminController@cari_mhs_aktif_admin');
     Route::get('export_data_mhs_admin', 'SadminController@export_data_mhs_admin');
     Route::post('export_data_mhs_aktif_filter', 'SadminController@export_data_mhs_aktif_filter');
+
+    #KRS mahasiswa
+    Route::post('savekrs_new_admin', 'SadminController@savekrs_new');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

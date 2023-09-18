@@ -39,7 +39,7 @@
                         <div class="col-md-12">
                             <label><span class="badge bg-green">Silahkan masukan matakuliah yang akan
                                     ditambahkan</span></label>
-                            <form class="form-horizontal" role="form" action="{{ url('savekrs_new') }}" method="POST">
+                            <form class="form-horizontal" role="form" action="{{ url('savekrs_new_admin') }}" method="POST">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="id_student" value="{{ $mhss }}" />
                                 <select class="form-control" name="id_kurperiode[]" onchange="this.form.submit();">
@@ -47,8 +47,8 @@
                                     @foreach ($add as $key)
                                         <option value="{{ $key->id_kurperiode }}, {{ $key->idkurtrans }}">
                                             {{ $key->id_kurperiode }} -
-                                            {{ $key->semester }} - {{ $key->kode }} - {{ $key->makul }} -
-                                            {{ $key->nama }}
+                                            {{ $key->semester }} - {{ $key->kelas }} - {{ $key->makul }} -
+                                            {{ $key->nama }} - {{ $key->hari }} - {{ $key->jam }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -125,16 +125,13 @@
                                                     data-placement="right">Validasi</button>
                                             </form>
                                         @endif
-
                                     </center>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-
             </div>
-
         </div>
     </section>
 @endsection
