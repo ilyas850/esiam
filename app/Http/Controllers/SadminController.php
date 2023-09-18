@@ -867,25 +867,9 @@ class SadminController extends Controller
             ->select('matakuliah.makul', 'matakuliah.kode', 'kurikulum_transaction.idkurtrans', 'kurikulum_periode.id_kurperiode', 'semester.semester', 'dosen.nama')
             ->get();
 
-        $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
-            ->where('student_record.status', 'TAKEN')
-            ->where('id_student', $id)
-            ->select('student_record.remark', 'student.idstudent', 'student_record.id_studentrecord', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'matakuliah.makul', 'matakuliah.kode', 'student_record.remark', 'kurikulum_hari.hari', 'kurikulum_jam.jam', 'ruangan.nama_ruangan', 'semester.semester')
-            ->get();
+        $data = DB::select('CALL cek_krs_per_mhs(?)', [$id]);
 
-        return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $krs, 'val' => $val]);
+        return view('sadmin/cek_krs_admin', ['datamhs' => $datamhs, 'b' => $b, 'mhss' => $mhs, 'add' => $krs, 'val' => $data]);
     }
 
     public function cek_makul_mengulang_admin($id)

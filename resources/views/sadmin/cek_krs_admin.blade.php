@@ -4,18 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Record Nilai Mahasiswa
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('val_krs') }}"> Data validasi krs</a></li>
-            <li class="active">Data record nilai mahasiswa</li>
-        </ol>
-    </section>
-@endsection
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -103,13 +91,13 @@
                                 <td align="center">{{ $no++ }}</td>
 
                                 <td align="center">{{ $item->semester }}</td>
-                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
+                                <td>{{ $item->makul }}</td>
                                 <td> {{ $item->hari }}</td>
                                 <td align="center"> {{ $item->jam }}</td>
                                 <td>{{ $item->nama_ruangan }}</td>
                                 <td>
                                     <center>
-                                        {{ $item->akt_sks_teori }}/{{ $item->akt_sks_praktek }}
+                                        {{ $item->sks }}
                                     </center>
                                 </td>
                                 <td>{{ $item->nama }}</td>
