@@ -26,7 +26,7 @@
                             {{ csrf_field() }}
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Input Data Pengunduran Diri</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Input Data Pindah Kelas</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Mengundurkan Diri Pada Semester</label>
+                                                <label>Pindah Kelas Pada Semester</label>
                                                 <select name="id_periodetipe" class="form-control" required>
                                                     <option></option>
                                                     @foreach ($tipe as $tp)

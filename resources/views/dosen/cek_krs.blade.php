@@ -47,7 +47,6 @@
                         <div class="col-md-12">
                             <label><span class="badge bg-green">Silahkan masukan matakuliah yang akan
                                     ditambahkan</span></label>
-
                             <form class="form-horizontal" role="form" action="{{ url('savekrs_new') }}" method="POST">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="id_student" value="{{ $mhss }}" />
@@ -65,9 +64,7 @@
                             <br>
                         </div>
                     @endif
-
                 </div>
-
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
