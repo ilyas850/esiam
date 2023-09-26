@@ -5,6 +5,9 @@
                 <center>No</center>
             </th>
             <th>
+                <center>Id</center>
+            </th>
+            <th>
                 <center>NIM</center>
             </th>
             <th>
@@ -33,6 +36,9 @@
             <tr>
                 <td>
                     <center>{{ $i++ }}</center>
+                </td>
+                <td>
+                    <center>{{ $key->idstudent }}</center>
                 </td>
                 <td>
                     <center>{{ $key->nim }}</center>
