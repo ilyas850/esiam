@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Absensi Mahasiswa
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap_dsn/{{ $idk }}"> BAP</a></li>
-            <li class="active">Edit Absensi Mahasiswa </li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -81,22 +67,40 @@
                                         <center>
                                             <select name="absensi[]" class="form-control" required>
                                                 @if ($item->absensi == 'ABSEN')
-                                                    <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
+                                                    <option
+                                                        value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                        Hadir</option>
                                                 @elseif($item->absensi == 'IZIN')
-                                                    <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>
+                                                    <option
+                                                        value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                        Izin</option>
                                                 @elseif($item->absensi == 'SAKIT')
-                                                    <option value="{{ $item->id_studentrecord }},SAKIT">Sakit</option>
+                                                    <option
+                                                        value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                        Sakit</option>
                                                 @elseif($item->absensi == 'ALFA')
-                                                    <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
+                                                    <option
+                                                        value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                        Alfa</option>
                                                 @elseif($item->absensi == null)
                                                     <option></option>
                                                 @elseif($item->absensi == 'HADIR')
-                                                    <option value="{{ $item->id_studentrecord }},HADIR"></option>
+                                                    <option
+                                                        value="{{ $item->id_studentrecord }},HADIR,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                    </option>
                                                 @endif
-                                                <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
-                                                <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>
-                                                <option value="{{ $item->id_studentrecord }},SAKIT">Sakit</option>
-                                                <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
+                                                <option
+                                                    value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                    Hadir</option>
+                                                <option
+                                                    value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                    Izin</option>
+                                                <option
+                                                    value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                    Sakit</option>
+                                                <option
+                                                    value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
+                                                    Alfa</option>
                                             </select>
                                         </center>
                                     </td>
@@ -111,15 +115,4 @@
             </form>
         </div>
     </section>
-    {{-- <script>
-        $(document).ready(function() {
-            $('#simpan').click(function() {
-                // Menonaktifkan tombol setelah diklik
-                $(this).prop('disabled', true);
-
-                // Mencegah pengguna mengklik tombol lagi
-                $(this).unbind('click');
-            });
-        });
-    </script> --}}
 @endsection

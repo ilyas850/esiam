@@ -118,16 +118,6 @@
                                                     value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
                                                     Alfa</option>
                                             </select>
-
-                                            {{-- @if ($item->absensi == 'HADIR')
-                                                <input type="checkbox" name="absensi[]" value="{{ $item->id_absensi }}">
-                                            @elseif ($item->absensi == 'ABSEN')
-                                                <input type="checkbox" name="absensi[]" value="{{ $item->id_absensi }}"
-                                                    checked>
-                                            @elseif($item->absensi == null)
-                                                <input type="checkbox" name="abs[]"
-                                                    value="{{ $item->id_studentrecord }}">
-                                            @endif --}}
                                         </center>
                                     </td>
                                 </tr>
