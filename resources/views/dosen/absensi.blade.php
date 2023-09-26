@@ -68,8 +68,6 @@
                                         <center>
                                             <input type="hidden" name="id_studentrecord[]"
                                                 value="{{ $item->id_studentrecord }}">
-                                            {{-- <input type="checkbox" name="absensi[]"
-                                                value="{{ $item->id_studentrecord }}"> --}}
                                             <select name="absensi[]" class="form-control" required>
                                                 <option value="{{ $item->id_studentrecord }},HADIR"></option>
                                                 <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
