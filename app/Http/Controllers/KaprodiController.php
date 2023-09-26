@@ -1455,45 +1455,6 @@ class KaprodiController extends Controller
       Bap::where('id_bap', $get_idbap)->update(['tidak_hadir' => $jml_tdk_hadir]);
     }
 
-    // for ($m = 0; $m < $jml_bap_gabungan; $m++) {
-    //   $get_id_bap = $bap_gabungan[$m];
-    //   $id_bap_found = $get_id_bap->id_bap;
-
-    //   for ($n = 0; $n < $jmlabsen; $n++) {
-    //     $get_id_student = $absen[$n];
-    //     $idst = explode(',', $get_id_student, 2);
-    //     $tra = $idst[0];
-    //     $trs = $idst[1];
-    //     $cek_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
-    //       ->where('id_studentrecord', $tra)
-    //       ->get();
-
-    //     if (count($cek_hadir) == 0) {
-
-    //       $abs = new Absensi_mahasiswa();
-    //       $abs->id_bap = $id_bap_found;
-    //       $abs->id_studentrecord = $tra;
-    //       $abs->absensi = $trs;
-    //       $abs->save();
-    //     } elseif (count($cek_hadir) > 0) {
-
-    //       Absensi_mahasiswa::where('id_bap', $id_bap_found)
-    //         ->where('id_studentrecord', $tra)
-    //         ->update(['absensi' => $trs]);
-    //     }
-    //   }
-
-    //   $jml_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
-    //     ->where('absensi', 'ABSEN')
-    //     ->count();
-    //   $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $id_bap_found)
-    //     ->whereIn('absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
-    //     ->count();
-
-    //   Bap::where('id_bap', $id_bap_found)->update(['hadir' => $jml_hadir]);
-    //   Bap::where('id_bap', $id_bap_found)->update(['tidak_hadir' => $jml_tdk_hadir]);
-    // }
-
     $cek_bap = Bap::where('id_bap', $id_bp)
       ->select('id_bap', 'id_kurperiode', 'pertemuan', 'id_dosen')
       ->first();

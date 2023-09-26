@@ -20,6 +20,9 @@
                 <center>Angkatan</center>
             </th>
             <th>
+                <center>No. HP</center>
+            </th>
+            <th>
                 <center>Intake</center>
             </th>
         </tr>
@@ -43,6 +46,9 @@
                 </td>
                 <td>
                     <center>{{ $key->angkatan }}</center>
+                </td>
+                <td>
+                    <center>{{ $key->hp }}</center>
                 </td>
                 <td>
                     <center>
