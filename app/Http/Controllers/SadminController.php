@@ -823,7 +823,7 @@ class SadminController extends Controller
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'kurikulum_master.id_kurikulum', 'prodi.id_prodi', 'student.idangkatan', 'student.idstatus')
             ->first();
-        
+
         $idkurikulum = $datamhs->id_kurikulum;
         $idprodi = $datamhs->id_prodi;
         $idangkatan = $datamhs->idangkatan;
@@ -1563,21 +1563,6 @@ class SadminController extends Controller
             ->get();
 
 
-        // $nilai1 = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-        //     ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-        //     ->leftJoin('prodi', function ($join) {
-        //         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        //     })
-        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-        //     ->leftjoin('transkrip_final', 'prausta_setting_relasi.id_student', '=', 'transkrip_final.id_student')
-        //     ->whereIn('prausta_master_kode.kode_prausta', ['FA-602', 'TI-602', 'TK-602'])
-        //     ->where('prausta_setting_relasi.status', 'ACTIVE')
-        //     ->where('student.active', 1)
-        //     ->select('transkrip_final.id_transkrip_final', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'student.idstudent', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
-        //     ->orderBy('student.nim', 'desc')
-        //     ->get();
-
         return view('sadmin/nilai/transkrip_final', compact('nilai'));
     }
 
@@ -1589,7 +1574,7 @@ class SadminController extends Controller
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('yudisium.id_student', $id)
             ->select(
                 'yudisium.id_student',
@@ -1606,18 +1591,6 @@ class SadminController extends Controller
             )
             ->first();
 
-        // $mhs = Student::leftJoin('prodi', function ($join) {
-        //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        // })
-        //     ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-        //     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-        //     ->where('student.idstudent', $id)
-        //     ->select('student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi', 'prausta_setting_relasi.judul_prausta')
-        //     ->get();
-
-        // foreach ($mhs as $item1) {
-
-        // }
 
         return view('sadmin/transkrip/form_transkrip_final', compact('item'));
     }
