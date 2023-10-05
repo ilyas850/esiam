@@ -1444,7 +1444,16 @@ class SadminController extends Controller
         })
             ->join('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
             ->where('student.idstudent', $id)
-            ->select('transkrip_nilai.id_transkrip', 'transkrip_nilai.no_transkrip', 'student.idstudent', 'student.nama', 'student.nim', 'student.tmptlahir', 'student.tgllahir', 'prodi.prodi')
+            ->select(
+                'transkrip_nilai.id_transkrip',
+                'transkrip_nilai.no_transkrip',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'student.tmptlahir',
+                'student.tgllahir',
+                'prodi.prodi'
+            )
             ->get();
 
         foreach ($mhs as $item) {

@@ -336,7 +336,6 @@ class PraustaController extends Controller
                 ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                 ->get();
 
-            dd($data_nilai_ulang);
             if ($cekdata == 0) {
                 Alert::error('Maaf dosen pembimbbing anda belum disetting untuk Kerja Praktek/Prakerin', 'MAAF !!');
                 return redirect('home');
