@@ -331,7 +331,7 @@ class PraustaController extends Controller
                 ->where('student.idstudent', $id)
                 ->where('student_record.status', 'TAKEN')
                 ->whereIn('student.active', [1, 5])
-                
+
                 ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                 ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                 ->get();

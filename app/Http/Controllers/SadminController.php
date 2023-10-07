@@ -1480,7 +1480,7 @@ class SadminController extends Controller
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
             ->first();
 
-        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
@@ -1512,7 +1512,7 @@ class SadminController extends Controller
             ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
             ->get();
 
-        $sks = DB::select('CALL transkripsmt(' . $item->idstudent . ')');
+        $sks = DB::select('CALL hasil_transkrip(' . $item->idstudent . ')');
         foreach ($sks as $keysks) {
             // code...
         }
@@ -1626,6 +1626,8 @@ class SadminController extends Controller
 
     public function lihat_transkrip_final($id)
     {
+        $data = Yudisium::where('id_student', $id)->get();
+
         $item = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
             ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
             ->join('prodi', function ($join) {
@@ -1633,7 +1635,7 @@ class SadminController extends Controller
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('yudisium.id_student', $id)
             ->select(
                 'student.idstudent',
@@ -1650,32 +1652,6 @@ class SadminController extends Controller
             )
             ->first();
 
-        // $mhs = Student::leftJoin('prodi', function ($join) {
-        //     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        // })
-        //     ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-        //     ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
-        //     ->where('student.idstudent', $id)
-        //     ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
-        //     ->select(
-        //         'prausta_setting_relasi.judul_prausta',
-        //         'transkrip_final.id_transkrip_final',
-        //         'transkrip_final.no_ijazah',
-        //         'transkrip_final.tgl_yudisium',
-        //         'transkrip_final.tgl_wisuda',
-        //         'transkrip_final.no_transkrip_final',
-        //         'student.idstudent',
-        //         'student.nama',
-        //         'student.nim',
-        //         'student.tmptlahir',
-        //         'student.tgllahir',
-        //         'prodi.prodi'
-        //     )
-        //     ->get();
-
-        // foreach ($mhs as $item1) {
-
-        // }
 
         $nama = strtoupper($item->nama_lengkap);
 
@@ -1726,7 +1702,7 @@ class SadminController extends Controller
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
@@ -1743,7 +1719,7 @@ class SadminController extends Controller
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9,  14, 17, 20, 23])
             ->where('yudisium.id_student', $id)
             ->select(
                 'student.idstudent',
@@ -1801,7 +1777,7 @@ class SadminController extends Controller
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
@@ -1818,7 +1794,7 @@ class SadminController extends Controller
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('yudisium.id_student', $id)
             ->select(
                 'student.idstudent',
@@ -1889,7 +1865,7 @@ class SadminController extends Controller
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        $sks = DB::select('CALL transkripsmt(' . $id . ')');
+        $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
@@ -4885,7 +4861,7 @@ class SadminController extends Controller
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             // ->where('student.active', 1)
             ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
@@ -4924,7 +4900,7 @@ class SadminController extends Controller
             ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
             ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
             ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             // ->where('student.active', 1)
             ->where('kurikulum_periode.id_periodetahun', $idperiodetahun)
