@@ -1135,11 +1135,11 @@ class DosenluarController extends Controller
     {
         #id BAP
         $id_bp = $request->id_bap;
-        
+
         #cek bap yang sama
         $bap_gabungan = DB::select('CALL bap_gabungan(?)', [$id_bp]);
         $jml_bap_gabungan = count($bap_gabungan);
-       
+
         #jumlah yang masuk/absen
         $absen = $request->absensi;
         $jmlabsen = count($absen);
@@ -1166,7 +1166,6 @@ class DosenluarController extends Controller
                         ->update([
                             'absensi' => $id2
                         ]);
-
                 } elseif (count($cek_absen) == 0) {
                     $abs = new Absensi_mahasiswa();
                     $abs->id_bap = $get_idbap;
@@ -2526,7 +2525,7 @@ class DosenluarController extends Controller
         $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_master_kode.kode_prausta', ['FA-601', 'TI-601', 'TK-601'])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->get();
 
         return view('dosenluar/prausta/cek_bimbingan_pkl', compact('jdl', 'pkl'));
