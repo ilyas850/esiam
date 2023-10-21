@@ -95,13 +95,9 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="{{ url('export_xlsnilai_kprd') }}" method="post">
-                                            {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
+                                        <a href="export_xlsnilai_kprd/{{ $item->id_kurperiode }}"
+                                            class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i></a>
 
-                                            <button type="submit" class="btn btn-success btn-xs"
-                                                title="klik untuk export excel"><i class="fa fa-file-excel-o"></i></button>
-                                        </form>
                                     </center>
                                 </td>
                                 <td>
@@ -118,7 +114,7 @@
                                             </i></a>
                                     </center>
                                 </td>
-                                
+
                                 <td>
                                     <center>
                                         <a href="view_bap_his_kprd/{{ $item->id_kurperiode }}"
