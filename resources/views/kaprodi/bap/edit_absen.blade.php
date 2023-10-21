@@ -13,6 +13,7 @@
             <form action="{{ url('save_edit_absensi_kprd') }}" method="post">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_bap" value="{{ $id }}">
+                <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
                 <div class="box-body">
                     <div class="form-group">
                         <div class="callout callout-warning">

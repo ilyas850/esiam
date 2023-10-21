@@ -6,20 +6,6 @@
 
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-        Jurnal Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-        <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-        <li><a href="{{ url('rekap_perkuliahan') }}"> Rekap perkuliahan</a></li>
-        <li><a href="/cek_rekapan/{{$bap->id_kurperiode}}">Cek BAP</a></li>
-        <li class="active">Jurnal Perkuliahan </li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
 <section class="content">
     <div class="box box-info">

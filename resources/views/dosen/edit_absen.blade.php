@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Absensi Mahasiswa
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap/{{ $idk }}"> BAP</a></li>
-            <li class="active">Edit Absensi Mahasiswa </li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -27,7 +13,7 @@
             <form action="{{ url('save_edit_absensi') }}" method="post">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_bap" value="{{ $id }}">
-                {{-- <input type="hidden" name="id_kurperiode" value="{{ $idk }}"> --}}
+                <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
                 <div class="box-body">
                     <div class="form-group">
                         <div class="callout callout-warning">

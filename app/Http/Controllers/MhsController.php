@@ -257,6 +257,8 @@ class MhsController extends Controller
             $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
         }
 
+
+
         $bulan = [
             '01' => 'Januari',
             '02' => 'Februari',
@@ -446,7 +448,7 @@ class MhsController extends Controller
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
-
+      
         return view('mhs/rekap_absen', ['data' => $key, 'abs' => $abs]);
     }
 

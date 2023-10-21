@@ -2120,7 +2120,7 @@ class SadminController extends Controller
         $idtahun = $thn->id_periodetahun;
         $namaperiodetahun = $thn->periode_tahun;
 
-        $data = DB::select('CALL rekap_perkuliahan(?,?)', [$idtahun, $idtipe]);
+        $data = DB::select('CALL rekap_perkuliahan_new(?,?)', [$idtahun, $idtipe]);
 
         return view('sadmin/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
@@ -2180,6 +2180,44 @@ class SadminController extends Controller
             ->get();
 
         return view('sadmin/perkuliahan/cek_bap', ['bap' => $key, 'data' => $data]);
+    }
+
+    public function cek_absen_bap($id)
+    {
+        $data = DB::select('CALL cek_absen(?)', [$id]);
+
+        
+
+        return view('sadmin/perkuliahan/edit_asben_perkuliahan', compact('data', 'id'));
+    }
+
+    public function save_edit_absensi_admin(Request $request)
+    {
+        #id absen []
+        $absen = $request->id_absensi;
+        
+        $cek_bap_sama = DB::select('CALL bap_gabungan(?)', [$request->id_bap]);
+        $jml_bap_sama = count($cek_bap_sama);
+        
+        for ($i = 0; $i < $jml_bap_sama; $i++) {
+            $bap = $cek_bap_sama[1];
+
+            $abs = $absen[$i];
+            $data_abs = Absensi_mahasiswa::where('id_absensi', $abs)->first();
+            if ($data_abs->id_bap != $bap->id_bap) {
+                $hitJmlAbs = Absensi_mahasiswa::where('id_bap', $bap->id_bap)
+                    ->where('id_studentrecord', $data_abs->id_studentrecord)
+                    ->get();
+                dd($hitJmlAbs);
+
+            }
+            dd('sama');
+            //Absensi_mahasiswa::where('id_absensi', $abs)->delete();
+            // $data_abs_mhs = Absensi_mahasiswa::where('id_bap', $data_abs->id_bap)
+            //     ->where('id_studentrecord', $data_abs->id_studentrecord)
+            //     ->get();
+        }
+        dd($jml_bap_sama);
     }
 
     public function sum_absen($id)

@@ -222,7 +222,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('cek_jurnal_bap/{id}', 'SadminController@jurnal_bap');
     Route::get('print_jurnal_cek/{id}', 'SadminController@print_jurnal');
 
-    //filter rekap perkuliahan
+    #cek absensi
+    Route::get('cek_absen_bap/{id}', 'SadminController@cek_absen_bap');
+    Route::post('save_edit_absensi_admin', 'SadminController@save_edit_absensi_admin');
+
+    #filter rekap perkuliahan
     Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');
     Route::post('filter_jadwal_perkuliahan', 'SadminController@filter_jadwal_perkuliahan');
 

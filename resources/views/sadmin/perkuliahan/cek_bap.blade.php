@@ -4,19 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('rekap_perkuliahan') }}"> Rekap perkuliahan</a></li>
-            <li class="active">Cek BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         @if ($message = Session::get('success'))
@@ -79,9 +66,7 @@
                             <th rowspan="2">
                                 <center>Aksi</center>
                             </th>
-                            <th rowspan="2">
-                                <center>Validasi</center>
-                            </th>
+
                         </tr>
                         <tr>
                             <th>
@@ -116,7 +101,9 @@
                                 <td>
                                     <center>{{ $item->tanggal->isoFormat('D-M-Y') }}</center>
                                 </td>
-                                <td><center>{{ $item->created_at->isoFormat('D-M-Y') }}</center></td>
+                                <td>
+                                    <center>{{ $item->created_at->isoFormat('D-M-Y') }}</center>
+                                </td>
                                 <td>
                                     <center>{{ $item->jam_mulai }} - {{ $item->jam_selsai }}</center>
                                 </td>
@@ -142,17 +129,9 @@
                                 <td>
                                     <center>
                                         <a href="/cek_view_bap/{{ $item->id_bap }}" class="btn btn-info btn-xs"
-                                            title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        @if ($item->tanggal_validasi != null)
-                                            <span class="badge bg-yellow">Valid</span>
-                                        @elseif($item->tanggal_validasi == null)
-                                            <span class="badge bg-red">Belum</span>
-                                        @endif
+                                            title="klik untuk lihat BAP"> <i class="fa fa-eye"></i></a>
+                                        <a href="/cek_absen_bap/{{ $item->id_bap }}" class="btn btn-warning btn-xs"
+                                            title="klik untuk lihat absensi"><i class="fa fa-edit"></i></a>
                                     </center>
                                 </td>
                             </tr>

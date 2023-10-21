@@ -81,8 +81,8 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai"
-                                    value="{{ $bap->jam_selsai }}" required>
+                                <input type="text" class="form-control" name="jam_selsai" value="{{ $bap->jam_selsai }}"
+                                    required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -128,13 +128,19 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div div class="col-md-6">
+                            <div div class="col-md-4">
                                 <label>
                                     <font color="red-text">*</font>Materi Kuliah/Ujian
                                 </label>
                                 <textarea class="form-control" rows="3" name="materi_kuliah" required>{{ $bap->materi_kuliah }}</textarea>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label>
+                                    Materi Praktikum
+                                </label>
+                                <textarea class="form-control" rows="3" name="praktikum">{{ $bap->praktikum }}</textarea>
+                            </div>
+                            <div class="col-md-4">
                                 <label>
                                     <font color="red-text">*</font>Media Pembelajaran/Ujian
                                 </label>
