@@ -343,7 +343,7 @@ class ProdiController extends Controller
           ])
           ->select('prausta_master_kode.id_masterkode_prausta')
           ->first();
-      
+
         $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
           ->where('id_masterkode_prausta', $kode1->id_masterkode_prausta)
           ->where('status', 'ACTIVE')

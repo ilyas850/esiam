@@ -96,13 +96,14 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <form action="{{ url('export_xlsnilai') }}" method="post">
+                                        <a href="export_xlsnilai/{{$item->id_kurperiode}}" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i></a>
+                                        {{-- <form action="{{ url('export_xlsnilai') }}" method="post">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
 
                                             <button type="submit" class="btn btn-success btn-xs"
                                                 title="klik untuk export excel"><i class="fa fa-file-excel-o"></i></button>
-                                        </form>
+                                        </form> --}}
                                     </center>
                                 </td>
                                 <td>
