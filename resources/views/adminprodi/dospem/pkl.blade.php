@@ -55,19 +55,29 @@
                 <table class="table table-condensed" id="example1">
                     <thead>
                         <tr>
-                            <th width="1%">
+                            <th>
                                 <center>No</center>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <center>NIM </center>
                             </th>
-                            <th width="30%">
+                            <th>
                                 <center>Nama Mahasiswa</center>
                             </th>
-                            <th width="25%">
+
+                            <th>
+                                <center>Prodi</center>
+                            </th>
+                            <th>
+                                <center>Kelas</center>
+                            </th>
+                            <th>
+                                <center>PKL/Magang</center>
+                            </th>
+                            <th>
                                 <center>Dosen Pembimbing</center>
                             </th>
-                            <th width="15%">
+                            <th>
                                 <center>Aksi</center>
                             </th>
                         </tr>
@@ -83,6 +93,9 @@
                                     <center>{{ $keydsn->nim }}</center>
                                 </td>
                                 <td>{{ $keydsn->nama }}</td>
+                                <td align="center">{{ $keydsn->prodi }}</td>
+                                <td align="center">{{ $keydsn->kelas }}</td>
+                                <td align="center">{{ $keydsn->nama_prausta }}</td>
                                 <td>{{ $keydsn->dosen_pembimbing }}</td>
                                 <td>
                                     <center>

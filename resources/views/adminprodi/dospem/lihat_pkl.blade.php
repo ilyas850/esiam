@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Dosen Pembimbing PKL</h3>
+                <h3 class="box-title">Data Dosen Pembimbing PKL/Magang</h3>
             </div>
             <div class="box-body">
                 <form class="form" role="form" action="{{ url('save_dsn_bim_pkl') }}" method="POST">

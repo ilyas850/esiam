@@ -120,8 +120,6 @@ class DosenluarController extends Controller
 
     public function export_xlsnilai($id)
     {
-        // $id = $request->id_kurperiode;
-
         $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')

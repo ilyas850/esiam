@@ -4,18 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            History Matakuliah yang diampu
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li class="active">History Matakuliah yang diampu</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -97,24 +85,16 @@
                                     <center>
                                         <a href="export_xlsnilai_kprd/{{ $item->id_kurperiode }}"
                                             class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i></a>
-
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        {{-- <form class="" action="{{ url('unduh_pdf_nilai_kprd') }}" method="post">
-                                            {{ csrf_field() }}
-                                            <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
-                                            <button type="submit" class="btn btn-danger btn-xs"
-                                                title="klik untuk unduh ke pdf"><i class="fa fa-file-pdf-o"></i></button>
-                                        </form> --}}
                                         <a href="/unduh_pdf_nilai_kprd/{{ $item->id_kurperiode }}"
                                             class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
                                                 title="Klik untuk export nilai .pdf">
                                             </i></a>
                                     </center>
                                 </td>
-
                                 <td>
                                     <center>
                                         <a href="view_bap_his_kprd/{{ $item->id_kurperiode }}"

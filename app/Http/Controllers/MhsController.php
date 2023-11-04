@@ -448,7 +448,7 @@ class MhsController extends Controller
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
-      
+
         return view('mhs/rekap_absen', ['data' => $key, 'abs' => $abs]);
     }
 
@@ -4194,11 +4194,13 @@ class MhsController extends Controller
         #total pembayaran kuliah
         $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
             ->where('kuitansi.idstudent', $id)
+            ->whereNotIn('bayar.iditem', [14, 15, 16, 35, 36, 37, 38, 39])
             ->sum('bayar.bayar');
 
         #minimal pembayaran UTS
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
+
 
 
         $cek_penangguhan_mhs = Penangguhan_trans::where('id_periodetahun', $tahun->id_periodetahun)
