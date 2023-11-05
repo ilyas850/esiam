@@ -27,14 +27,13 @@ class ProdiController extends Controller
 {
   public function dospem_pkl()
   {
-    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
-    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
-      ->select('kodeprodi', 'prodi')
+    $angkatan = Angkatan::where('idangkatan', '>', 18)
+      ->orderBy('idangkatan', 'DESC')
       ->get();
 
-    $prodi1 = Prodi::join('prausta_master_kode', 'prodi.id_prodi', '=', 'prausta_master_kode.id_prodi')
-      ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3])
-      ->select('prodi.kodeprodi', 'prodi.id_prodi', 'prodi.prodi', 'prausta_master_kode.id_masterkode_prausta')
+    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+      ->where('study_year', 3)
+      ->select('kodeprodi', 'prodi')
       ->get();
 
     $data = DB::select("CALL dospem_pkl_magang");
@@ -59,14 +58,12 @@ class ProdiController extends Controller
       ->orderBy('nama', 'ASC')
       ->get();
 
-    // return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen', 'id2'));
     return view('adminprodi/dospem/lihat_pkl', compact('data', 'dosen'));
   }
 
   public function save_dsn_bim_pkl(Request $request)
   {
     $dosen = $request->iddosen;
-    $idms = $request->id_masterkode_prausta;
 
     $hitdsn = count($dosen);
 
@@ -111,7 +108,7 @@ class ProdiController extends Controller
       }
     }
 
-    Alert::success('', 'Data Pembimbing Prakerin Berhasil Diinput')->autoclose(3500);
+    Alert::success('', 'Data Pembimbing PKL Berhasil Ditambahkan')->autoclose(3500);
     return redirect('dospem_pkl');
   }
 
@@ -131,6 +128,137 @@ class ProdiController extends Controller
 
     Alert::success('', 'Berhasil diedit')->autoclose(3500);
     return redirect('dospem_pkl');
+  }
+
+  public function dospem_magang()
+  {
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')
+      ->where('idangkatan', '>', 18)
+      ->get();
+
+    $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+      ->where('study_year', 4)
+      ->select('kodeprodi', 'prodi')
+      ->get();
+
+    $data = DB::select('CALL dospem_magang');
+
+    $dosen = Dosen::where('active', 1)
+      ->whereIn('idstatus', [1, 2])
+      ->orderBy('nama', 'ASC')
+      ->get();
+
+    return view('adminprodi/dospem/magang', compact('angkatan', 'prodi', 'data', 'dosen'));
+  }
+
+  function view_mhs_bim_magang(Request $request)
+  {
+    $angkatan = $request->idangkatan;
+    $prodi = $request->kodeprodi;
+
+    $data = DB::select('CALL view_mhs_bim_magang(?,?)', [$angkatan, $prodi]);
+
+    $dosen = Dosen::where('active', 1)
+      ->whereIn('idstatus', [1, 2, 3])
+      ->orderBy('nama', 'ASC')
+      ->get();
+
+    return view('adminprodi/dospem/lihat_magang', compact('data', 'dosen'));
+  }
+
+  function save_dsn_bim_magang(Request $request)
+  {
+    $dosen = $request->iddosen;
+    for ($i = 0; $i < count($dosen); $i++) {
+      $dta = $dosen[$i];
+      if ($dta != null) {
+        $user = explode(',', $dta, 4);
+        $id1 = $user[0];
+        $id2 = $user[1];
+        $id3 = $user[2];
+        $id4 = $user[3];
+
+        $cekProdi = Student::leftJoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+          ->join('prausta_master_kode', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
+          ->where('student.idstudent', $id1)
+          ->where('prausta_master_kode.tipe_prausta', 'Magang')
+          ->select('prausta_master_kode.id_masterkode_prausta')
+          ->get();
+
+        for ($k = 0; $k < count($cekProdi); $k++) {
+          $dataKode = $cekProdi[$k];
+          $dt = new Prausta_setting_relasi;
+          $dt->id_masterkode_prausta = $dataKode->id_masterkode_prausta;
+          $dt->id_student = $id1;
+          $dt->dosen_pembimbing = $id3;
+          $dt->id_dosen_pembimbing = $id2;
+          $dt->added_by = Auth::user()->name;
+          $dt->status = 'ACTIVE';
+          $dt->data_origin = 'eSIAM';
+          $dt->save();
+        }
+      }
+    }
+
+    Alert::success('', 'Data Pembimbing Magang Berhasil Ditambahkan')->autoclose(3500);
+    return redirect('dospem_magang');
+  }
+
+  function put_dospem_magang(Request $request, $id)
+  {
+    $cekId = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->first();
+    $cekProdi = Student::leftJoin('prodi', function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    })
+      ->join('prausta_master_kode', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
+      ->where('student.idstudent', $cekId->id_student)
+      ->where('prausta_master_kode.tipe_prausta', 'Magang')
+      ->select('prausta_master_kode.id_masterkode_prausta')
+      ->get();
+
+    for ($i = 0; $i < count($cekProdi); $i++) {
+      $data = $cekProdi[$i];
+
+      $cekMagang = Prausta_setting_relasi::where('id_student', $cekId->id_student)
+        ->where('id_masterkode_prausta', $data->id_masterkode_prausta)
+        ->get();
+
+      $cekIdMagang = Prausta_setting_relasi::where('id_student', $cekId->id_student)
+        ->where('id_masterkode_prausta', $data->id_masterkode_prausta)
+        ->first();
+
+      $dosen = $request->id_dosen_pembimbing;
+
+      $user = explode(',', $dosen, 2);
+      $id1 = $user[0];
+      $id2 = $user[1];
+
+      if (count($cekMagang) == 1) {
+
+        Prausta_setting_relasi::where('id_settingrelasi_prausta', $cekIdMagang->id_settingrelasi_prausta)
+          ->update([
+            'id_dosen_pembimbing' => $id1,
+            'dosen_pembimbing' => $id2,
+            'updated_by' => Auth::user()->name,
+            'data_origin' => 'eSIAM'
+          ]);
+      } elseif (count($cekMagang) == 0) {
+
+        $dt = new Prausta_setting_relasi;
+        $dt->id_masterkode_prausta = $data->id_masterkode_prausta;
+        $dt->id_student = $cekId->id_student;
+        $dt->dosen_pembimbing = $id2;
+        $dt->id_dosen_pembimbing = $id1;
+        $dt->added_by = Auth::user()->name;
+        $dt->status = 'ACTIVE';
+        $dt->data_origin = 'eSIAM';
+        $dt->save();
+      }
+    }
+    Alert::success('', 'Berhasil diedit')->autoclose(3500);
+    return redirect('dospem_magang');
   }
 
   public function dospem_sempro_ta()

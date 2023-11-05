@@ -11,6 +11,8 @@
         <ul class="treeview-menu">
             <li><a href="{{ url('dospem_pkl') }}"><i class="fa fa-circle-o"></i> <span>
                         PKL & Magang</span></a></li>
+            <li><a href="{{ url('dospem_magang') }}"><i class="fa fa-circle-o"></i> <span>
+                        Magang</span></a></li>
             <li><a href="{{ url('dospem_sempro_ta') }}"><i class="fa fa-circle-o"></i> <span>
                         SEMPRO, TA & Skripsi</span></a></li>
         </ul>
@@ -24,7 +26,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('setting_standar_kurikulum') }}"><i class="fa fa-circle-o"></i> <span>Setting Standar
-                Kurikulum</span></a></li>
+                        Kurikulum</span></a></li>
         </ul>
     </li>
     <li class="treeview">
@@ -46,7 +48,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('upload_sk_pengajaran_prodi') }}"><i class="fa fa-circle-o"></i> Upload SK Pengajaran</a></li>
+            <li><a href="{{ url('upload_sk_pengajaran_prodi') }}"><i class="fa fa-circle-o"></i> Upload SK
+                    Pengajaran</a></li>
             <li><a href="{{ url('jadwal_kuliah_prodi') }}"><i class="fa fa-circle-o"></i> Jadwal Perkuliahan</a></li>
         </ul>
     </li>

@@ -1477,6 +1477,12 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::post('save_dsn_bim_pkl', 'ProdiController@save_dsn_bim_pkl');
     Route::put('put_dospem_pkl/{id}', 'ProdiController@put_dospem_pkl');
 
+    #magang
+    Route::get('dospem_magang', 'ProdiController@dospem_magang');
+    Route::put('put_dospem_magang/{id}', 'ProdiController@put_dospem_magang');
+    Route::post('view_mhs_bim_magang', 'ProdiController@view_mhs_bim_magang');
+    Route::post('save_dsn_bim_magang', 'ProdiController@save_dsn_bim_magang');
+
     //sempro dan TA
     Route::get('dospem_sempro_ta', 'ProdiController@dospem_sempro_ta');
     Route::post('edit_dospem_sempro_ta', 'ProdiController@edit_dospem_sempro_ta');
