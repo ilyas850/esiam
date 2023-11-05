@@ -67,7 +67,7 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>{{ $keypdm->nama_pedoman }}</td>
-                                <td><a href="{{ asset('/pedoman/' . $keypdm->file) }}"
+                                <td><a href="{{ asset('/Pedoman Khusus/' . $keypdm->file) }}"
                                         target="_blank">{{ $keypdm->file }}</a></td>
                                 <td>
                                     <center>

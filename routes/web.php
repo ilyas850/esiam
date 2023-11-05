@@ -1566,6 +1566,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_pkl_magang', 'AdminPraustaController@data_pkl_magang');
     Route::get('data_pkl_mahasiswa', 'AdminPraustaController@data_pkl_mahasiswa');
     Route::get('data_magang_mahasiswa', 'AdminPraustaController@data_magang_mahasiswa');
+    Route::get('data_magang2_mahasiswa', 'AdminPraustaController@data_magang2_mahasiswa');
 
     #TA dan Skripsi
     Route::get('data_ta_skripsi', 'AdminPraustaController@data_ta_skripsi');
@@ -1576,6 +1577,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('bim_pkl_magang', 'AdminPraustaController@bim_pkl_magang');
     Route::get('data_bim_pkl_mahasiswa', 'AdminPraustaController@data_bim_pkl_mahasiswa');
     Route::get('data_bim_magang_mahasiswa', 'AdminPraustaController@data_bim_magang_mahasiswa');
+    Route::get('data_bim_magang2_mahasiswa', 'AdminPraustaController@data_bim_magang2_mahasiswa');
 
     Route::post('filter_bim_pkl_use_prodi', 'AdminPraustaController@filter_bim_pkl_use_prodi');
     Route::post('filter_bim_magang_use_prodi', 'AdminPraustaController@filter_bim_magang_use_prodi');

@@ -2186,7 +2186,7 @@ class SadminController extends Controller
     {
         $data = DB::select('CALL cek_absen(?)', [$id]);
 
-        
+
 
         return view('sadmin/perkuliahan/edit_asben_perkuliahan', compact('data', 'id'));
     }
@@ -2195,10 +2195,10 @@ class SadminController extends Controller
     {
         #id absen []
         $absen = $request->id_absensi;
-        
+
         $cek_bap_sama = DB::select('CALL bap_gabungan(?)', [$request->id_bap]);
         $jml_bap_sama = count($cek_bap_sama);
-        
+
         for ($i = 0; $i < $jml_bap_sama; $i++) {
             $bap = $cek_bap_sama[1];
 
@@ -2209,7 +2209,6 @@ class SadminController extends Controller
                     ->where('id_studentrecord', $data_abs->id_studentrecord)
                     ->get();
                 dd($hitJmlAbs);
-
             }
             dd('sama');
             //Absensi_mahasiswa::where('id_absensi', $abs)->delete();
@@ -5656,7 +5655,7 @@ class SadminController extends Controller
     {
         $this->validate($request, [
             'nama_pedoman' => 'required',
-            'file' => 'mimes:jpeg,jpg,pdf,png|max:10000',
+            'file' => 'mimes:jpeg,jpg,pdf,png,doc,docx|max:10000',
             'id_periodetahun' => 'required',
         ]);
 

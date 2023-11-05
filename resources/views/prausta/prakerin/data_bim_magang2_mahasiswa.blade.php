@@ -17,9 +17,9 @@
             </div>
         </div>
 
-        <div class="box box-success">
+        <div class="box box-warning">
             <div class="box-header">
-                <h3 class="box-title">Data Bimbingan Magang 1</h3>
+                <h3 class="box-title">Data Bimbingan Magang 2</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">

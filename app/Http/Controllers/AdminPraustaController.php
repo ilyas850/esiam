@@ -223,6 +223,57 @@ class AdminPraustaController extends Controller
         return view('prausta/prakerin/data_magang_mahasiswa', compact('akhir', 'data'));
     }
 
+    public function data_magang2_mahasiswa()
+    {
+        $akhir = time(); #Waktu sekarang
+
+        $data = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('prausta_setting_relasi', 'student.idstudent', '=', 'prausta_setting_relasi.id_student')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->join('prausta_master_waktu', function ($join) {
+                $join->on('prausta_master_waktu.id_periodetahun', '=', 'kurikulum_periode.id_periodetahun')
+                    ->on('prausta_master_waktu.id_periodetipe', '=', 'kurikulum_periode.id_periodetipe')
+                    ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
+            })
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [33, 34, 35])
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN')
+            ->whereIn('matakuliah.idmakul', [483])
+            ->where('prausta_master_waktu.tipe_prausta', 'Magang')
+            ->where('prausta_master_waktu.status', 'ACTIVE')
+            ->where('student.active', 1)
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_master_waktu.set_waktu_awal',
+                'prausta_master_waktu.set_waktu_akhir',
+                'prausta_setting_relasi.tanggal_mulai',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.status',
+                'prausta_master_kode.batas_waktu',
+                'prausta_setting_relasi.tgl_pengajuan'
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('prausta/prakerin/data_magang2_mahasiswa', compact('akhir', 'data'));
+    }
+
     public function atur_prakerin($id)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -272,7 +323,7 @@ class AdminPraustaController extends Controller
                 'id_dosen_penguji_1' => $request->id_dosen_penguji_1
             ]);
 
-        Alert::success('', 'Berhasil setting jadwal prakerin')->autoclose(3500);
+        Alert::success('', 'Berhasil setting jadwal')->autoclose(3500);
         return redirect()->back();
     }
 
@@ -712,6 +763,45 @@ class AdminPraustaController extends Controller
             ->get();
 
         return view('prausta/prakerin/data_bim_magang_mahasiswa', compact('data', 'prodi'));
+    }
+
+    public function data_bim_magang2_mahasiswa()
+    {
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')->get();
+
+        $data = Prausta_setting_relasi::leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [33, 34, 35])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.id_settingrelasi_prausta'
+            )
+            ->groupBy(
+                'student.nama',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+            )
+            ->orderBy('student.nim', 'DESC')
+            ->get();
+
+        return view('prausta/prakerin/data_bim_magang2_mahasiswa', compact('data', 'prodi'));
     }
 
     public function filter_bim_pkl_use_prodi(Request $request)
@@ -2980,35 +3070,35 @@ class AdminPraustaController extends Controller
 
     public function nonatifkan_prausta_prakerin($id)
     {
-        $data = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
+        Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
             ->update([
                 'status' => 'NOT ACTIVE'
             ]);
 
         Alert::success('', 'Berhasil')->autoclose(3500);
-        return redirect('data_prakerin');
+        return redirect()->back();
     }
 
     public function nonatifkan_prausta_sempro($id)
     {
-        $data = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
+        Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
             ->update([
                 'status' => 'NOT ACTIVE'
             ]);
 
         Alert::success('', 'Berhasil')->autoclose(3500);
-        return redirect('data_sempro');
+        return redirect()->back();
     }
 
     public function nonatifkan_prausta_ta($id)
     {
-        $data = Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
+        Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)
             ->update([
                 'status' => 'NOT ACTIVE'
             ]);
 
         Alert::success('', 'Berhasil')->autoclose(3500);
-        return redirect('data_ta');
+        return redirect()->back();
     }
 
     public function download_bimbingan_prakerin(Request $request)

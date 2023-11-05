@@ -12,14 +12,14 @@
             </div>
             <div class="box-body">
                 <a href="/data_pkl_mahasiswa" class="btn btn-info">Data PKL</a>
-                <a href="/data_magang_mahasiswa" class="btn btn-success">Data Magang</a>
+                <a href="/data_magang_mahasiswa" class="btn btn-success">Data Magang 1</a>
                 <a href="/data_magang2_mahasiswa" class="btn btn-warning">Data Magang 2</a>
             </div>
         </div>
 
-        <div class="box box-success">
+        <div class="box box-warning">
             <div class="box-header">
-                <h3 class="box-title">Data Magang 1</h3>
+                <h3 class="box-title">Data Magang 2</h3>
             </div>
             <div class="box-body">
                 <table id="example4" class="table table-bordered table-striped">

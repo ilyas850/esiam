@@ -12,9 +12,9 @@
             </div>
             <div class="box-body">
                 <a href="/data_pkl_mahasiswa" class="btn btn-info">Data PKL</a>
-                <a href="/data_magang_mahasiswa" class="btn btn-success">Data Magang</a>
+                <a href="/data_magang_mahasiswa" class="btn btn-success">Data Magang 1</a>
+                <a href="/data_magang2_mahasiswa" class="btn btn-warning">Data Magang 2</a>
             </div>
         </div>
     </section>
-
 @endsection
