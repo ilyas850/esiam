@@ -10,17 +10,18 @@
             <div class="col-md-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Data Magang 1</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">Data Bimbingan Magang 1</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar Magang 1</a></li>
-                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan Magang 1</a></li>
-                        <li><a href="#tab_5" data-toggle="tab">Nilai Magang 1</a></li>
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Data Magang 2</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">Data Bimbingan Magang 2</a></li>
+                        <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar Magang 2</a></li>
+                        <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan Magang 2</a></li>
+                        <li><a href="#tab_5" data-toggle="tab">Nilai Magang 2</a></li>
                     </ul>
                     <div class="tab-content">
                         @if ($data->judul_prausta == null)
-                            <a class="btn btn-danger" href="input_data_magang/{{ $data->id_settingrelasi_prausta }}">Masukan
+                            <a class="btn btn-danger"
+                                href="input_data_magang2/{{ $data->id_settingrelasi_prausta }}">Masukan
                                 Data
-                                Magang 1</a>
+                                Magang 2</a>
                         @elseif ($data != null)
                             <div class="tab-pane active" id="tab_1">
                                 <div class="row">
@@ -406,7 +407,7 @@
                                 @if ($angkatan == 18 or $angkatan == 19)
                                     @if ($hasil_spp >= 0)
                                         @if ($data->acc_seminar_sidang == null)
-                                            <form class="" action="{{ url('ajukan_seminar_magang') }}"
+                                            <form class="" action="{{ url('ajukan_seminar_magang2') }}"
                                                 method="post" enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="row">
@@ -450,7 +451,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -462,7 +463,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                                        <form action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                                             enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
@@ -498,7 +499,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -508,7 +509,7 @@
                                                 @if ($data->validasi_baak == 'BELUM')
                                                     <div class="col-md-4">
                                                         <div class="info-box">
-                                                            <form action="{{ url('ajukan_seminar_magang') }}"
+                                                            <form action="{{ url('ajukan_seminar_magang2') }}"
                                                                 method="post" enctype="multipart/form-data">
                                                                 {{ csrf_field() }}
                                                                 <input type="hidden" name="id_settingrelasi_prausta"
@@ -547,7 +548,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -556,7 +557,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                                        <form action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                                             enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
@@ -588,7 +589,7 @@
                                     {{-- @elseif ($jml_bim >= 12)  --}}
                                     {{-- @if ($hasil_spp >= 0) --}}
                                     @if ($data->acc_seminar_sidang == null)
-                                        <form class="" action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                        <form class="" action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                             enctype="multipart/form-data">
                                             {{ csrf_field() }}
                                             <div class="row">
@@ -632,7 +633,7 @@
                                                             @if ($data->file_draft_laporan == null)
                                                                 Belum ada
                                                             @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                     target="_blank"> File Laporan</a>
                                                             @endif
                                                         </span>
@@ -644,7 +645,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="info-box">
-                                                    <form action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                                    <form action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                                         enctype="multipart/form-data">
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="id_settingrelasi_prausta"
@@ -679,7 +680,7 @@
                                                             @if ($data->file_draft_laporan == null)
                                                                 Belum ada
                                                             @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                     target="_blank"> File Laporan</a>
                                                             @endif
                                                         </span>
@@ -689,7 +690,7 @@
                                             @if ($data->validasi_baak == 'BELUM')
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                                        <form action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                                             enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
@@ -728,7 +729,7 @@
                                                             @if ($data->file_draft_laporan == null)
                                                                 Belum ada
                                                             @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                     target="_blank"> File Laporan</a>
                                                             @endif
                                                         </span>
@@ -737,7 +738,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="info-box">
-                                                    <form action="{{ url('ajukan_seminar_magang') }}" method="post"
+                                                    <form action="{{ url('ajukan_seminar_magang2') }}" method="post"
                                                         enctype="multipart/form-data">
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="id_settingrelasi_prausta"
@@ -780,7 +781,7 @@
                                         @else
                                             @if ($data->file_laporan_revisi == null)
                                                 <div class="info-box">
-                                                    <form action="{{ url('simpan_draft_magang') }}" method="post"
+                                                    <form action="{{ url('simpan_draft_magang2') }}" method="post"
                                                         enctype="multipart/form-data">
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="id_settingrelasi_prausta"
@@ -807,7 +808,7 @@
                                                                     @if ($data->file_laporan_revisi == null)
                                                                         Belum ada
                                                                     @elseif ($data->file_laporan_revisi != null)
-                                                                        <a href="/File Laporan Revisi/{{ Auth::user()->id_user }}/{{ $data->file_laporan_revisi }}"
+                                                                        <a href="/File Laporan Revisi 2/{{ Auth::user()->id_user }}/{{ $data->file_laporan_revisi }}"
                                                                             target="_blank"> File Laporan</a>
                                                                     @endif
                                                                 </span>
@@ -817,7 +818,7 @@
                                                     @if ($data->validasi_baak == 'BELUM')
                                                         <div class="col-md-4">
                                                             <div class="info-box">
-                                                                <form action="{{ url('simpan_draft_magang') }}"
+                                                                <form action="{{ url('simpan_draft_magang2') }}"
                                                                     method="post" enctype="multipart/form-data">
                                                                     {{ csrf_field() }}
                                                                     <input type="hidden" name="id_settingrelasi_prausta"
@@ -863,7 +864,7 @@
                                             <div class="inner">
                                                 <h3>
                                                     {{ $cekdata_nilai->nilai_huruf }}</h3>
-                                                <p>Nilai Akhir Magang 1</p>
+                                                <p>Nilai Akhir Magang 2</p>
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-list"></i>

@@ -36,11 +36,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Judul Magang </label>
+                            <label>Judul Magang 2 </label>
                             <textarea class="form-control" rows="1" cols="60" readonly>{{ $jdl->judul_prausta }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Tempat Magang </label>
+                            <label>Tempat Magang 2</label>
                             <input type="text" class="form-control" value="{{ $jdl->tempat_prausta }}" readonly>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
                             @if ($jdl->file_draft_laporan == null)
                                 Belum ada
                             @elseif ($jdl->file_draft_laporan != null)
-                                <a href="/File Draft Laporan/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
+                                <a href="/File Draft Laporan 2/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
                                     target="_blank" style="font: white"> File Draft Laporan</a>
                             @endif
 
@@ -201,7 +201,7 @@
                             @if ($jdl->file_laporan_revisi == null)
                                 Belum ada
                             @elseif ($jdl->file_laporan_revisi != null)
-                                <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
+                                <a href="/File Laporan Revisi 2/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
                                     target="_blank" style="font: white"> File Laporan Akhir</a>
                             @endif
 

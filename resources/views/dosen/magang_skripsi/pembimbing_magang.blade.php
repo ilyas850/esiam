@@ -4,19 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Mahasiswa Bimbingan Magang
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-
-            <li class="active">Data mahasiswa bimbingan Magang</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">

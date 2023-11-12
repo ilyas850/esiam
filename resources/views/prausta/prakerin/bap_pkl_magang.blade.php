@@ -12,7 +12,8 @@
             </div>
             <div class="box-body">
                 <a href="/data_bap_pkl_mahasiswa" class="btn btn-info">Data BAP PKL</a>
-                <a href="/data_bap_magang_mahasiswa" class="btn btn-success">Data BAP Magang</a>
+                <a href="/data_bap_magang_mahasiswa" class="btn btn-success">Data BAP Magang 1</a>
+                <a href="/data_bap_magang2_mahasiswa" class="btn btn-warning">Data BAP Magang 2</a>
             </div>
         </div>
     </section>

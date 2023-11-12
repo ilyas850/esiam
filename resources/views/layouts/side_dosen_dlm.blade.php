@@ -79,8 +79,10 @@
         <ul class="treeview-menu">
             <li><a href="{{ url('jadwal_magang_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi</a>
             </li>
-            <li><a href="{{ url('pembimbing_magang') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang</a></li>
-            <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang</a></li>
+            <li><a href="{{ url('pembimbing_magang') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang 1</a></li>
+            <li><a href="{{ url('pembimbing_magang2') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang 2</a></li>
+            <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 1</a></li>
+            <li><a href="{{ url('penguji_magang2_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 2</a></li>
         </ul>
     </li>
 

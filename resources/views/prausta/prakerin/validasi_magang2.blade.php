@@ -18,7 +18,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Validasi PKL</h3>
+                <h3 class="box-title">Validasi Magang</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered">
@@ -90,10 +90,8 @@
                                             <a href="batal_validasi_akhir_prausta/{{ $item->id_settingrelasi_prausta }}"
                                                 class="btn btn-danger btn-xs">Batal</a>
                                         @endif
-
                                     </center>
                                 </td>
-
                             </tr>
                         @endforeach
                     </tbody>

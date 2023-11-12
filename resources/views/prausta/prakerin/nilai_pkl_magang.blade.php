@@ -12,7 +12,8 @@
             </div>
             <div class="box-body">
                 <a href="/data_nilai_pkl_mahasiswa" class="btn btn-info">Data Nilai PKL</a>
-                <a href="/data_nilai_magang_mahasiswa" class="btn btn-success">Data Nilai Magang</a>
+                <a href="/data_nilai_magang_mahasiswa" class="btn btn-success">Data Nilai Magang 1</a>
+                <a href="/data_nilai_magang2_mahasiswa" class="btn btn-warning">Data Nilai Magang 2</a>
             </div>
         </div>
     </section>

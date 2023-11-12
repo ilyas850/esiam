@@ -87,14 +87,14 @@
                                             @if ($key->nilai_huruf != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"
-                                                        href="/edit_nilai_magang_by_dosen_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        href="/edit_nilai_magang2_by_dosen_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
                                                         nilai</a>
                                                 @elseif ($key->validasi == 1)
                                                     <span class="badge bg-yellow">Sudah divalidasi </span>
                                                 @endif
                                             @elseif($key->nilai_huruf == null)
                                                 <a class="btn btn-success btn-xs"
-                                                    href="/isi_form_nilai_magang_dlm/{{ $key->id_settingrelasi_prausta }}">Isi
+                                                    href="/isi_form_nilai_magang2_dlm/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
                                                     Penilaian Magang</a>
                                             @endif

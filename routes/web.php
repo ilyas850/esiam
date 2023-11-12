@@ -659,12 +659,23 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::put('komentar_bimbingan_magang/{id}', 'MagangSkripsiController@komentar_bimbingan_magang');
     Route::get('val_bim_magang/{id}', 'MagangSkripsiController@val_bim_magang');
 
+    #magang 2 mahasiswa
+    Route::get('pembimbing_magang2', 'MagangSkripsiController@pembimbing_magang2');
+    Route::get('record_bim_magang2/{id}', 'MagangSkripsiController@record_bim_magang2');
+
     #penguji magang
     Route::get('penguji_magang_dlm', 'MagangSkripsiController@penguji_magang_dlm');
     Route::get('isi_form_nilai_magang_dlm/{id}', 'MagangSkripsiController@isi_form_nilai_magang');
     Route::post('simpan_nilai_magang_dlm', 'MagangSkripsiController@simpan_nilai_magang');
     Route::get('edit_nilai_magang_by_dosen_dlm/{id}', 'MagangSkripsiController@edit_nilai_magang_by_dosen_dlm');
     Route::post('put_nilai_magang_by_dsn_dlm', 'MagangSkripsiController@put_nilai_magang_by_dsn_dlm');
+
+    #penguji magang 2
+    Route::get('penguji_magang2_dlm', 'MagangSkripsiController@penguji_magang2_dlm');
+    Route::get('isi_form_nilai_magang2_dlm/{id}', 'MagangSkripsiController@isi_form_nilai_magang2');
+    Route::post('simpan_nilai_magang2_dlm', 'MagangSkripsiController@simpan_nilai_magang2');
+    Route::get('edit_nilai_magang2_by_dosen_dlm/{id}', 'MagangSkripsiController@edit_nilai_magang2_by_dosen_dlm');
+    Route::post('put_nilai_magang2_by_dsn_dlm', 'MagangSkripsiController@put_nilai_magang2_by_dsn_dlm');
 
     #SK Mengajar
     Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
@@ -957,6 +968,12 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('download_bimbingan_magang_mhs/{id}', 'MagangSkripsiController@download_bimbingan_magang_mhs');
     Route::post('ajukan_seminar_magang', 'MagangSkripsiController@ajukan_seminar_magang');
     Route::post('simpan_draft_magang', 'MagangSkripsiController@simpan_draft_magang');
+
+    #magang 2
+    Route::get('magang2_mhs', 'MagangSkripsiController@magang2_mhs');
+    Route::get('input_data_magang2/{id}', 'MagangSkripsiController@input_data_magang2');
+    Route::post('ajukan_seminar_magang2', 'MagangSkripsiController@ajukan_seminar_magang2');
+    Route::post('simpan_draft_magang2', 'MagangSkripsiController@simpan_draft_magang2');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1603,11 +1620,18 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('unvalidate_nilai_pkl/{id}', 'AdminPraustaController@unvalidate_nilai_pkl');
 
     Route::get('data_nilai_magang_mahasiswa', 'AdminPraustaController@data_nilai_magang_mahasiswa');
+    Route::get('data_nilai_magang2_mahasiswa', 'AdminPraustaController@data_nilai_magang2_mahasiswa');
     Route::post('filter_nilai_magang_use_prodi', 'AdminPraustaController@filter_nilai_magang_use_prodi');
     Route::get('edit_nilai_magang/{id}', 'AdminPraustaController@edit_nilai_magang');
     Route::post('put_nilai_magang', 'AdminPraustaController@put_nilai_magang');
     Route::get('validate_nilai_magang/{id}', 'AdminPraustaController@validate_nilai_magang');
     Route::get('unvalidate_nilai_magang/{id}', 'AdminPraustaController@unvalidate_nilai_magang');
+
+    #magang 2
+    Route::get('edit_nilai_magang2/{id}', 'AdminPraustaController@edit_nilai_magang2');
+    Route::post('put_nilai_magang2', 'AdminPraustaController@put_nilai_magang2');
+    Route::get('validate_nilai_magang2/{id}', 'AdminPraustaController@validate_nilai_magang2');
+    Route::get('unvalidate_nilai_magang2/{id}', 'AdminPraustaController@unvalidate_nilai_magang2');
 
     //Nilai Tugas Akhir dan Skripsi
     Route::get('nilai_ta_skripsi', 'AdminPraustaController@nilai_ta_skripsi');
@@ -1624,10 +1648,12 @@ Route::group(['middleware' => 'prausta'], function () {
 
     //BAP PKL dan Magang
     Route::get('bap_pkl_magang', 'AdminPraustaController@bap_pkl_magang');
+    
     Route::get('data_bap_pkl_mahasiswa', 'AdminPraustaController@data_bap_pkl_mahasiswa');
     Route::post('filter_bap_pkl_use_prodi', 'AdminPraustaController@filter_bap_pkl_use_prodi');
 
     Route::get('data_bap_magang_mahasiswa', 'AdminPraustaController@data_bap_magang_mahasiswa');
+    Route::get('data_bap_magang2_mahasiswa', 'AdminPraustaController@data_bap_magang2_mahasiswa');
     Route::post('filter_bap_magang_use_prodi', 'AdminPraustaController@filter_bap_magang_use_prodi');
 
     Route::get('bap_ta_skripsi', 'AdminPraustaController@bap_ta_skripsi');
@@ -1734,6 +1760,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('validasi_pkl_magang', 'AdminPraustaController@validasi_pkl_magang');
     Route::get('data_val_pkl_mahasiswa', 'AdminPraustaController@data_val_pkl_mahasiswa');
     Route::get('data_val_magang_mahasiswa', 'AdminPraustaController@data_val_magang_mahasiswa');
+    Route::get('data_val_magang2_mahasiswa', 'AdminPraustaController@data_val_magang2_mahasiswa');
 
     Route::get('validasi_sempro', 'AdminPraustaController@validasi_sempro');
 

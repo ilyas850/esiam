@@ -16,9 +16,9 @@
                 <a href="/data_nilai_magang2_mahasiswa" class="btn btn-warning">Data Nilai Magang 2</a>
             </div>
         </div>
-        <div class="box box-info">
+        <div class="box box-warning">
             <div class="box-header">
-                <h3 class="box-title">Data Nilai PKL Mahasiswa</h3>
+                <h3 class="box-title">Data Nilai Magang 2 Mahasiswa</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -110,15 +110,15 @@
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="edit_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="edit_nilai_magang2/{{ $key->id_settingrelasi_prausta }}"
                                             class="btn btn-warning btn-xs" title="klik untuk edit"><i
                                                 class="fa fa-edit"></i></a>
                                         @if ($key->validasi == 0)
-                                            <a href="validate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="validate_nilai_magang2/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-primary btn-xs" title="klik untuk validasi"><i
                                                     class="fa fa-check"></i></a>
                                         @else
-                                            <a href="unvalidate_nilai_pkl/{{ $key->id_settingrelasi_prausta }}"
+                                            <a href="unvalidate_nilai_magang2/{{ $key->id_settingrelasi_prausta }}"
                                                 class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
                                                     class="fa fa-close"></i></a>
                                         @endif
