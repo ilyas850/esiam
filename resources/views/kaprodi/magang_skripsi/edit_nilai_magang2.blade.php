@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h4 class="box-title"><b>Edit Nilai Magang 1</b> </h4>
+                <h4 class="box-title"><b>Edit Nilai Magang 2</b> </h4>
             </div>
             <div class="box-body">
                 <table width="100%">
@@ -25,8 +25,8 @@
                 </table>
             </div>
         </div>
-        <form class="" action="{{ url('put_nilai_magang_by_kaprodi') }}" method="post"
-            enctype="multipart/form-data" name="autoSumForm">
+        <form class="" action="{{ url('put_nilai_magang2_by_kaprodi') }}" method="post" enctype="multipart/form-data"
+            name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-success">

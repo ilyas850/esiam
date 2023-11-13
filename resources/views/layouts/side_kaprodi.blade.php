@@ -176,7 +176,10 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ url('pembimbing_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang</a></li>
+                    <li><a href="{{ url('pembimbing_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang 1</a>
+                    </li>
+                    <li><a href="{{ url('pembimbing_magang2_kprd') }}"><i class="fa fa-circle-o"></i> Magang 2</a>
+                    </li>
                     <li><a href="{{ url('pembimbing_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i>
                             SEMPRO</a>
                     </li>
@@ -191,7 +194,8 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ url('penguji_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang</a></li>
+                    <li><a href="{{ url('penguji_magang_kprd') }}"><i class="fa fa-circle-o"></i> Magang 1</a></li>
+                    <li><a href="{{ url('penguji_magang2_kprd') }}"><i class="fa fa-circle-o"></i> Magang 2</a></li>
                     <li><a href="{{ url('penguji_sempro_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> SEMPRO</a>
                     </li>
                     <li><a href="{{ url('penguji_skripsi_kprd') }}"><i class="fa fa-circle-o"></i> Skripsi</a></li>
@@ -326,7 +330,7 @@
         <ul class="treeview-menu">
             <li><a href="{{ url('report_edom_kprd') }}"><i class="fa fa-circle-o"></i> <span>Report EDOM
                     </span></a></li>
-            
+
         </ul>
     </li>
 </ul>

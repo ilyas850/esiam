@@ -8,24 +8,32 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h4 class="box-title"><b>Edit Nilai Magang 1</b> </h4>
+                <h4 class="box-title"><b>Data Mahasiswa</b> </h4>
             </div>
             <div class="box-body">
                 <table width="100%">
+
                     <tr>
-                        <td style="width: 10%">Nama</td>
-                        <td style="width: 2%">:</td>
-                        <td style="width: 88%">{{ $datadiri->nama }}</td>
+                        <td>Nama</td>
+                        <td>:</td>
+                        <td>{{ $data->nama }}</td>
                     </tr>
                     <tr>
                         <td>NIM</td>
                         <td>:</td>
-                        <td>{{ $datadiri->nim }}</td>
+                        <td>{{ $data->nim }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tempat Magang</td>
+                        <td>:</td>
+                        <td>{{ $data->tempat_prausta }}</td>
                     </tr>
                 </table>
             </div>
         </div>
-        <form class="" action="{{ url('put_nilai_magang_by_kaprodi') }}" method="post"
+       
+
+        <form class="" action="{{ url('simpan_nilai_magang2_kaprodi') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
@@ -40,8 +48,7 @@
                                 <label>Nilai Pembimbing Lapangan</label>
                                 <font color="red-text">*</font>
                                 <span>(tidak wajib untuk kelas karyawan)</span>
-                                <input type="number" class="form-control" name="nilai_pembimbing_lapangan"
-                                    value="{{ $nilai_1 }}">
+                                <input type="number" class="form-control" name="nilai_pembimbing_lapangan">
                             </div>
                         </div>
                     </div>
@@ -70,7 +77,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($nilai_pem as $item)
+                            @foreach ($form_dosbing as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>
@@ -82,8 +89,8 @@
                                     <td>
                                         <center>
                                             <input type="hidden" name="id_penilaian_prausta1[]"
-                                                value="{{ $item->id_trans_penilaian }}">
-                                            <input type="number" name="nilai1[]" value="{{ $item->nilai }}" required>
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai1[]" required>
                                             <center>
                                     </td>
                                 </tr>
@@ -115,7 +122,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($nilai_sem as $item)
+                            @foreach ($form_seminar as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>
@@ -127,8 +134,8 @@
                                     <td>
                                         <center>
                                             <input type="hidden" name="id_penilaian_prausta2[]"
-                                                value="{{ $item->id_trans_penilaian }}">
-                                            <input type="number" name="nilai2[]" value="{{ $item->nilai }}" required>
+                                                value="{{ $item->id_penilaian_prausta }}">
+                                            <input type="number" name="nilai2[]" required>
                                             <center>
                                     </td>
                                 </tr>
@@ -141,3 +148,42 @@
         </form>
     </section>
 @endsection
+
+<script>
+    function startCalc() {
+
+        interval = setInterval("calc()", 1);
+    }
+
+    function calc() {
+
+        one = document.autoSumForm.nilai_pkl_persiapan.value;
+
+        two = document.autoSumForm.nilai_pkl_pemahaman.value;
+
+        three = document.autoSumForm.nilai_pkl_motivasi.value;
+
+        four = document.autoSumForm.nilai_pkl_isi.value;
+
+        five = document.autoSumForm.nilai_pkl_format.value;
+
+        document.autoSumForm.total.value = (one * 20 / 100) + (two * 40 / 100) + (three * 10 / 100) + (four * 20 /
+            100) + (five * 10 / 100);
+
+        one2 = document.autoSumForm.nilai_pkl_komunikasi.value;
+
+        two2 = document.autoSumForm.nilai_pkl_materi.value;
+
+        three2 = document.autoSumForm.nilai_pkl_pemahamansistug.value;
+
+        four2 = document.autoSumForm.nilai_pkl_jawab.value;
+
+        document.autoSumForm.totals.value = (one2 * 15 / 100) + (two2 * 20 / 100) + (three2 * 50 / 100) + (four2 * 15 /
+            100);
+    }
+
+    function stopCalc() {
+
+        clearInterval(interval);
+    }
+</script>

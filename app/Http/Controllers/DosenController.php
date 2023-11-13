@@ -4749,7 +4749,7 @@ class DosenController extends Controller
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('student.active', 1)
-            ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+            ->whereIn('prausta_master_kode.id_masterkode_prausta', [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 13, 16, 19, 22, 14, 17, 20, 23])
             ->select(
                 'student.nama',
                 'student.nim',
@@ -4769,7 +4769,7 @@ class DosenController extends Controller
         return view('dosen/prausta/jadwal_prausta', compact('data'));
     }
 
-    public function jadwal_seminar_prakerin_dlm()
+    function jadwal_magang_dsn_dlm()
     {
         $id = Auth::user()->id_user;
 
@@ -4787,61 +4787,25 @@ class DosenController extends Controller
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
-            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
+            ->where('student.active', 1)
+            ->whereIn('prausta_master_kode.id_masterkode_prausta', [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35])
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.ruangan'
+            )
+            ->orderBy('tanggal_selesai', 'DESC')
             ->get();
 
-        return view('dosen/prausta/jadwal_seminar_prakerin', compact('data'));
-    }
-
-    public function jadwal_seminar_proposal_dlm()
-    {
-        $id = Auth::user()->id_user;
-
-        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->where(function ($query) use ($id) {
-                $query
-                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
-            })
-            ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
-            ->get();
-
-        return view('dosen/prausta/jadwal_seminar_proposal', compact('data'));
-    }
-
-    public function jadwal_sidang_ta_dlm()
-    {
-        $id = Auth::user()->id_user;
-
-        $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
-            ->where(function ($query) use ($id) {
-                $query
-                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
-            })
-            ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
-            ->select('student.nama', 'student.nim', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'prausta_setting_relasi.dosen_pembimbing', 'prausta_setting_relasi.dosen_penguji_1', 'prausta_setting_relasi.dosen_penguji_2', 'prausta_setting_relasi.tanggal_selesai', 'prausta_setting_relasi.jam_mulai_sidang', 'prausta_setting_relasi.jam_selesai_sidang', 'prausta_setting_relasi.ruangan')
-            ->get();
-
-        return view('dosen/prausta/jadwal_sidang_ta', compact('data'));
+        return view('dosen/magang_skripsi/jadwal_magang_skripsi', compact('data'));
     }
 
     public function upload_soal_dsn_dlm()
