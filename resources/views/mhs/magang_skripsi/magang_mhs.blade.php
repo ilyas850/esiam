@@ -14,7 +14,8 @@
                         <li><a href="#tab_2" data-toggle="tab">Data Bimbingan Magang 1</a></li>
                         <li><a href="#tab_3" data-toggle="tab">Pengajuan Seminar Magang 1</a></li>
                         <li><a href="#tab_4" data-toggle="tab">Upload Draft Laporan Magang 1</a></li>
-                        <li><a href="#tab_5" data-toggle="tab">Nilai Magang 1</a></li>
+                        <li><a href="#tab_5" data-toggle="tab">Honor Magang 1</a></li>
+                        <li><a href="#tab_6" data-toggle="tab">Nilai Magang 1</a></li>
                     </ul>
                     <div class="tab-content">
                         @if ($data->judul_prausta == null)
@@ -412,15 +413,6 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label>Total Uang Saku Selama Magang</label>
-                                                            <input type="number" name="total_uang_saku"
-                                                                class="form-control" required>
-                                                            <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
-                                                                1000000</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
                                                             <label>File Draft Laporan Seminar Magang</label>
                                                             <input type="file" name="file_draft_laporan"
                                                                 class="form-control" required>
@@ -467,14 +459,7 @@
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
                                                                 value="{{ $data->id_settingrelasi_prausta }}">
-                                                            <div class="form-group">
-                                                                <label>Total Uang Saku Selama Magang</label>
-                                                                <input type="number" name="total_uang_saku"
-                                                                    class="form-control"
-                                                                    value="{{ $data->total_uang_saku }}" required>
-                                                                <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
-                                                                    1000000</span>
-                                                            </div>
+
                                                             <div class="form-group">
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control">
@@ -594,15 +579,6 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>Total Uang Saku Selama Magang</label>
-                                                        <input type="number" name="total_uang_saku" class="form-control"
-                                                            required>
-                                                        <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
-                                                            1000000</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
                                                         <label>File Draft Laporan Seminar</label>
                                                         <input type="file" name="file_draft_laporan"
                                                             class="form-control" required>
@@ -649,14 +625,7 @@
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="id_settingrelasi_prausta"
                                                             value="{{ $data->id_settingrelasi_prausta }}">
-                                                        <div class="form-group">
-                                                            <label>Total Uang Saku Selama Magang</label>
-                                                            <input type="number" name="total_uang_saku"
-                                                                class="form-control" value="{{ $data->total_uang_saku }}"
-                                                                required>
-                                                            <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
-                                                                1000000</span>
-                                                        </div>
+
                                                         <div class="form-group">
                                                             <input type="file" name="file_draft_laporan"
                                                                 class="form-control">
@@ -847,6 +816,31 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_5">
+                                <form class="" action="{{ url('simpan_honor_magang') }}" method="post"
+                                    enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Total Uang Saku Selama Magang</label>
+                                                <input type="number" name="total_uang_saku" class="form-control"
+                                                    value="{{ $data->total_uang_saku }}" required>
+                                                <span>Isi dengan angka tanpa titik ( . ) <br> Contoh :
+                                                    1000000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                value="{{ $data->id_settingrelasi_prausta }}">
+                                            <button type="submit" class="btn btn-info">Simpan
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane" id="tab_6">
                                 @if ($data->validasi_baak == 'BELUM')
                                     <span class="badge bg-yellow">Nilai Belum Ada</span>
                                 @else

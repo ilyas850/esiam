@@ -578,7 +578,6 @@ class MagangSkripsiController extends Controller
         $bap = Prausta_setting_relasi::find($id);
         $bap->acc_seminar_sidang = 'PENGAJUAN';
         $bap->tgl_pengajuan = $date_now;
-        $bap->total_uang_saku = $request->total_uang_saku;
 
         if ($bap->file_draft_laporan) {
             if ($request->hasFile('file_draft_laporan')) {
@@ -602,6 +601,17 @@ class MagangSkripsiController extends Controller
         $bap->save();
 
         Alert::success('', 'Draft Laporan Magang Berhasil upload')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function simpan_honor_magang(Request $request)
+    {
+        $id = $request->id_settingrelasi_prausta;
+        $bap = Prausta_setting_relasi::find($id);
+        $bap->total_uang_saku = $request->total_uang_saku;
+        $bap->save();
+
+        Alert::success('', 'Uang Saku Selama Magang Berhasil disimpan')->autoclose(3500);
         return redirect()->back();
     }
 

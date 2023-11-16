@@ -969,6 +969,8 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('download_bimbingan_magang_mhs/{id}', 'MagangSkripsiController@download_bimbingan_magang_mhs');
     Route::post('ajukan_seminar_magang', 'MagangSkripsiController@ajukan_seminar_magang');
     Route::post('simpan_draft_magang', 'MagangSkripsiController@simpan_draft_magang');
+    Route::post('simpan_honor_magang', 'MagangSkripsiController@simpan_honor_magang');
+
 
     #magang 2
     Route::get('magang2_mhs', 'MagangSkripsiController@magang2_mhs');
