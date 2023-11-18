@@ -55,4 +55,15 @@
             <li><a href="{{ url('rekap_pembayaran_mhs') }}"><i class="fa fa-circle-o"></i> Data Pembayaran Mahasiswa</a></li>
         </ul>
     </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-database"></i> <span>Master Soal</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('soal_uts_uas_wadir1') }}"><i class="fa fa-circle-o"></i> Soal UTS dan UAS</a></li>
+        </ul>
+    </li>
 </ul>

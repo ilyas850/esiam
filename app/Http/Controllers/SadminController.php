@@ -1571,7 +1571,6 @@ class SadminController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-
         return view('sadmin/nilai/transkrip_final', compact('nilai'));
     }
 

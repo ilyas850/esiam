@@ -668,4 +668,11 @@ class Wadir1Controller extends Controller
 
       return view('wadir/master/cek_krs', compact('val', 'datamhs'));
   }
+
+  function soal_uts_uas_wadir1()
+  {
+    $data = DB::select('CALL soal_ujian');
+
+        return view('wadir/master/soal_ujian', compact('data'));
+  }
 }

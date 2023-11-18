@@ -1579,6 +1579,9 @@ Route::group(['middleware' => 'wadir1'], function () {
     Route::get('data_krs_wadir1', 'Wadir1Controller@data_krs_wadir1');
     Route::post('view_krs_wadir1', 'Wadir1Controller@view_krs_wadir1');
     Route::post('cek_krs_wadir1', 'Wadir1Controller@cek_krs_wadir1');
+
+    #master soal uts dan uas
+    Route::get('soal_uts_uas_wadir1', 'Wadir1Controller@soal_uts_uas_wadir1');
 });
 
 Route::group(['middleware' => 'wadir3'], function () {
