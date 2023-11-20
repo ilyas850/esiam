@@ -892,12 +892,9 @@
                                 @endif
                             </div>
                         @endif
-
                     </div>
-                    @endif
                 </div>
             </div>
-        </div>
         </div>
     </section>
 @endsection
