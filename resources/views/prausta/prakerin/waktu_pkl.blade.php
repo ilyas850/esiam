@@ -61,7 +61,8 @@
                                                 <select class="form-control" name="tipe_prausta" required>
                                                     <option></option>
                                                     <option value="PKL">PKL</option>
-                                                    <option value="Magang">Magang</option>
+                                                    <option value="Magang">Magang 1</option>
+                                                    <option value="Magang 2">Magang 2</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -70,11 +71,11 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Prodi</label>
-                                                <select class="form-control" name="id_prodi" required>
+                                                <select class="form-control" name="kodeprodi" required>
                                                     <option></option>
                                                     @foreach ($prodi as $prd)
-                                                        <option value="{{ $prd->id_prodi }}">
-                                                            {{ $prd->prodi }} - {{ $prd->konsentrasi }}</option>
+                                                        <option value="{{ $prd->kodeprodi }}">
+                                                            {{ $prd->prodi }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -246,7 +247,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                             </form>
                                         </div>

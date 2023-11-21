@@ -244,7 +244,7 @@ class AdminPraustaController extends Controller
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [483])
-            ->where('prausta_master_waktu.tipe_prausta', 'Magang')
+            ->where('prausta_master_waktu.tipe_prausta', 'Magang 2')
             ->where('prausta_master_waktu.status', 'ACTIVE')
             ->where('student.active', 1)
             ->select(
@@ -5478,15 +5478,14 @@ class AdminPraustaController extends Controller
     public function waktu_pkl()
     {
         $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-
         $periodetipe = Periode_tipe::all();
 
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
 
         $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('prodi', 'prausta_master_waktu.id_prodi', '=', 'prodi.id_prodi')
-            ->whereIn('prausta_master_waktu.tipe_prausta', ['PKL', 'Magang'])
+            ->whereIn('prausta_master_waktu.tipe_prausta', ['PKL', 'Magang', 'Magang 2'])
             ->where('prausta_master_waktu.status', 'ACTIVE')
             ->select(
                 'prausta_master_waktu.id_masterwaktu_prausta',
@@ -5497,11 +5496,15 @@ class AdminPraustaController extends Controller
                 'periode_tipe.periode_tipe',
                 'prodi.prodi',
                 'prodi.konsentrasi',
+                'prodi.kodeprodi',
                 'prausta_master_waktu.set_waktu_awal',
                 'prausta_master_waktu.set_waktu_akhir',
                 'prausta_master_waktu.tipe_prausta',
                 'prausta_master_waktu.status'
             )
+            ->orderBy('periode_tahun.periode_tahun')
+            ->orderBy('prodi.prodi', 'ASC')
+            ->orderBy('prodi.kodeprodi', 'ASC')
             ->get();
 
         return view('prausta/prakerin/waktu_pkl', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
@@ -5509,16 +5512,21 @@ class AdminPraustaController extends Controller
 
     public function post_waktu_prausta(Request $request)
     {
-        $kpr = new Prausta_master_waktu();
+        $cekProdi = Prodi::where('kodeprodi', $request->kodeprodi)->get();
 
-        $kpr->id_periodetahun = $request->id_periodetahun;
-        $kpr->id_periodetipe = $request->id_periodetipe;
-        $kpr->id_prodi = $request->id_prodi;
-        $kpr->set_waktu_awal = $request->set_waktu_awal;
-        $kpr->set_waktu_akhir = $request->set_waktu_akhir;
-        $kpr->tipe_prausta = $request->tipe_prausta;
-        $kpr->created_by = Auth::user()->name;
-        $kpr->save();
+        for ($i = 0; $i < count($cekProdi); $i++) {
+            $prodi = $cekProdi[$i];
+
+            $kpr = new Prausta_master_waktu();
+            $kpr->id_periodetahun = $request->id_periodetahun;
+            $kpr->id_periodetipe = $request->id_periodetipe;
+            $kpr->id_prodi = $prodi->id_prodi;
+            $kpr->set_waktu_awal = $request->set_waktu_awal;
+            $kpr->set_waktu_akhir = $request->set_waktu_akhir;
+            $kpr->tipe_prausta = $request->tipe_prausta;
+            $kpr->created_by = Auth::user()->name;
+            $kpr->save();
+        }
 
         Alert::success('Berhasil')->autoclose(3500);
         return redirect()->back();
