@@ -1796,6 +1796,9 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('data_honor_magang_mahasiswa', 'AdminPraustaController@data_honor_magang_mahasiswa');
     Route::post('filter_honor_magang', 'AdminPraustaController@filter_honor_magang');
 
+    Route::get('data_honor_magang2_mahasiswa', 'AdminPraustaController@data_honor_magang2_mahasiswa');
+    Route::post('filter_honor_magang2', 'AdminPraustaController@filter_honor_magang2');
+
     //Honor Sempro
     Route::get('honor_sempro', 'AdminPraustaController@honor_sempro');
     Route::post('filter_honor_sempro', 'AdminPraustaController@filter_honor_sempro');

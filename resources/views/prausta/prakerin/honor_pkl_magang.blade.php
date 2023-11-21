@@ -12,7 +12,8 @@
             </div>
             <div class="box-body">
                 <a href="/data_honor_pkl_mahasiswa" class="btn btn-info">Data Honor PKL</a>
-                <a href="/data_honor_magang_mahasiswa" class="btn btn-success">Data Honor Magang</a>
+                <a href="/data_honor_magang_mahasiswa" class="btn btn-success">Data Honor Magang 1</a>
+                <a href="/data_honor_magang2_mahasiswa" class="btn btn-warning">Data Honor Magang 2</a>
             </div>
         </div>
     </section>

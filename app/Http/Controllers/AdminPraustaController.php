@@ -5663,6 +5663,24 @@ class AdminPraustaController extends Controller
         return view('prausta/prakerin/honor_magang', compact('data', 'prodi'));
     }
 
+    public function data_honor_magang2_mahasiswa()
+    {
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
+
+        $data = DB::select('CALL honor_magang2');
+
+        return view('prausta/prakerin/honor_magang2', compact('data', 'prodi'));
+    }
+
+    public function filter_honor_magang2(Request $request)
+    {
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
+
+        $data = DB::select('CALL honor_magang2_filter(?)', [$request->kodeprodi]);
+
+        return view('prausta/prakerin/honor_magang2', compact('data', 'prodi'));
+    }
+
     public function honor_sempro()
     {
         $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();

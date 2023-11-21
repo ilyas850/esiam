@@ -18,9 +18,9 @@
         </div>
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Filter Data Honor Magang 1 Mahasiswa</h3>
+                <h3 class="box-title">Filter Data Honor Magang 2 Mahasiswa</h3>
             </div>
-            <form class="form" role="form" action="{{ url('filter_honor_magang') }}" method="POST">
+            <form class="form" role="form" action="{{ url('filter_honor_magang2') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="row">
@@ -40,9 +40,9 @@
                 </div>
             </form>
         </div>
-        <div class="box box-info">
+        <div class="box box-warning">
             <div class="box-header">
-                <h3 class="box-title">Data Honor Magang 1</b></h3>
+                <h3 class="box-title">Data Honor Magang 2</b></h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped">
