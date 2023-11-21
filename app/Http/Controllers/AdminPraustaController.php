@@ -28,6 +28,7 @@ use App\Prausta_trans_penilaian;
 use App\Exports\DataPrakerinExport;
 use App\Exports\DataTaExport;
 use App\Exports\DataMagangExport;
+use App\Exports\DataMagang2Export;
 use App\Exports\DataSkripsiExport;
 use App\Kaprodi;
 use App\Periode_tahun;
@@ -4983,8 +4984,39 @@ class AdminPraustaController extends Controller
 
         $tp = $tipe->periode_tipe;
 
-        $nama_file = 'Data Magang' . ' ' . $pro . ' ' . $ganti . ' ' . $tp . '.xlsx';
+        $nama_file = 'Data Magang 1' . ' ' . $pro . ' ' . $ganti . ' ' . $tp . '.xlsx';
         return Excel::download(new DataMagangExport($id1, $id2, $kodeprodi), $nama_file);
+    }
+
+    public function excel_magang2(Request $request)
+    {
+        $periode = $request->idperiode;
+        $kodeprodi = $request->kodeprodi;
+        $prd = explode(',', $periode, 2);
+        $id1 = $prd[0];
+        $id2 = $prd[1];
+
+        $prodi = Prodi::where('kodeprodi', $kodeprodi)
+            ->select('prodi', 'kodeprodi')
+            ->first();
+
+        $pro = $prodi->prodi;
+
+        $tahun = Periode_tahun::where('id_periodetahun', $id1)
+            ->select('periode_tahun')
+            ->first();
+
+        $thn = $tahun->periode_tahun;
+        $ganti = str_replace('/', '_', $thn);
+
+        $tipe = Periode_tipe::where('id_periodetipe', $id2)
+            ->select('periode_tipe')
+            ->first();
+
+        $tp = $tipe->periode_tipe;
+
+        $nama_file = 'Data Magang 2' . ' ' . $pro . ' ' . $ganti . ' ' . $tp . '.xlsx';
+        return Excel::download(new DataMagang2Export($id1, $id2, $kodeprodi), $nama_file);
     }
 
     public function excel_ta(Request $request)

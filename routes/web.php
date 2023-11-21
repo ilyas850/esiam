@@ -1772,6 +1772,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('export_data', 'AdminPraustaController@export_data');
     Route::post('excel_pkl', 'AdminPraustaController@excel_pkl');
     Route::post('excel_magang', 'AdminPraustaController@excel_magang');
+    Route::post('excel_magang2', 'AdminPraustaController@excel_magang2');
     Route::post('excel_ta', 'AdminPraustaController@excel_ta');
     Route::post('excel_skripsi', 'AdminPraustaController@excel_skripsi');
 
