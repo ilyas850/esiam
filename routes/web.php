@@ -186,12 +186,18 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('rekap_krs_angkatan', 'SadminController@rekap_krs_angkatan');
     Route::post('filter_rekap_krs_angkatan', 'SadminController@filter_rekap_krs_angkatan');
 
-    //master nilai
+    #master nilai
     Route::get('transkrip_nilai', 'SadminController@transkrip_nilai');
     Route::get('cek_transkrip/{id}', 'SadminController@cek_transkrip');
     route::post('lihat_transkrip', 'SadminController@lihat_transkrip');
     Route::get('no_transkrip', 'SadminController@no_transkrip');
     Route::get('print_transkrip/{id}', 'SadminController@print_transkrip');
+
+    #transkrip sementar
+    Route::get('lihat_transkrip_sementara/{id}', 'SadminController@lihat_transkrip_sementara');
+    Route::get('edit_transkrip_sementara/{id}', 'SadminController@edit_transkrip_sementara');
+    Route::put('update_no_transkrip_sementara/{id}', 'SadminController@update_no_transkrip_sementara');
+    Route::get('hapus_transkrip_sementara/{id}', 'SadminController@hapus_transkrip_sementara');
 
     Route::get('transkrip_nilai_final', 'SadminController@transkrip_nilai_final');
     Route::get('input_transkrip_final/{id}', 'SadminController@input_transkrip_final');

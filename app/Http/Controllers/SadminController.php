@@ -1390,27 +1390,13 @@ class SadminController extends Controller
 
     public function hapuskaprodi(Request $request)
     {
-        $akun = Kaprodi::where('id_kaprodi', $request->id_kaprodi)->update(['status' => 'NOT ACTIVE']);
+        Kaprodi::where('id_kaprodi', $request->id_kaprodi)->update(['status' => 'NOT ACTIVE']);
 
-        $akun1 = User::where('id_user', $request->id_dosen)->update(['role' => 2]);
+        User::where('id_user', $request->id_dosen)->update(['role' => 2]);
 
         return redirect('kaprodi');
     }
 
-    public function transkrip_nilai()
-    {
-        $nilai = Student::leftJoin('prodi', function ($join) {
-            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student.active', 1)
-            ->select('student.nim', 'student.idstudent', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan')
-            ->orderBy('student.nim', 'desc')
-            ->get();
-
-        return view('sadmin/nilai/transkrip', compact('nilai'));
-    }
 
     public function cek_transkrip($id)
     {
@@ -1426,6 +1412,32 @@ class SadminController extends Controller
         }
 
         return view('sadmin/nilai/hasil_transkrip', compact('item'));
+    }
+
+    public function transkrip_nilai()
+    {
+        $nilai = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftJoin('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
+            ->where('student.active', 1)
+            ->select(
+                'student.nim',
+                'student.idstudent',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'transkrip_nilai.no_transkrip',
+                'transkrip_nilai.id_transkrip'
+            )
+            ->orderBy('transkrip_nilai.no_transkrip', 'DESC')
+            ->orderBy('student.nim', 'desc')
+            ->get();
+
+        return view('sadmin/nilai/transkrip', compact('nilai'));
     }
 
     public function lihat_transkrip(Request $request)
@@ -1471,19 +1483,91 @@ class SadminController extends Controller
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
 
-        $users = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->where('student_record.nilai_AKHIR', '!=', '0')
-            ->where('student_record.nilai_ANGKA', '!=', '0')
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
-            ->first();
-
         $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
+        return view('sadmin/nilai/transkrip_sementara', compact('data', 'item', 'keysks'));
+    }
+
+    public function edit_transkrip_sementara($id)
+    {
+        $item = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
+            ->where('transkrip_nilai.id_transkrip', $id)
+            ->select(
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'student.tmptlahir',
+                'student.tgllahir',
+                'prodi.prodi',
+                'transkrip_nilai.no_transkrip',
+                'transkrip_nilai.id_transkrip'
+            )
+            ->first();
+
+
+        return view('sadmin/nilai/edit_transkrip', compact('item'));
+    }
+
+    function update_no_transkrip_sementara(Request $request, $id)
+    {
+        $tns = Transkrip_nilai::find($id);
+        $tns->no_transkrip = $request->no_transkrip;
+        $tns->save();
+
+        Alert::success('Transkrip Sementara berhasil diedit')->autoclose(3500);
+        return redirect('transkrip_nilai');
+    }
+
+    function hapus_transkrip_sementara($id)
+    {
+        transkrip_nilai::where('id_transkrip', $id)->delete();
+
+        Alert::success('Transkrip Sementara berhasil dihapus')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function lihat_transkrip_sementara($id)
+    {
+        $CekData = Transkrip_nilai::where('id_transkrip', $id)->first();
+
+        $item = Student::leftJoin('prodi', function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+            ->join('transkrip_nilai', 'student.idstudent', '=', 'transkrip_nilai.id_student')
+            ->where('student.idstudent', $CekData->id_student)
+            ->select(
+                'transkrip_nilai.id_transkrip',
+                'transkrip_nilai.no_transkrip',
+                'student.idstudent',
+                'student.nama',
+                'student.nim',
+                'student.tmptlahir',
+                'student.tgllahir',
+                'prodi.prodi'
+            )
+            ->first();
+
+        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+            ->where('student_record.id_student', $CekData->id_student)
+            ->where('student_record.status', 'TAKEN')
+            ->where('student_record.nilai_AKHIR', '!=', '0')
+            ->where('student_record.nilai_ANGKA', '!=', '0')
+            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
+            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
+            ->orderBy('matakuliah.kode', 'ASC')
+            ->get();
+
+        $sks = DB::select('CALL hasil_transkrip(' . $CekData->id_student . ')');
+        foreach ($sks as $keysks) {
+            // code...
+        }
+
         return view('sadmin/nilai/transkrip_sementara', compact('data', 'item', 'keysks'));
     }
 
@@ -1650,7 +1734,6 @@ class SadminController extends Controller
                 'skpi.date_wisuda'
             )
             ->first();
-
 
         $nama = strtoupper($item->nama_lengkap);
 

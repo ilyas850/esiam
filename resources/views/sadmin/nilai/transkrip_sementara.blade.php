@@ -52,7 +52,7 @@
                 </table>
             </div>
             <div class="box-body">
-                <table class="table table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
                             <th rowspan="2">
