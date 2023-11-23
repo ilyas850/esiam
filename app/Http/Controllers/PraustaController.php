@@ -151,7 +151,6 @@ class PraustaController extends Controller
         } elseif ($angkatan > 19) {
             $kodemk = 'FA-5001';
         }
-
         //cek KRS prakerin mahasiswa
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -317,24 +316,7 @@ class PraustaController extends Controller
                 ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
                 ->first();
 
-            #cek nilai D atau E
-            $data_nilai_ulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
-                ->join('prodi', function ($join) {
-                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-                })
-                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-                ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-                ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-                ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-                ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
-                ->where('student.idstudent', $id)
-                ->where('student_record.status', 'TAKEN')
-                ->whereIn('student.active', [1, 5])
 
-                ->select('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
-                ->groupBy('student_record.id_student', 'student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
-                ->get();
 
             if ($cekdata == 0) {
                 Alert::error('Maaf dosen pembimbbing anda belum disetting untuk Kerja Praktek/Prakerin', 'MAAF !!');
@@ -1289,7 +1271,28 @@ class PraustaController extends Controller
                     ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
                     ->first();
 
-                return view('mhs/prausta/sidang_ta', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb'));
+                #cek nilai D atau E
+                $data_nilai_ulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+                    ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
+                    ->join('prodi', function ($join) {
+                        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                    })
+                    ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                    ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+                    ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+                    ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+                    ->whereIn('student_record.nilai_AKHIR', ['D', 'E'])
+                    ->where('student.idstudent', $id)
+                    ->where('student_record.status', 'TAKEN')
+                    ->whereIn('student.active', [1, 5])
+
+                    ->select('student_record.id_studentrecord', 'student_record.id_student', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                    ->groupBy('student_record.id_studentrecord', 'student_record.id_student', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
+                    ->get();
+
+                $JmlMakulUlang = count($data_nilai_ulang);
+
+                return view('mhs/prausta/sidang_ta', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb', 'JmlMakulUlang'));
                 //         }
                 //     }
                 // }

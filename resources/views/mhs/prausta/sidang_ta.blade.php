@@ -39,8 +39,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Program Studi</label>
-                                            <input type="text" class="form-control" value="{{ $data->prodi }}"
-                                                readonly>
+                                            <input type="text" class="form-control" value="{{ $data->prodi }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -100,15 +99,15 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Dosen Penguji 1</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->dosen_penguji_1 }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->dosen_penguji_1 }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Dosen Penguji 2</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->dosen_penguji_2 }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->dosen_penguji_2 }}"
+                                                readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +115,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Tanggal Sidang Tugas Akhir</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->tanggal_selesai }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $data->tanggal_selesai }}"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -355,7 +354,8 @@
                                                                                 <label>Tanggal Bimbingan</label>
                                                                                 <input type="date" class="form-control"
                                                                                     name="tanggal_bimbingan"
-                                                                                    value="{{ $key->tanggal_bimbingan }}" required>
+                                                                                    value="{{ $key->tanggal_bimbingan }}"
+                                                                                    required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label>Isi Bimbingan</label>
@@ -391,95 +391,55 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_3">
-                                @if ($jml_bim < 6)
-                                    <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
-                                @elseif ($jml_bim >= 6)
-                                    @if ($data->acc_seminar_sidang == null)
-                                        <form class="" action="{{ url('ajukan_sidang_ta') }}" method="post"
-                                            enctype="multipart/form-data">
-                                            {{ csrf_field() }}
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>File Draft Laporan</label>
-                                                        <input type="file" name="file_draft_laporan"
-                                                            class="form-control" required>
-                                                        <span>max. size file 4mb format pdf</span>
+                                @if ($JmlMakulUlang > 0)
+                                    <span class="badge bg-red">Maaf ada nilai matakuliah belum lulus</span>
+                                @else
+                                    @if ($jml_bim < 6)
+                                        <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
+                                    @elseif ($jml_bim >= 6)
+                                        @if ($data->acc_seminar_sidang == null)
+                                            <form class="" action="{{ url('ajukan_sidang_ta') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>File Draft Laporan</label>
+                                                            <input type="file" name="file_draft_laporan"
+                                                                class="form-control" required>
+                                                            <span>max. size file 4mb format pdf</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <input type="hidden" name="id_settingrelasi_prausta"
-                                                        value="{{ $data->id_settingrelasi_prausta }}">
-                                                    <button type="submit" class="btn btn-info">Ajukan Sidang Tugas
-                                                        Akhir</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    @elseif ($data->acc_seminar_sidang == 'PENGAJUAN')
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <span class="info-box-icon bg-red"><i
-                                                            class="fa fa-files-o"></i></span>
-                                                    <div class="info-box-content">
-                                                        <span class="info-box-text">Laporan Sidang TA</span>
-                                                        <span class="info-box-number">
-                                                            @if ($data->file_draft_laporan == null)
-                                                                Belum ada
-                                                            @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
-                                                                    target="_blank"> File Laporan</a>
-                                                            @endif
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <form action="{{ url('ajukan_sidang_ta') }}" method="post"
-                                                        enctype="multipart/form-data">
-                                                        {{ csrf_field() }}
+                                                <div class="row">
+                                                    <div class="col-md-2">
                                                         <input type="hidden" name="id_settingrelasi_prausta"
                                                             value="{{ $data->id_settingrelasi_prausta }}">
-                                                        <div class="form-group">
-
-                                                            <input type="file" name="file_draft_laporan"
-                                                                class="form-control">
-                                                            <span>Format file pdf max. size 5mb</span> <br>
-                                                            <button type="submit" class="btn btn-info">Simpan</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
-                                            </div>
-                                        </div>
-                                    @elseif ($data->acc_seminar_sidang == 'TERIMA')
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <span class="info-box-icon bg-red"><i
-                                                            class="fa fa-files-o"></i></span>
-                                                    <div class="info-box-content">
-                                                        <span class="info-box-text">Laporan Sidang TA</span>
-                                                        <span class="info-box-number">
-                                                            @if ($data->file_draft_laporan == null)
-                                                                Belum ada
-                                                            @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
-                                                                    target="_blank"> File Laporan</a>
-                                                            @endif
-                                                        </span>
+                                                        <button type="submit" class="btn btn-info">Ajukan Sidang Tugas
+                                                            Akhir</button>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            @if ($data->validasi_baak == 'BELUM')
+                                            </form>
+                                        @elseif ($data->acc_seminar_sidang == 'PENGAJUAN')
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-red"><i
+                                                                class="fa fa-files-o"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Laporan Sidang TA</span>
+                                                            <span class="info-box-number">
+                                                                @if ($data->file_draft_laporan == null)
+                                                                    Belum ada
+                                                                @elseif ($data->file_draft_laporan != null)
+                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                        target="_blank"> File Laporan</a>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
                                                         <form action="{{ url('ajukan_sidang_ta') }}" method="post"
@@ -498,59 +458,105 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            @else
-                                                <div class="col-md-4">
-                                                    <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="badge bg-green">Sudah di Acc. Dosen Pembimbing</span>
                                             </div>
-                                        </div>
-                                    @elseif ($data->acc_seminar_sidang == 'TOLAK')
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <span class="info-box-icon bg-red"><i
-                                                            class="fa fa-files-o"></i></span>
-                                                    <div class="info-box-content">
-                                                        <span class="info-box-text">Laporan SEMPRO</span>
-                                                        <span class="info-box-number">
-                                                            @if ($data->file_draft_laporan == null)
-                                                                Belum ada
-                                                            @elseif ($data->file_draft_laporan != null)
-                                                                <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
-                                                                    target="_blank"> File Laporan</a>
-                                                            @endif
-                                                        </span>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="badge bg-red">Menunggu Acc. Dosen Pembimbing</span>
+                                                </div>
+                                            </div>
+                                        @elseif ($data->acc_seminar_sidang == 'TERIMA')
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-red"><i
+                                                                class="fa fa-files-o"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Laporan Sidang TA</span>
+                                                            <span class="info-box-number">
+                                                                @if ($data->file_draft_laporan == null)
+                                                                    Belum ada
+                                                                @elseif ($data->file_draft_laporan != null)
+                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                        target="_blank"> File Laporan</a>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @if ($data->validasi_baak == 'BELUM')
+                                                    <div class="col-md-4">
+                                                        <div class="info-box">
+                                                            <form action="{{ url('ajukan_sidang_ta') }}" method="post"
+                                                                enctype="multipart/form-data">
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="id_settingrelasi_prausta"
+                                                                    value="{{ $data->id_settingrelasi_prausta }}">
+                                                                <div class="form-group">
+
+                                                                    <input type="file" name="file_draft_laporan"
+                                                                        class="form-control">
+                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="col-md-4">
+                                                        <span class="badge bg-yellow">Sudah divalidasi BAAK</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="badge bg-green">Sudah di Acc. Dosen Pembimbing</span>
+                                                </div>
+                                            </div>
+                                        @elseif ($data->acc_seminar_sidang == 'TOLAK')
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-red"><i
+                                                                class="fa fa-files-o"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Laporan SEMPRO</span>
+                                                            <span class="info-box-number">
+                                                                @if ($data->file_draft_laporan == null)
+                                                                    Belum ada
+                                                                @elseif ($data->file_draft_laporan != null)
+                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                        target="_blank"> File Laporan</a>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="info-box">
+                                                        <form action="{{ url('ajukan_sidang_ta') }}" method="post"
+                                                            enctype="multipart/form-data">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="id_settingrelasi_prausta"
+                                                                value="{{ $data->id_settingrelasi_prausta }}">
+                                                            <div class="form-group">
+
+                                                                <input type="file" name="file_draft_laporan"
+                                                                    class="form-control">
+                                                                <span>Format file pdf max. size 5mb</span> <br>
+                                                                <button type="submit"
+                                                                    class="btn btn-info">Simpan</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="info-box">
-                                                    <form action="{{ url('ajukan_sidang_ta') }}" method="post"
-                                                        enctype="multipart/form-data">
-                                                        {{ csrf_field() }}
-                                                        <input type="hidden" name="id_settingrelasi_prausta"
-                                                            value="{{ $data->id_settingrelasi_prausta }}">
-                                                        <div class="form-group">
-
-                                                            <input type="file" name="file_draft_laporan"
-                                                                class="form-control">
-                                                            <span>Format file pdf max. size 5mb</span> <br>
-                                                            <button type="submit" class="btn btn-info">Simpan</button>
-                                                        </div>
-                                                    </form>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="badge bg-red">Pengajuan di Tolak Dosen Pembimbing</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="badge bg-red">Pengajuan di Tolak Dosen Pembimbing</span>
-                                            </div>
-                                        </div>
+                                        @endif
                                     @endif
                                 @endif
                             </div>
