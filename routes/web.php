@@ -971,12 +971,12 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('simpan_draft_magang', 'MagangSkripsiController@simpan_draft_magang');
     Route::post('simpan_honor_magang', 'MagangSkripsiController@simpan_honor_magang');
 
-
     #magang 2
     Route::get('magang2_mhs', 'MagangSkripsiController@magang2_mhs');
     Route::get('input_data_magang2/{id}', 'MagangSkripsiController@input_data_magang2');
     Route::post('ajukan_seminar_magang2', 'MagangSkripsiController@ajukan_seminar_magang2');
     Route::post('simpan_draft_magang2', 'MagangSkripsiController@simpan_draft_magang2');
+    Route::post('simpan_data_magang2', 'MagangSkripsiController@simpan_data_magang2');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
