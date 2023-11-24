@@ -34,22 +34,6 @@
                                         <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
                                         </option>
                                     @endforeach
-                                    {{-- <option value="1">Pertemuan Ke-1</option>
-                                    <option value="2">Pertemuan Ke-2</option>
-                                    <option value="3">Pertemuan Ke-3</option>
-                                    <option value="4">Pertemuan Ke-4</option>
-                                    <option value="5">Pertemuan Ke-5</option>
-                                    <option value="6">Pertemuan Ke-6</option>
-                                    <option value="7">Pertemuan Ke-7</option>
-                                    <option value="8">Pertemuan Ke-8</option>
-                                    <option value="9">Pertemuan Ke-9</option>
-                                    <option value="10">Pertemuan Ke-10</option>
-                                    <option value="11">Pertemuan Ke-11</option>
-                                    <option value="12">Pertemuan Ke-12</option>
-                                    <option value="13">Pertemuan Ke-13</option>
-                                    <option value="14">Pertemuan Ke-14</option>
-                                    <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option> --}}
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -125,6 +109,12 @@
                                     <option value="Offline">Offline</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Link Materi Kuliah
+                                </label>
+                                <input type="text" class="form-control" name="link_materi" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-4">
@@ -156,18 +146,6 @@
                                     </span>
                                 @endif
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
-                            </div>
-                            <div class="col-md-3">
-                                <label>
-                                    Upload File Materi Kuliah
-                                </label>
-                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah">
-                                @if ($errors->has('file_materi_kuliah'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
-                                    </span>
-                                @endif
-                                <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>

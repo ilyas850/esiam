@@ -834,6 +834,7 @@ class DosenluarController extends Controller
                 'id_tipekuliah' => 'required',
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
+                'link_materi' => 'required',
                 'file_kuliah_tatapmuka'     => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
                 'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas'         => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
@@ -893,6 +894,7 @@ class DosenluarController extends Controller
                 $bap->materi_kuliah = $request->materi_kuliah;
                 $bap->praktikum = $request->praktikum;
                 $bap->media_pembelajaran = $request->media_pembelajaran;
+                $bap->link_materi = $request->link_materi;
 
                 if ($i == 0) {
                     if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1230,6 +1232,7 @@ class DosenluarController extends Controller
             'id_tipekuliah' => 'required',
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
+            'link_materi' => 'required',
             'file_kuliah_tatapmuka'     => 'mimes:jpg,jpeg,png|max:2048',
             'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
             'file_materi_tugas'         => 'mimes:jpg,jpeg,png|max:2048',
@@ -1288,6 +1291,7 @@ class DosenluarController extends Controller
             $bap->materi_kuliah = $request->materi_kuliah;
             $bap->praktikum = $request->praktikum;
             $bap->media_pembelajaran = $request->media_pembelajaran;
+            $bap->link_materi = $request->link_materi;
 
             if ($i == 0) {
                 if ($bap->file_kuliah_tatapmuka) {

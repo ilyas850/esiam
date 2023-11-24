@@ -1416,7 +1416,6 @@ class DosenController extends Controller
 
         $nilai_pertemuan = DB::table('pertemuan')
             ->select('pertemuan.id_pertemuan')
-
             ->leftJoin('bap', function ($join) use ($id) {
                 $join->on('pertemuan.pertemuan', '=', 'bap.pertemuan')
                     ->where('bap.id_kurperiode', '=', $id)
@@ -1447,12 +1446,14 @@ class DosenController extends Controller
                 'id_tipekuliah' => 'required',
                 'metode_kuliah' => 'required',
                 'materi_kuliah' => 'required',
+                'link_materi' => 'required',
                 'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+                'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
         );
+
         $id_dosen = Auth::user()->id_user;
         $id_kurperiode = $request->id_kurperiode;
 
@@ -1505,6 +1506,7 @@ class DosenController extends Controller
                 $bap->materi_kuliah = $request->materi_kuliah;
                 $bap->praktikum = $request->praktikum;
                 $bap->media_pembelajaran = $request->media_pembelajaran;
+                $bap->link_materi = $request->link_materi;
 
                 if ($i == 0) {
                     if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1821,11 +1823,6 @@ class DosenController extends Controller
 
         $date = $dtbp->tanggal;
 
-        // dd($bp->tanggal);
-        // $tanggalIndonesia = Carbon::createFromFormat('Y-m-d', $dtbp->tanggal)->format('d-m-Y');
-
-        // dd($tanggalIndonesia);
-
         $bap = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
@@ -1835,7 +1832,16 @@ class DosenController extends Controller
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
             ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('dosen.iddosen', 'semester.semester', 'kelas.kelas', 'prodi.prodi', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'matakuliah.makul', 'dosen.nama')
+            ->select(
+                'dosen.iddosen',
+                'semester.semester',
+                'kelas.kelas',
+                'prodi.prodi',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'matakuliah.makul',
+                'dosen.nama'
+            )
             ->get();
         foreach ($bap as $data) {
             # code...
@@ -1912,6 +1918,7 @@ class DosenController extends Controller
             'id_tipekuliah' => 'required',
             'metode_kuliah' => 'required',
             'materi_kuliah' => 'required',
+            'link_materi' => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
             'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
             'file_materi_tugas'     => 'mimes:jpg,jpeg,png|max:2000',
@@ -1972,6 +1979,7 @@ class DosenController extends Controller
             $bap->materi_kuliah = $request->materi_kuliah;
             $bap->praktikum = $request->praktikum;
             $bap->media_pembelajaran = $request->media_pembelajaran;
+            $bap->link_materi = $request->link_materi;
 
             if ($i == 0) {
                 if ($bap->file_kuliah_tatapmuka) {

@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Edit Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_kprd') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap_kprd/{{ $bap->id_kurperiode }}"> BAP</a></li>
-            <li class="active">Edit BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         @if (count($errors) > 0)
@@ -81,8 +67,8 @@
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai"
-                                    value="{{ $bap->jam_selsai }}" required>
+                                <input type="text" class="form-control" name="jam_selsai" value="{{ $bap->jam_selsai }}"
+                                    required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -126,6 +112,13 @@
                                     <option value="Offline">Offline</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Link Materi Kuliah
+                                </label>
+                                <input type="text" class="form-control" name="link_materi"
+                                    value="{{ $bap->link_materi }}" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div div class="col-md-6">
@@ -147,12 +140,6 @@
                                 <input type="file" name="file_kuliah_tatapmuka">{{ $bap->file_kuliah_tatapmuka }}
 
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Upload File Materi Kuliah/Ujian</label>
-                                <input type="file" name="file_materi_kuliah">{{ $bap->file_materi_kuliah }}
-
-                                <p class="help-block">Max. size 4 mb dengan format .png .jpg .jpeg .pdf .doc</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>

@@ -4,15 +4,11 @@
     @include('layouts.side')
 @endsection
 
-
-
 @section('content')
     <section class="content">
         <div class="box box-info">
             <div class="box-body">
                 <a class="btn btn-success" href="/lihatabsen/{{ $dtbp->id_kurperiode }}">Kembali</a>
-
-
                 <center>
                     <h2 class="box-title">Laporan Pembelajaran Daring Prodi {{ $prd }} </h2>
                     <h3 class="box-title">Semester {{ $tipe }} – {{ $tahun }}</h3>
@@ -69,6 +65,8 @@
                     <h4>2. Materi Perkuliahan</h4>
                     @if ($dtbp->file_materi_kuliah != null)
                         {{-- <img src="/File_BAP/{{$data->iddosen}}/{{$dtbp->id_kurperiode}}/Materi Kuliah/{{$dtbp->file_materi_kuliah}}" type="application/pdf" width="60%" height="400px" /> --}}
+                    @elseif($dtbp->link_materi != null)
+                        <a href="{{ $dtbp->link_materi }}" target="_blank">Link Materi</a>
                     @else
                         Tidak ada lampiran
                     @endif

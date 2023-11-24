@@ -126,6 +126,13 @@
                                     <option value="Offline">Offline</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Link Materi Kuliah
+                                </label>
+                                <input type="text" class="form-control" name="link_materi"
+                                    value="{{ $bap->link_materi }}" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div div class="col-md-4">
@@ -154,12 +161,12 @@
 
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
                             </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <label>Upload File Materi Kuliah/Ujian</label>
                                 <input type="file" name="file_materi_kuliah">{{ $bap->file_materi_kuliah }}
 
                                 <p class="help-block">Max. size 4 mb dengan format .png .jpg .jpeg .pdf .doc</p>
-                            </div>
+                            </div> --}}
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas/Ujian</label>
                                 <input type="file" name="file_materi_tugas">{{ $bap->file_materi_tugas }}

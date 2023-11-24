@@ -134,6 +134,12 @@
                                     <option value="Offline">Offline</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Link Materi Kuliah
+                                </label>
+                                <input type="text" class="form-control" name="link_materi" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-4">
@@ -166,7 +172,7 @@
                                 @endif
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
                             </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <label>Upload File Materi Kuliah</label>
                                 <input type="file" name="file_materi_kuliah" id="file_materi_kuliah">
                                 @if ($errors->has('file_materi_kuliah'))
@@ -175,7 +181,7 @@
                                     </span>
                                 @endif
                                 <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
-                            </div>
+                            </div> --}}
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>
                                 <input type="file" name="file_materi_tugas">

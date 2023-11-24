@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap_dsn/{{ $id }}"> BAP</a></li>
-            <li class="active">Form BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         @if (count($errors) > 0)
@@ -49,7 +35,7 @@
                                         <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
                                         </option>
                                     @endforeach
-                                    
+
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -135,6 +121,12 @@
                                     <option value="Offline">Offline</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Link Materi Kuliah
+                                </label>
+                                <input type="text" class="form-control" name="link_materi" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-4">
@@ -166,16 +158,6 @@
                                     </span>
                                 @endif
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Upload File Materi Kuliah</label>
-                                <input type="file" name="file_materi_kuliah">
-                                @if ($errors->has('file_materi_kuliah'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
-                                    </span>
-                                @endif
-                                <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
                             </div>
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>
