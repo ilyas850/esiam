@@ -6366,12 +6366,18 @@ class SadminController extends Controller
         $tipe = $request->id_periodetipe;
         $absen = $request->tipe_absen;
 
-        if ($absen == 'dosen') {
-            $data = DB::select('CALL absen_edom_dosen(?,?)', [$tahun, $tipe]);
+        $idtahun = Periode_tahun::where('id_periodetahun', $tahun)->first();
+        $idtipe = Periode_tipe::where('id_periodetipe', $tipe)->first();
 
-            return view('sadmin/edom/hasil_absen_edom', compact('data'));
+        $data = DB::select('CALL absen_edom_dosen(?,?,?)', [$tahun, $tipe, $absen]);
+
+        if ($absen == 'dosen') {
+
+            return view('sadmin/edom/hasil_absen_edom', compact('data', 'idtahun', 'idtipe'));
+        } elseif ($absen == 'matakuliah') {
+
+            return view('sadmin/edom/hasil_absen_edom_makul', compact('data', 'idtahun', 'idtipe'));
         }
-        dd($request);
     }
 
     public function master_kategori_pengajuan()
