@@ -18,26 +18,35 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th width="4%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="20%">
+                                <th>
                                     <center>Nama</center>
                                 </th>
-                                <th width="15%">
+                                <th>
                                     <center>Program Studi</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Kelas</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Angkatan</center>
                                 </th>
-                                <th width="8%">
-                                    <center>Pilih</center>
+                                <th>
+                                    <center>Hadir</center>
+                                </th>
+                                <th>
+                                    <center>Alpa</center>
+                                </th>
+                                <th>
+                                    <center>Izin</center>
+                                </th>
+                                <th>
+                                    <center>Sakit</center>
                                 </th>
                             </tr>
                         </thead>
@@ -59,20 +68,38 @@
                                     <td>
                                         <center>{{ $item->angkatan }}</center>
                                     </td>
-                                    <td>
-                                        <center>
-                                            <input type="hidden" name="id_studentrecord[]"
-                                                value="{{ $item->id_studentrecord }}">
-                                            <select name="absensi[]" class="form-control">
-                                                <option value="{{ $item->id_studentrecord }},HADIR"></option>
-                                                <option value="{{ $item->id_studentrecord }},ABSEN">Hadir</option>
-                                                <option value="{{ $item->id_studentrecord }},IZIN">Izin</option>
-                                                <option value="{{ $item->id_studentrecord }},SAKIT">Sakit</option>
-                                                <option value="{{ $item->id_studentrecord }},ALFA">Alfa</option>
-                                            </select>
-                                        </center>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                    value="{{ $item->id_studentrecord }},ABSEN" checked>
+                                            </label>
+                                        </div>
                                     </td>
-
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                    value="{{ $item->id_studentrecord }},ALFA">
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                    value="{{ $item->id_studentrecord }},IZIN">
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                    value="{{ $item->id_studentrecord }},SAKIT">
+                                            </label>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

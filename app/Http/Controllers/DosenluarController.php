@@ -1014,9 +1014,14 @@ class DosenluarController extends Controller
 
     public function save_absensi(Request $request)
     {
+        $absensiMhs = $request->absensi_radio;
+
+        $modifiedArrayAbsensi = array_values($absensiMhs);
+        $jml_absenArray = count($modifiedArrayAbsensi);
+
         #kode baru
-        $absen = $request->absensi;
-        $jml_absen = count($absen);
+        //$absen = $request->absensi;
+        //$jml_absen = count($absen);
         $cek_bap_sama = DB::select('CALL bap_gabungan(?)', [$request->id_bap]);
         $jml_bap_sama = count($cek_bap_sama);
 
@@ -1029,8 +1034,8 @@ class DosenluarController extends Controller
 
             if ($i == 0) {
 
-                for ($j = 0; $j < $jml_absen; $j++) {
-                    $get_absen = $absen[$j];
+                for ($j = 0; $j < $jml_absenArray; $j++) {
+                    $get_absen = $modifiedArrayAbsensi[$j];
                     $id_for_absen = explode(',', $get_absen, 2);
                     $id1 = $id_for_absen[0];
                     $id2 = $id_for_absen[1];
@@ -1075,6 +1080,11 @@ class DosenluarController extends Controller
 
     public function save_edit_absensi(Request $request)
     {
+        $absensiMhs = $request->absensi_radio;
+
+        $modifiedArrayAbsensi = array_values($absensiMhs);
+        $jml_absenArray = count($modifiedArrayAbsensi);
+
         #id BAP
         $id_bp = $request->id_bap;
 
@@ -1083,8 +1093,8 @@ class DosenluarController extends Controller
         $jml_bap_gabungan = count($bap_gabungan);
 
         #jumlah yang masuk/absen
-        $absen = $request->absensi;
-        $jmlabsen = count($absen);
+        //$absen = $request->absensi;
+        //$jmlabsen = count($absen);
 
         #kode baru lagi
         for ($d = 0; $d < $jml_bap_gabungan; $d++) {
@@ -1104,9 +1114,9 @@ class DosenluarController extends Controller
             $idBapAwal = $bap_gabungan[0]->id_bap;
 
             if ($a == 0) {
-                for ($b = 0; $b < $jmlabsen; $b++) {
-                    $getDataAbsen = $absen[$b];
-                    $idForAbsen = explode(',', $getDataAbsen, 4);
+                for ($b = 0; $b < $jml_absenArray; $b++) {
+                    $getDataAbsen = $modifiedArrayAbsensi[$b];
+                    $idForAbsen = explode(',', $getDataAbsen, 2);
                     $id1 = $idForAbsen[0];
                     $id2 = $idForAbsen[1];
 

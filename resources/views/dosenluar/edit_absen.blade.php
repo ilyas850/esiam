@@ -23,26 +23,35 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th width="4%">
+                                <th>
                                     <center>No</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>NIM </center>
                                 </th>
-                                <th width="20%">
+                                <th>
                                     <center>Nama</center>
                                 </th>
-                                <th width="15%">
+                                <th>
                                     <center>Program Studi</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Kelas</center>
                                 </th>
-                                <th width="8%">
+                                <th>
                                     <center>Angkatan</center>
                                 </th>
-                                <th width="8%">
-                                    <center>Pilih</center>
+                                <th>
+                                    <center>Hadir</center>
+                                </th>
+                                <th>
+                                    <center>Alpa</center>
+                                </th>
+                                <th>
+                                    <center>Izin</center>
+                                </th>
+                                <th>
+                                    <center>Sakit</center>
                                 </th>
                             </tr>
                         </thead>
@@ -64,48 +73,66 @@
                                     <td>
                                         <center>{{ $item->angkatan }}</center>
                                     </td>
-                                    <td>
-                                        <center>
-                                            <select name="absensi[]" class="form-control" required>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
                                                 @if ($item->absensi == 'ABSEN')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Hadir</option>
-                                                @elseif($item->absensi == 'IZIN')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Izin</option>
-                                                @elseif($item->absensi == 'SAKIT')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Sakit</option>
-                                                @elseif($item->absensi == 'ALFA')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Alfa</option>
-                                                @elseif($item->absensi == null)
-                                                    <option></option>
-                                                @elseif($item->absensi == 'HADIR')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},HADIR,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    </option>
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ABSEN" checked>
+                                                @else
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ABSEN">
                                                 @endif
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Hadir</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Izin</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Sakit</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Alfa</option>
-                                            </select>
-                                        </center>
+                                            </label>
+                                        </div>
                                     </td>
-
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                @if ($item->absensi == 'ALFA')
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ALFA" checked>
+                                                @else
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ALFA">
+                                                @endif
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                @if ($item->absensi == 'IZIN')
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},IZIN" checked>
+                                                @else
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},IZIN">
+                                                @endif
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="radio">
+                                            <label>
+                                                @if ($item->absensi == 'SAKIT')
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},SAKIT" checked>
+                                                @else
+                                                    <input type="radio"
+                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},SAKIT">
+                                                @endif
+                                            </label>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
