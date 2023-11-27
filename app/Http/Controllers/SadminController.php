@@ -1580,13 +1580,8 @@ class SadminController extends Controller
         foreach ($trans as $item) {
             // code...
         }
-        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $item->idstudent)
-            ->where('student_record.status', 'TAKEN')
-            ->where('student_record.nilai_AKHIR', '!=', '0')
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
-            ->get();
+
+        $data = DB::select('CALL transkrip_proc(?)', [$item->idstudent]);
 
         $sks = DB::select('CALL hasil_transkrip(' . $item->idstudent . ')');
         foreach ($sks as $keysks) {
@@ -1842,16 +1837,7 @@ class SadminController extends Controller
         $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
         $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
 
-        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->where('student_record.nilai_AKHIR', '!=', '0')
-            ->where('student_record.nilai_ANGKA', '!=', '0')
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
-            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
+        $data = DB::select('CALL transkrip_proc(?)', [$id]);
 
         $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
@@ -1922,34 +1908,36 @@ class SadminController extends Controller
 
         $item->judul_prausta = str_replace('&', 'dan', $item->judul_prausta);
 
-        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $id)
-            ->where('student_record.status', 'TAKEN')
-            ->where('student_record.nilai_AKHIR', '!=', '0')
-            ->where('student_record.nilai_ANGKA', '!=', '0')
-            ->select(
-                DB::raw('DISTINCT(student_record.id_student)'),
-                'matakuliah.kode',
-                'matakuliah.makul',
-                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
-                'student_record.nilai_AKHIR',
-                'student_record.nilai_ANGKA',
-                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks')
-            )
-            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
+        // $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+        //     ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
+        //     ->where('student_record.id_student', $id)
+        //     ->where('student_record.status', 'TAKEN')
+        //     ->where('student_record.nilai_AKHIR', '!=', '0')
+        //     ->where('student_record.nilai_ANGKA', '!=', '0')
+        //     ->select(
+        //         DB::raw('DISTINCT(student_record.id_student)'),
+        //         'matakuliah.kode',
+        //         'matakuliah.makul',
+        //         DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+        //         'student_record.nilai_AKHIR',
+        //         'student_record.nilai_ANGKA',
+        //         DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks')
+        //     )
+        //     ->orderBy('kurikulum_transaction.id_semester', 'ASC')
+        //     ->orderBy('matakuliah.kode', 'ASC')
+        //     ->get();
+
+        $data = DB::select('CALL transkrip_proc(?)', [$id]);
 
         $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {
             // code...
         }
-        if ($keysks->IPK >= 3.51) {
+        if ($keysks->ipk >= 3.51) {
             $predikat = 'Cumlaude';
-        } elseif ($keysks->IPK >= 3.0) {
+        } elseif ($keysks->ipk >= 3.0) {
             $predikat = 'Sangat Memuaskan';
-        } elseif ($keysks->IPK >= 2.0) {
+        } elseif ($keysks->ipk >= 2.0) {
             $predikat = 'Memuaskan';
         }
 
@@ -1967,7 +1955,7 @@ class SadminController extends Controller
         $template->setValue('judul', $item->judul_prausta);
         $template->setValue('totalsks', $keysks->total_sks);
         $template->setValue('nilai_sks', $keysks->nilai_sks);
-        $template->setValue('ipk', $keysks->IPK);
+        $template->setValue('ipk', $keysks->ipk);
         $template->setValue('predikat', $predikat);
 
         $new_data = [];
@@ -1979,9 +1967,9 @@ class SadminController extends Controller
             $dt_array = [
                 'kode' => $data[$i]->kode,
                 'makul' => $data[$i]->makul,
-                'akt_sks' => $data[$i]->akt_sks,
+                'akt_sks' => $data[$i]->sks,
                 'nilai_AKHIR' => $data[$i]->nilai_AKHIR,
-                'nilai_ANGKA' => $data[$i]->nilai_ANGKA,
+                'nilai_ANGKA' => $data[$i]->nilai_indeks,
                 'nilaisks' => $data[$i]->nilai_sks,
                 'no' => $i + 1,
             ];

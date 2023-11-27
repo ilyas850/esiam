@@ -114,13 +114,13 @@
                     </td>
                     <td><span style="font-size:65%">{{ $key->makul }}</span></td>
                     <td>
-                        <center><span style="font-size:65%">{{ $key->akt_sks }}</span></center>
+                        <center><span style="font-size:65%">{{ $key->sks }}</span></center>
                     </td>
                     <td>
                         <center><span style="font-size:65%">{{ $key->nilai_AKHIR }}</span></center>
                     </td>
                     <td>
-                        <center><span style="font-size:65%">{{ $key->nilai_ANGKA }}</span></center>
+                        <center><span style="font-size:65%">{{ $key->nilai_indeks }}</span></center>
                     </td>
                     <td>
                         <center><span style="font-size:65%">{{ $key->nilai_sks }}</span></center>
@@ -159,7 +159,7 @@
             <tr>
                 <td><span style="font-size:65%">Indeks Prestasi Kumulatif</span></td>
                 <td>:<span style="font-size:65%"> {{ $keysks->nilai_sks }} / {{ $keysks->total_sks }} =
-                        {{ $keysks->IPK }}</span> </td>
+                        {{ $keysks->ipk }}</span> </td>
             </tr>
             <tr>
                 <td><span style="font-size:65%">Predikat Kelulusan</span></td>
