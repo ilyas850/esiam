@@ -1487,6 +1487,7 @@ class SadminController extends Controller
         foreach ($sks as $keysks) {
             // code...
         }
+
         return view('sadmin/nilai/transkrip_sementara', compact('data', 'item', 'keysks'));
     }
 
@@ -1552,20 +1553,11 @@ class SadminController extends Controller
             )
             ->first();
 
-        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-            ->where('student_record.id_student', $CekData->id_student)
-            ->where('student_record.status', 'TAKEN')
-            ->where('student_record.nilai_AKHIR', '!=', '0')
-            ->where('student_record.nilai_ANGKA', '!=', '0')
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks'))
-            ->orderBy('kurikulum_transaction.id_semester', 'ASC')
-            ->orderBy('matakuliah.kode', 'ASC')
-            ->get();
+        $data = DB::select('CALL transkrip_proc(?)', [$CekData->id_student]);
 
         $sks = DB::select('CALL hasil_transkrip(' . $CekData->id_student . ')');
         foreach ($sks as $keysks) {
-            // code...
+            # code...
         }
 
         return view('sadmin/nilai/transkrip_sementara', compact('data', 'item', 'keysks'));
@@ -1765,7 +1757,7 @@ class SadminController extends Controller
         $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
         $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
 
-        $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+        $data1 = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
             ->where('student_record.id_student', $id)
             ->where('student_record.status', 'TAKEN')
@@ -1783,6 +1775,8 @@ class SadminController extends Controller
             ->orderBy('kurikulum_transaction.id_semester', 'ASC')
             ->orderBy('matakuliah.kode', 'ASC')
             ->get();
+
+        $data = DB::select('CALL transkrip_proc(?)', [$id]);
 
         $sks = DB::select('CALL hasil_transkrip(' . $id . ')');
         foreach ($sks as $keysks) {

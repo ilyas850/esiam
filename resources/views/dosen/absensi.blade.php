@@ -127,7 +127,6 @@
                     </table>
                     <br>
                     <button id="simpan" class="btn btn-success btn-block" type="submit">Simpan</button>
-
                 </div>
             </form>
         </div>

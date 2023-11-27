@@ -1,9 +1,7 @@
 @extends('layouts.master')
 
 @section('side')
-
     @include('layouts.side')
-
 @endsection
 @section('content')
     <section class="content">
@@ -101,13 +99,13 @@
                                 </td>
                                 <td>{{ $key->makul }}</td>
                                 <td>
-                                    <center>{{ $key->akt_sks }}</center>
+                                    <center>{{ $key->sks }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_AKHIR }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_ANGKA }}</center>
+                                    <center>{{ $key->nilai_indeks }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_sks }}</center>
@@ -131,16 +129,16 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3">Predikat : @if ($keysks->IPK >= 3.51)
+                            <td colspan="3">Predikat : @if ($keysks->ipk >= 3.51)
                                     Cumlaude
-                                @elseif ($keysks->IPK >= 3.00)
+                                @elseif ($keysks->ipk >= 3.0)
                                     Sangat Memuaskan
-                                @elseif($keysks->IPK >= 2.00)
+                                @elseif($keysks->ipk >= 2.0)
                                     Memuaskan
                                 @endif
                             </td>
                             <td colspan="4">
-                                <center> Indeks Prestasi Kumulatif <b>(IPK) : {{ $keysks->IPK }} </b></center>
+                                <center> Indeks Prestasi Kumulatif <b>(IPK) : {{ $keysks->ipk }} </b></center>
                             </td>
                         </tr>
                         <tr>
