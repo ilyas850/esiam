@@ -111,12 +111,6 @@
                             <td>
                                 @if ($item->status == 'ACTIVE')
                                     <span class="badge bg-yellow">AKTIF</span>
-                                    {{-- <form method="POST" action="{{url('change_ta_tp')}}">
-                 <input type="hidden" name="status" value="NOT ACTIVE">
-                 <input type="hidden" name="id_periodetipe" value="{{$item->id_periodetipe}}">
-                 {{ csrf_field() }}
-                 <button type="submit" class="btn btn-warning btn-xs">Nonaktifkan</button>
-               </form> --}}
                                 @elseif ($item->status == 'NOT ACTIVE')
                                     <form method="POST" action="{{ url('change_ta_tp') }}">
                                         <input type="hidden" name="status" value="ACTIVE">
@@ -218,14 +212,10 @@
                                         <button type="submit" class="btn btn-outline">Simpan</button>
                                     </div>
                                 </div>
-                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-dialog -->
                         </div>
-
                     </form>
                 @endif
-
             </div>
         </div>
         <div class="box box-info">

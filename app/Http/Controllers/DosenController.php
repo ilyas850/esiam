@@ -57,12 +57,14 @@ use App\Pertemuan;
 use App\Sk_pengajaran;
 use App\Pengajuan_trans;
 use App\Informasi;
+use App\Rps;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Response;
+use PhpParser\Node\Expr\AssignOp\Concat;
 
 class DosenController extends Controller
 {
@@ -614,6 +616,126 @@ class DosenController extends Controller
         return view('dosen/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
     }
 
+    function entri_rps($id)
+    {
+        $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->where('kurikulum_periode.id_kurperiode', $id)
+            ->select(
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                DB::raw('CONCAT(matakuliah.akt_sks_teori + matakuliah.akt_sks_praktek) as sks'),
+                'prodi.prodi',
+                'kelas.kelas'
+            )
+            ->first();
+
+        $pertemuan = Pertemuan::orderBy('id_pertemuan', 'ASC')->get();
+
+        return view('dosen/pengajaran/form_rps', compact('id', 'data', 'pertemuan'));
+    }
+
+    function simpan_rps_makul_dsn(Request $request)
+    {
+        $pertemuan = $request->pertemuan;
+        $kad = $request->kemampuan_akhir_direncanakan;
+        $materi = $request->materi_pembelajaran;
+        $idkurperiode = $request->id_kurperiode;
+
+        $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$idkurperiode]);
+
+        $jml_idkurperiode = count($kelas_gabungan);
+
+        for ($i = 0; $i < $jml_idkurperiode; $i++) {
+            for ($j = 0; $j < count($pertemuan); $j++) {
+                $exploPertemuan = $pertemuan[$j];
+                $exploKad = $kad[$j];
+                $exploMateri = $materi[$j];
+
+                $kurperiode = $kelas_gabungan[$i];
+                $id_kur = $kurperiode->id_kurperiode;
+
+                $rps = new Rps();
+                $rps->id_kurperiode = $id_kur;
+                $rps->pertemuan = $exploPertemuan;
+                $rps->kemampuan_akhir_direncanakan = $exploKad;
+                $rps->materi_pembelajaran = $exploMateri;
+                $rps->created_by = Auth::user()->name;
+                $rps->save();
+            }
+        }
+
+        Alert::success('', 'RPS berhasil ditambahkan')->autoclose(3500);
+        return redirect('makul_diampu_dsn');
+    }
+
+    function edit_rps($id)
+    {
+        $data = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->where('kurikulum_periode.id_kurperiode', $id)
+            ->select(
+                'matakuliah.kode',
+                'matakuliah.makul',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                DB::raw('CONCAT(matakuliah.akt_sks_teori + matakuliah.akt_sks_praktek) as sks'),
+                'prodi.prodi',
+                'kelas.kelas'
+            )
+            ->first();
+
+        $pertemuan = Pertemuan::orderBy('id_pertemuan', 'ASC')->get();
+
+        $rps = Rps::where('id_kurperiode', $id)->get();
+
+        return view('dosen/pengajaran/edit_form_rps', compact('id', 'data', 'pertemuan', 'rps'));
+    }
+
+    function udpate_rps_makul_dsn(Request $request)
+    {
+        $idRps = $request->id_rps;
+        $pertemuan = $request->pertemuan;
+        $kad = $request->kemampuan_akhir_direncanakan;
+        $materi = $request->materi_pembelajaran;
+        $idkurperiode = $request->id_kurperiode;
+
+        $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$idkurperiode]);
+
+        $jml_idkurperiode = count($kelas_gabungan);
+
+        for ($j = 0; $j < $jml_idkurperiode; $j++) {
+            for ($i = 0; $i < count($pertemuan); $i++) {
+                $id = $idRps[$i];
+                $exploPertemuan = $pertemuan[$i];
+                $exploKad = $kad[$i];
+                $exploMateri = $materi[$i];
+
+                $kurperiode = $kelas_gabungan[$j];
+                $id_kur = $kurperiode->id_kurperiode;
+
+                Rps::where('id_kurperiode', $id_kur)
+                    ->where('pertemuan', $exploPertemuan)
+                    ->update([
+                        'kemampuan_akhir_direncanakan' => $exploKad,
+                        'materi_pembelajaran' => $exploMateri,
+                        'updated_by' => Auth::user()->name
+                    ]);
+            }
+        }
+
+        Alert::success('', 'RPS berhasil ditambahkan')->autoclose(3500);
+        return redirect('makul_diampu_dsn');
+    }
+
     public function filter_makul_diampu_dsn_dlm(Request $request)
     {
         $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
@@ -649,8 +771,6 @@ class DosenController extends Controller
 
     public function export_xlsnilai($id)
     {
-        // $id = $request->id_kurperiode;
-
         $keymk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')
@@ -668,8 +788,6 @@ class DosenController extends Controller
 
     public function unduh_pdf_nilai($id)
     {
-        // $id = $request->id_kurperiode;
-
         $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')
@@ -1398,7 +1516,8 @@ class DosenController extends Controller
                 'bap.jenis_kuliah',
                 'bap.hadir',
                 'bap.tidak_hadir',
-                'dosen.nama'
+                'dosen.nama',
+                'bap.kesesuaian_rps'
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
@@ -1408,7 +1527,6 @@ class DosenController extends Controller
 
     public function input_bap($id)
     {
-
         $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
 
         $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
@@ -1422,35 +1540,37 @@ class DosenController extends Controller
                     ->where('bap.id_kurperiode', '=', $id)
                     ->where('bap.status', 'ACTIVE');
             })
-
             ->whereNull('bap.pertemuan')
             ->get();
 
-        return view('dosen/form_bap', compact('id', 'jam', 'nilai_pertemuan'));
+        $rps = Rps::where('id_kurperiode', $id)->get();
+
+        return view('dosen/form_bap', compact('id', 'jam', 'nilai_pertemuan', 'rps'));
     }
 
     public function save_bap(Request $request)
     {
         $message = [
-            'max' => ':attribute harus diisi maksimal :max KB',
-            'required' => ':attribute wajib diisi',
-            'unique' => ':attribute sudah terdaftar',
+            'max'       => ':attribute harus diisi maksimal :max KB',
+            'required'  => ':attribute wajib diisi',
+            'unique'    => ':attribute sudah terdaftar',
         ];
         $this->validate(
             $request,
             [
-                'pertemuan' => 'required',
-                'tanggal' => 'required',
-                'jam_mulai' => 'required',
-                'jam_selsai' => 'required',
-                'jenis_kuliah' => 'required',
-                'id_tipekuliah' => 'required',
-                'metode_kuliah' => 'required',
-                'materi_kuliah' => 'required',
-                'link_materi' => 'required',
+                'pertemuan'             => 'required',
+                'tanggal'               => 'required',
+                'jam_mulai'             => 'required',
+                'jam_selsai'            => 'required',
+                'jenis_kuliah'          => 'required',
+                'id_tipekuliah'         => 'required',
+                'metode_kuliah'         => 'required',
+                'materi_kuliah'         => 'required',
+                'link_materi'           => 'required',
+                // 'id_rps'                => 'required',
                 'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-                'file_materi_tugas' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+                'file_materi_tugas'     => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
         );
@@ -1494,20 +1614,21 @@ class DosenController extends Controller
                     File::makeDirectory($path_tugaskuliah);
                 }
 
-                $bap = new Bap();
-                $bap->id_kurperiode = $id_kur;
-                $bap->id_dosen = $id_dosen;
-                $bap->pertemuan = $request->pertemuan;
-                $bap->tanggal = $request->tanggal;
-                $bap->jam_mulai = $request->jam_mulai;
-                $bap->jam_selsai = $request->jam_selsai;
-                $bap->jenis_kuliah = $request->jenis_kuliah;
-                $bap->id_tipekuliah = $request->id_tipekuliah;
-                $bap->metode_kuliah = $request->metode_kuliah;
-                $bap->materi_kuliah = $request->materi_kuliah;
-                $bap->praktikum = $request->praktikum;
-                $bap->media_pembelajaran = $request->media_pembelajaran;
-                $bap->link_materi = $request->link_materi;
+                $bap                        = new Bap();
+                $bap->id_kurperiode         = $id_kur;
+                $bap->id_dosen              = $id_dosen;
+                $bap->pertemuan             = $request->pertemuan;
+                $bap->tanggal               = $request->tanggal;
+                $bap->jam_mulai             = $request->jam_mulai;
+                $bap->jam_selsai            = $request->jam_selsai;
+                $bap->jenis_kuliah          = $request->jenis_kuliah;
+                $bap->id_tipekuliah         = $request->id_tipekuliah;
+                $bap->metode_kuliah         = $request->metode_kuliah;
+                $bap->materi_kuliah         = $request->materi_kuliah;
+                $bap->praktikum             = $request->praktikum;
+                $bap->media_pembelajaran    = $request->media_pembelajaran;
+                $bap->link_materi           = $request->link_materi;
+                // $bap->id_rps                = $request->id_rps;
 
                 if ($i == 0) {
                     if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1628,7 +1749,6 @@ class DosenController extends Controller
 
     public function save_absensi(Request $request)
     {
-
         $absensiMhs = $request->absensi_radio;
 
         $modifiedArrayAbsensi = array_values($absensiMhs);
@@ -1855,25 +1975,58 @@ class DosenController extends Controller
 
     public function edit_bap($id)
     {
-        $bap = Bap::where('id_bap', $id)->get();
-        foreach ($bap as $key_bap) {
-            # code...
-        }
-        return view('dosen/edit_bap', ['id' => $id, 'bap' => $key_bap]);
+        $bap = Bap::leftjoin('rps', 'bap.id_rps', '=', 'rps.id_rps')
+            ->where('bap.id_bap', $id)
+            ->where('bap.status', 'ACTIVE')
+            ->select(
+                'bap.id_bap',
+                'bap.id_kurperiode',
+                // 'bap.id_rps',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jenis_kuliah',
+                'bap.id_tipekuliah',
+                'bap.metode_kuliah',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.praktikum',
+                'bap.media_pembelajaran',
+                'bap.hadir',
+                'bap.tidak_hadir',
+                'bap.file_kuliah_tatapmuka',
+                'bap.file_materi_kuliah',
+                'bap.file_materi_tugas',
+                'bap.link_materi',
+                'bap.status',
+                'bap.id_kultrans',
+                'rps.kemampuan_akhir_direncanakan',
+                'rps.materi_pembelajaran'
+            )
+            ->first();
+
+        $idKur = $bap->id_kurperiode;
+
+        $rps = Rps::where('id_kurperiode', $idKur)->get();
+
+        $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
+
+        return view('dosen/edit_bap', compact('id', 'bap', 'rps', 'jam'));
     }
 
     public function simpanedit_bap(Request $request, $id)
     {
         $this->validate($request, [
-            'pertemuan' => 'required',
-            'tanggal' => 'required',
-            'jam_mulai' => 'required',
-            'jam_selsai' => 'required',
-            'jenis_kuliah' => 'required',
-            'id_tipekuliah' => 'required',
-            'metode_kuliah' => 'required',
-            'materi_kuliah' => 'required',
-            'link_materi' => 'required',
+            'pertemuan'             => 'required',
+            'tanggal'               => 'required',
+            'jam_mulai'             => 'required',
+            'jam_selsai'            => 'required',
+            'jenis_kuliah'          => 'required',
+            'id_tipekuliah'         => 'required',
+            'metode_kuliah'         => 'required',
+            'materi_kuliah'         => 'required',
+            'link_materi'           => 'required',
+            // 'id_rps'                => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
             'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
             'file_materi_tugas'     => 'mimes:jpg,jpeg,png|max:2000',
@@ -1922,19 +2075,21 @@ class DosenController extends Controller
                 File::makeDirectory($path_tugaskuliah);
             }
 
-            $bap = Bap::find($e);
-            $bap->id_kurperiode = $d;
-            $bap->pertemuan = $request->pertemuan;
-            $bap->tanggal = $request->tanggal;
-            $bap->jam_mulai = $request->jam_mulai;
-            $bap->jam_selsai = $request->jam_selsai;
-            $bap->jenis_kuliah = $request->jenis_kuliah;
-            $bap->id_tipekuliah = $request->id_tipekuliah;
-            $bap->metode_kuliah = $request->metode_kuliah;
-            $bap->materi_kuliah = $request->materi_kuliah;
-            $bap->praktikum = $request->praktikum;
-            $bap->media_pembelajaran = $request->media_pembelajaran;
-            $bap->link_materi = $request->link_materi;
+            $bap                        = Bap::find($e);
+            $bap->id_kurperiode         = $d;
+            $bap->pertemuan             = $request->pertemuan;
+            $bap->tanggal               = $request->tanggal;
+            $bap->jam_mulai             = $request->jam_mulai;
+            $bap->jam_selsai            = $request->jam_selsai;
+            $bap->jenis_kuliah          = $request->jenis_kuliah;
+            $bap->id_tipekuliah         = $request->id_tipekuliah;
+            $bap->metode_kuliah         = $request->metode_kuliah;
+            $bap->materi_kuliah         = $request->materi_kuliah;
+            $bap->praktikum             = $request->praktikum;
+            $bap->media_pembelajaran    = $request->media_pembelajaran;
+            $bap->link_materi           = $request->link_materi;
+            // $bap->id_rps                = $request->id_rps;
+            $bap->updated_by            = Auth::user()->name;
 
             if ($i == 0) {
                 if ($bap->file_kuliah_tatapmuka) {

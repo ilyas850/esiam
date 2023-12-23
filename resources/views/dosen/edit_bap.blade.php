@@ -4,20 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Edit Berita Acara Perkuliahan
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap/{{ $bap->id_kurperiode }}"> BAP</a></li>
-            <li class="active">Edit BAP</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         @if (count($errors) > 0)
@@ -37,7 +23,67 @@
                 <input type="hidden" name="id_kurperiode" value="{{ $bap->id_kurperiode }}">
                 {{ csrf_field() }}
                 <div class="box-body">
+                    {{-- <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="table">
+                                        <table class="table border-collapse">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Pertemuan</th>
+                                                    <th>Kemampuan Akhir yang Direncanakan</th>
+                                                    <th>Materi Pembelajaran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($rps as $item)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="radio" name="id_rps" value="{{ $item->id_rps }}"
+                                                                required>
+                                                        </td>
+                                                        <td>Pertemuan Ke - {{ $item->pertemuan }}</td>
+                                                        <td>{{ $item->kemampuan_akhir_direncanakan }}</td>
+                                                        <td>{{ $item->materi_pembelajaran }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
                     <div class="col-md-12">
+                        {{-- <div class="form-group">
+                            <input type="hidden" id="selectedRpsId" name="id_rps" value="{{ $bap->id_rps }}">
+                            <div class="col-md-2">
+                                <label>
+                                    <font color="red-text">*</font>Pilih RPS
+                                </label><br>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#modalPilihRps"><i
+                                        class="fa fa-check" title="Klik untuk upload soal uas"></i>
+                                    Pilih RPS</button>
+                            </div>
+                            <div class="col-md-5">
+                                <label>
+                                    <font color="red-text">*</font>Kemampuan Akhir Direncanakan
+                                </label>
+                                <textarea id="kemampuanAkhir" class="form-control" name="kemampuan_akhir_direncanakan" rows="3" readonly>{{ $bap->kemampuan_akhir_direncanakan }}</textarea>
+                            </div>
+                            <div class="col-md-5">
+                                <label>
+                                    <font color="red-text">*</font>Materi Pembelajaran
+                                </label>
+                                <textarea id="materiPembelajaran" class="form-control" name="materi_pembelajaran" rows="3" readonly>
+                                    {{ $bap->materi_pembelajaran }}
+                                </textarea>
+                            </div>
+                        </div> --}}
                         <div class="form-group">
                             <div class="col-md-3">
                                 <label>
@@ -67,22 +113,30 @@
                                 <label>
                                     <font color="red-text">*</font>Tanggal
                                 </label>
-                                <input type="date" class="form-control pull-right" name="tanggal"
+                                <input type="date" class="form-control" name="tanggal"
                                     value="{{ $bap->tanggal }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Jam Mulai
                                 </label>
-                                <input type="text" class="form-control" name="jam_mulai" value="{{ $bap->jam_mulai }}"
-                                    required>
+                                <select class="form-control" name="jam_mulai" required>
+                                    <option value="{{ $bap->jam_mulai }}">{{ $bap->jam_mulai }}</option>
+                                    @foreach ($jam as $key)
+                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Jam Selesai
                                 </label>
-                                <input type="text" class="form-control" name="jam_selsai" value="{{ $bap->jam_selsai }}"
-                                    required>
+                                <select class="form-control" name="jam_selsai" required>
+                                    <option value="{{ $bap->jam_selsai }}">{{ $bap->jam_selsai }}</option>
+                                    @foreach ($jam as $key)
+                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -186,4 +240,16 @@
             </form>
         </div>
     </section>
+    <script>
+        $(document).ready(function() {
+            // Menangkap perubahan pada elemen radio button di modal
+            $('input[name="id_rps"]').change(function() {
+                // Memperbarui nilai textarea di form dengan data yang dipilih
+                var selectedRps = $('input[name="id_rps"]:checked');
+                $('#kemampuanAkhir').val(selectedRps.closest('tr').find('td:nth-child(3)').text());
+                $('#materiPembelajaran').val(selectedRps.closest('tr').find('td:nth-child(4)').text());
+                $('#selectedRpsId').val(selectedRps.val());
+            });
+        });
+    </script>
 @endsection

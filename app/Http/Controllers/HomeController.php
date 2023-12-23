@@ -155,7 +155,7 @@ class HomeController extends Controller
             ->where('kuisioner_transaction.id_periodetahun', $tahun->id_periodetahun)
             ->where('kuisioner_transaction.id_periodetipe', $tipe->id_periodetipe)
             ->get();
-          
+
           if (count($cek_kuis_pa) > 0) {
             #cek kuisioner BAAK
             $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
@@ -281,7 +281,7 @@ class HomeController extends Controller
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);
     } elseif ($akses == 5) {
-
+    
       return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
     } elseif ($akses == 6) {
 
@@ -335,6 +335,20 @@ class HomeController extends Controller
         ->count('idstudent');
 
       return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info]);
+    } elseif ($akses == 12) {
+      $mhs_ti = Student::where('kodeprodi', 23)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_fa = Student::where('kodeprodi', 24)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      return view('home', compact('mhs_ti', 'mhs_tk', 'mhs_fa'));
     }
   }
 }

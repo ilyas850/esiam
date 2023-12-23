@@ -54,11 +54,6 @@
                             <input type="file" class="form-control" name="file_ktp" required>
                             <span>File size max. 4mb dan format file .jpg</span>
                         </div>
-                        {{-- <div class="form-group">
-                            <label>File Foto</label>
-                            <input type="file" class="form-control" name="file_foto" required>
-                            <span>File size max. 4mb dan format file .jpg</span>
-                        </div> --}}
                     </div>
                     <div class="form-group">
                         <div class="box-footer">
@@ -132,22 +127,6 @@
                                         @elseif ($data->file_ktp != null)
                                             <a href="/File Yudisium/{{ $data->id_student }}/{{ $data->file_ktp }}"
                                                 target="_blank"> File KTP</a>
-                                        @endif
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-red"><i class="fa fa-files-o"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">File Foto</span>
-                                    <span class="info-box-number">
-                                        @if ($data->file_foto == null)
-                                            Belum ada
-                                        @elseif ($data->file_foto != null)
-                                            <a href="/File Yudisium/{{ $data->id_student }}/{{ $data->file_foto }}"
-                                                target="_blank"> File Foto</a>
                                         @endif
                                     </span>
                                 </div>

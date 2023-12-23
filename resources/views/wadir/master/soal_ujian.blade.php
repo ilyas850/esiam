@@ -44,7 +44,7 @@
                                 <center>Sifat Ujian</center>
                             </th>
                             <th>
-                                <center>Cetak</center>
+                                <center>Ket.</center>
                             </th>
                             <th>
                                 <center>Soal</center>
@@ -53,7 +53,7 @@
                                 <center>Sifat Ujian</center>
                             </th>
                             <th>
-                                <center>Cetak</center>
+                                <center>Ket.</center>
                             </th>
                         </tr>
                     </thead>
@@ -93,13 +93,19 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->tipe_ujian_uts }}</td>
-                                <td>{{ $item->cetak_soal_uts }}</td>
+                                <td>
+                                    @if ($item->komentar_uts == null)
+                                    @else
+                                        <a class="btn btn-danger btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentarUts{{ $item->id_soal }}">Komentar</a>
+                                    @endif
+                                </td>
                                 <td>
                                     <center>
                                         @if ($item->soal_uas == null)
                                             Belum
                                         @else
-                                            @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
+                                            @if ($item->validasi_uas == 'BELUM' or $item->validasi_uts == null)
                                                 <span class="badge bg-yellow"><i class="fa fa-close"></i></span>
                                                 <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
                                                     target="_blank" style="font: white"> File</a>
@@ -112,8 +118,48 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->tipe_ujian_uas }}</td>
-                                <td>{{ $item->cetak_soal_uas }}</td>
+                                <td>
+                                    @if ($item->komentar_uas == null)
+                                    @else
+                                        <a class="btn btn-danger btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentarUas{{ $item->id_soal }}">Komentar</a>
+                                    @endif
+                                </td>
                             </tr>
+                            <div class="modal fade" id="modalTambahKomentarUts{{ $item->id_soal }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentarUts" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="komentar_uts" cols="20" rows="10"> {{ $item->komentar_uts }} </textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalTambahKomentarUas{{ $item->id_soal }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentarUas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="komentar_uas" cols="20" rows="10"> {{ $item->komentar_uas }} </textarea>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

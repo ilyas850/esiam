@@ -7,26 +7,26 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Data Admin Prodi Politeknik META Industri</h3>
+                <h3 class="box-title">Data Gugus Mutu Prodi Politeknik META Industri</h3>
             </div>
             <div class="box-body">
                 <div class="row">
                     <div class="col-xs-2">
-                        <button type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#addpsi">
-                            <i class="fa fa-plus"></i> Input Data Admin Prodi
+                        <button type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#addgugusmutu">
+                            <i class="fa fa-plus"></i> Input Data Gugus Mutu Prodi
                         </button>
                     </div>
                 </div>
                 <br>
-                <div class="modal fade" id="addpsi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="addgugusmutu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
-                        <form method="post" action="{{ url('post_adminprodi') }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ url('post_gugusmutuprodi') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            <input type="hidden" name="role" value="9">
+                            <input type="hidden" name="role" value="12">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Admin Prodi</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Gugus Mutu Prodi</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
@@ -56,7 +56,6 @@
                         </form>
                     </div>
                 </div>
-
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -90,29 +89,24 @@
                                 <td>
                                     <center>
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
-                                            data-target="#modalUpdateAdminprodi{{ $key->id }}"
+                                            data-target="#modalUpdateGugusmutuprodi{{ $key->id }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                        <a href="/hapusadminprodi/{{ $key->id }}" class="btn btn-danger btn-xs"
+                                        <a href="/hapusgugusmutuprodi/{{ $key->id }}" class="btn btn-danger btn-xs"
                                             onclick="return confirm('apakah anda yakin akan menghapus user ini?')"><i
                                                 class="fa fa-trash"></i></a>
-                                        {{-- <form action="/hapususer/{{ $key->id }}" method="post">
-                    <button class="btn btn-danger btn-xs" title="klik untuk hapus" type="submit" name="submit" onclick="return confirm('apakah anda yakin akan menghapus user ini?')">Hapus</button>
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="DELETE">
-                  </form> --}}
                                     </center>
                                 </td>
                             </tr>
 
-                            <div class="modal fade" id="modalUpdateAdminprodi{{ $key->id }}" tabindex="-1"
-                                aria-labelledby="modalUpdateAdminprodi" aria-hidden="true">
+                            <div class="modal fade" id="modalUpdateGugusmutuprodi{{ $key->id }}" tabindex="-1"
+                                aria-labelledby="modalUpdateGugusmutuprodi" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">Update Kaprodi</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/put_adminprodi/{{ $key->id }}" method="post">
+                                            <form action="/put_gugusmutuprodi/{{ $key->id }}" method="post">
                                                 @csrf
                                                 @method('put')
                                                 <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">

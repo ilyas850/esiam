@@ -58,6 +58,7 @@
                 </ul>
             </li>
             <li><a href="{{ url('absen_ujian_mhs') }}"><i class="fa fa-circle-o"></i> <span>Absen Ujian</span></a>
+            <li><a href="{{ url('soal_ujian_mhs') }}"><i class="fa fa-circle-o"></i> <span>Soal Ujian</span></a>
             </li>
             <li class="treeview">
                 <a href="#">
@@ -140,9 +141,11 @@
             </li>
             <li><a href="{{ url('cuti_mhs') }}"><i class="fa fa-circle-o"></i> <span>Cuti</span></a>
             </li>
-            <li><a href="{{ url('mengundurkan_diri_mhs') }}"><i class="fa fa-circle-o"></i> <span>Mengundurkan Diri</span></a>
+            <li><a href="{{ url('mengundurkan_diri_mhs') }}"><i class="fa fa-circle-o"></i> <span>Mengundurkan
+                        Diri</span></a>
             </li>
-            <li><a href="{{ url('perpindahan_kelas_mhs') }}"><i class="fa fa-circle-o"></i> <span>Pindah Kelas</span></a>
+            <li><a href="{{ url('perpindahan_kelas_mhs') }}"><i class="fa fa-circle-o"></i> <span>Pindah
+                        Kelas</span></a>
             </li>
         </ul>
     </li>

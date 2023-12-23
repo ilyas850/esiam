@@ -15,7 +15,7 @@
                 <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
                 <input type="hidden" name="id_bap" value="{{ $id }}">
                 <div class="box-body">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="example5">
                         <thead>
                             <tr>
                                 <th>

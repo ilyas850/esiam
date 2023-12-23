@@ -97,7 +97,7 @@
                                 <td>
                                     <center>
                                         @if ($key->validasi == 'BELUM')
-                                            <a href="/val_bim_magang2_kprd/{{ $key->id_transbimb_prausta }}"
+                                            <a href="/val_bim_magang_kprd/{{ $key->id_transbimb_prausta }}"
                                                 class="btn btn-info btn-xs">Validasi</a>
                                         @elseif ($key->validasi == 'SUDAH')
                                             <span class="badge bg-blue">Sudah</span>

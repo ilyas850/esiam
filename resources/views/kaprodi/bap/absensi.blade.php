@@ -20,7 +20,7 @@
                             <p>Remark : Pilih sesuai aktual kehadiran</p>
                         </div>
                     </div>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="example5">
                         <thead>
                             <tr>
                                 <th>

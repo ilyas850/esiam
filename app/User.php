@@ -136,4 +136,13 @@ class User extends Authenticatable
             return false;
         }
     }
+
+    public function isGugusMutu()
+    {
+        if ($this->role == 12) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

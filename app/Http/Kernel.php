@@ -73,6 +73,7 @@ class Kernel extends HttpKernel
         'prausta' => \App\Http\Middleware\PraustaMiddleware::class,
         'bauk' => \App\Http\Middleware\BaukMiddleware::class,
         'wadir3' => \App\Http\Middleware\Wadir3Middleware::class,
+        'gugusmutu' => \App\Http\Middleware\GugusMutuMiddleware::class,
     ];
 
     /**

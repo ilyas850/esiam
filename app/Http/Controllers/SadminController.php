@@ -2854,10 +2854,72 @@ class SadminController extends Controller
 
     public function hapusadminprodi($id)
     {
-        $user = User::where('id', $id)->forceDelete();
+        User::where('id', $id)->forceDelete();
 
         Alert::success('', 'User berhasil dihapus')->autoclose(3500);
         return redirect('data_admin_prodi');
+    }
+
+    function data_gugusmutu_prodi()
+    {
+        $data = User::join('wrkpersonalia', 'users.id_user', '=', 'wrkpersonalia.idstaff')
+            ->where('users.role', 12)
+            ->get();
+
+        $staff = Wrkpersonalia::where('active', 1)
+            ->orderBy('nama', 'ASC')
+            ->get();
+
+        return view('sadmin/user/gugusmutuprodi', compact('data', 'staff'));
+    }
+
+    public function post_gugusmutuprodi(Request $request)
+    {
+        $role = $request->role;
+        $data = $request->id_user;
+        $usern = $request->username;
+        $pass = $request->password;
+
+        $user = explode(',', $data, 2);
+        $id1 = $user[0];
+        $id2 = $user[1];
+
+        $users = new User();
+        $users->id_user = $id1;
+        $users->name = $id2;
+        $users->username = $usern;
+        $users->role = $role;
+        $users->password = bcrypt($pass);
+        $users->save();
+
+        Alert::success('', 'Admin Prodi berhasil ditambahkan')->autoclose(3500);
+        return redirect('data_gugusmutu_prodi');
+    }
+
+    public function put_gugusmutuprodi(Request $request, $id)
+    {
+        $data = $request->id_user;
+        $usern = $request->username;
+
+        $user = explode(',', $data, 2);
+        $id1 = $user[0];
+        $id2 = $user[1];
+
+        $prd = User::find($id);
+        $prd->id_user = $id1;
+        $prd->name = $id2;
+        $prd->username = $usern;
+        $prd->save();
+
+        return redirect('data_gugusmutu_prodi');
+    }
+
+    public function hapusgugusmutuprodi($id)
+    {
+        User::where('id', $id)->forceDelete();
+
+        Alert::success('', 'User berhasil dihapus')->autoclose(3500);
+        return redirect('data_gugusmutu_prodi');
     }
 
     public function master_bom()
@@ -6454,41 +6516,16 @@ class SadminController extends Controller
 
     public function master_chart_akademik()
     {
-        $tahun = Periode_tahun::select('periode_tahun')
-            ->limit(5)
-            ->orderBy('periode_tahun', 'DESC')
-            ->get();
+        $dataTRPL = DB::Select('CALL mhsAktifTrplPerTa');
 
-        $dataArray = DB::select('CALL periode_tahun');
+        $dataTI = DB::Select('CALL mhsAktifTiPerTa');
 
+        $dataFA = DB::Select('CALL mhsAktifFaPerTa');
 
-        // dd($dataArray[0]->periode_tahun);
+        $tahun = DB::select('CALL periode_tahun');
 
-        $periodeTahunArray = array_map(function ($item) {
-            return $item->periode_tahun;
-        }, $dataArray);
-
-        $periodeTahunString = implode(', ', $periodeTahunArray);
-
-        // dd($periodeTahunString);
-
-        $elemen = explode(', ', $periodeTahunString);
-
-        // Mengelilingi masing-masing elemen dengan tanda kutip tunggal
-        $elemenDenganTandaKutip = array_map(function ($item) {
-            return "'" . $item . "'";
-        }, $elemen);
-
-        // Menggabungkan elemen-elemen yang telah dikelilingi tanda kutip
-        $barisHasilTahun = implode(', ', $elemenDenganTandaKutip);
-
-        $labelsArray = explode(', ', $barisHasilTahun);
-
-        $labelsJSON = json_encode($labelsArray);
-
-        return view('sadmin/masterakademik/master_chart_akademik', compact('barisHasilTahun', 'dataArray', 'labelsJSON', 'periodeTahunString'));
+        return view('sadmin/masterakademik/master_chart_akademik', compact('tahun', 'dataTRPL', 'dataTI', 'dataFA'));
     }
-
 
     public function input_nilai_mhs_admin()
     {

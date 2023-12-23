@@ -50,7 +50,6 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/AdminLTE.min.css') }}">
 
-
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -76,31 +75,22 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-    <!-- Site wrapper -->
     <div class="wrapper">
         <header class="main-header">
-            <!-- Logo -->
             <a href="/" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>M</b>IP</span>
-                <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Politeknik</b> META Industri</span>
             </a>
-            <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top">
-                <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Messages: style can be found in dropdown.less-->
                         @yield('notif_user')
-                        <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 @if (Auth::user()->role == 3)
@@ -110,7 +100,6 @@
                                     <img src="{{ asset('adminlte/img/default.jpg') }}" class="user-image"
                                         alt="User Image">
                                 @endif
-
                                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
                             </a>
                             <ul class="dropdown-menu">
@@ -333,12 +322,10 @@
                                 @endif
                             </ul>
                         </li>
-
                     </ul>
                 </div>
             </nav>
         </header>
-
         <aside class="main-sidebar">
             <section class="sidebar">
                 <div class="user-panel">
@@ -361,20 +348,15 @@
         @include('sweetalert::alert')
         <div class="content-wrapper">
             @yield('content_header')
-
             @yield('content')
-
         </div>
-
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-
             </div>
             <strong>Copyright &copy; 2020-2023 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
             rights
             reserved.
         </footer>
-
     </div>
 
     <!-- jQuery 3 -->
@@ -518,7 +500,6 @@
                 'ordering': true,
                 'info': false,
                 'autoWidth': false
-
             });
         });
 

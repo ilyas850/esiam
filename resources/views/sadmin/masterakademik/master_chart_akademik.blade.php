@@ -7,15 +7,12 @@
 @section('content')
     <section class="content">
         <div class="row">
-            <div class="col-md-6">
-                <!-- BAR CHART -->
+            <div class="col-md-12">
                 <div class="box box-success">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Mahasiswa KRS</h3>
-
+                        <h3 class="box-title">Mahasiswa Aktif (KRS)</h3>
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                    class="fa fa-minus"></i>
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                             <button type="button" class="btn btn-box-tool" data-widget="remove"><i
                                     class="fa fa-times"></i></button>
@@ -23,21 +20,21 @@
                     </div>
                     <div class="box-body">
                         <div class="chart">
-                            <canvas id="barChart" style="height:230px"></canvas>
+                            <canvas id="barChart" style="height:250px"></canvas>
                         </div>
                     </div>
                 </div>
-                
-                
             </div>
-            <div class="col-md-6">
-                <!-- AREA CHART -->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Mahasiswa Tidak KRS</h3>
 
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
                             </button>
                             <button type="button" class="btn btn-box-tool" data-widget="remove"><i
                                     class="fa fa-times"></i></button>
@@ -49,43 +46,23 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- DONUT CHART -->
-                <div class="box box-danger">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Donut Chart</h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                    class="fa fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                    class="fa fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="box-body">
-                        <canvas id="pieChart" style="height:250px"></canvas>
-                    </div>
-                </div>
-
             </div>
-            <!-- /.col (LEFT) -->
-            
         </div>
     </section>
     <script>
         $(function() {
-            //--------------
-            //- AREA CHART -
-            //--------------
-
-            // Get context with jQuery - using jQuery's .get() method.
             var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
             // This will get the first returned node in the jQuery collection.
             var areaChart = new Chart(areaChartCanvas)
 
             var areaChartData = {
-                labels: ['{{$dataArray[0]->periode_tahun}}', '{{$dataArray[1]->periode_tahun}}', '{{$dataArray[2]->periode_tahun}}', '{{$dataArray[3]->periode_tahun}}', '{{$dataArray[4]->periode_tahun}}'],
-            
+                labels: ['{{ $tahun[0]->periode_tahun }}', '{{ $tahun[1]->periode_tahun }}',
+                    '{{ $tahun[2]->periode_tahun }}', '{{ $tahun[3]->periode_tahun }}',
+                    '{{ $tahun[4]->periode_tahun }}', '{{ $tahun[5]->periode_tahun }}',
+                    '{{ $tahun[6]->periode_tahun }}', '{{ $tahun[7]->periode_tahun }}'
+
+                ],
+
                 datasets: [{
                         label: 'TRPL',
                         fillColor: 'rgba(43, 191, 254)',
@@ -94,7 +71,11 @@
                         pointStrokeColor: '#00BFFF',
                         pointHighlightFill: '#fff',
                         pointHighlightStroke: 'rgba(43, 191, 254)',
-                        data: [65, 59, 80, 81, 56]
+                        data: ['{{ $dataTRPL[0]->jml_trpl }}', '{{ $dataTRPL[1]->jml_trpl }}',
+                            '{{ $dataTRPL[2]->jml_trpl }}', '{{ $dataTRPL[3]->jml_trpl }}',
+                            '{{ $dataTRPL[4]->jml_trpl }}', '{{ $dataTRPL[5]->jml_trpl }}',
+                            '{{ $dataTRPL[6]->jml_trpl }}', '{{ $dataTRPL[7]->jml_trpl }}'
+                        ]
                     },
                     {
                         label: 'Farmasi',
@@ -104,9 +85,12 @@
                         pointStrokeColor: 'rgba(250, 69, 1)',
                         pointHighlightFill: '#fff',
                         pointHighlightStroke: 'rgba(250, 69, 1)',
-                        data: [28, 48, 40, 19, 86]
+                        data: ['{{ $dataFA[0]->jml_fa }}', '{{ $dataFA[1]->jml_fa }}',
+                            '{{ $dataFA[2]->jml_fa }}', '{{ $dataFA[3]->jml_fa }}',
+                            '{{ $dataFA[4]->jml_fa }}', '{{ $dataFA[5]->jml_fa }}',
+                            '{{ $dataFA[6]->jml_fa }}', '{{ $dataFA[7]->jml_fa }}'
+                        ]
                     },
-                    
                     {
                         label: 'Teknik Industri',
                         fillColor: 'rgba(250, 69, 1)',
@@ -115,12 +99,14 @@
                         pointStrokeColor: 'rgba(60,141,188,1)',
                         pointHighlightFill: '#fff',
                         pointHighlightStroke: 'rgba(60,141,188,1)',
-                        data: [58, 38, 10, 12, 66]
+                        data: ['{{ $dataTI[0]->jml_ti }}', '{{ $dataTI[1]->jml_ti }}',
+                            '{{ $dataTI[2]->jml_ti }}', '{{ $dataTI[3]->jml_ti }}',
+                            '{{ $dataTI[4]->jml_ti }}', '{{ $dataTI[5]->jml_ti }}',
+                            '{{ $dataTI[6]->jml_ti }}', '{{ $dataTI[7]->jml_ti }}'
+                        ]
                     }
                 ]
-            }           
-
-            
+            }
 
             //-------------
             //- BAR CHART -
@@ -158,7 +144,6 @@
                 responsive: true,
                 maintainAspectRatio: true
             }
-
             barChartOptions.datasetFill = false
             barChart.Bar(barChartData, barChartOptions)
         })

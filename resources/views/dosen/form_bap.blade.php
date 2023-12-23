@@ -21,7 +21,67 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id_kurperiode" value="{{ $id }}">
                 <div class="box-body">
+                    {{-- <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="table">
+                                        <table class="table border-collapse">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Pertemuan</th>
+                                                    <th>Kemampuan Akhir yang Direncanakan</th>
+                                                    <th>Materi Pembelajaran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($rps as $item)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="radio" name="id_rps" value="{{ $item->id_rps }}"
+                                                                required>
+                                                        </td>
+                                                        <td>Pertemuan Ke - {{ $item->pertemuan }}</td>
+                                                        <td>{{ $item->kemampuan_akhir_direncanakan }}</td>
+                                                        <td>{{ $item->materi_pembelajaran }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
                     <div class="col-md-12">
+                        {{-- <div class="form-group">
+                            <input type="hidden" id="selectedRpsId" name="id_rps">
+                            <div class="col-md-2">
+                                <label>
+                                    <font color="red-text">*</font>Pilih RPS
+                                </label><br>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#modalPilihRps"><i
+                                        class="fa fa-check" title="Klik untuk upload soal uas"></i>
+                                    Pilih RPS</button>
+                            </div>
+                            <div class="col-md-5">
+                                <label>
+                                    <font color="red-text">*</font>Kemampuan Akhir Direncanakan
+                                </label>
+                                <textarea id="kemampuanAkhir" class="form-control pull-right" name="kemampuan_akhir_direncanakan" rows="3"
+                                    readonly></textarea>
+                            </div>
+                            <div class="col-md-5">
+                                <label>
+                                    <font color="red-text">*</font>Materi Pembelajaran
+                                </label>
+                                <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly></textarea>
+                            </div>
+                        </div> --}}
+
                         <div class="form-group">
                             <div class="col-md-3">
                                 <label>
@@ -33,22 +93,6 @@
                                         <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}
                                         </option>
                                     @endforeach
-                                    {{-- <option value="1">Pertemuan Ke-1</option>
-                                    <option value="2">Pertemuan Ke-2</option>
-                                    <option value="3">Pertemuan Ke-3</option>
-                                    <option value="4">Pertemuan Ke-4</option>
-                                    <option value="5">Pertemuan Ke-5</option>
-                                    <option value="6">Pertemuan Ke-6</option>
-                                    <option value="7">Pertemuan Ke-7</option>
-                                    <option value="8">Pertemuan Ke-8</option>
-                                    <option value="9">Pertemuan Ke-9</option>
-                                    <option value="10">Pertemuan Ke-10</option>
-                                    <option value="11">Pertemuan Ke-11</option>
-                                    <option value="12">Pertemuan Ke-12</option>
-                                    <option value="13">Pertemuan Ke-13</option>
-                                    <option value="14">Pertemuan Ke-14</option>
-                                    <option value="15">Pertemuan Ke-15</option>
-                                    <option value="16">Pertemuan Ke-16</option> --}}
                                 </select>
                                 @if ($errors->has('pertemuan'))
                                     <span class="help-block">
@@ -205,4 +249,17 @@
             </form>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function() {
+            // Menangkap perubahan pada elemen radio button di modal
+            $('input[name="id_rps"]').change(function() {
+                // Memperbarui nilai textarea di form dengan data yang dipilih
+                var selectedRps = $('input[name="id_rps"]:checked');
+                $('#kemampuanAkhir').val(selectedRps.closest('tr').find('td:nth-child(3)').text());
+                $('#materiPembelajaran').val(selectedRps.closest('tr').find('td:nth-child(4)').text());
+                $('#selectedRpsId').val(selectedRps.val());
+            });
+        });
+    </script>
 @endsection

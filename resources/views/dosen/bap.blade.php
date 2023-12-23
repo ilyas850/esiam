@@ -60,7 +60,10 @@
                             <th rowspan="2">
                                 <center>Praktikum</center>
                             </th>
-                            <th colspan="3">
+                            {{-- <th rowspan="2">
+                                <center>Kesesuaian RPS</center>
+                            </th> --}}
+                            <th colspan="2">
                                 <center>Kuliah</center>
                             </th>
                             <th rowspan="2">
@@ -83,10 +86,6 @@
                             <th>
                                 <center>Jenis</center>
                             </th>
-                            <th>
-                                <center>Metode</center>
-                            </th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -99,21 +98,31 @@
                                     <center>{{ Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->jam_mulai }} - {{ $item->jam_selsai }}</center>
+                                    <center>
+                                        {{ Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }} -
+                                        {{ Carbon\Carbon::parse($item->jam_selsai)->format('H:i') }}
+                                    </center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->kurang_jam }}</center>
+                                    <center>
+                                        {{ Carbon\Carbon::parse($item->kurang_jam)->format('H:i') }}
+                                    </center>
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
                                 <td>{{ $item->praktikum }}</td>
+                                {{-- <td align="center"><b>
+                                        @if ($item->kesesuaian_rps == 'SESUAI')
+                                            <span>&#10003;</span>
+                                        @elseif($item->kesesuaian_rps == 'TIDAK SESUAI')
+                                            <span>&#10007;</span>
+                                        @endif
+                                    </b>
+                                </td> --}}
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $item->jenis_kuliah }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->metode_kuliah }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $item->hadir }} / {{ $item->tidak_hadir }}</center>

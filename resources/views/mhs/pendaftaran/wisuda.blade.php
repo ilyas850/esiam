@@ -28,7 +28,6 @@
                         <form action="{{ url('save_wisuda') }}" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <input type="hidden" name="id_student" value="{{ $id }}">
-
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -66,13 +65,6 @@
                                     <div class="form-group">
                                         <label>Email</label>
                                         <input type="email" class="form-control" name="email" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>NIK</label>
-                                        <input name="nik" class="form-control" type="number" required>
-
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -168,8 +160,8 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>File Vaksin</label>
-                                        <input type="file" class="form-control" name="file_vaksin" required>
+                                        <label>File Foto</label>
+                                        <input type="file" class="form-control" name="file_foto" required>
                                         <span>File size max. 4mb dan format file .jpg .png .pdf </span>
                                     </div>
                                 </div>
@@ -216,12 +208,6 @@
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input type="email" class="form-control" value="{{ $data->email }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>NIK</label>
-                                    <input value="{{ $data->nik }}" class="form-control" type="number" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -312,13 +298,13 @@
                                 <div class="info-box">
                                     <span class="info-box-icon bg-red"><i class="fa fa-files-o"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">File Vaksin</span>
+                                        <span class="info-box-text">File Foto</span>
                                         <span class="info-box-number">
-                                            @if ($data->file_vaksin == null)
+                                            @if ($data->file_foto == null)
                                                 Belum ada
-                                            @elseif ($data->file_vaksin != null)
-                                                <a href="/File Vaksin/{{ $data->id_student }}/{{ $data->file_vaksin }}"
-                                                    target="_blank"> File Vaksin</a>
+                                            @elseif ($data->file_foto != null)
+                                                <a href="/File Wisuda/{{ $data->id_student }}/{{ $data->file_foto }}"
+                                                    target="_blank"> File Foto</a>
                                             @endif
                                         </span>
                                     </div>
@@ -424,13 +410,6 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>NIK</label>
-                                                        <input value="{{ $data->nik }}" class="form-control"
-                                                            type="number" name="nik" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
                                                         <label>NPWP</label>
                                                         <input value="{{ $data->npwp }}" class="form-control"
                                                             type="number" name="npwp" required>
@@ -473,7 +452,6 @@
                                                         <label>No. HP Ayah</label>
                                                         <input value="{{ $data->no_hp_ayah }}" class="form-control"
                                                             type="number" name="no_hp_ayah" required>
-
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -529,15 +507,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="form-group">
-                                                <label>File Vaksin</label>
-                                                <input type="file" class="form-control" name="file_vaksin"
-                                                    value="{{ $data->file_vaksin }}">
-                                                {{ $data->file_vaksin }} <br>
+                                                <label>File Foto</label>
+                                                <input type="file" class="form-control" name="file_foto"
+                                                    value="{{ $data->file_foto }}">
+                                                {{ $data->file_foto }} <br>
                                                 <span>File size max. 4mb dan format file .jpg .png .pdf </span>
                                             </div>
-
                                             <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                         </form>
                                     </div>
@@ -551,8 +527,5 @@
                 </div>
             </div>
         </div>
-
     </section>
-
-
 @endsection

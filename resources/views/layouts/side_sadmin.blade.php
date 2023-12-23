@@ -96,10 +96,11 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="/show_user"><i class="fa fa-circle-o"></i> User Mahasiswa</a></li>
-            <li><a href="/data_admin"><i class="fa fa-circle-o"></i> User Dosen Dalam</a></li>
-            <li><a href="/data_dosen_luar"><i class="fa fa-circle-o"></i> User Dosen Luar</a></li>
-            <li><a href="/data_admin_prodi"><i class="fa fa-circle-o"></i> User Admin Prodi</a></li>
+            <li><a href="{{ url('show_user') }}"><i class="fa fa-circle-o"></i> User Mahasiswa</a></li>
+            <li><a href="{{ url('data_admin') }}"><i class="fa fa-circle-o"></i> User Dosen Dalam</a></li>
+            <li><a href="{{ url('data_dosen_luar') }}"><i class="fa fa-circle-o"></i> User Dosen Luar</a></li>
+            <li><a href="{{ url('data_admin_prodi') }}"><i class="fa fa-circle-o"></i> User Admin Prodi</a></li>
+            <li><a href="{{ url('data_gugusmutu_prodi') }}"><i class="fa fa-circle-o"></i> User Gugus Mutu</a></li>
             <li><a href="{{ url('user_microsoft') }}"><i class="fa fa-circle-o"></i>User Microsoft</a></li>
         </ul>
     </li>

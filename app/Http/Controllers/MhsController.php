@@ -1558,99 +1558,42 @@ class MhsController extends Controller
 
     public function jdl_uts()
     {
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $id_mhs = Auth::user()->id_user;
+        $data_mhs = Student::where('student.idstudent', $id_mhs)
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->select('student.idstatus', 'prodi.id_prodi')
+            ->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-        $id_prd = Auth::user()->username;
-        $mhs = Student::where('nim', $id_prd)->get();
-        foreach ($mhs as $keymhs) {
-            // code...
-        }
-        $prodi = $keymhs->kodeprodi;
-        $prd = Prodi::where('kodeprodi', $prodi)->get();
-        foreach ($prd as $keyprd) {
-            // code...
-        }
-        $makul = Matakuliah::all();
-        $ruang = Ruangan::all();
-        $jam = Kurikulum_jam::all();
-        $uts = Ujian_transaction::where('ujian_transaction.id_periodetahun', $tahun->id_periodetahun)
-            ->where('ujian_transaction.id_periodetipe', $tipe->id_periodetipe)
-            ->where('ujian_transaction.id_prodi', $keyprd->id_prodi)
-            ->where('ujian_transaction.id_kelas', $keymhs->idstatus)
-            ->where('ujian_transaction.jenis_ujian', 'UTS')
-            //->where('student_record.id_student', $keymhs->idstudent)
-            // ->where('student_record.status', 'TAKEN')
-            // ->select('ujian_transaction.tanggal_ujian')
-            ->get();
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->where('student_record.id_student', $keymhs->idstudent)
-            ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-            ->where('student_record.status', 'TAKEN')
-            //->join('ujian_transaction', 'kurikulum_periode.id_makul', '=', 'ujian_transaction.id_makul')
-            ->select('kurikulum_periode.id_makul', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan')
-            ->orderBy('kurikulum_periode.id_hari', 'ASC')
-            ->get();
+        $jadwal_uts = DB::select('CALL jadwal_uts_uas_mhs(?,?,?,?,?,?)', ['UTS', $thn->id_periodetahun, $tp->id_periodetipe, $data_mhs->id_prodi, $data_mhs->idstatus, $id_mhs]);
 
-        return view('mhs/jadwal_uts', ['record' => $record, 'uts' => $uts, 'mk' => $makul, 'rng' => $ruang, 'jam' => $jam]);
+        return view('mhs/jadwal_uts', compact('jadwal_uts'));
     }
 
     public function jdl_uas()
     {
-        $thn = Periode_tahun::where('status', 'ACTIVE')->get();
-        foreach ($thn as $tahun) {
-            // code...
-        }
+        $id_mhs = Auth::user()->id_user;
+        $data_mhs = Student::where('student.idstudent', $id_mhs)
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->select('student.idstatus', 'prodi.id_prodi')
+            ->first();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->get();
-        foreach ($tp as $tipe) {
-            // code...
-        }
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
 
-        $id_prd = Auth::user()->username;
-        $mhs = Student::where('nim', $id_prd)->get();
-        foreach ($mhs as $keymhs) {
-            // code...
-        }
-        $prodi = $keymhs->kodeprodi;
-        $prd = Prodi::where('kodeprodi', $prodi)->get();
-        foreach ($prd as $keyprd) {
-            // code...
-        }
-        $makul = Matakuliah::all();
-        $ruang = Ruangan::all();
-        $jam = Kurikulum_jam::all();
-        $uts = Ujian_transaction::where('ujian_transaction.id_periodetahun', $tahun->id_periodetahun)
-            ->where('ujian_transaction.id_periodetipe', $tipe->id_periodetipe)
-            ->where('ujian_transaction.id_prodi', $keyprd->id_prodi)
-            ->where('ujian_transaction.id_kelas', $keymhs->idstatus)
-            ->where('ujian_transaction.jenis_ujian', 'UAS')
-            ->get();
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->where('student_record.id_student', $keymhs->idstudent)
-            ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
-            ->where('student_record.status', 'TAKEN')
-            //->join('ujian_transaction', 'kurikulum_periode.id_makul', '=', 'ujian_transaction.id_makul')
-            ->select('kurikulum_periode.id_makul', 'kurikulum_periode.id_hari', 'kurikulum_periode.id_jam', 'kurikulum_periode.id_ruangan')
-            ->orderBy('kurikulum_periode.id_hari', 'ASC')
-            ->get();
+        $jadwal_uas = DB::select('CALL jadwal_uts_uas_mhs(?,?,?,?,?,?)', ['UAS', $thn->id_periodetahun, $tp->id_periodetipe, $data_mhs->id_prodi, $data_mhs->idstatus, $id_mhs]);
 
-        return view('mhs/jadwal_uas', ['record' => $record, 'uts' => $uts, 'mk' => $makul, 'rng' => $ruang, 'jam' => $jam]);
+        return view('mhs/jadwal_uas', compact('jadwal_uas'));
     }
 
     public function pedoman_akademik()
@@ -3837,7 +3780,6 @@ class MhsController extends Controller
                 'id_prodi'          => 'required',
                 'no_hp'             => 'required',
                 'email'             => 'required',
-                'nik'               => 'required',
                 'npwp'              => 'required',
                 'alamat_ktp'        => 'required',
                 'alamat_domisili'   => 'required',
@@ -3845,7 +3787,7 @@ class MhsController extends Controller
                 'nama_ibu'          => 'required',
                 'no_hp_ayah'        => 'required',
                 'alamat_ortu'       => 'required',
-                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
+                'file_foto'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
             ],
             $message,
         );
@@ -3860,7 +3802,6 @@ class MhsController extends Controller
         $bap->id_prodi          = $request->id_prodi;
         $bap->no_hp             = $request->no_hp;
         $bap->email             = $request->email;
-        $bap->nik               = $request->nik;
         $bap->npwp              = $request->npwp;
         $bap->alamat_ktp        = $request->alamat_ktp;
         $bap->alamat_domisili   = $request->alamat_domisili;
@@ -3870,12 +3811,12 @@ class MhsController extends Controller
         $bap->no_hp_ibu         = $request->no_hp_ibu;
         $bap->alamat_ortu       = $request->alamat_ortu;
 
-        if ($request->hasFile('file_vaksin')) {
-            $file = $request->file('file_vaksin');
-            $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
-            $tujuan_upload = 'File Vaksin/' . $request->id_student;
+        if ($request->hasFile('file_foto')) {
+            $file = $request->file('file_foto');
+            $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+            $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
             $file->move($tujuan_upload, $nama_file);
-            $bap->file_vaksin = $nama_file;
+            $bap->file_foto = $nama_file;
         }
 
         $bap->save();
@@ -3901,7 +3842,6 @@ class MhsController extends Controller
                 'id_prodi'          => 'required',
                 'no_hp'             => 'required',
                 'email'             => 'required',
-                'nik'               => 'required',
                 'npwp'              => 'required',
                 'alamat_ktp'        => 'required',
                 'alamat_domisili'   => 'required',
@@ -3909,7 +3849,7 @@ class MhsController extends Controller
                 'nama_ibu'          => 'required',
                 'no_hp_ayah'        => 'required',
                 'alamat_ortu'       => 'required',
-                'file_vaksin'       => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+                'file_foto'         => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
             ],
             $message,
         );
@@ -3924,7 +3864,7 @@ class MhsController extends Controller
         $bap->id_prodi          = $request->id_prodi;
         $bap->no_hp             = $request->no_hp;
         $bap->email             = $request->email;
-        $bap->nik               = $request->nik;
+        // $bap->nik               = $request->nik;
         $bap->npwp              = $request->npwp;
         $bap->alamat_ktp        = $request->alamat_ktp;
         $bap->alamat_domisili   = $request->alamat_domisili;
@@ -3934,22 +3874,22 @@ class MhsController extends Controller
         $bap->no_hp_ibu         = $request->no_hp_ibu;
         $bap->alamat_ortu       = $request->alamat_ortu;
 
-        if ($bap->file_vaksin) {
-            if ($request->hasFile('file_vaksin')) {
-                File::delete('File Vaksin/' . Auth::user()->id_user . '/' . $bap->file_vaksin);
-                $file = $request->file('file_vaksin');
-                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Vaksin/' . Auth::user()->id_user;
+        if ($bap->file_foto) {
+            if ($request->hasFile('file_foto')) {
+                File::delete('File Wisuda/' . Auth::user()->id_user . '/' . $bap->file_foto);
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
                 $file->move($tujuan_upload, $nama_file);
-                $bap->file_vaksin = $nama_file;
+                $bap->file_foto = $nama_file;
             }
         } else {
-            if ($request->hasFile('file_vaksin')) {
-                $file = $request->file('file_vaksin');
-                $nama_file = 'File Vaksin' .  '-' . $file->getClientOriginalName();
-                $tujuan_upload = 'File Vaksin/' . Auth::user()->id_user;
+            if ($request->hasFile('file_foto')) {
+                $file = $request->file('file_foto');
+                $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
                 $file->move($tujuan_upload, $nama_file);
-                $bap->file_vaksin = $nama_file;
+                $bap->file_foto = $nama_file;
             }
         }
 
@@ -5355,6 +5295,37 @@ class MhsController extends Controller
 
         Alert::success('', 'Pengajuan berhasil disimpan')->autoclose(3500);
         return redirect()->back();
+    }
+
+    function soal_ujian_mhs()
+    {
+        $id = Auth::user()->id_user;
+
+        $datamhs = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->where('student.idstudent', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'kelas.kelas',
+                'prodi.prodi',
+                'student.idangkatan',
+                'student.idstatus',
+                'student.kodeprodi',
+                'prodi.id_prodi',
+                'student.intake'
+            )
+            ->first();
+
+        $periode_tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periode_tipe = Periode_tipe::where('status', 'ACTIVE')->first();
+
+        $soal_ujian = DB::select('CALL soal_ujian_uts_uas_mhs(?,?,?,?,?)', [$periode_tahun->id_periodetahun, $periode_tipe->id_periodetipe, $datamhs->id_prodi, $datamhs->idstatus, $id]);
+
+        return view('mhs/ujian/soal_ujian', compact('datamhs', 'periode_tahun', 'periode_tipe', 'soal_ujian'));
     }
 
     public function kuisioner_mahasiswa()
