@@ -122,7 +122,12 @@
                                         <textarea type="text" class="form-control" name="alamat_ortu" rows="3" required> </textarea>
                                     </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tempat Bekerja saat ini</label>
+                                        <input type="text" class="form-control" name="tempat_kerja" required>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
@@ -162,7 +167,7 @@
                                     <div class="form-group">
                                         <label>File Foto</label>
                                         <input type="file" class="form-control" name="file_foto" required>
-                                        <span>File size max. 4mb dan format file .jpg .png .pdf </span>
+                                        <span>File size max. 4mb dan format file .jpg .png </span>
                                     </div>
                                 </div>
                             </div>
@@ -263,6 +268,13 @@
                                 <div class="form-group">
                                     <label>Alamat Orang tua</label>
                                     <textarea type="text" class="form-control" rows="3" readonly>{{ $data->alamat_ortu }} </textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tempat Bekerja saat ini</label>
+                                    <input type="text" class="form-control" value="{{ $data->tempat_kerja }}"
+                                        readonly>
                                 </div>
                             </div>
                         </div>
@@ -471,6 +483,16 @@
                                                 </div>
                                             </div>
                                             <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Tempat Kerja saat ini</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $data->tempat_kerja }}" name="tempat_kerja"
+                                                            required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Ukuran Toga</label>
@@ -512,7 +534,7 @@
                                                 <input type="file" class="form-control" name="file_foto"
                                                     value="{{ $data->file_foto }}">
                                                 {{ $data->file_foto }} <br>
-                                                <span>File size max. 4mb dan format file .jpg .png .pdf </span>
+                                                <span>File size max. 4mb dan format file .jpg .png </span>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Perbarui Data</button>
                                         </form>

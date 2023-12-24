@@ -10,6 +10,8 @@
                 <h3 class="box-title">Data Wisuda Mahasiswa Politeknik META Industri</h3>
             </div>
             <div class="box-body">
+                <a href="{{ url('export_data_wisuda_admin') }}" class="btn btn-success">Export Excel</a>
+                <br><br>
                 <table id="example8" class="table">
                     <thead>
                         <tr>
@@ -21,8 +23,8 @@
                             <th>Program Studi</th>
                             <th>No. HP</th>
                             <th>E-mail</th>
-                            <th>NIK</th>
                             <th>NPWP</th>
+                            <th>Tempat Kerja</th>
                             <th>Alamat KTP</th>
                             <th>Alamat Domisili</th>
                             <th>Nama Ayah</th>
@@ -31,7 +33,7 @@
                             <th>No. HP Ibu</th>
                             <th>Alamat Ortu</th>
                             <th>Status Vaksin</th>
-                            <th>File Vaksin</th>
+                            <th>Foto</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -47,8 +49,8 @@
                                 <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->no_hp }}</td>
                                 <td>{{ $item->email }}</td>
-                                <td>{{ $item->nik }}</td>
                                 <td>{{ $item->npwp }}</td>
+                                <td>{{ $item->tempat_kerja }}</td>
                                 <td>{{ $item->alamat_ktp }}</td>
                                 <td>{{ $item->alamat_domisili }}</td>
                                 <td>{{ $item->nama_ayah }}</td>
@@ -57,8 +59,10 @@
                                 <td>{{ $item->no_hp_ibu }}</td>
                                 <td>{{ $item->alamat_ortu }}</td>
                                 <td>{{ $item->status_vaksin }}</td>
-                                <td><a href="/File Vaksin/{{ $item->id_student }}/{{ $item->file_vaksin }}" target="_blank">
-                                        File Vaksin</a></td>
+                                <td>
+                                    <a href="/File Wisuda/{{ $item->id_student }}/{{ $item->file_foto }}" target="_blank">
+                                        File </a>
+                                </td>
                                 <td>
                                     <button class="btn btn-success btn-xs" data-toggle="modal"
                                         data-target="#modalUpdateWisuda{{ $item->id_wisuda }}" title="klik untuk edit"><i

@@ -3787,7 +3787,8 @@ class MhsController extends Controller
                 'nama_ibu'          => 'required',
                 'no_hp_ayah'        => 'required',
                 'alamat_ortu'       => 'required',
-                'file_foto'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
+                'tempat_kerja'       => 'required',
+                'file_foto'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
             ],
             $message,
         );
@@ -3810,6 +3811,7 @@ class MhsController extends Controller
         $bap->no_hp_ayah        = $request->no_hp_ayah;
         $bap->no_hp_ibu         = $request->no_hp_ibu;
         $bap->alamat_ortu       = $request->alamat_ortu;
+        $bap->tempat_kerja       = $request->tempat_kerja;
 
         if ($request->hasFile('file_foto')) {
             $file = $request->file('file_foto');
@@ -3849,7 +3851,8 @@ class MhsController extends Controller
                 'nama_ibu'          => 'required',
                 'no_hp_ayah'        => 'required',
                 'alamat_ortu'       => 'required',
-                'file_foto'         => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png,PDF,pdf|max:4000'
+                'tempat_kerja'       => 'required',
+                'file_foto'         => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
             ],
             $message,
         );
@@ -3873,6 +3876,7 @@ class MhsController extends Controller
         $bap->no_hp_ayah        = $request->no_hp_ayah;
         $bap->no_hp_ibu         = $request->no_hp_ibu;
         $bap->alamat_ortu       = $request->alamat_ortu;
+        $bap->tempat_kerja       = $request->tempat_kerja;
 
         if ($bap->file_foto) {
             if ($request->hasFile('file_foto')) {

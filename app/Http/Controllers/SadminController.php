@@ -81,6 +81,7 @@ use App\Imports\ImportMicrosoftUser;
 use App\Exports\DataMhsAllExport;
 use App\Exports\DataMhsExport;
 use App\Exports\DataYudisiumExcel;
+use App\Exports\DataWisudaExcel;
 use App\Ujian_transaction;
 use App\Wisuda;
 use Illuminate\Http\Request;
@@ -4510,7 +4511,8 @@ class SadminController extends Controller
         return view('sadmin/masterakademik/master_yudisium', compact('data'));
     }
 
-    function export_data_yudisium_admin() {
+    function export_data_yudisium_admin()
+    {
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tahun = $thn->periode_tahun;
 
@@ -4681,10 +4683,48 @@ class SadminController extends Controller
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.active', 1)
-            ->select('wisuda.id_wisuda', 'wisuda.nama_lengkap', 'wisuda.nim', 'wisuda.tahun_lulus', 'wisuda.ukuran_toga', 'wisuda.no_hp', 'wisuda.email', 'wisuda.nik', 'wisuda.alamat_ktp', 'wisuda.alamat_domisili', 'wisuda.nama_ayah', 'wisuda.nama_ibu', 'wisuda.no_hp_ayah', 'wisuda.no_hp_ibu', 'wisuda.alamat_ortu', 'wisuda.status_vaksin', 'wisuda.file_vaksin', 'wisuda.npwp', 'wisuda.validasi', 'wisuda.id_student', 'wisuda.id_prodi', 'prodi.prodi', 'kelas.kelas')
+            ->select(
+                'wisuda.id_wisuda',
+                'wisuda.nama_lengkap',
+                'wisuda.nim',
+                'wisuda.tahun_lulus',
+                'wisuda.ukuran_toga',
+                'wisuda.no_hp',
+                'wisuda.email',
+                'wisuda.nik',
+                'wisuda.alamat_ktp',
+                'wisuda.alamat_domisili',
+                'wisuda.nama_ayah',
+                'wisuda.nama_ibu',
+                'wisuda.no_hp_ayah',
+                'wisuda.no_hp_ibu',
+                'wisuda.alamat_ortu',
+                'wisuda.status_vaksin',
+                'wisuda.file_foto',
+                'wisuda.npwp',
+                'wisuda.validasi',
+                'wisuda.id_student',
+                'wisuda.id_prodi',
+                'prodi.prodi',
+                'kelas.kelas',
+                'wisuda.tempat_kerja'
+            )
             ->get();
 
         return view('sadmin/masterakademik/master_wisuda', compact('data', 'prodi'));
+    }
+
+    function export_data_wisuda_admin() {
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tahun = $thn->periode_tahun;
+
+        $ganti = str_replace("/", "_", $tahun);
+
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $tipe = $tp->periode_tipe;
+
+        $nama_file = 'Data Wisuda ' . '' . $ganti . ' ' . $tipe . '.xlsx';
+        return Excel::download(new DataWisudaExcel, $nama_file);
     }
 
     public function saveedit_wisuda(Request $request, $id)
