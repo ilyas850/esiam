@@ -329,27 +329,30 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('download_kuisioner_perpus', 'SadminController@download_kuisioner_perpus');
     Route::post('download_detail_kuisioner_perpus', 'SadminController@download_detail_kuisioner_perpus');
 
-    //report kuisioner beasiswa
+    #report kuisioner beasiswa
     Route::post('post_report_kuisioner_beasiswa', 'SadminController@post_report_kuisioner_beasiswa');
     Route::post('detail_kuisioner_beasiswa', 'SadminController@detail_kuisioner_beasiswa');
     Route::post('download_kuisioner_beasiswa', 'SadminController@download_kuisioner_beasiswa');
     Route::post('download_detail_kuisioner_beasiswa', 'SadminController@download_detail_kuisioner_beasiswa');
 
-    //soal UTS dan UAS
+    #soal UTS dan UAS
     Route::get('soal_uts_uas', 'SadminController@soal_uts_uas');
 
-    //kurikulum standar
+    #kurikulum standar
     Route::get('master_kurikulum_standar', 'SadminController@master_kurikulum_standar');
     Route::post('lihat_kurikulum_standar', 'SadminController@lihat_kurikulum_standar');
 
-    //master yudisium
+    #master yudisium
     Route::get('master_yudisium', 'SadminController@master_yudisium');
     Route::get('validate_yudisium/{id}', 'SadminController@validate_yudisium');
     Route::get('unvalidate_yudisium/{id}', 'SadminController@unvalidate_yudisium');
     Route::put('saveedit_yudisium/{id}', 'SadminController@saveedit_yudisium');
     Route::get('unduh_ijazah/{id}', 'SadminController@unduh_ijazah');
 
-    //master wisuda
+    #export data yudisum
+    Route::get('export_data_yudisium_admin', 'SadminController@export_data_yudisium_admin');
+
+    #master wisuda
     Route::get('master_wisuda', 'SadminController@master_wisuda');
     Route::put('saveedit_wisuda/{id}', 'SadminController@saveedit_wisuda');
     Route::get('validate_wisuda/{id}', 'SadminController@validate_wisuda');

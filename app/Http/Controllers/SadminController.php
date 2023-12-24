@@ -80,6 +80,7 @@ use App\Exports\DataMhsExportAngkatan;
 use App\Imports\ImportMicrosoftUser;
 use App\Exports\DataMhsAllExport;
 use App\Exports\DataMhsExport;
+use App\Exports\DataYudisiumExcel;
 use App\Ujian_transaction;
 use App\Wisuda;
 use Illuminate\Http\Request;
@@ -4507,6 +4508,19 @@ class SadminController extends Controller
             ->get();
 
         return view('sadmin/masterakademik/master_yudisium', compact('data'));
+    }
+
+    function export_data_yudisium_admin() {
+        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tahun = $thn->periode_tahun;
+
+        $ganti = str_replace("/", "_", $tahun);
+
+        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        $tipe = $tp->periode_tipe;
+
+        $nama_file = 'Data Yudisium ' . '' . $ganti . ' ' . $tipe . '.xlsx';
+        return Excel::download(new DataYudisiumExcel, $nama_file);
     }
 
     public function validate_yudisium($id)

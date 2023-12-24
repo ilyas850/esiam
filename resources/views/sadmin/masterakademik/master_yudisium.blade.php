@@ -3,6 +3,7 @@
 @section('side')
     @include('layouts.side')
 @endsection
+
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -10,6 +11,8 @@
                 <h3 class="box-title">Data Yudisium Mahasiswa Politeknik META Industri</h3>
             </div>
             <div class="box-body">
+                <a href="{{ url('export_data_yudisium_admin') }}" class="btn btn-success">Export Excel</a>
+                <br><br>
                 <table id="example1" class="table">
                     <thead>
                         <tr>
@@ -22,7 +25,6 @@
                             <th>NIK</th>
                             <th>Ijazah</th>
                             <th>KTP</th>
-                            <th>Foto</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -35,15 +37,13 @@
                                 <td>{{ $item->nama_lengkap }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->tmpt_lahir }}</td>
-                                <td>{{$item->tgl_lahir->isoFormat('D MMMM Y')}}
+                                <td>{{ $item->tgl_lahir->isoFormat('D MMMM Y') }}
                                 </td>
                                 <td>{{ $item->nik }}</td>
                                 <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ijazah }}" target="_blank">
                                         File </a></td>
                                 <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_ktp }}" target="_blank">
                                         File </a></td>
-                                <td><a href="/File Yudisium/{{ $item->id_student }}/{{ $item->file_foto }}"
-                                        target="_blank"> File </a></td>
                                 <td>
                                     <button class="btn btn-success btn-xs" data-toggle="modal"
                                         data-target="#modalUpdateYudisium{{ $item->id_yudisium }}"
