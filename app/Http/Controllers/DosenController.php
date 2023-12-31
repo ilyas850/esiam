@@ -6,6 +6,7 @@ use PDF;
 use File;
 use Alert;
 use Session;
+use Illuminate\Support\Facades\Crypt;
 use App\Bap;
 use App\Itembayar;
 use App\Absensi_mahasiswa;
@@ -88,7 +89,23 @@ class DosenController extends Controller
 
         $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
-        return view('home', compact('dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang'));
+        $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
+
+        return view('home', compact('dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
+    }
+
+    function persentase_absensi_mhs($id)
+    {
+        $decryptedId = Crypt::decryptString($id);
+        $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->where('kurikulum_periode.id_kurperiode', $decryptedId)
+            ->select('matakuliah.makul', 'matakuliah.kode', 'kelas.kelas', 'prodi.prodi')
+            ->first();
+        $data = DB::select('CALL persentase_absen_mhs(?)', [$decryptedId]);
+
+        return view('dosen/mhs/persentase_absen', compact('data', 'mk'));
     }
 
     public function mhs_bim()
@@ -1517,7 +1534,8 @@ class DosenController extends Controller
                 'bap.hadir',
                 'bap.tidak_hadir',
                 'dosen.nama',
-                'bap.kesesuaian_rps'
+                'bap.kesesuaian_rps',
+                'bap.alasan_pembaharuan_materi'
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
@@ -1558,19 +1576,20 @@ class DosenController extends Controller
         $this->validate(
             $request,
             [
-                'pertemuan'             => 'required',
-                'tanggal'               => 'required',
-                'jam_mulai'             => 'required',
-                'jam_selsai'            => 'required',
-                'jenis_kuliah'          => 'required',
-                'id_tipekuliah'         => 'required',
-                'metode_kuliah'         => 'required',
-                'materi_kuliah'         => 'required',
-                'link_materi'           => 'required',
-                // 'id_rps'                => 'required',
-                'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-                'file_materi_tugas'     => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'pertemuan'                 => 'required',
+                'tanggal'                   => 'required',
+                'jam_mulai'                 => 'required',
+                'jam_selsai'                => 'required',
+                'jenis_kuliah'              => 'required',
+                'id_tipekuliah'             => 'required',
+                'metode_kuliah'             => 'required',
+                'materi_kuliah'             => 'required',
+                'link_materi'               => 'required',
+                // 'id_rps'                    => 'required',
+                // 'alasan_pembaharuan_materi' => 'required',
+                'file_kuliah_tatapmuka'     => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+                'file_materi_tugas'         => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,
         );
@@ -1629,6 +1648,7 @@ class DosenController extends Controller
                 $bap->media_pembelajaran    = $request->media_pembelajaran;
                 $bap->link_materi           = $request->link_materi;
                 // $bap->id_rps                = $request->id_rps;
+                // $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
 
                 if ($i == 0) {
                     if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1981,7 +2001,7 @@ class DosenController extends Controller
             ->select(
                 'bap.id_bap',
                 'bap.id_kurperiode',
-                // 'bap.id_rps',
+                'bap.id_rps',
                 'bap.pertemuan',
                 'bap.tanggal',
                 'bap.jenis_kuliah',
@@ -2001,7 +2021,8 @@ class DosenController extends Controller
                 'bap.status',
                 'bap.id_kultrans',
                 'rps.kemampuan_akhir_direncanakan',
-                'rps.materi_pembelajaran'
+                'rps.materi_pembelajaran',
+                'bap.alasan_pembaharuan_materi'
             )
             ->first();
 
@@ -2026,7 +2047,8 @@ class DosenController extends Controller
             'metode_kuliah'         => 'required',
             'materi_kuliah'         => 'required',
             'link_materi'           => 'required',
-            // 'id_rps'                => 'required',
+            //'id_rps'                => 'required',
+            // 'alasan_pembaharuan_materi'                => 'required',
             'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
             'file_materi_kuliah'    => 'mimes:pdf,docx,DOCX,PDF|max:4000',
             'file_materi_tugas'     => 'mimes:jpg,jpeg,png|max:2000',
@@ -2089,6 +2111,7 @@ class DosenController extends Controller
             $bap->media_pembelajaran    = $request->media_pembelajaran;
             $bap->link_materi           = $request->link_materi;
             // $bap->id_rps                = $request->id_rps;
+            // $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
             $bap->updated_by            = Auth::user()->name;
 
             if ($i == 0) {

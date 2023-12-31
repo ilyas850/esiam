@@ -42,49 +42,44 @@
                 <table id="example6" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th rowspan="2">
+                            <th>
                                 <center>Pertemuan</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Tanggal</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Jam</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Kurang Jam</center>
                             </th>
-                            <th rowspan="2">
-                                <center>Materi Kuliah</center>
+                            <th>
+                                <center>Aktual Materi Pembelajaran</center>
                             </th>
-                            <th rowspan="2">
-                                <center>Praktikum</center>
+                            {{-- <th>
+                                <center>Alasan Pembaharuan Materi</center>
+                            </th> --}}
+                            <th>
+                                <center>Aktual Materi Praktikum</center>
                             </th>
-                            {{-- <th rowspan="2">
+                            {{-- <th>
                                 <center>Kesesuaian RPS</center>
                             </th> --}}
-                            <th colspan="2">
-                                <center>Kuliah</center>
+                            <th>
+                                <center>Tipe Kuliah</center>
                             </th>
-                            <th rowspan="2">
-                                <center>Absen Mahasiswa <br> (Hadir/Tidak)</center>
+                            <th>
+                                <center>Absensi <br> (Hadir/Tidak)</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Absen</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Dosen</center>
                             </th>
-                            <th rowspan="2">
+                            <th>
                                 <center>Action</center>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <center>Tipe</center>
-                            </th>
-                            <th>
-                                <center>Jenis</center>
                             </th>
                         </tr>
                     </thead>
@@ -109,6 +104,7 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
+                                {{-- <td>{{ $item->alasan_pembaharuan_materi }}</td> --}}
                                 <td>{{ $item->praktikum }}</td>
                                 {{-- <td align="center"><b>
                                         @if ($item->kesesuaian_rps == 'SESUAI')
@@ -120,9 +116,6 @@
                                 </td> --}}
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->jenis_kuliah }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $item->hadir }} / {{ $item->tidak_hadir }}</center>

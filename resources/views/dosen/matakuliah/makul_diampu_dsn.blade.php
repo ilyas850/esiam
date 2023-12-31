@@ -33,9 +33,6 @@
                                 <center>Jadwal</center>
                             </th>
                             <th>
-                                <center>Id Absen</center>
-                            </th>
-                            <th>
                                 <center>Soal</center>
                             </th>
                             <th>
@@ -61,18 +58,16 @@
                                 </td>
                                 <td>{{ $item->kode }}/{{ $item->makul }}</td>
                                 <td>
-                                    <center>{{ $item->prodi }}</center>
+                                    {{ $item->prodi }}
                                 </td>
                                 <td>
-                                    <center>{{ $item->kelas }}</center>
+                                    {{ $item->kelas }}
                                 </td>
                                 <td>{{ $item->nama_ruangan }}</td>
                                 <td>{{ $item->hari }}, {{ $item->jam }}</td>
+                                
                                 <td>
-                                    <center>{{ $item->id_kurperiode }}</center>
-                                </td>
-                                <td>
-                                    <center>
+                                    
                                         @if ($item->soal_uts == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}">
@@ -85,7 +80,7 @@
                                             <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
                                                 target="_blank" style="font: white"> UTS</a>
                                         @endif
-
+<br>
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
@@ -98,7 +93,7 @@
                                             <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
                                                 target="_blank" style="font: white"> UAS</a>
                                         @endif
-                                    </center>
+                                    
                                 </td>
                                 <td align="center">
                                     @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
@@ -128,9 +123,9 @@
                                         {{-- @if ($item->id_rps == null)
                                             <a href="/entri_rps/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a>
-                                        @elseif ($item->id_rps != null)
-                                        <a href="/edit_rps/{{ $item->id_kurperiode }}"
-                                            class="btn btn-success btn-xs">RPS</a> --}}
+                                        @elseif ($item->id_rps != null) --}}
+                                            {{-- <a href="/edit_rps/{{ $item->id_kurperiode }}"
+                                                class="btn btn-success btn-xs">RPS</a> --}}
                                             <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
                                                 title="Klik untuk entri nilai">Nilai
                                             </a>

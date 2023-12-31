@@ -281,8 +281,8 @@ class HomeController extends Controller
 
       return view('home', ['mhs' => $mhs, 'id' => $id,]);
     } elseif ($akses == 5) {
-    
-      return view('home', ['dsn' => $dsn, 'tahun' => $tahun, 'tipe' => $tipe, 'time' => $time, 'info' => $info,]);
+
+      return redirect('dosenluar_home');
     } elseif ($akses == 6) {
 
       return redirect('kaprodi_home');

@@ -190,19 +190,25 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>
-                                    <font color="red-text">*</font>Materi Kuliah
+                                    <font color="red-text">*</font>Aktual Materi Pembelajaran
                                 </label>
                                 <textarea class="form-control" rows="5" name="materi_kuliah" required></textarea>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-3">
                                 <label>
-                                    Materi Praktikum
+                                    <font color="red-text">*</font>Alasan Pembaharuan Materi
+                                </label>
+                                <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required></textarea>
+                            </div> --}}
+                            <div class="col-md-3">
+                                <label>
+                                    Aktual Materi Praktikum
                                 </label>
                                 <textarea class="form-control" rows="5" name="praktikum"></textarea>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Media Pembelajaran
                                 </label>

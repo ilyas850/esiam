@@ -33,26 +33,21 @@
     <!-- bootstrap datepicker -->
     <link rel="stylesheet"
         href="{{ asset('adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
-
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/iCheck/all.css') }}">
-
     <!-- Bootstrap Color Picker -->
     <link rel="stylesheet"
         href="{{ asset('adminlte/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
-
     <!-- Bootstrap time Picker -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/timepicker/bootstrap-timepicker.min.css') }}">
-
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('adminlte/bower_components/select2/dist/css/select2.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/AdminLTE.min.css') }}">
-
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="{{ asset('adminlte/bower_components/jvectormap/jquery-jvectormap.css') }}">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-
     <!-- DataTables -->
     <link rel="stylesheet"
         href="{{ asset('adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
@@ -389,7 +384,6 @@
     <!-- SlimScroll -->
     <script src="{{ asset('adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
     <!-- iCheck 1.0.1 -->
-    {{-- <script src="{{ asset('adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script> --}}
     <!-- FastClick -->
     <script src="{{ asset('adminlte/bower_components/fastclick/lib/fastclick.js') }}"></script>
     <!-- AdminLTE App -->
@@ -399,8 +393,15 @@
     <!-- CK Editor -->
     <!-- Bootstrap WYSIHTML5 -->
     <script src="{{ asset('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
-
+    <!-- Sparkline -->
+    <script src="{{ asset('adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js') }}"></script>
+    <!-- jvectormap  -->
+    <script src="{{ asset('adminlte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
+    <script src="{{ asset('adminlte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
+    <!-- ChartJS -->
     <script src="{{ asset('adminlte/bower_components/chart.js/Chart.js') }}"></script>
+    <!-- jQuery Knob -->
+    <script src="{{ asset('adminlte/bower_components/jquery-knob/js/jquery.knob.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.sidebar-menu').tree()

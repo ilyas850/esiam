@@ -61,10 +61,10 @@
                                 </td>
                                 <td>{{ $item->kode }} - {{ $item->makul }}</td>
                                 <td>
-                                    <center>{{ $item->prodi }}</center>
+                                    {{ $item->prodi }}
                                 </td>
                                 <td>
-                                    <center>{{ $item->kelas }}</center>
+                                    {{ $item->kelas }}
                                 </td>
                                 <td>
                                     <center>{{ $item->semester }}</center>
@@ -81,11 +81,11 @@
                                         @else
                                             <button class="btn btn-warning btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
-                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                            <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
-                                                target="_blank" style="font: white"> UTS</a>
+                                                title="klik untuk edit"><i class="fa fa-edit"></i></button><a
+                                                href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                                target="_blank" style="font: white">UTS</a>
                                         @endif
-
+                                        <br>
                                         @if ($item->soal_uas == null)
                                             <button class="btn btn-success btn-xs" data-toggle="modal"
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
@@ -96,7 +96,7 @@
                                                 data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
                                                 title="klik untuk edit"><i class="fa fa-edit"></i></button>
                                             <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
-                                                target="_blank" style="font: white"> UAS</a>
+                                                target="_blank" style="font: white">UAS</a>
                                         @endif
                                     </center>
                                 </td>
@@ -131,14 +131,12 @@
                                         {{-- @if ($item->id_rps == null)
                                             <a href="/entri_rps_kprd/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a>
-                                        @elseif ($item->id_rps != null)
-                                            <a href="/edit_rps_kprd/{{ $item->id_kurperiode }}"
-                                                class="btn btn-success btn-xs">RPS</a> --}}
-                                            <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}"
-                                                class="btn btn-info btn-xs" title="Klik untuk entri nilai">Nilai</a>
-                                            <a href="entri_bap_kprd/{{ $item->id_kurperiode }}"
-                                                class="btn btn-warning btn-xs" title="Klik untuk entri nilai">
-                                                BAP</a>
+                                        @elseif ($item->id_rps != null) --}}
+                                        <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
+                                            title="Klik untuk entri nilai">Nilai</a>
+                                        <a href="entri_bap_kprd/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
+                                            title="Klik untuk entri nilai">
+                                            BAP</a>
                                         {{-- @endif --}}
                                     </center>
                                 </td>

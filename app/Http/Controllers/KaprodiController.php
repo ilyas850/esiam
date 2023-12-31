@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use File;
 use PDF;
 use Alert;
+use Illuminate\Support\Facades\Crypt;
 use App\Bap;
 use App\User;
 use App\Dosen;
@@ -90,6 +91,8 @@ class KaprodiController extends Controller
 
     $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
+    $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
+
     $ti = Student::where('kodeprodi', 23)
       ->where('active', 1)
       ->count('idstudent');
@@ -108,7 +111,7 @@ class KaprodiController extends Controller
       ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
       ->first();
 
-    return view('home', compact('prd', 'ti', 'fa', 'tk', 'dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang'));
+    return view('home', compact('prd', 'ti', 'fa', 'tk', 'dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
   }
   public function change_pass_kaprodi($id)
   {
@@ -138,6 +141,20 @@ class KaprodiController extends Controller
       Alert::error('password lama yang anda ketikan salah !', 'MAAF !!');
       return redirect('home');
     }
+  }
+
+  function persentase_absensi_mhs($id)
+  {
+    $decryptedId = Crypt::decryptString($id);
+    $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kurikulum_periode.id_kurperiode', $decryptedId)
+      ->select('matakuliah.makul', 'matakuliah.kode', 'kelas.kelas', 'prodi.prodi')
+      ->first();
+    $data = DB::select('CALL persentase_absen_mhs(?)', [$decryptedId]);
+
+    return view('kaprodi/mhs/persentase_absen', compact('data', 'mk'));
   }
 
   public function lihat_semua_kprd()
@@ -1234,7 +1251,8 @@ class KaprodiController extends Controller
         'bap.jenis_kuliah',
         'bap.hadir',
         'bap.tidak_hadir',
-        'bap.kesesuaian_rps'
+        'bap.kesesuaian_rps',
+        'bap.alasan_pembaharuan_materi'
       )
       ->orderBy('bap.id_bap', 'ASC')
       ->get();
@@ -1284,6 +1302,7 @@ class KaprodiController extends Controller
       'materi_kuliah'           => 'required',
       'link_materi'             => 'required',
       // 'id_rps'                  => 'required',
+      // 'alasan_pembaharuan_materi'                  => 'required',
       'file_kuliah_tatapmuka'   => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
       'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
       'file_materi_tugas'       => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
@@ -1343,6 +1362,7 @@ class KaprodiController extends Controller
         $bap->media_pembelajaran = $request->media_pembelajaran;
         $bap->link_materi = $request->link_materi;
         // $bap->id_rps                = $request->id_rps;
+        // $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
 
         if ($i == 0) {
           if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1697,7 +1717,8 @@ class KaprodiController extends Controller
         'bap.status',
         'bap.id_kultrans',
         'rps.kemampuan_akhir_direncanakan',
-        'rps.materi_pembelajaran'
+        'rps.materi_pembelajaran',
+        'bap.alasan_pembaharuan_materi',
       )
       ->first();
 
@@ -1723,6 +1744,7 @@ class KaprodiController extends Controller
       'materi_kuliah'           => 'required',
       'link_materi'             => 'required',
       // 'id_rps'                  => 'required',
+      // 'alasan_pembaharuan_materi'                  => 'required',
       'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
       'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
       'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
@@ -1743,6 +1765,7 @@ class KaprodiController extends Controller
     $bap->media_pembelajaran    = $request->media_pembelajaran;
     $bap->link_materi           = $request->link_materi;
     // $bap->id_rps                = $request->id_rps;
+    // $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
     $bap->updated_by            = Auth::user()->name;
 
     if ($bap->file_kuliah_tatapmuka) {

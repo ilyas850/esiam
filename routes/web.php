@@ -494,6 +494,9 @@ Route::group(['middleware' => 'dosen'], function () {
     #dashboard dosen
     Route::get('dosen_home', 'DosenController@dosen_home');
 
+    #persenatse kehadiran mahasiswa
+    Route::get('persentase_absensi_mhs/{id}', 'DosenController@persentase_absensi_mhs');
+
     #mahasiswa bimbingan
     Route::get('mhs_bim', 'DosenController@mhs_bim');
     Route::get('record_nilai/{id}', 'DosenController@record_nilai');
@@ -1010,6 +1013,12 @@ Route::group(['middleware' => 'nomhs'], function () {
 });
 
 Route::group(['middleware' => 'dosenluar'], function () {
+     #dashboard dosen
+     Route::get('dosenluar_home', 'DosenluarController@dosenluar_home');
+
+    #persenatse kehadiran mahasiswa
+    Route::get('persentase_absensi_mhs_dsnlr/{id}', 'DosenluarController@persentase_absensi_mhs');
+    
     Route::get('makul_diampu', 'DosenluarController@makul_diampu');
     Route::get('cekmhs/{id}', 'DosenluarController@cekmhs');
     Route::get('history_makul_dsnlr', 'DosenluarController@history_makul_dsn');
@@ -1168,6 +1177,9 @@ Route::group(['middleware' => 'dosenluar'], function () {
 Route::group(['middleware' => 'kaprodi'], function () {
     #dashboard dosen
     Route::get('kaprodi_home', 'KaprodiController@kaprodi_home');
+
+    #persenatse kehadiran mahasiswa
+    Route::get('persentase_absensi_mhs_kprd/{id}', 'KaprodiController@persentase_absensi_mhs');
 
     Route::get('change_pass_kaprodi/{id}', 'KaprodiController@change_pass_kaprodi');
     Route::put('pwd_kaprodi/{id}', 'KaprodiController@store_pwd_kaprodi');

@@ -1,140 +1,224 @@
 <div class="row">
-    <div class="col-md-6">
-        <div class="box box-widget widget-user">
-            <div class="widget-user-header bg-aqua-active">
-                <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
-                <h5 class="widget-user-desc">Dosen</h5>
-            </div>
-            <div class="widget-user-image">
-                <img class="img-circle" src="/adminlte/img/default.jpg" alt="User Avatar">
-            </div>
-            <div class="box-footer">
-                <div class="row">
-                    <div class="col-sm-4 border-right">
-                        <div class="description-block">
-                            <h5 class="description-header"></h5>
-                            <span class="description-text"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4 border-right">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Dashboard</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Pelaksanaan Akademik</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box box-widget widget-user">
+                                <div class="widget-user-header bg-aqua-active">
+                                    <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
+                                    <h5 class="widget-user-desc">Dosen</h5>
+                                </div>
+                                <div class="widget-user-image">
+                                    <img class="img-circle" src="/adminlte/img/default.jpg" alt="User Avatar">
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-sm-4 border-right">
+                                            <div class="description-block">
+                                                <h5 class="description-header"></h5>
+                                                <span class="description-text"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 border-right">
 
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="description-block">
-                            <h5 class="description-header"></h5>
-                            <span class="description-text"></span>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="description-block">
+                                                <h5 class="description-header"></h5>
+                                                <span class="description-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width:30%">Nama</th>
+                                            <td style="width:5%">:</td>
+                                            <td>{{ $dsn->nama }}, {{ $dsn->akademik }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>NIK</th>
+                                            <td>:</td>
+                                            <td>{{ Auth::user()->username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tempat, tanggal lahir</th>
+                                            <td>:</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Agama</th>
+                                            <td>:</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Jenis kelamin</th>
+                                            <td>:</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th>No HP</th>
+                                            <td>:</td>
+                                            <td>{{ $dsn->hp }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>E-Mail</th>
+                                            <td>:</td>
+                                            <td>{{ $dsn->email }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6 ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Tahun Akademik</span>
+                                            <span class="info-box-number">
+                                                {{ $tahun->periode_tahun }}</span>
+                                            <span class="info-box-number">{{ $tipe->periode_tipe }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-green"><i
+                                                class="fa fa-calendar-check-o"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Jadwal KRS</span>
+                                            <span class="info-box-number">
+                                                @if ($time->status == 0)
+                                                    Jadwal Belum ada
+                                                @elseif ($time->status == 1)
+                                                    {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
+                                                    {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
+                                                @endif
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Informasi Terbaru</h3>
+                                            <div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool"
+                                                    data-widget="collapse"><i class="fa fa-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                        class="fa fa-times"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="box-body">
+                                            <ul class="products-list product-list-in-box">
+                                                @foreach ($info as $item)
+                                                    <li class="item">
+                                                        <div class="product-img">
+                                                            <img class="img-circle" src="/images/bell.jpg"
+                                                                alt="user">
+                                                        </div>
+                                                        <div class="product-info">
+                                                            <a href="/lihat/{{ $item->id_informasi }}"
+                                                                class="product-title">{{ $item->judul }}
+                                                                <span class="label label-info pull-right">
+                                                                    {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
+                                                                    {{ $item->created_at->diffForHumans() }}
+                                                                </span></a>
+                                                            <span
+                                                                class="product-description">{{ $item->deskripsi }}</span>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        <div class="box-footer text-center">
+                                            <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <table class="table table-striped">
-
-                <tbody>
-                    <tr>
-                        <th style="width:30%">Nama</th>
-                        <td style="width:5%">:</td>
-                        <td>{{ $dsn->nama }}, {{ $dsn->akademik }} </td>
-                    </tr>
-                    <tr>
-                        <th>NIK</th>
-                        <td>:</td>
-                        <td>{{ Auth::user()->username }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tempat, tanggal lahir</th>
-                        <td>:</td>
-                        <td>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Agama</th>
-                        <td>:</td>
-                        <td>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Jenis kelamin</th>
-                        <td>:</td>
-                        <td>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>No HP</th>
-                        <td>:</td>
-                        <td>{{ $dsn->hp }}</td>
-                    </tr>
-                    <tr>
-                        <th>E-Mail</th>
-                        <td>:</td>
-                        <td>{{ $dsn->email }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Tahun Akademik</span>
-                <span class="info-box-number"> {{ $tahun->periode_tahun }}</span>
-                <span class="info-box-number">{{ $tipe->periode_tipe }} </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Jadwal KRS</span>
-                <span class="info-box-number">
-                    @if ($time->status == 0)
-                        Jadwal Belum ada
-                    @elseif ($time->status == 1)
-                        {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
-                        {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
-                    @endif
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Informasi Terbaru</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                            class="fa fa-times"></i></button>
+                <div class="tab-pane" id="tab_3">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Ketercapaian Pembelajaran</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                        class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table no-margin">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Matakuliah</th>
+                                            <th>SKS</th>
+                                            <th>Prodi</th>
+                                            <th>Kelas</th>
+                                            <th>
+                                                <center>Pertemuan</center>
+                                            </th>
+                                            <th>
+                                                <center>Persentase Pembelajaran</center>
+                                            </th>
+                                            <th>
+                                                <center>Persenatse Absensi</center>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $no = 1; ?>
+                                        @foreach ($data_akademik as $item)
+                                            <tr>
+                                                <td>{{ $no++ }}</td>
+                                                <td>{{ $item->makul }}</td>
+                                                <td>{{ $item->sks }}</td>
+                                                <td>{{ $item->prodi }}</td>
+                                                <td>{{ $item->kelas }}</td>
+                                                <td align="center">{{ $item->jml_per }} / 16</td>
+                                                <td align="center">
+                                                    @if ($item->jml_per <= 7)
+                                                        <span class="label label-danger">
+                                                            {{ $item->persentase }} %</span>
+                                                    @elseif($item->jml_per < 16)
+                                                        <span class="label label-warning">
+                                                            {{ $item->persentase }} %</span>
+                                                    @elseif($item->jml_per = 16)
+                                                        <span class="label label-success">
+                                                            {{ $item->persentase }} %</span>
+                                                    @endif
+                                                </td>
+                                                <td align="center">
+                                                    <a href="/persentase_absensi_mhs_dsnlr/{{ Crypt::encryptString($item->id_kurperiode) }}"
+                                                        class="btn btn-info btn-xs">Cek Absensi</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="box-body">
-                <ul class="products-list product-list-in-box">
-                    @foreach ($info as $item)
-                        <li class="item">
-                            <div class="product-img">
-                                @if ($item->file != null)
-                                    <img class="img-circle" src="{{ asset('/data_file/' . $item->file) }}">
-                                @else
-                                @endif
-                            </div>
-                            <div class="product-info">
-                                <a href="/lihat/{{ $item->id_informasi }}" class="product-title">{{ $item->judul }}
-                                    <span class="label label-info pull-right">
-                                        {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                        {{ $item->created_at->diffForHumans() }}
-                                    </span></a>
-                                <span class="product-description">
-                                    {{ $item->deskripsi }}
-                                </span>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-            <div class="box-footer text-center">
-                <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
             </div>
         </div>
     </div>

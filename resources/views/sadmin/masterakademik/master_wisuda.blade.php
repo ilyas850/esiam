@@ -32,7 +32,6 @@
                             <th>No. HP Ayah</th>
                             <th>No. HP Ibu</th>
                             <th>Alamat Ortu</th>
-                            <th>Status Vaksin</th>
                             <th>Foto</th>
                             <th>Aksi</th>
                         </tr>
@@ -58,7 +57,6 @@
                                 <td>{{ $item->no_hp_ayah }}</td>
                                 <td>{{ $item->no_hp_ibu }}</td>
                                 <td>{{ $item->alamat_ortu }}</td>
-                                <td>{{ $item->status_vaksin }}</td>
                                 <td>
                                     <a href="/File Wisuda/{{ $item->id_student }}/{{ $item->file_foto }}" target="_blank">
                                         File </a>

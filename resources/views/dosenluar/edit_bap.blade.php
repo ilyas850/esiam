@@ -189,17 +189,29 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div div class="col-md-6">
+                            <div div class="col-md-3">
                                 <label>
-                                    <font color ="red-text">*</font>Materi Kuliah/Ujian
+                                    <font color="red-text">*</font>Aktual Materi Pembelajaran
                                 </label>
-                                <textarea class="form-control" rows="3" name="materi_kuliah" required>{{ $bap->materi_kuliah }}</textarea>
+                                <textarea class="form-control" rows="5" name="materi_kuliah" required>{{ $bap->materi_kuliah }}</textarea>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-3">
                                 <label>
-                                    <font color ="red-text">*</font>Media Pembelajaran/Ujian
+                                    <font color="red-text">*</font>Alasan Pembaharuan Materi
                                 </label>
-                                <textarea class="form-control" rows="3" name="media_pembelajaran" required>{{ $bap->media_pembelajaran }}</textarea>
+                                <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required>{{ $bap->alasan_pembaharuan_materi }}</textarea>
+                            </div> --}}
+                            <div class="col-md-3">
+                                <label>
+                                    Aktual Materi Praktikum
+                                </label>
+                                <textarea class="form-control" rows="5" name="praktikum">{{ $bap->praktikum }}</textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <font color="red-text">*</font>Media Pembelajaran/Ujian
+                                </label>
+                                <textarea class="form-control" rows="5" name="media_pembelajaran" required>{{ $bap->media_pembelajaran }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">

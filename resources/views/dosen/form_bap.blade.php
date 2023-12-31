@@ -72,13 +72,14 @@
                                     <font color="red-text">*</font>Kemampuan Akhir Direncanakan
                                 </label>
                                 <textarea id="kemampuanAkhir" class="form-control pull-right" name="kemampuan_akhir_direncanakan" rows="3"
-                                    readonly></textarea>
+                                    readonly required></textarea>
                             </div>
                             <div class="col-md-5">
                                 <label>
                                     <font color="red-text">*</font>Materi Pembelajaran
                                 </label>
-                                <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly></textarea>
+                                <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly
+                                    required></textarea>
                             </div>
                         </div> --}}
 
@@ -186,19 +187,25 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>
-                                    <font color="red-text">*</font>Materi Kuliah
+                                    <font color="red-text">*</font>Aktual Materi Pembelajaran
                                 </label>
                                 <textarea class="form-control" rows="5" name="materi_kuliah" required></textarea>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-3">
                                 <label>
-                                    Materi Praktikum
+                                    <font color="red-text">*</font>Alasan Pembaharuan Materi
+                                </label>
+                                <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required></textarea>
+                            </div> --}}
+                            <div class="col-md-3">
+                                <label>
+                                    Aktual Materi Praktikum
                                 </label>
                                 <textarea class="form-control" rows="5" name="praktikum"></textarea>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Media Pembelajaran
                                 </label>
@@ -216,16 +223,6 @@
                                 @endif
                                 <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</p>
                             </div>
-                            {{-- <div class="col-md-3">
-                                <label>Upload File Materi Kuliah</label>
-                                <input type="file" name="file_materi_kuliah" id="file_materi_kuliah">
-                                @if ($errors->has('file_materi_kuliah'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
-                                    </span>
-                                @endif
-                                <p class="help-block">Max. size 4 mb dengan format .PDF .DOC</p>
-                            </div> --}}
                             <div class="col-md-3">
                                 <label>Upload File Materi Tugas</label>
                                 <input type="file" name="file_materi_tugas">
