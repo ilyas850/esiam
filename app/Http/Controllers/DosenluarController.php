@@ -65,7 +65,10 @@ class DosenluarController extends Controller
             ->select('kelamin.kelamin', 'dosen.nama', 'dosen.akademik', 'dosen.tmptlahir', 'dosen.tgllahir', 'agama.agama', 'dosen.hp', 'dosen.email')
             ->first();
 
-        $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $tahun = Periode_tahun::join('kalender_akademik', 'periode_tahun.id_periodetahun', '=', 'kalender_akademik.id_periodetahun')
+            ->where('periode_tahun.status', 'ACTIVE')
+            ->select('periode_tahun.periode_tahun', 'kalender_akademik.file')
+            ->first();
 
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 

@@ -139,6 +139,9 @@
                                     <span class="info-box-text">Tahun Akademik</span>
                                     <span class="info-box-number">{{ $tahun->periode_tahun }}</span>
                                     <span class="info-box-number">{{ $tipe->periode_tipe }}</span>
+                                    <a href="{{ asset('/Kalender Akademik/' . $tahun->file) }}" target="_blank"
+                                        class="small-box-footer">Unduh Kalender Akademik <i
+                                            class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>

@@ -722,6 +722,9 @@ Route::group(['middleware' => 'dosen'], function () {
 });
 
 Route::group(['middleware' => 'mhs'], function () {
+    #dashboard mahasiswa
+    Route::get('mhs_home', 'MhsController@mhs_home');
+    
     Route::get('change_pwd/{id}', 'MhsController@change');
     Route::put('pwd_user/{id}', 'MhsController@store_new_pwd');
     Route::get('update/{id}', 'MhsController@update');

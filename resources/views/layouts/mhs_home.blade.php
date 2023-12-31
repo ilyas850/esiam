@@ -2,7 +2,6 @@
     <div class="col-md-3">
         <div class="box box-primary">
             <div class="box-body box-profile">
-
                 @if ($foto == null)
                     <img class="profile-user-img img-responsive img-circle" src="{{ asset('/adminlte/img/default.jpg') }}"
                         alt="User profile picture">
@@ -129,179 +128,168 @@
                 <div class="active tab-pane" id="activity">
                     <div class="row">
                         <div class="col-md-6">
-                            @if ($mhs->kodeprodi == 22)
-                                <div class="info-box bg-aqua">
-                                @elseif($mhs->kodeprodi == 23)
-                                    <div class="info-box bg-red">
-                                    @elseif($mhs->kodeprodi == 24)
-                                        <div class="info-box bg-green">
-                                        @elseif($mhs->kodeprodi == 25)
-                                            <div class="info-box bg-gray">
-                            @endif
-                            <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Tahun Akademik</span>
-                                <span class="info-box-number">{{ $tahun->periode_tahun }}</span>
-                                <span class="info-box-number">SEMESTER {{ $tipe->periode_tipe }}</span>
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Tahun Akademik</span>
+                                    <span class="info-box-number">
+                                        {{ $tahun->periode_tahun }}</span>
+                                    <span class="info-box-number">{{ $tipe->periode_tipe }}</span>
+                                    <a href="{{ asset('/Kalender Akademik/' . $tahun->file) }}" target="_blank"
+                                        class="small-box-footer">Unduh Kalender Akademik <i
+                                            class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Jadwal KRS</span>
+                                    <span class="info-box-number">
+                                        @if ($time->status == 0)
+                                            Jadwal Belum ada
+                                        @elseif ($time->status == 1)
+                                            {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
+                                            {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        @if ($mhs->kodeprodi == 22)
-                            <div class="info-box bg-aqua">
-                            @elseif($mhs->kodeprodi == 23)
-                                <div class="info-box bg-red">
-                                @elseif($mhs->kodeprodi == 24)
-                                    <div class="info-box bg-green">
-                                    @elseif($mhs->kodeprodi == 25)
-                                        <div class="info-box bg-gray">
-                        @endif
-                        <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Jadwal KRS</span>
-                            <span class="info-box-number">
-                                @if ($time->status == 0)
-                                    Jadwal Belum ada
-                                @elseif ($time->status == 1)
-                                    {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
-                                    {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
-                                @endif
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                            <h3 class="box-title">Waktu Pengisian KRS</h3>
-                        </div>
-                        <div class="box-body">
-                            <form role="form">
-                                <div id="waktumundur">
-                                    @if ($time->status != 0)
-                                        <span id="countdown"></span>
-                                    @else
-                                        Belum ada info perwalian
-                                    @endif
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <h3 class="box-title">Waktu Pengisian KRS</h3>
                                 </div>
-                            </form>
-                        </div>
-                        <script type='text/javascript'>
-                            //<![CDATA[
-                            var target_date = new Date("{{ $time->waktu_akhir }}").getTime();
-                            var days, hours, minutes, seconds;
-                            var countdown = document.getElementById("countdown");
-                            setInterval(function() {
-                                var current_date = new Date().getTime();
-                                var seconds_left = (target_date - current_date) / 1000;
-                                days = parseInt(seconds_left / 86400);
-                                seconds_left = seconds_left % 86400;
-                                hours = parseInt(seconds_left / 3600);
-                                seconds_left = seconds_left % 3600;
-                                minutes = parseInt(seconds_left / 60);
-                                seconds = parseInt(seconds_left % 60);
-                                countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
-                                    " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
-                                    " <span class=\'digit\'>detik </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian KRS</span>";
-                            }, 1000);
-                            //]]>
-                        </script>
-
-                        <style scoped="" type="text/css">
-                            #waktumundur {
-
-                                background: #31266b;
-                                color: #fec503;
-                                font-size: 100%;
-                                text-transform: uppercase;
-                                text-align: center;
-                                padding: 20px 0;
-                                font-weight: bold;
-                                border-radius: 5px;
-                                line-height: 1.8em;
-                                font-family: Arial, sans-serif;
-                            }
-
-                            .digit {
-                                color: white
-                            }
-
-                            .judul {
-                                color: white
-                            }
-                        </style>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                            <h3 class="box-title">Waktu Pengisian EDOM</h3>
-                        </div>
-                        <div class="box-body">
-                            <form role="form">
-                                <div id="waktumunduredom">
-                                    @if ($edom->status != 0)
-                                        <span id="countdownedom"></span>
-                                    @else
-                                        Belum ada info pengisian EDOM
-                                    @endif
+                                <div class="box-body">
+                                    <form role="form">
+                                        <div id="waktumundur">
+                                            @if ($time->status != 0)
+                                                <span id="countdown"></span>
+                                            @else
+                                                Belum ada info perwalian
+                                            @endif
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
+                                <script type='text/javascript'>
+                                    //<![CDATA[
+                                    var target_date = new Date("{{ $time->waktu_akhir }}").getTime();
+                                    var days, hours, minutes, seconds;
+                                    var countdown = document.getElementById("countdown");
+                                    setInterval(function() {
+                                        var current_date = new Date().getTime();
+                                        var seconds_left = (target_date - current_date) / 1000;
+                                        days = parseInt(seconds_left / 86400);
+                                        seconds_left = seconds_left % 86400;
+                                        hours = parseInt(seconds_left / 3600);
+                                        seconds_left = seconds_left % 3600;
+                                        minutes = parseInt(seconds_left / 60);
+                                        seconds = parseInt(seconds_left % 60);
+                                        countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
+                                            " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
+                                            " <span class=\'digit\'>detik </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian KRS</span>";
+                                    }, 1000);
+                                    //]]>
+                                </script>
+
+                                <style scoped="" type="text/css">
+                                    #waktumundur {
+
+                                        background: #31266b;
+                                        color: #fec503;
+                                        font-size: 100%;
+                                        text-transform: uppercase;
+                                        text-align: center;
+                                        padding: 20px 0;
+                                        font-weight: bold;
+                                        border-radius: 5px;
+                                        line-height: 1.8em;
+                                        font-family: Arial, sans-serif;
+                                    }
+
+                                    .digit {
+                                        color: white
+                                    }
+
+                                    .judul {
+                                        color: white
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <h3 class="box-title">Waktu Pengisian EDOM</h3>
+                                </div>
+                                <div class="box-body">
+                                    <form role="form">
+                                        <div id="waktumunduredom">
+                                            @if ($edom->status != 0)
+                                                <span id="countdownedom"></span>
+                                            @else
+                                                Belum ada info pengisian EDOM
+                                            @endif
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <script type='text/javascript'>
+                                //<![CDATA[
+                                var target_date_edom = new Date("{{ $edom->waktu_akhir }}").getTime();
+                                var days_edom, hours_edom, minutes_edom, seconds_edom;
+                                var countdownedom = document.getElementById("countdownedom");
+                                setInterval(function() {
+                                    var current_date_edom = new Date().getTime();
+                                    var seconds_left_edom = (target_date_edom - current_date_edom) / 1000;
+                                    days_edom = parseInt(seconds_left_edom / 86400);
+                                    seconds_left_edom = seconds_left_edom % 86400;
+                                    hours_edom = parseInt(seconds_left_edom / 3600);
+                                    seconds_left_edom = seconds_left_edom % 3600;
+                                    minutes_edom = parseInt(seconds_left_edom / 60);
+                                    seconds_edom = parseInt(seconds_left_edom % 60);
+                                    countdownedom.innerHTML = days_edom + " <span class=\'digit\'>hari</span> " + hours_edom +
+                                        " <span class=\'digit\'>jam</span> " + minutes_edom + " <span class=\'digit\'>menit</span> " +
+                                        seconds_edom +
+                                        " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian EDOM</span>";
+                                }, 1000);
+                                //]]>
+                            </script>
+                            <style scoped="" type="text/css">
+                                #waktumunduredom {
+
+                                    background: #31266b;
+                                    color: #fec503;
+                                    font-size: 100%;
+                                    text-transform: uppercase;
+                                    text-align: center;
+                                    padding: 20px 0;
+                                    font-weight: bold;
+                                    border-radius: 5px;
+                                    line-height: 1.8em;
+                                    font-family: Arial, sans-serif;
+                                }
+
+                                .digit {
+                                    color: white
+                                }
+
+                                .judul {
+                                    color: white
+                                }
+                            </style>
                         </div>
                     </div>
-                    <script type='text/javascript'>
-                        //<![CDATA[
-                        var target_date_edom = new Date("{{ $edom->waktu_akhir }}").getTime();
-                        var days_edom, hours_edom, minutes_edom, seconds_edom;
-                        var countdownedom = document.getElementById("countdownedom");
-                        setInterval(function() {
-                            var current_date_edom = new Date().getTime();
-                            var seconds_left_edom = (target_date_edom - current_date_edom) / 1000;
-                            days_edom = parseInt(seconds_left_edom / 86400);
-                            seconds_left_edom = seconds_left_edom % 86400;
-                            hours_edom = parseInt(seconds_left_edom / 3600);
-                            seconds_left_edom = seconds_left_edom % 3600;
-                            minutes_edom = parseInt(seconds_left_edom / 60);
-                            seconds_edom = parseInt(seconds_left_edom % 60);
-                            countdownedom.innerHTML = days_edom + " <span class=\'digit\'>hari</span> " + hours_edom +
-                                " <span class=\'digit\'>jam</span> " + minutes_edom + " <span class=\'digit\'>menit</span> " +
-                                seconds_edom +
-                                " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian EDOM</span>";
-                        }, 1000);
-                        //]]>
-                    </script>
-                    <style scoped="" type="text/css">
-                        #waktumunduredom {
 
-                            background: #31266b;
-                            color: #fec503;
-                            font-size: 100%;
-                            text-transform: uppercase;
-                            text-align: center;
-                            padding: 20px 0;
-                            font-weight: bold;
-                            border-radius: 5px;
-                            line-height: 1.8em;
-                            font-family: Arial, sans-serif;
-                        }
-
-                        .digit {
-                            color: white
-                        }
-
-                        .judul {
-                            color: white
-                        }
-                    </style>
-                </div>
-            </div>
-
-            {{-- <div class="row">
+                    {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="box box-info">
                         <div class="box-header with-border">
@@ -392,172 +380,172 @@
                 </div>
 
             </div> --}}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Informasi Terbaru</h3>
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                        class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                        class="fa fa-times"></i></button>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Informasi Terbaru</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="products-list product-list-in-box">
+                                        @foreach ($info as $item)
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    @if ($item->file != null)
+                                                        <img class="img-circle" src="/images/bell.jpg">
+                                                    @else
+                                                    @endif
+                                                </div>
+                                                <div class="product-info">
+                                                    <a href="/lihat/{{ $item->id_informasi }}"
+                                                        class="product-title">{{ $item->judul }}
+                                                        <span class="label label-info pull-right">
+                                                            {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
+                                                            {{ $item->created_at->diffForHumans() }}
+                                                        </span></a>
+                                                    <span class="product-description">
+                                                        {{ $item->deskripsi }}
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                <div class="box-footer text-center">
+                                    <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="box-body">
-                            <ul class="products-list product-list-in-box">
-                                @foreach ($info as $item)
-                                    <li class="item">
-                                        <div class="product-img">
-                                            @if ($item->file != null)
-                                                <img class="img-circle" src="/images/bell.jpg">
-                                            @else
-                                            @endif
-                                        </div>
-                                        <div class="product-info">
-                                            <a href="/lihat/{{ $item->id_informasi }}"
-                                                class="product-title">{{ $item->judul }}
-                                                <span class="label label-info pull-right">
-                                                    {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                                    {{ $item->created_at->diffForHumans() }}
-                                                </span></a>
-                                            <span class="product-description">
-                                                {{ $item->deskripsi }}
-                                            </span>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="box-footer text-center">
-                            <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="timeline">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Paket Matakuliah</h3>
+                                </div>
+                                <div class="box-body ">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <center>No</center>
+                                                </th>
+                                                <th>
+                                                    <center>Kurikulum</center>
+                                                </th>
+                                                <th>
+                                                    <center>Prodi</center>
+                                                </th>
+                                                <th>
+                                                    <center>Semester</center>
+                                                </th>
+                                                <th>
+                                                    <center>Angkatan</center>
+                                                </th>
+                                                <th>
+                                                    <center>Matakuliah</center>
+                                                </th>
+                                                <th>
+                                                    <center>Status</center>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no = 1; ?>
+                                            @foreach ($data as $item)
+                                                <tr>
+                                                    <td align="center">{{ $no++ }}</td>
+                                                    <td align="center">{{ $item->nama_kurikulum }}</td>
+                                                    <td align="center">{{ $item->prodi }}</td>
+                                                    <td align="center">{{ $item->semester }}</td>
+                                                    <td align="center">{{ $item->angkatan }}</td>
+                                                    <td>{{ $item->kode }} / {{ $item->makul }}</td>
+                                                    <td align="center">
+                                                        @if ($item->id_studentrecord != null)
+                                                            <span class="label label-success">diambil</span>
+                                                        @else
+                                                            <span class="label label-warning">belum</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-        </div>
-        <div class="tab-pane" id="timeline">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Paket Matakuliah</h3>
-                        </div>
-                        <div class="box-body ">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <center>No</center>
-                                        </th>
-                                        <th>
-                                            <center>Kurikulum</center>
-                                        </th>
-                                        <th>
-                                            <center>Prodi</center>
-                                        </th>
-                                        <th>
-                                            <center>Semester</center>
-                                        </th>
-                                        <th>
-                                            <center>Angkatan</center>
-                                        </th>
-                                        <th>
-                                            <center>Matakuliah</center>
-                                        </th>
-                                        <th>
-                                            <center>Status</center>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $no = 1; ?>
-                                    @foreach ($data as $item)
-                                        <tr>
-                                            <td align="center">{{ $no++ }}</td>
-                                            <td align="center">{{ $item->nama_kurikulum }}</td>
-                                            <td align="center">{{ $item->prodi }}</td>
-                                            <td align="center">{{ $item->semester }}</td>
-                                            <td align="center">{{ $item->angkatan }}</td>
-                                            <td>{{ $item->kode }} / {{ $item->makul }}</td>
-                                            <td align="center">
-                                                @if ($item->id_studentrecord != null)
-                                                    <span class="label label-success">diambil</span>
-                                                @else
-                                                    <span class="label label-warning">belum</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
-            </div>
-
-        </div>
-        <div class="tab-pane" id="settings">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Matakuliah Wajib Ulang</h3>
-                        </div>
-                        <div class="box-body ">
-                            <table id="example3" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <center>No</center>
-                                        </th>
-                                        <th>
-                                            <center>Kurikulum</center>
-                                        </th>
-                                        <th>
-                                            <center>Prodi</center>
-                                        </th>
-                                        <th>
-                                            <center>Semester</center>
-                                        </th>
-                                        <th>
-                                            <center>Angkatan</center>
-                                        </th>
-                                        <th>
-                                            <center>Matakuliah</center>
-                                        </th>
-                                        <th>
-                                            <center>Nilai</center>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $no = 1; ?>
-                                    @foreach ($data_mengulang as $item)
-                                        <tr>
-                                            <td align="center">{{ $no++ }}</td>
-                                            <td align="center">{{ $item->nama_kurikulum }}</td>
-                                            <td align="center">{{ $item->prodi }}</td>
-                                            <td align="center">{{ $item->semester }}</td>
-                                            <td align="center">{{ $item->angkatan }}</td>
-                                            <td>{{ $item->kode }} / {{ $item->makul }}</td>
-                                            <td align="center">
-                                                {{ $item->nilai_AKHIR }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                <div class="tab-pane" id="settings">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Matakuliah Wajib Ulang</h3>
+                                </div>
+                                <div class="box-body ">
+                                    <table id="example3" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <center>No</center>
+                                                </th>
+                                                <th>
+                                                    <center>Kurikulum</center>
+                                                </th>
+                                                <th>
+                                                    <center>Prodi</center>
+                                                </th>
+                                                <th>
+                                                    <center>Semester</center>
+                                                </th>
+                                                <th>
+                                                    <center>Angkatan</center>
+                                                </th>
+                                                <th>
+                                                    <center>Matakuliah</center>
+                                                </th>
+                                                <th>
+                                                    <center>Nilai</center>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no = 1; ?>
+                                            @foreach ($data_mengulang as $item)
+                                                <tr>
+                                                    <td align="center">{{ $no++ }}</td>
+                                                    <td align="center">{{ $item->nama_kurikulum }}</td>
+                                                    <td align="center">{{ $item->prodi }}</td>
+                                                    <td align="center">{{ $item->semester }}</td>
+                                                    <td align="center">{{ $item->angkatan }}</td>
+                                                    <td>{{ $item->kode }} / {{ $item->makul }}</td>
+                                                    <td align="center">
+                                                        {{ $item->nilai_AKHIR }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 
 {{-- <div class="row">
