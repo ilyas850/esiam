@@ -83,7 +83,7 @@ class KaprodiController extends Controller
 
     $tahun = Periode_tahun::join('kalender_akademik', 'periode_tahun.id_periodetahun', '=', 'kalender_akademik.id_periodetahun')
       ->where('periode_tahun.status', 'ACTIVE')
-      ->select('periode_tahun.periode_tahun', 'kalender_akademik.file')
+      ->select('periode_tahun.periode_tahun', 'kalender_akademik.file', 'periode_tahun.id_periodetahun')
       ->first();
 
     $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
