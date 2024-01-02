@@ -155,6 +155,27 @@
                                 <label>
                                     <font color="red-text">*</font>Tipe Kuliah/Ujian
                                 </label>
+                                @if ($cek_mk->akt_sks_praktek == 0)
+                                    <select class="form-control" name="id_tipekuliah" required>
+                                        <option value="1">Teori</option>
+                                    </select>
+                                @elseif($cek_mk->akt_sks_praktek > 0)
+                                    <select class="form-control" name="id_tipekuliah" required>
+                                        <option value="{{ $bap->id_tipekuliah }}">
+                                            @if ($bap->id_tipekuliah == 1)
+                                                Teori
+                                            @elseif($bap->id_tipekuliah == 2)
+                                                Praktikum
+                                            @elseif($bap->id_tipekuliah == 3)
+                                                Teori + Praktikum
+                                            @endif
+                                        </option>
+                                        <option value="1">Teori</option>
+                                        <option value="2">Praktikum</option>
+                                        <option value="3">Teori + Praktikum</option>
+                                    </select>
+                                @endif
+{{-- 
                                 <select class="form-control" name="id_tipekuliah" required>
                                     <option value="{{ $bap->id_tipekuliah }}">
                                         @if ($bap->id_tipekuliah == 1)
@@ -168,7 +189,7 @@
                                     <option value="1">Teori</option>
                                     <option value="2">Praktikum</option>
                                     <option value="3">Teori + Praktikum</option>
-                                </select>
+                                </select> --}}
                             </div>
                             <div class="col-md-3">
                                 <label>

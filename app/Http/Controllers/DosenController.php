@@ -93,7 +93,7 @@ class DosenController extends Controller
         $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
         $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
-        
+
         return view('home', compact('dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
     }
 
@@ -1550,6 +1550,11 @@ class DosenController extends Controller
     {
         $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
 
+        $cek_mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->where('kurikulum_periode.id_kurperiode', $id)
+            ->select('matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+            ->first();
+
         $sisa_pertemuan = Kuliah_transaction::join('bap', 'kuliah_transaction.id_kurperiode', '=', 'bap.id_kurperiode')
             ->where('kuliah_transaction.id_kurperiode', $id)
             ->get();
@@ -1566,7 +1571,7 @@ class DosenController extends Controller
 
         $rps = Rps::where('id_kurperiode', $id)->get();
 
-        return view('dosen/form_bap', compact('id', 'jam', 'nilai_pertemuan', 'rps'));
+        return view('dosen/form_bap', compact('id', 'jam', 'nilai_pertemuan', 'rps', 'cek_mk'));
     }
 
     public function save_bap(Request $request)
@@ -2031,11 +2036,16 @@ class DosenController extends Controller
 
         $idKur = $bap->id_kurperiode;
 
+        $cek_mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->where('kurikulum_periode.id_kurperiode', $idKur)
+            ->select('matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+            ->first();
+
         $rps = Rps::where('id_kurperiode', $idKur)->get();
 
         $jam = Kurikulum_jam::orderBy('jam', 'ASC')->get();
 
-        return view('dosen/edit_bap', compact('id', 'bap', 'rps', 'jam'));
+        return view('dosen/edit_bap', compact('id', 'bap', 'rps', 'jam', 'cek_mk'));
     }
 
     public function simpanedit_bap(Request $request, $id)
