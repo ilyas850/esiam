@@ -80,6 +80,7 @@ class MhsController extends Controller
     function mhs_home()
     {
         $id = Auth::user()->id_user;
+
         $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
             ->leftjoin('microsoft_user', 'student.idstudent', '=', 'microsoft_user.id_student')
             ->leftJoin('prodi', (function ($join) {
@@ -501,39 +502,17 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+        $jadwal = DB::select('CALL persentase_absen_per_mhs(?)', [$id]);
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+        return view('mhs/jadwal', ['jadwal' => $jadwal]);
+    }
 
-        $record = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->leftjoin('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->leftjoin('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->leftjoin('ruangan', 'kurikulum_periode.id_ruangan', '=', 'ruangan.id_ruangan')
-            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->where('student_record.id_student', $id)
-            ->where('kurikulum_periode.id_periodetipe', $tp->id_periodetipe)
-            ->where('kurikulum_periode.id_periodetahun', $thn->id_periodetahun)
-            ->where('student_record.status', 'TAKEN')
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select(
-                'kurikulum_periode.id_kurperiode',
-                'student_record.tanggal_krs',
-                'kurikulum_periode.id_semester',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'kurikulum_hari.hari',
-                'kurikulum_jam.jam',
-                'ruangan.nama_ruangan',
-                'dosen.nama'
-            )
-            ->orderBy('kurikulum_periode.id_hari', 'ASC')
-            ->orderBy('kurikulum_periode.id_jam', 'ASC')
-            ->get();
+    function history_perkuliahan()
+    {
+        $id = Auth::user()->id_user;
+        $data = DB::select('CALL persentase_absen_per_mhs_all_makul(?)', [$id]);
 
-        return view('mhs/jadwal', ['jadwal' => $record]);
+        return view('mhs/perkuliahan/history_perkuliahan', compact('data'));
     }
 
     public function lihatabsen($id)
@@ -549,7 +528,24 @@ class MhsController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
+            ->select(
+                'kurikulum_periode.akt_sks_praktek',
+                'kurikulum_periode.akt_sks_teori',
+                'kurikulum_periode.id_kelas',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'dosen.akademik',
+                'dosen.nama',
+                'ruangan.nama_ruangan',
+                'kurikulum_jam.jam',
+                'kurikulum_hari.hari',
+                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester'
+            )
             ->get();
         foreach ($bap as $key) {
             # code...
@@ -559,7 +555,20 @@ class MhsController extends Controller
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select('bap.id_bap', 'bap.pertemuan', 'bap.tanggal', 'bap.jam_mulai', 'bap.jam_selsai', 'bap.materi_kuliah', 'bap.metode_kuliah', 'kuliah_tipe.tipe_kuliah', 'bap.jenis_kuliah', 'bap.hadir', 'bap.tidak_hadir')
+            ->select(
+                'bap.id_bap',
+                'bap.pertemuan',
+                'bap.tanggal',
+                'bap.jam_mulai',
+                'bap.jam_selsai',
+                'bap.materi_kuliah',
+                'bap.metode_kuliah',
+                'kuliah_tipe.tipe_kuliah',
+                'bap.jenis_kuliah',
+                'bap.hadir',
+                'bap.tidak_hadir',
+                'bap.praktikum'
+            )
             ->get();
         $d = count($data);
         if ($d > 0) {

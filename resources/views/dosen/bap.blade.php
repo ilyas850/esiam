@@ -94,8 +94,7 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{ Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }} -
-                                        {{ Carbon\Carbon::parse($item->jam_selsai)->format('H:i') }}
+                                        {{ Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}-{{ Carbon\Carbon::parse($item->jam_selsai)->format('H:i') }}
                                     </center>
                                 </td>
                                 <td>
