@@ -68,6 +68,9 @@
                             <th>
                                 <center>Aktual Materi Praktikum</center>
                             </th>
+                            {{-- <th>
+                                <center>Kesesuaian RPS</center>
+                            </th> --}}
                             <th>
                                 <center>Tipe Kuliah</center>
                             </th>
@@ -97,6 +100,14 @@
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
                                 <td>{{ $item->praktikum }}</td>
+                                {{-- <td align="center"><b>
+                                        @if ($item->kesesuaian_rps == 'SESUAI')
+                                            <span>&#10003;</span>
+                                        @elseif($item->kesesuaian_rps == 'TIDAK SESUAI')
+                                            <span>&#10007;</span>
+                                        @endif
+                                    </b>
+                                </td> --}}
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
                                 </td>
