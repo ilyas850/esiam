@@ -208,10 +208,17 @@
                                 <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required>{{ $bap->alasan_pembaharuan_materi }}</textarea>
                             </div> --}}
                             <div class="col-md-3">
-                                <label>
-                                    Aktual Materi Praktikum
-                                </label>
-                                <textarea class="form-control" rows="5" name="praktikum">{{ $bap->praktikum }}</textarea>
+                                @if ($cek_mk->akt_sks_praktek > 0)
+                                    <font color="red-text">*</font><label>
+                                        Aktual Materi Praktikum
+                                    </label>
+                                    <textarea class="form-control" rows="5" name="praktikum" required>{{ $bap->praktikum }}</textarea>
+                                @elseif($cek_mk->akt_sks_praktek == 0)
+                                    <label>
+                                        Aktual Materi Praktikum
+                                    </label>
+                                    <textarea class="form-control" rows="5" name="praktikum">{{ $bap->praktikum }}</textarea>
+                                @endif
                             </div>
                             <div class="col-md-3">
                                 <label>
