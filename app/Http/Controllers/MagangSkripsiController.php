@@ -1027,6 +1027,26 @@ class MagangSkripsiController extends Controller
         return view('dosen/magang_skripsi/form_nilai_magang', compact('data', 'id', 'form_dosbing', 'form_seminar'));
     }
 
+    public function isi_form_nilai_magang2($id)
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+            ->first();
+
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Pembimbing')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        $form_seminar = Prausta_master_penilaian::where('kategori', 1)
+            ->where('jenis_form', 'Form Seminar')
+            ->where('status', 'ACTIVE')
+            ->get();
+
+        return view('dosen/magang_skripsi/form_nilai_magang2', compact('data', 'id', 'form_dosbing', 'form_seminar'));
+    }
+
     public function simpan_nilai_magang(Request $request)
     {
         $id_prausta = $request->id_settingrelasi_prausta;

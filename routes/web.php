@@ -501,7 +501,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('mhs_bim', 'DosenController@mhs_bim');
     Route::get('record_nilai/{id}', 'DosenController@record_nilai');
 
-    //cek matakuliah mengulang
+    #cek matakuliah mengulang
     Route::get('cek_makul_mengulang/{id}', 'DosenController@cek_makul_mengulang');
 
     #validasi KRS
