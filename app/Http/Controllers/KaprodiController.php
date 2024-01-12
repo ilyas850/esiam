@@ -50,7 +50,7 @@ use App\Waktu_krs;
 use App\Penangguhan_trans;
 use App\Yudisium;
 use App\Wisuda;
-use App\Absen_ujian;
+use App\Models\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Pengajuan_trans;
 use App\Perwalian_trans_bimbingan;

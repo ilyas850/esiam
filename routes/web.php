@@ -488,6 +488,10 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     #KRS mahasiswa
     Route::post('savekrs_new_admin', 'SadminController@savekrs_new');
+
+    #Ijazah & Transkrip
+    Route::get('master_ijazah_transkrip', 'SadminController@master_ijazah_transkrip');
+    Route::post('saveedit_data_mhs', 'SadminController@saveedit_data_mhs');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
@@ -538,10 +542,10 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('generate_nilai_akhir_dsn_dlm', 'DosenController@generate_nilai_akhir_dsn_dlm');
     Route::put('put_settingnilai_dsn_dlm/{id}', 'DosenController@put_settingnilai_dsn_dlm');
 
-    //filter matakuliah diampu dosen
+    #filter matakuliah diampu dosen
     Route::post('filter_makul_diampu_dsn_dlm', 'DosenController@filter_makul_diampu_dsn_dlm');
 
-    //histori matakuliah
+    #histori matakuliah
     Route::get('history_makul_dsn', 'DosenController@history_makul_dsn');
     Route::get('cekmhs_dsn/{id}', 'DosenController@cekmhs_dsn');
     Route::get('cekmhs_dsn_his/{id}', 'DosenController@cekmhs_dsn_his');
@@ -551,7 +555,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('sum_absen_his/{id}', 'DosenController@sum_absen_his');
     Route::get('jurnal_bap_his/{id}', 'DosenController@jurnal_bap_his');
 
-    //BAP
+    #BAP
     Route::get('entri_bap/{id}', 'DosenController@entri_bap');
     Route::get('input_bap/{id}', 'DosenController@input_bap');
     Route::post('save_bap', 'DosenController@save_bap');
@@ -569,12 +573,12 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('jurnal_bap/{id}', 'DosenController@jurnal_bap');
     Route::get('print_jurnal/{id}', 'DosenController@print_jurnal');
 
-    //unduh pdf
+    #unduh pdf
     Route::get('unduh_pdf_nilai/{id}', 'DosenController@unduh_pdf_nilai');
     Route::get('download_absensi/{id}', 'DosenController@download_absensi');
     Route::get('download_jurnal/{id}', 'DosenController@download_jurnal');
 
-    //PraUSTA PKL
+    #PraUSTA PKL
     Route::get('pembimbing_pkl', 'DosenController@pembimbing_pkl');
     Route::get('record_bim_pkl/{id}', 'DosenController@record_bim_pkl');
     Route::get('val_bim_pkl/{id}', 'DosenController@val_bim_pkl');
@@ -590,11 +594,11 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('edit_nilai_pkl_by_dosen_dlm/{id}', 'DosenController@edit_nilai_pkl_by_dosen_dlm');
     Route::post('put_nilai_prakerin_dosen_dlm', 'DosenController@put_nilai_prakerin_dosen_dlm');
 
-    //PraUSTA SEMPRO
+    #PraUSTA SEMPRO
     Route::get('pembimbing_sempro', 'DosenController@pembimbing_sempro');
     Route::get('record_bim_sempro/{id}', 'DosenController@record_bim_sempro');
 
-    //penguji SEMPRO
+    #penguji SEMPRO
     Route::get('penguji_sempro', 'DosenController@penguji_sempro');
     Route::get('isi_form_nilai_proposal_dospem/{id}', 'DosenController@isi_form_nilai_proposal_dospem');
     Route::post('simpan_nilai_sempro_dospem', 'DosenController@simpan_nilai_sempro_dospem');
@@ -610,12 +614,12 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('edit_nilai_sempro_by_dospeng2_dlm/{id}', 'DosenController@edit_nilai_sempro_by_dospeng2_dlm');
     Route::post('put_nilai_sempro_dospeng2_dlm', 'DosenController@put_nilai_sempro_dospeng2_dlm');
 
-    //validasi revisi
+    #validasi revisi
     Route::get('validasi_dospem/{id}', 'DosenController@validasi_dospem');
     Route::get('validasi_dosji1/{id}', 'DosenController@validasi_dosji1');
     Route::get('validasi_dosji2/{id}', 'DosenController@validasi_dosji2');
 
-    //PraUSTA TA
+    #PraUSTA TA
     Route::get('pembimbing_ta', 'DosenController@pembimbing_ta');
     Route::get('record_bim_ta/{id}', 'DosenController@record_bim_ta');
 
@@ -643,7 +647,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('jadwal_prausta_dsn_dlm', 'DosenController@jadwal_prausta_dsn_dlm');
     Route::get('jadwal_magang_dsn_dlm', 'DosenController@jadwal_magang_dsn_dlm');
 
-    //upload soal
+    #upload soal
     Route::get('upload_soal_dsn_dlm', 'DosenController@upload_soal_dsn_dlm');
     Route::post('simpan_soal_uts_dsn_dlm', 'DosenController@simpan_soal_uts_dsn_dlm');
     Route::post('simpan_soal_uas_dsn_dlm', 'DosenController@simpan_soal_uas_dsn_dlm');
@@ -651,7 +655,7 @@ Route::group(['middleware' => 'dosen'], function () {
     #record pembayaran
     Route::get('record_pembayaran_mhs/{id}', 'DosenController@record_pembayaran_mhs');
 
-    //download BAP prausta
+    #download BAP prausta
     Route::get('download_bap_pkl_dsn_dlm/{id}', 'DosenController@download_bap_pkl_dsn_dlm');
     Route::get('download_bap_sempro_dsn_dlm/{id}', 'DosenController@download_bap_sempro_dsn_dlm');
     Route::get('download_bap_ta_dsn_dlm/{id}', 'DosenController@download_bap_ta_dsn_dlm');
@@ -659,20 +663,20 @@ Route::group(['middleware' => 'dosen'], function () {
     #standar operasional prosedur
     Route::get('sop_dsn_dlm', 'DosenController@sop_dsn_dlm');
 
-    //pedoman akademik
+    #pedoman akademik
     Route::get('pedoman_akademik_dsn_dlm', 'DosenController@pedoman_akademik_dsn_dlm');
     Route::get('download_pedoman_dsn_dlm/{id}', 'DosenController@download_pedoman_dsn_dlm');
 
-    //pedoman khusus
+    #pedoman khusus
     Route::get('pedoman_khusus_dsn_dlm', 'DosenController@pedoman_khusus_dsn_dlm');
     Route::get('download_pedoman_khusus_dsn_dlm/{id}', 'DosenController@download_pedoman_khusus_dsn_dlm');
 
-    //penangguhan mahasiswa
+    #penangguhan mahasiswa
     Route::get('penangguhan_mhs_dsn', 'DosenController@penangguhan_mhs_dsn');
     Route::get('val_penangguhan_dsn_pa/{id}', 'DosenController@val_penangguhan_dsn_pa');
     Route::get('batal_val_penangguhan_dsn_pa/{id}', 'DosenController@batal_val_penangguhan_dsn_pa');
 
-    //cek bimbingan perwalian
+    #cek bimbingan perwalian
     Route::get('cek_bim_perwalian/{id}', 'DosenController@cek_bim_perwalian');
     Route::get('val_bim_perwalian/{id}', 'DosenController@val_bim_perwalian');
 
@@ -1910,7 +1914,7 @@ Route::group(['middleware' => 'prausta'], function () {
 });
 
 Route::group(['middleware' => 'bauk'], function () {
-    //data penangguhan
+    #data penangguhan
     Route::get('kategori_penangguhan_bauk', 'BaukController@kategori_penangguhan_bauk');
     Route::post('pilih_ta_penangguhan', 'BaukController@pilih_ta_penangguhan');
 

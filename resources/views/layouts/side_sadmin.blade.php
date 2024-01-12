@@ -36,6 +36,7 @@
             <li><a href="/skpi"><i class="fa fa-circle-o"></i> SKPI</a></li>
             <li><a href="/master_yudisium"><i class="fa fa-circle-o"></i> Yudisium</a></li>
             <li><a href="/master_wisuda"><i class="fa fa-circle-o"></i> Wisuda</a></li>
+            <li><a href="/master_ijazah_transkrip"><i class="fa fa-circle-o"></i>SKPI, Ijazah & Transkrip</a></li>
         </ul>
     </li>
     <li class="treeview">

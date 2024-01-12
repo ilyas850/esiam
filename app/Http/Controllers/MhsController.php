@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use File;
 use PDF;
 use Alert;
-use App\Absen_ujian;
+use App\Models\Absen_ujian;
 use App\Bap;
 use App\Absensi_mahasiswa;
 use App\Pedoman_akademik;
@@ -3782,13 +3782,12 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'nama_lengkap' => 'required',
-                'tmpt_lahir' => 'required',
-                'tgl_lahir' => 'required',
-                'nik' => 'required',
-                'file_ijazah'    => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
-                'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
-                // 'file_foto'     => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'nama_lengkap'  => 'required',
+                'tmpt_lahir'    => 'required',
+                'tgl_lahir'     => 'required',
+                'nik'           => 'required',
+                'file_ijazah'   => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
             ],
             $message,
         );

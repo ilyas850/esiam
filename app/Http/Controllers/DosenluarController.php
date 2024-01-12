@@ -42,7 +42,7 @@ use App\Setting_nilai;
 use App\Standar;
 use App\Pedoman_akademik;
 use App\Pedoman_khusus;
-use App\Absen_ujian;
+use App\Models\Absen_ujian;
 use App\Permohonan_ujian;
 use App\Rps;
 use App\Exports\DataNilaiExport;

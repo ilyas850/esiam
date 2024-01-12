@@ -18,7 +18,6 @@ use App\Dosen;
 use App\Kaprodi;
 use App\Prodi;
 use App\Kelas;
-use App\Ruangan;
 use App\Kurikulum_master;
 use App\Student;
 use App\Password;
@@ -31,8 +30,6 @@ use App\Matakuliah;
 use App\Matakuliah_bom;
 use App\Semester;
 use App\Dosen_pembimbing;
-use App\Kurikulum_hari;
-use App\Kurikulum_jam;
 use App\Kurikulum_periode;
 use App\Kurikulum_transaction;
 use App\Transkrip_nilai;
@@ -40,22 +37,18 @@ use App\Transkrip_final;
 use App\Absensi_mahasiswa;
 use App\Prausta_master_penilaian;
 use App\Visimisi;
-use App\Kuliah_nilaihuruf;
 use App\Prausta_master_kategori;
 use App\Prausta_master_kode;
 use App\Prausta_setting_relasi;
 use App\Prausta_trans_bimbingan;
-use App\Prausta_trans_hasil;
 use App\Kuisioner_master;
 use App\Kuisioner_kategori;
 use App\Kuisioner_aspek;
-use App\Kuisioner_transaction;
 use App\Microsoft_user;
 use App\Wadir;
 use App\Wrkpersonalia;
 use App\Sertifikat;
 use App\Skpi;
-use App\Soal_ujian;
 use App\Yudisium;
 use App\Waktu;
 use App\Standar;
@@ -64,7 +57,6 @@ use App\Pengalaman;
 use App\Penangguhan_kategori;
 use App\Penangguhan_trans;
 use App\Kritiksaran_kategori;
-use App\Kritiksaran_transaction;
 use App\Kalender_akademik;
 use App\Konversi_makul;
 use App\Pengajuan_kategori;
@@ -1907,27 +1899,7 @@ class SadminController extends Controller
         $tglyudi = $pisahyudi[2] . ' ' . $blnyudi . ' ' . $pisahyudi[0];
         $tglwisu = $pisahwisu[2] . ' ' . $blnwisu . ' ' . $pisahwisu[0];
 
-
         $item->judul_prausta = str_replace('&', 'dan', $item->judul_prausta);
-
-        // $data = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-        //     ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
-        //     ->where('student_record.id_student', $id)
-        //     ->where('student_record.status', 'TAKEN')
-        //     ->where('student_record.nilai_AKHIR', '!=', '0')
-        //     ->where('student_record.nilai_ANGKA', '!=', '0')
-        //     ->select(
-        //         DB::raw('DISTINCT(student_record.id_student)'),
-        //         'matakuliah.kode',
-        //         'matakuliah.makul',
-        //         DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
-        //         'student_record.nilai_AKHIR',
-        //         'student_record.nilai_ANGKA',
-        //         DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as nilai_sks')
-        //     )
-        //     ->orderBy('kurikulum_transaction.id_semester', 'ASC')
-        //     ->orderBy('matakuliah.kode', 'ASC')
-        //     ->get();
 
         $data = DB::select('CALL transkrip_proc(?)', [$id]);
 
@@ -1981,7 +1953,7 @@ class SadminController extends Controller
 
         $template->cloneRowAndSetValues('kode', $new_data);
 
-        $fileName = $item->nama_lengkap;
+        $fileName = $item->nama_lengkap . ' ' . $item->nim . ' ' . $item->prodi . ' - Transkrip';
 
         $template->saveAs($fileName . '.docx');
         return response()
@@ -3219,8 +3191,24 @@ class SadminController extends Controller
     {
         $mhs = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
             ->join('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->join('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
             ->where('skpi.id_skpi', $id)
-            ->select('yudisium.nama_lengkap', 'student.nim', 'yudisium.tmpt_lahir', 'yudisium.tgl_lahir', 'skpi.date_masuk', 'skpi.date_lulus', 'skpi.no_skpi', 'skpi.no_ijazah', 'yudisium.id_student', 'student.kodeprodi')
+            ->select(
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'skpi.date_masuk',
+                'skpi.date_lulus',
+                'skpi.no_skpi',
+                'skpi.no_ijazah',
+                'yudisium.id_student',
+                'student.kodeprodi',
+                'prodi.prodi'
+            )
             ->first();
 
         $nama_mhs = strtolower($mhs->nama_lengkap);
@@ -3228,6 +3216,7 @@ class SadminController extends Controller
         $nim = $mhs->nim;
         $tmptlahir = strtolower($mhs->tmpt_lahir);
         $new_tmptlahir = ucwords($tmptlahir);
+        $namaprodi = $mhs->prodi;
 
         $tgllahir = $mhs->tgl_lahir->isoFormat('D MMMM Y');
 
@@ -3398,7 +3387,9 @@ class SadminController extends Controller
 
         $template->cloneRowAndSetValues('nama_pt', $data_pengalaman);
 
-        $fileName = $new_name;
+        //$fileName = $new_name;
+
+        $fileName = $new_name . ' ' . $nim . ' ' . $namaprodi . ' - SKPI';
 
         $template->saveAs($fileName . '.docx');
         return response()
@@ -4665,7 +4656,7 @@ class SadminController extends Controller
         $template->setValue('jenjang', $jenjang);
         $template->setValue('gelar', $gelar);
 
-        $fileName = $new_nama . ' ' . $nim . ' ' . $prodi;
+        $fileName = $new_nama . ' ' . $nim . ' ' . $prodi . ' - Ijazah';
 
         $template->saveAs($fileName . '.docx');
         return response()
@@ -4714,7 +4705,8 @@ class SadminController extends Controller
         return view('sadmin/masterakademik/master_wisuda', compact('data', 'prodi'));
     }
 
-    function export_data_wisuda_admin() {
+    function export_data_wisuda_admin()
+    {
         $thn = Periode_tahun::where('status', 'ACTIVE')->first();
         $tahun = $thn->periode_tahun;
 
@@ -7070,5 +7062,120 @@ class SadminController extends Controller
 
         $nama_file = 'Data Mahasiswa Aktif ' . ' ' . $prd . ' ' . $ganti . ' ' . $tipe . '.xlsx';
         return Excel::download(new DataMhsExport($nmprd, $nmthun, $nmtp), $nama_file);
+    }
+
+    function master_ijazah_transkrip()
+    {
+        $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
+            ->leftjoin('wisuda', 'student.idstudent', '=', 'wisuda.id_student')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftjoin('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+            ->where('student.active', 1)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'student.idstudent',
+                'yudisium.nama_lengkap',
+                'student.nim',
+                'wisuda.ukuran_toga',
+                'wisuda.tahun_lulus',
+                'prodi.id_prodi',
+                'prodi.prodi',
+                'yudisium.tmpt_lahir',
+                'yudisium.tgl_lahir',
+                'yudisium.nik',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'yudisium.file_ijazah',
+                'yudisium.file_ktp',
+                'yudisium.id_yudisium',
+                'skpi.id_skpi',
+                'skpi.no_skpi',
+                'skpi.no_transkrip',
+                'skpi.no_ijazah',
+                'skpi.date_lulus',
+                'skpi.date_wisuda',
+                'wisuda.no_hp',
+                'wisuda.email',
+                'wisuda.npwp',
+                'wisuda.alamat_ktp',
+                'wisuda.alamat_domisili',
+                'wisuda.nama_ayah',
+                'wisuda.nama_ibu',
+                'wisuda.no_hp_ayah',
+                'wisuda.no_hp_ibu',
+                'wisuda.alamat_ortu',
+                'wisuda.ukuran_toga',
+                'wisuda.tahun_lulus',
+
+            )
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        $prodi = Prodi::orderBy('prodi', 'ASC')->get();
+
+        return view('sadmin/masterakademik/master_ijazah_transkrip', compact('data', 'prodi'));
+    }
+
+    function saveedit_data_mhs(Request $request)
+    {
+        $idstudent = $request->id_student;
+        $cek_skpi = Skpi::where('id_student', $idstudent)->first();
+        $cek_transkrip = Transkrip_final::where('id_student', $idstudent)->first();
+        $cek_yudisium = Yudisium::where('id_student', $idstudent)->first();
+        $cek_wisuda = Wisuda::where('id_student', $idstudent)->first();
+
+        if ($cek_skpi != null) {
+            Skpi::where('id_student', $idstudent)->update([
+                'no_ijazah' => $request->no_ijazah,
+                'no_transkrip' => $request->no_transkrip
+            ]);
+        }
+
+        if ($cek_transkrip != null) {
+            Transkrip_final::where('id_student', $idstudent)->update([
+                'no_ijazah' => $request->no_ijazah,
+                'no_transkrip_final' => $request->no_transkrip
+            ]);
+        }
+
+        if ($cek_yudisium != null) {
+            Yudisium::where('id_student', $idstudent)->update([
+                'nama_lengkap' => $request->nama_lengkap,
+                'tmpt_lahir' => $request->tmpt_lahir,
+                'tgl_lahir' => $request->tgl_lahir,
+                'nik' => $request->nik
+            ]);
+        }
+
+        if ($cek_wisuda != null) {
+            Wisuda::where('id_student', $idstudent)->update([
+                'ukuran_toga' => $request->ukuran_toga,
+                'tahun_lulus' => $request->tahun_lulus,
+                'nim' => $request->nim,
+                'nama_lengkap' => $request->nama_lengkap,
+                'id_prodi' => $request->id_prodi,
+                'no_hp' => $request->no_hp,
+                'email' => $request->email,
+                'nik' => $request->nik,
+                'npwp' => $request->npwp,
+                'alamat_ktp' => $request->alamat_ktp,
+                'alamat_domisili' => $request->alamat_domisili,
+                'nama_ayah' => $request->nama_ayah,
+                'nama_ibu' => $request->nama_ibu,
+                'no_hp_ayah' => $request->no_hp_ayah,
+                'no_hp_ibu' => $request->no_hp_ibu,
+                'alamat_ortu' => $request->alamat_ortu
+            ]);
+        }
+
+        Alert::success('', 'Data berhasil di Edit')->autoclose(3500);
+        return redirect()->back();
     }
 }
