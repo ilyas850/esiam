@@ -10,6 +10,33 @@
                 <h3 class="box-title">Data SKPI, Ijazah dan Transkrip Mahasiswa Politeknik META Industri</h3>
             </div>
             <div class="box-body">
+                <div class="row">
+                    <form class="form" role="form" action="{{ url('filter_skpi') }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="col-xs-3">
+                            <select class="form-control" name="kodeprodi" required>
+                                <option></option>
+                                @foreach ($prodiall as $key)
+                                    <option value="{{ $key->kodeprodi }}">
+                                        {{ $key->prodi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-xs-3">
+                            <select class="form-control" name="idangkatan" required>
+                                <option></option>
+                                @foreach ($angkatan as $keyan)
+                                    <option value="{{ $keyan->idangkatan }}">
+                                        {{ $keyan->angkatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Filter</button>
+                    </form>
+                </div>
+                <br>
                 <table id="example1" class="table">
                     <thead>
                         <tr>

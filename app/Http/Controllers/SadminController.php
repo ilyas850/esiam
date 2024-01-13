@@ -3181,7 +3181,7 @@ class SadminController extends Controller
 
         if (count($data) == 0) {
             Alert::warning('', 'Maaf belum ada yang mendaftar Yudisium!')->autoclose(3500);
-            return redirect('skpi');
+            return redirect('master_ijazah_transkrip');
         } elseif (count($data) > 0) {
             return view('sadmin/skpi/filter_skpi', compact('data', 'prodi', 'angkatan'));
         }
@@ -3439,7 +3439,7 @@ class SadminController extends Controller
             }
         }
 
-        return redirect('skpi');
+        return redirect('master_ijazah_transkrip');
     }
 
     public function kartu_ujian_mhs()
@@ -7066,6 +7066,12 @@ class SadminController extends Controller
 
     function master_ijazah_transkrip()
     {
+        $prodiall = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->get();
+
+        $angkatan = Angkatan::where('angkatan', '>', 2016)->get();
+
         $data = Yudisium::join('student', 'yudisium.id_student', '=', 'student.idstudent')
             ->leftjoin('wisuda', 'student.idstudent', '=', 'wisuda.id_student')
             ->leftJoin('prodi', (function ($join) {
@@ -7120,7 +7126,7 @@ class SadminController extends Controller
 
         $prodi = Prodi::orderBy('prodi', 'ASC')->get();
 
-        return view('sadmin/masterakademik/master_ijazah_transkrip', compact('data', 'prodi'));
+        return view('sadmin/masterakademik/master_ijazah_transkrip', compact('data', 'prodi', 'prodiall', 'angkatan'));
     }
 
     function saveedit_data_mhs(Request $request)
