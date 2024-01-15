@@ -1,5 +1,5 @@
 @extends('layouts.master_auth')
-//update
+
 @section('content')
     <div class="content">
         <div class="container">
