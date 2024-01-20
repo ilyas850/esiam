@@ -3919,6 +3919,7 @@ class KaprodiController extends Controller
 
     $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
       ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
       ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
       ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
       ->get();

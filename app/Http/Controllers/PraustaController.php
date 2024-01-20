@@ -274,12 +274,8 @@ class PraustaController extends Controller
                 $validasi = 'Belum Lunas';
             }
 
+            #data bimbingan
             $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-                ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-                ->leftJoin('prodi', (function ($join) {
-                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-                }))
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
