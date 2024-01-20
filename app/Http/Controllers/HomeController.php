@@ -122,7 +122,7 @@ class HomeController extends Controller
       return redirect('mhs_home');
     } elseif ($akses == 4) {
 
-      return view('home', ['mhs' => $mhs, 'id' => $id,]);
+      return view('home', ['mhs' => $mhs, 'id' => $id]);
     } elseif ($akses == 5) {
 
       return redirect('dosenluar_home');
