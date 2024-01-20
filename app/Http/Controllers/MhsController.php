@@ -158,10 +158,11 @@ class MhsController extends Controller
                 ->where('edom_transaction.id_student', $id)
                 ->where('kurikulum_periode.id_periodetipe', $tipe->id_periodetipe)
                 ->where('kurikulum_periode.id_periodetahun', $tahun->id_periodetahun)
+                ->where('kurikulum_periode.status', 'ACTIVE')
                 ->whereNotIn('kurikulum_periode.id_makul', [281, 286, 235, 430, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 490])
                 ->select(DB::raw('DISTINCT(edom_transaction.id_kurperiode)'))
                 ->get();
-         
+
             $sekhit = count($cekedom);
 
             if ($hit == $sekhit) {
