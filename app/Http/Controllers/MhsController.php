@@ -144,7 +144,7 @@ class MhsController extends Controller
 
             $sekhit = count($cekedom);
 
-            if (($hit - 2) =< $sekhit) {
+            if (($hit - 2) <= $sekhit) {
                 #cek kuisioner Pembimbing Akademik
                 $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                     ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
