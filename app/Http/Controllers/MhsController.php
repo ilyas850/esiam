@@ -144,7 +144,7 @@ class MhsController extends Controller
 
             $sekhit = count($cekedom);
 
-            if ($hit == $sekhit) {
+            if (($hit - 2) =< $sekhit) {
                 #cek kuisioner Pembimbing Akademik
                 $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                     ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
@@ -153,8 +153,8 @@ class MhsController extends Controller
                     ->where('kuisioner_transaction.id_periodetahun', $tahun->id_periodetahun)
                     ->where('kuisioner_transaction.id_periodetipe', $tipe->id_periodetipe)
                     ->get();
-                
-                
+
+
                 if (count($cek_kuis_pa) > 0) {
                     #cek kuisioner BAAK
                     $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
@@ -5106,7 +5106,7 @@ class MhsController extends Controller
                 $c = $b * 2;
             }
         }
-       
+
         $biaya = Biaya::where('idangkatan', $idangkatan)
             ->where('idstatus', $idstatus)
             ->where('kodeprodi', $kodeprodi)
@@ -5179,7 +5179,7 @@ class MhsController extends Controller
             $seminar = $biaya->seminar;
             $sidang = $biaya->sidang;
         }
-     
+
         #total pembayaran kuliah
         $total_semua_dibayar = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
             ->where('kuitansi.idstudent', $id)
@@ -5242,7 +5242,7 @@ class MhsController extends Controller
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {
-            
+
             if ($c == 1) {
                 $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
             } elseif ($c == 2) {
@@ -5286,7 +5286,7 @@ class MhsController extends Controller
             } elseif ($c == 14) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
             }
-            
+
             if ($cekbyr == 0 or $cekbyr < 1000) {
                 $records = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                     ->where('student_record.id_student', $id)
@@ -5298,7 +5298,7 @@ class MhsController extends Controller
                     ->get();
 
                 $hit = count($records);
-                
+
                 #cek jumlah pengisian edom
                 $cekedom = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                     // ->join('kurikulum_transaction', 'edom_transaction.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -5309,9 +5309,9 @@ class MhsController extends Controller
                     ->whereNotIn('kurikulum_periode.id_makul', [281, 286, 235, 430, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 490])
                     ->select(DB::raw('DISTINCT(edom_transaction.id_kurperiode)'))
                     ->get();
-                    
+
                 $sekhit = count($cekedom);
-                
+
                 if ($hit == $sekhit) {
                     #cek kuisioner Pembimbing Akademik
                     $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
@@ -5321,7 +5321,7 @@ class MhsController extends Controller
                         ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
                         ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                         ->get();
-                        
+
                     if (count($cek_kuis_pa) > 0) {
                         #cek kuisioner BAAK
                         $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
@@ -5331,7 +5331,7 @@ class MhsController extends Controller
                             ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
                             ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                             ->get();
-                            
+
                         if (count($cek_kuis_baak) > 0) {
                             #cek kuisioner BAUK
                             $cek_kuis_bauk = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
