@@ -229,7 +229,7 @@
                                                             <label>File Bimbingan</label>
                                                             <input type="file" name="file_bimbingan"
                                                                 class="form-control" required>
-                                                            <span>max. size file 4mb format pdf</span>
+                                                            <span>Maksimal ukuran file 4mb dan PDF</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -439,7 +439,7 @@
                                                             <label>File Draft Laporan Seminar</label>
                                                             <input type="file" name="file_draft_laporan"
                                                                 class="form-control" required>
-                                                            <span>max. size file 4mb format pdf</span>
+                                                            <span>Maksimal ukuran file 4mb dan PDF</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -493,7 +493,7 @@
                                                             <div class="form-group">
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
+                                                                <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                 <button type="submit"
                                                                     class="btn btn-info">Simpan</button>
                                                             </div>
@@ -531,7 +531,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -579,7 +579,7 @@
                                                             <div class="form-group">
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control">
-                                                                <span>Format file pdf max. size 5mb</span> <br>
+                                                                <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                 <button type="submit"
                                                                     class="btn btn-info">Simpan</button>
                                                             </div>
@@ -621,7 +621,7 @@
                                                                 <label>File Draft Laporan Seminar</label>
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control" required>
-                                                                <span>max. size file 4mb format pdf</span>
+                                                                <span>Maksimal ukuran file 4mb dan PDF</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -675,7 +675,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -713,7 +713,7 @@
                                                                     <div class="form-group">
                                                                         <input type="file" name="file_draft_laporan"
                                                                             class="form-control">
-                                                                        <span>Format file pdf max. size 5mb</span> <br>
+                                                                        <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                         <button type="submit"
                                                                             class="btn btn-info">Simpan</button>
                                                                     </div>
@@ -761,7 +761,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Format file pdf max. size 5mb</span> <br>
+                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -806,7 +806,7 @@
 
                                                             <input type="file" name="file_laporan_revisi"
                                                                 class="form-control">
-                                                            <span>Format file pdf max. size 5mb</span> <br>
+                                                            <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                             <button type="submit" class="btn btn-info">Simpan</button>
                                                         </div>
                                                     </form>
@@ -843,7 +843,7 @@
 
                                                                         <input type="file" name="file_laporan_revisi"
                                                                             class="form-control">
-                                                                        <span>Format file pdf max. size 5mb</span> <br>
+                                                                        <span>Maksimal ukuran file 4mb dan PDF</span> <br>
                                                                         <button type="submit"
                                                                             class="btn btn-info">Simpan</button>
                                                                     </div>
