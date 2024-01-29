@@ -93,8 +93,10 @@
                         <li class="item">
                             <div class="product-img">
                                 @if ($item->file != null)
-                                    <img class="img-circle" src="{{ asset('/data_file/' . $item->file) }}">
-                                @else
+                                    {{-- <a href="{{ asset('/data_file/' . $item->file) }}">File</a> --}}
+                                    <img class="img-circle"
+                                        src="{{ asset('/data_file/' . $item->file) }}">
+                                    @else
                                 @endif
 
                             </div>

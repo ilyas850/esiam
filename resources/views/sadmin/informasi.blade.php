@@ -20,9 +20,13 @@
                                 <input type="text" class="form-control" name="judul" placeholder="Masukan judul">
                             </div>
                             <div class="form-group">
-                                <label>Deskripsi</label>
-                                <textarea class="textarea" name="deskripsi" placeholder="Masukan teks disini"
-                                    style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                                <label >Deskripsi</label>
+                                <textarea name="deskripsi" class="form-control" cols="20" rows="5"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label >File</label>
+                                <input type="file" class="form-control" name="file">
+                                <p class="help-block">Maksimal ukuran file 1mb dengan format .JPG .JPEG .PNG</p>
                             </div>
                         </div>
                         <div class="form-group">

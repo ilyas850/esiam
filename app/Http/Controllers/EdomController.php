@@ -4,16 +4,11 @@ namespace App\Http\Controllers;
 
 use PDF;
 use Alert;
-use App\User;
 use App\Dosen;
 use App\Student;
-use App\Semester;
 use App\Matakuliah;
 use App\Prodi;
-use App\Kurikulum_master;
 use App\Kurikulum_periode;
-use App\Kurikulum_transaction;
-use App\Student_record;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Waktu_edom;

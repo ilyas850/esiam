@@ -16,6 +16,8 @@ Route::get('forgot_password', function () {
     return view('auth.lupa');
 });
 
+Route::get('lihat/{id}', 'MhsController@lihat');
+
 Route::group(['middleware' => 'sadmin'], function () {
     //master akademik
     Route::get('master_angkatan', 'SadminController@master_angkatan');
@@ -749,7 +751,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('keuangan', 'MhsController@uang');
     // Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
-    Route::get('lihat/{id}', 'MhsController@lihat');
+    
 
     #isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');

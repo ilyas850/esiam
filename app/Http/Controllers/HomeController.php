@@ -37,8 +37,10 @@ class HomeController extends Controller
 
   public function index()
   {
+  
     $id = Auth::user()->id_user;
     $akses = Auth::user()->role;
+
     $mhs = Student::leftJoin('update_mahasiswas', 'nim_mhs', '=', 'student.nim')
       ->leftjoin('microsoft_user', 'student.idstudent', '=', 'microsoft_user.id_student')
       ->leftJoin('prodi', (function ($join) {

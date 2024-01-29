@@ -16,7 +16,7 @@
         "laravel/ui": "^1.2",
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpword": "^0.18.2",
-        "realrashid/sweet-alert": "^3.1"
+        "realrashid/sweet-alert": "^7.1"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
