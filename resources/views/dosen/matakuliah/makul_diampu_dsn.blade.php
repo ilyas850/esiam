@@ -82,7 +82,8 @@
                                     @if ($item->soal_uas == null)
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
-                                                class="fa fa-cloud-upload" title="Klik untuk upload soal uas"></i>UAS</button>
+                                                class="fa fa-cloud-upload"
+                                                title="Klik untuk upload soal uas"></i>UAS</button>
                                     @else
                                         <button class="btn btn-warning btn-xs" data-toggle="modal"
                                             data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
@@ -117,19 +118,17 @@
                                 </td>
                                 <td>
                                     <center>
-                                        {{-- @if ($item->id_rps == null)
+                                        @if ($item->id_rps == null)
                                             <a href="/entri_rps/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a>
-                                        @elseif ($item->id_rps != null) --}}
-                                        {{-- <a href="/edit_rps/{{ $item->id_kurperiode }}"
-                                                class="btn btn-success btn-xs">RPS</a> --}}
-                                        <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
-                                            title="Klik untuk entri nilai">Nilai
-                                        </a>
-                                        <a href="entri_bap/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
-                                            title="Klik untuk entri BAP">
-                                            BAP </a>
-                                        {{-- @endif --}}
+                                        @elseif ($item->id_rps != null)
+                                            <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
+                                                title="Klik untuk entri nilai">Nilai
+                                            </a>
+                                            <a href="entri_bap/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
+                                                title="Klik untuk entri BAP">
+                                                BAP </a>
+                                        @endif
                                     </center>
                                 </td>
                                 <td>
