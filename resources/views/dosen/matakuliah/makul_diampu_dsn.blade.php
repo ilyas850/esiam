@@ -56,7 +56,7 @@
                                 <td>
                                     <center>{{ $no++ }}</center>
                                 </td>
-                                <td>{{ $item->kode }}/{{ $item->makul }}</td>
+                                <td>{{ $item->kode }} - {{ $item->makul }}</td>
                                 <td>
                                     {{ $item->prodi }}
                                 </td>
@@ -65,35 +65,32 @@
                                 </td>
                                 <td>{{ $item->nama_ruangan }}</td>
                                 <td>{{ $item->hari }}, {{ $item->jam }}</td>
-                                
                                 <td>
-                                    
-                                        @if ($item->soal_uts == null)
-                                            <button class="btn btn-success btn-xs" data-toggle="modal"
-                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}">
-                                                <i class="fa fa-cloud-upload" title="Klik untuk upload soal uts"></i>
-                                                UTS</button>
-                                        @else
-                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
-                                                data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
-                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                            <a href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
-                                                target="_blank" style="font: white"> UTS</a>
-                                        @endif
-<br>
-                                        @if ($item->soal_uas == null)
-                                            <button class="btn btn-success btn-xs" data-toggle="modal"
-                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
-                                                    class="fa fa-cloud-upload" title="Klik untuk upload soal uas"></i>
-                                                UAS</button>
-                                        @else
-                                            <button class="btn btn-warning btn-xs" data-toggle="modal"
-                                                data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
-                                                title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                            <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
-                                                target="_blank" style="font: white"> UAS</a>
-                                        @endif
-                                    
+                                    @if ($item->soal_uts == null)
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                            data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}">
+                                            <i class="fa fa-cloud-upload"
+                                                title="Klik untuk upload soal uts"></i>UTS</button>
+                                    @else
+                                        <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                            data-target="#modalUploadSoalUts{{ $item->id_kurperiode }}"
+                                            title="klik untuk edit"><i class="fa fa-edit"></i></button><a
+                                            href="/Soal Ujian/UTS/{{ $item->id_kurperiode }}/{{ $item->soal_uts }}"
+                                            target="_blank" style="font: white">UTS</a>
+                                    @endif
+                                    <br>
+                                    @if ($item->soal_uas == null)
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                            data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"><i
+                                                class="fa fa-cloud-upload" title="Klik untuk upload soal uas"></i>UAS</button>
+                                    @else
+                                        <button class="btn btn-warning btn-xs" data-toggle="modal"
+                                            data-target="#modalUploadSoalUas{{ $item->id_kurperiode }}"
+                                            title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                        <a href="/Soal Ujian/UAS/{{ $item->id_kurperiode }}/{{ $item->soal_uas }}"
+                                            target="_blank" style="font: white">UAS</a>
+                                    @endif
+
                                 </td>
                                 <td align="center">
                                     @if ($item->validasi_uts == 'BELUM' or $item->validasi_uts == null)
@@ -124,14 +121,14 @@
                                             <a href="/entri_rps/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a>
                                         @elseif ($item->id_rps != null) --}}
-                                            {{-- <a href="/edit_rps/{{ $item->id_kurperiode }}"
+                                        {{-- <a href="/edit_rps/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a> --}}
-                                            <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
-                                                title="Klik untuk entri nilai">Nilai
-                                            </a>
-                                            <a href="entri_bap/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
-                                                title="Klik untuk entri BAP">
-                                                BAP </a>
+                                        <a href="cekmhs_dsn/{{ $item->id_kurperiode }}" class="btn btn-info btn-xs"
+                                            title="Klik untuk entri nilai">Nilai
+                                        </a>
+                                        <a href="entri_bap/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
+                                            title="Klik untuk entri BAP">
+                                            BAP </a>
                                         {{-- @endif --}}
                                     </center>
                                 </td>

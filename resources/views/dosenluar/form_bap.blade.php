@@ -23,11 +23,11 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id_kurperiode" value="{{ $id }}">
                 <div class="box-body">
-                    {{-- <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
+                    <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                
+
                                 <div class="modal-body">
                                     <div class="table">
                                         <table class="table border-collapse">
@@ -58,9 +58,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="col-md-12">
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <input type="hidden" id="selectedRpsId" name="id_rps">
                             <div class="col-md-2">
                                 <label>
@@ -83,7 +83,7 @@
                                 </label>
                                 <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly></textarea>
                             </div>
-                        </div> --}}
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-3">
@@ -202,12 +202,12 @@
                                 </label>
                                 <textarea class="form-control" rows="5" name="materi_kuliah" required></textarea>
                             </div>
-                            {{-- <div class="col-md-3">
+                            <div class="col-md-3">
                                 <label>
                                     <font color="red-text">*</font>Alasan Pembaharuan Materi
                                 </label>
                                 <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required></textarea>
-                            </div> --}}
+                            </div>
                             <div class="col-md-3">
                                 @if ($cek_mk->akt_sks_praktek > 0)
                                     <font color="red-text">*</font><label>

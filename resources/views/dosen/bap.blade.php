@@ -57,15 +57,15 @@
                             <th>
                                 <center>Aktual Materi Pembelajaran</center>
                             </th>
-                            {{-- <th>
+                            <th>
                                 <center>Alasan Pembaharuan Materi</center>
-                            </th> --}}
+                            </th>
                             <th>
                                 <center>Aktual Materi Praktikum</center>
                             </th>
-                            {{-- <th>
+                            <th>
                                 <center>Kesesuaian RPS</center>
-                            </th> --}}
+                            </th>
                             <th>
                                 <center>Tipe Kuliah</center>
                             </th>
@@ -103,16 +103,16 @@
                                     </center>
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
-                                {{-- <td>{{ $item->alasan_pembaharuan_materi }}</td> --}}
+                                <td>{{ $item->alasan_pembaharuan_materi }}</td>
                                 <td>{{ $item->praktikum }}</td>
-                                {{-- <td align="center"><b>
+                                <td align="center"><b>
                                         @if ($item->kesesuaian_rps == 'SESUAI')
                                             <span>&#10003;</span>
                                         @elseif($item->kesesuaian_rps == 'TIDAK SESUAI')
                                             <span>&#10007;</span>
                                         @endif
                                     </b>
-                                </td> --}}
+                                </td>
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
                                 </td>
