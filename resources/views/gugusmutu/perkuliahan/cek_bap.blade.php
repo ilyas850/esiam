@@ -74,6 +74,15 @@
                                 </td>
                                 <td>
                                     <center>
+                                        @if ($item->komentar == null)
+                                            <button class="btn btn-info btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $item->id_rps }}">Komentar</button>
+                                        @else
+                                            <a class="btn btn-warning btn-xs" data-toggle="modal"
+                                                data-target="#modalTambahKomentar{{ $item->id_rps }}"> <i
+                                                    class="fa fa-eye "></i> Lihat</a>
+                                        @endif
+
                                         <a href="/validasi_sesuai/{{ $item->id_bap }}"
                                             class="btn btn-success btn-xs">Sesuai</a>
                                         <a href="/validasi_tidak_sesuai/{{ $item->id_bap }}"
@@ -81,6 +90,30 @@
                                     </center>
                                 </td>
                             </tr>
+                            <div class="modal fade" id="modalTambahKomentar{{ $item->id_rps }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar RPS</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/komentar_rps_makul/{{ $item->id_rps }}"
+                                                method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="komentar" cols="20" rows="10"> {{ $item->komentar }} </textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>

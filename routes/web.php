@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\GugusMutuController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -1983,10 +1985,11 @@ Route::group(['middleware' => 'bauk'], function () {
 });
 
 Route::group(['middleware' => 'gugusmutu'], function () {
-    Route::get('data_bap_gugusmutu', 'GugusMutuController@data_bap_gugusmutu');
+    Route::get('/data_bap_gugusmutu', 'GugusMutuController@data_bap_gugusmutu');
     Route::get('/cek_bap_gugusmutu/{id}', 'GugusMutuController@cek_bap_gugusmutu');
     Route::get('/validasi_sesuai/{id}', 'GugusMutuController@validasi_sesuai');
     Route::get('/validasi_tidak_sesuai/{id}', 'GugusMutuController@validasi_tidak_sesuai');
+    Route::put('/komentar_rps_makul/{id}', 'GugusMutuController@komentar_rps_makul');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

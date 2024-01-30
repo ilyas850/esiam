@@ -7,6 +7,7 @@ use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Kurikulum_periode;
 use App\Bap;
+use App\Rps;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -65,7 +66,9 @@ class GugusMutuController extends Controller
                 'bap.tidak_hadir',
                 'bap.created_at',
                 'rps.materi_pembelajaran',
-                'bap.kesesuaian_rps'
+                'bap.kesesuaian_rps',
+                'rps.komentar',
+                'rps.id_rps'
             )
             ->get();
 
@@ -83,6 +86,16 @@ class GugusMutuController extends Controller
     function validasi_tidak_sesuai($id)
     {
         Bap::where('id_bap', $id)->update(['kesesuaian_rps' => 'TIDAK SESUAI']);
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function komentar_rps_makul(Request $request, $id) 
+    {
+        $prd = Rps::find($id);
+        $prd->komentar = $request->komentar;
+        $prd->save();
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();

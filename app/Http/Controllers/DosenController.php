@@ -1510,6 +1510,10 @@ class DosenController extends Controller
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->join('dosen', 'bap.id_dosen', '=', 'dosen.iddosen')
+            ->leftjoin('rps', (function ($join) {
+                $join->on('bap.id_kurperiode', '=', 'rps.id_kurperiode')
+                    ->on('bap.pertemuan', '=', 'rps.pertemuan');
+            }))
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
             // ->where('kuliah_transaction.id_dosen', $id_dosen)
@@ -1530,7 +1534,9 @@ class DosenController extends Controller
                 'bap.tidak_hadir',
                 'dosen.nama',
                 'bap.kesesuaian_rps',
-                'bap.alasan_pembaharuan_materi'
+                'bap.alasan_pembaharuan_materi',
+                'rps.komentar',
+                'rps.id_rps'
             )
             ->orderBy('bap.tanggal', 'ASC')
             ->get();

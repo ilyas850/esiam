@@ -100,13 +100,18 @@
                                 <td>{{ $item->materi_kuliah }}</td>
                                 <td>{{ $item->alasan_pembaharuan_materi }}</td>
                                 <td>{{ $item->praktikum }}</td>
-                                <td align="center"><b>
+                                <td><b>
                                         @if ($item->kesesuaian_rps == 'SESUAI')
                                             <span>&#10003;</span>
                                         @elseif($item->kesesuaian_rps == 'TIDAK SESUAI')
                                             <span>&#10007;</span>
                                         @endif
                                     </b>
+                                    @if ($item->komentar != null)
+                                        <a class="btn btn-warning btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $item->id_rps }}"> <i
+                                                class="fa fa-eye "></i> Lihat</a>
+                                    @endif
                                 </td>
                                 <td>
                                     <center>{{ $item->tipe_kuliah }}</center>
@@ -140,6 +145,28 @@
                                     </center>
                                 </td>
                             </tr>
+                            <div class="modal fade" id="modalTambahKomentar{{ $item->id_rps }}" tabindex="-1"
+                                aria-labelledby="modalTambahKomentar" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Komentar RPS</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/komentar_rps_makul/{{ $item->id_rps }}" method="post"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                @method('put')
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="komentar" cols="20" rows="10" readonly> {{ $item->komentar }} </textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Tutup</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
