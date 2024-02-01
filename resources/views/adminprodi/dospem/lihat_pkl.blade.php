@@ -51,8 +51,9 @@
                                                 <option></option>
                                                 @foreach ($dosen as $keyangk)
                                                     <option
-                                                        value="{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }}, {{ $keydsn->id_masterkode_prausta }}">
-                                                        {{ $keyangk->nama }}</option>
+                                                        value="{{ $keydsn->id_settingrelasi_prausta != null ? $keydsn->id_settingrelasi_prausta : "null" }},{{ $keydsn->idstudent }},{{ $keyangk->iddosen }},{{ $keyangk->nama }},{{ $keydsn->id_masterkode_prausta }}">
+                                                        {{ $keyangk->nama }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </center>

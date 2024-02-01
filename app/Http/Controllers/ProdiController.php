@@ -63,6 +63,7 @@ class ProdiController extends Controller
 
   public function save_dsn_bim_pkl(Request $request)
   {
+
     $dosen = $request->iddosen;
 
     $hitdsn = count($dosen);
@@ -72,36 +73,29 @@ class ProdiController extends Controller
 
       if ($dta != null) {
 
-        $user = explode(',', $dta, 4);
+        $user = explode(',', $dta, 5);
         $id1 = $user[0];
         $id2 = $user[1];
         $id3 = $user[2];
         $id4 = $user[3];
+        $id5 = $user[4];
 
-        $cekmhs = Prausta_setting_relasi::where('id_student', $id1)
-          ->where('id_masterkode_prausta', $id4)
-          ->where('status', 'ACTIVE')
-          ->get();
-
-        if (count($cekmhs) == 0) {
-
+        if ($id1 == "null") {
           $dt = new Prausta_setting_relasi;
-          $dt->id_masterkode_prausta = $id4;
-          $dt->id_student = $id1;
-          $dt->dosen_pembimbing = $id3;
-          $dt->id_dosen_pembimbing = $id2;
+          $dt->id_masterkode_prausta = $id5;
+          $dt->id_student = $id2;
+          $dt->dosen_pembimbing = $id4;
+          $dt->id_dosen_pembimbing = $id3;
           $dt->added_by = Auth::user()->name;
           $dt->status = 'ACTIVE';
           $dt->data_origin = 'eSIAM';
           $dt->save();
-        } elseif (count($cekmhs) > 0) {
-
-          Prausta_setting_relasi::where('id_student', $id1)
-            ->where('id_masterkode_prausta', $id4)
-            ->where('status', 'ACTIVE')
+        } else {
+          Prausta_setting_relasi::where('id_settingrelasi_prausta', $id1)
             ->update([
-              'id_dosen_pembimbing' => $id2,
-              'dosen_pembimbing' => $id3,
+              'id_masterkode_prausta' => $id5,
+              'id_dosen_pembimbing' => $id3,
+              'dosen_pembimbing' => $id4,
               'data_origin' => 'eSIAM'
             ]);
         }
