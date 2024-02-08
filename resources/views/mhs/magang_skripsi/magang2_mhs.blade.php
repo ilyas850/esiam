@@ -443,7 +443,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -483,7 +483,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -532,7 +532,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $usta->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan 2/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>

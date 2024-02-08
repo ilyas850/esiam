@@ -316,25 +316,25 @@ class MagangSkripsiController extends Controller
                 $biaya = Biaya::where('idangkatan', $idangkatan)
                     ->where('idstatus', $idstatus)
                     ->where('kodeprodi', $kodeprodi)
-                    ->select('spp6', 'prakerin')
+                    ->select('spp6', 'prakerin', 'seminar')
                     ->first();
 
                 #cek beasiswa mahasiswa
                 $cb = Beasiswa::where('idstudent', $id)->first();
 
-                $biaya_spp = $biaya->spp6;
+                $biaya_spp = $biaya->seminar;
 
                 if (($cb) != null) {
 
-                    $spp = $biaya->spp6 - ($biaya->spp6 * $cb->spp6) / 100;
+                    $spp = $biaya->seminar - ($biaya->seminar * $cb->seminar) / 100;
                 } elseif (($cb) == null) {
 
-                    $spp = $biaya->spp6;
+                    $spp = $biaya->seminar;
                 }
 
                 $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                     ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 26)
+                    ->where('bayar.iditem', 37)
                     ->sum('bayar.bayar');
 
                 $hasil_spp = $sisaspp - $spp;
