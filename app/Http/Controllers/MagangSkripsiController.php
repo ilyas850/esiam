@@ -137,19 +137,19 @@ class MagangSkripsiController extends Controller
                 #cek beasiswa mahasiswa
                 $cb = Beasiswa::where('idstudent', $id)->first();
 
-                $biaya_spp = $biaya->spp6;
+                $biaya_spp = $biaya->prakerin;
 
                 if (($cb) != null) {
 
-                    $spp = $biaya->spp6 - ($biaya->spp6 * $cb->spp6) / 100;
+                    $spp = $biaya->prakerin - ($biaya->prakerin * $cb->prakerin) / 100;
                 } elseif (($cb) == null) {
 
-                    $spp = $biaya->spp6;
+                    $spp = $biaya->prakerin;
                 }
 
                 $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                     ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 26)
+                    ->where('bayar.iditem', 35)
                     ->sum('bayar.bayar');
 
                 $hasil_spp = $sisaspp - $spp;
