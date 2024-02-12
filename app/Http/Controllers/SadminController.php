@@ -2782,7 +2782,9 @@ class SadminController extends Controller
             ->where('users.role', 9)
             ->get();
 
-        $staff = Wrkpersonalia::where('active', 1)->get();
+        $staff = Wrkpersonalia::where('active', 1)
+            ->orderBy('nama', 'ASC')
+            ->get();
 
         return view('sadmin/user/adminprodi', compact('data', 'staff'));
     }
