@@ -82,6 +82,8 @@
                                 <option value=""></option>
                                 <option value="PKL">PKL</option>
                                 <option value="SEMPRO & TA">SEMPRO & TA</option>
+                                <option value="MAGANG 1">MAGANG 1</option>
+                                <option value="MAGANG 2">MAGANG 2</option>
                             </select>
                         </div>
                     </div>
