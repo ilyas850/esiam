@@ -42,7 +42,7 @@
                         <thead>
                             <tr>
                                 <th width="10%">Pertemuan</th>
-                                <th width="45%">Kemampuan Akhir yang Direncanakan</th>
+                                <th width="45%">Kemampuan Akhir yang Diharapkan</th>
                                 <th width="45%">Materi Pembelajaran</th>
                             </tr>
                         </thead>
