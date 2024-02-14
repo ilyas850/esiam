@@ -1591,8 +1591,8 @@ class DosenController extends Controller
                 'metode_kuliah'             => 'required',
                 'materi_kuliah'             => 'required',
                 'link_materi'               => 'required',
-                // 'id_rps'                    => 'required',
-                // 'alasan_pembaharuan_materi' => 'required',
+                'id_rps'                    => 'required',
+                'alasan_pembaharuan_materi' => 'required',
                 'file_kuliah_tatapmuka'     => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
                 'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas'         => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
@@ -1653,8 +1653,8 @@ class DosenController extends Controller
                 $bap->praktikum             = $request->praktikum;
                 $bap->media_pembelajaran    = $request->media_pembelajaran;
                 $bap->link_materi           = $request->link_materi;
-                // $bap->id_rps                = $request->id_rps;
-                // $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
+                $bap->id_rps                = $request->id_rps;
+                $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
 
                 if ($i == 0) {
                     if ($request->hasFile('file_kuliah_tatapmuka')) {
