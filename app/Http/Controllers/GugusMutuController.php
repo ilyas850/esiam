@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Periode_tahun;
 use App\Periode_tipe;
 use App\Kurikulum_periode;
 use App\Bap;
+use App\Prodi;
 use App\Rps;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -91,7 +93,7 @@ class GugusMutuController extends Controller
         return redirect()->back();
     }
 
-    function komentar_rps_makul(Request $request, $id) 
+    function komentar_rps_makul(Request $request, $id)
     {
         $prd = Rps::find($id);
         $prd->komentar = $request->komentar;
@@ -99,5 +101,129 @@ class GugusMutuController extends Controller
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
+    }
+
+    function data_rekapitulasi_edom_gugusmutu()
+    {
+        $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
+        $periodetipe = Periode_tipe::orderBy('id_periodetipe', 'DESC')->get();
+        $prodi = Prodi::select('kodeprodi', 'prodi')
+            ->groupBy('kodeprodi', 'prodi')
+            ->orderBy('kodeprodi', 'DESC')
+            ->get();
+
+        return view('gugusmutu/edom/master_edom', compact('periodetahun', 'periodetipe', 'prodi'));
+    }
+
+    function report_edom_gugusmutu(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->kodeprodi;
+        $tipe = $request->tipe_laporan;
+
+        $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+        $prodii = Prodi::where('kodeprodi', $idprodi)->first();
+
+        $thn = $periodetahun->periode_tahun;
+        $tp = $periodetipe->periode_tipe;
+        $prd = $prodii->prodi;
+
+        if ($tipe == 'by_makul') {
+
+            if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+                $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+            } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+                $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+            } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+                $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+            } elseif ($idperiodetahun < 6) {
+                $data = DB::select('CALL edom_by_makul_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+            } elseif ($idperiodetahun > 6) {
+                $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+            }
+
+            return view('sadmin/edom/report_edom_by_makul', compact('data', 'thn', 'tp', 'prd', 'idperiodetahun', 'idperiodetipe', 'idprodi'));
+        } elseif ($tipe == 'by_dosen') {
+
+            $data = DB::select('CALL edom_by_dosen_new(?,?)', array($idperiodetahun, $idperiodetipe));
+
+            return view('gugusmutu/edom/report_edom_by_dosen', compact('data', 'thn', 'tp', 'idperiodetahun', 'idperiodetipe'));
+        }
+    }
+
+    function download_report_edom_by_makul_gugusmutu(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $idprodi = $request->kodeprodi;
+
+        $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+        $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+        $prodi = Prodi::where('kodeprodi', $idprodi)->first();
+
+        $thn = $periodetahun->periode_tahun;
+        $ganti = str_replace('/', '_', $thn);
+        $tp = $periodetipe->periode_tipe;
+        $prd = $prodi->prodi;
+
+        $data = DB::select('CALL edom_by_makul_fix(?,?,?)', array($idperiodetahun, $idperiodetipe, $idprodi));
+
+        $pdf = PDF::loadView('gugusmutu/edom/pdf_report_edom_makul', compact('data', 'thn', 'tp', 'prd'))->setPaper('a4', 'landscape');
+        return $pdf->download('Report EDOM Matakuliah' . ' ' . $ganti . ' ' . $tp . ' ' . $prd . '.pdf');
+    }
+
+    function detail_edom_makul_gugusmutu(Request $request)
+    {
+        $idkurperiode = $request->id_kurperiode;
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+
+        if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+            $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+        } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+            $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+        } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+            $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+        } elseif ($idperiodetahun < 6) {
+            $data = DB::select('CALL detail_edom_makul_old(?)', array($idkurperiode));
+        } elseif ($idperiodetahun > 6) {
+            $data = DB::select('CALL detail_edom_makul_new(?)', array($idkurperiode));
+        }
+
+        $data_mk = Kurikulum_periode::join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->where('kurikulum_periode.id_kurperiode', $idkurperiode)
+            ->select('dosen.nama', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'matakuliah.makul')
+            ->first();
+
+        return view('gugusmutu/edom/detail_edom_makul', compact('data', 'data_mk'));
+    }
+
+    function detail_edom_dosen_gugusmutu(Request $request)
+    {
+        $idperiodetahun = $request->id_periodetahun;
+        $idperiodetipe = $request->id_periodetipe;
+        $iddosen = $request->id_dosen;
+        $periodetahun = $request->periodetahun;
+        $periodetipe = $request->periodetipe;
+        $nama = $request->nama;
+
+        if ($idperiodetahun == 6 && $idperiodetipe == 1) {
+            $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+        } elseif ($idperiodetahun == 6 && $idperiodetipe == 2) {
+            $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+        } elseif ($idperiodetahun == 6 && $idperiodetipe == 3) {
+            $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+        } elseif ($idperiodetahun < 6) {
+            $data = DB::select('CALL detail_edom_dosen_old(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+        } elseif ($idperiodetahun > 6) {
+            $data = DB::select('CALL detail_edom_dosen_new(?,?,?)', array($idperiodetahun, $idperiodetipe, $iddosen));
+        }
+
+        return view('gugusmutu/edom/detail_edom_dosen', compact('data', 'nama', 'periodetahun', 'periodetipe'));
     }
 }

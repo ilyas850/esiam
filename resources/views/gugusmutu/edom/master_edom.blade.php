@@ -3,14 +3,13 @@
 @section('side')
     @include('layouts.side')
 @endsection
-
 @section('content')
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Menu Laporan EDOM</h3>
             </div>
-            <form class="form" role="form" action="{{ url('report_edom') }}" method="POST">
+            <form class="form" role="form" action="{{ url('report_edom_gugusmutu') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="col-xs-2">

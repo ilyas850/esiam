@@ -13,4 +13,19 @@
                         Data BAP</span></a></li>
         </ul>
     </li>
+    <li class="treeview">
+    <a href="#">
+            <i class="fa fa-database"></i> <span>Master EDOM</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('data_rekapitulasi_edom_gugusmutu') }}"><i class="fa fa-circle-o"></i> <span>
+                        Rekapitulasi EDOM</span></a></li>
+            <li><a href="{{ url('data_absensi_edom_gugusmutu') }}"><i class="fa fa-circle-o"></i> <span>
+                        Absensi EDOM</span></a></li>
+                        
+        </ul>
+    </li>
 </ul>

@@ -8,9 +8,9 @@
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title">Menu Laporan EDOM</h3>
+                <h3 class="box-title">Laporan Absen EDOM</h3>
             </div>
-            <form class="form" role="form" action="{{ url('report_edom') }}" method="POST">
+            <form class="form" role="form" action="{{ url('report_absen_edom') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="col-xs-2">
@@ -33,22 +33,12 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-xs-6">
-                        <label>Prodi</label>
-                        <select class="form-control" name="kodeprodi" required>
-                            <option></option>
-                            @foreach ($prodi as $prd)
-                                <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
                     <div class="col-xs-2">
-                        <label>Tipe Laporan</label>
-                        <select class="form-control" name="tipe_laporan" required>
+                        <label>Tipe Absen</label>
+                        <select class="form-control" name="tipe_absen" required>
                             <option></option>
-                            <option value="by_makul">Per Matakuliah</option>
-                            <option value="by_dosen">Per Dosen</option>
+                            <option value="dosen">Per Dosen</option>
+                            <option value="matakuliah">Per Matakuliah</option>
                         </select>
                     </div>
                 </div>
