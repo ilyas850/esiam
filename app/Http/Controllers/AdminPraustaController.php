@@ -312,7 +312,81 @@ class AdminPraustaController extends Controller
         return view('prausta/prakerin/atur_prakerin', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
     }
 
-    public function simpan_atur_prakerin(Request $request)
+    public function atur_magang($id)
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'dosen.iddosen',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.ruangan'
+            )
+            ->first();
+
+        $dosen = Dosen::where('idstatus', 1)
+            ->where('active', 1)
+            ->get();
+
+        $jam = Kurikulum_jam::all();
+
+        $ruangan = Ruangan::all();
+
+        return view('prausta/prakerin/atur_magang', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
+    }
+
+    public function atur_magang2($id)
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'dosen.iddosen',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.ruangan'
+            )
+            ->first();
+
+        $dosen = Dosen::where('idstatus', 1)
+            ->where('active', 1)
+            ->get();
+
+        $jam = Kurikulum_jam::all();
+
+        $ruangan = Ruangan::all();
+
+        return view('prausta/prakerin/atur_magang2', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
+    }
+
+    public function simpan_jadwal(Request $request, $redirectRoute)
     {
         Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)
             ->update([
@@ -325,7 +399,22 @@ class AdminPraustaController extends Controller
             ]);
 
         Alert::success('', 'Berhasil setting jadwal')->autoclose(3500);
-        return redirect()->back();
+        return redirect($redirectRoute);
+    }
+
+    public function simpan_atur_prakerin(Request $request)
+    {
+        return $this->simpan_jadwal($request, 'data_pkl_mahasiswa');
+    }
+
+    public function simpan_atur_magang(Request $request)
+    {
+        return $this->simpan_jadwal($request, 'data_magang_mahasiswa');
+    }
+
+    public function simpan_atur_magang2(Request $request)
+    {
+        return $this->simpan_jadwal($request, 'data_magang2_mahasiswa');
     }
 
     public function data_sempro()

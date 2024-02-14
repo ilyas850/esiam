@@ -1754,10 +1754,18 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::post('save_nilai_pkl_to_trans', 'AdminPraustaController@save_nilai_pkl_to_trans');
     Route::post('save_nilai_sempro_ta_to_trans', 'AdminPraustaController@save_nilai_sempro_ta_to_trans');
 
-    //data pkl
+    # DATA PKL
     Route::get('data_prakerin', 'AdminPraustaController@data_prakerin');
     Route::get('atur_prakerin/{id}', 'AdminPraustaController@atur_prakerin');
     Route::post('simpan_atur_prakerin', 'AdminPraustaController@simpan_atur_prakerin');
+    
+    # DATA MAGANG
+    Route::get('atur_magang/{id}', 'AdminPraustaController@atur_magang');
+    Route::post('simpan_atur_magang', 'AdminPraustaController@simpan_atur_magang');
+
+    # DATA MAGANG 2
+    Route::get('atur_magang2/{id}', 'AdminPraustaController@atur_magang2');
+    Route::post('simpan_atur_magang2', 'AdminPraustaController@simpan_atur_magang2');
 
     //data seminar proposal
     Route::get('data_sempro', 'AdminPraustaController@data_sempro');

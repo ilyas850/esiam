@@ -123,7 +123,7 @@
                                             <ul class="dropdown-menu" role="menu">
                                                 <li>
                                                     <a
-                                                        href="/atur_prakerin/{{ $key->id_settingrelasi_prausta }}">Setting</a>
+                                                        href="/atur_magang2/{{ $key->id_settingrelasi_prausta }}">Setting</a>
                                                 </li>
                                                 @if ($key->status == 'ACTIVE')
                                                     <li><a href="/nonatifkan_prausta_prakerin/{{ $key->id_settingrelasi_prausta }}"
