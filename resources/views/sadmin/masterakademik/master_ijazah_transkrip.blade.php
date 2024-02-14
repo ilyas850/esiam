@@ -3,6 +3,7 @@
 @section('side')
     @include('layouts.side')
 @endsection
+
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -40,20 +41,37 @@
                 <table id="example1" class="table">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Mahasiswa</th>
-                            <th>Program Studi</th>
-                            <th>Kelas</th>
-                            <th>
+                            <th rowspan="2">No</th>
+                            <th rowspan="2">Mahasiswa</th>
+                            <th rowspan="2">Program Studi</th>
+                            <th rowspan="2">Kelas</th>
+                            <th rowspan="2">
+                                <center>Tempat, tanggal lahir</center>
+                            </th>
+                            <th colspan="3">
+                                <center>Tanggal, Bulan dan Tahun </center>
+                            </th>
+                            <th rowspan="2">
                                 No. SKPI
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 No. Ijazah
                             </th>
-                            <th>
+                            <th rowspan="2">
                                 No. Transkrip
                             </th>
-                            <th>Action</th>
+                            <th rowspan="2">Action</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <center>Masuk</center>
+                            </td>
+                            <td>
+                                <center>Lulus</center>
+                            </td>
+                            <td>
+                                <center>Wisuda</center>
+                            </td>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +82,12 @@
                                 <td>{{ $item->nim }} - {{ $item->nama_lengkap }}</td>
                                 <td>{{ $item->prodi }}</td>
                                 <td align="center">{{ $item->kelas }}</td>
+                                <td>{{ $item->tmpt_lahir }},
+                                    {{ Carbon\Carbon::parse($item->tgl_lahir)->formatLocalized('%d %B %Y') }}
+                                </td>
+                                <td>{{ $item->date_masuk }}</td>
+                                <td>{{ $item->date_lulus }}</td>
+                                <td>{{ $item->date_wisuda }}</td>
                                 <td>{{ $item->no_skpi }}</td>
                                 <td>{{ $item->no_ijazah }}</td>
                                 <td>{{ $item->no_transkrip }}</td>
@@ -133,11 +157,13 @@
                                                             <select name="id_prodi" class="form-control" required>
                                                                 <option value="{{ $item->id_prodi }}">{{ $item->prodi }}
                                                                     -
-                                                                    {{ $item->konsentrasi }}</option>
+                                                                    {{ $item->konsentrasi }}
+                                                                </option>
                                                                 @foreach ($prodi as $prd)
                                                                     <option value="{{ $prd->id_prodi }}">
                                                                         {{ $prd->prodi }} -
-                                                                        {{ $prd->konsentrasi }}</option>
+                                                                        {{ $prd->konsentrasi }}
+                                                                    </option>
                                                                 @endforeach
                                                             </select>
                                                         </div>

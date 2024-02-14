@@ -7086,7 +7086,7 @@ class SadminController extends Controller
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftjoin('skpi', 'yudisium.id_student', '=', 'skpi.id_student')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -7109,6 +7109,7 @@ class SadminController extends Controller
                 'skpi.no_skpi',
                 'skpi.no_transkrip',
                 'skpi.no_ijazah',
+                'skpi.date_masuk',
                 'skpi.date_lulus',
                 'skpi.date_wisuda',
                 'wisuda.no_hp',

@@ -33,7 +33,7 @@
             <li><a href="/jenis_kegiatan"><i class="fa fa-circle-o"></i> Jenis Kegiatan
                 </a></li>
             <li><a href="/visimisi"><i class="fa fa-circle-o"></i> Visi Misi</a></li>
-            <li><a href="/skpi"><i class="fa fa-circle-o"></i> SKPI</a></li>
+            <!-- <li><a href="/skpi"><i class="fa fa-circle-o"></i> SKPI</a></li> -->
             <li><a href="/master_yudisium"><i class="fa fa-circle-o"></i> Yudisium</a></li>
             <li><a href="/master_wisuda"><i class="fa fa-circle-o"></i> Wisuda</a></li>
             <li><a href="/master_ijazah_transkrip"><i class="fa fa-circle-o"></i>No. SKPI, Ijazah & Transkrip</a></li>
