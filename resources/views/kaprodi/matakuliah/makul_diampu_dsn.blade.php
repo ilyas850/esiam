@@ -128,16 +128,16 @@
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->id_rps == null)
+                                        {{-- @if ($item->id_rps == null)
                                             <a href="/entri_rps_kprd/{{ $item->id_kurperiode }}"
                                                 class="btn btn-success btn-xs">RPS</a>
-                                        @elseif ($item->id_rps != null)
+                                        @elseif ($item->id_rps != null) --}}
                                             <a href="cekmhs_dsn_kprd/{{ $item->id_kurperiode }}"
                                                 class="btn btn-info btn-xs" title="Klik untuk entri nilai">Nilai</a>
                                             <a href="entri_bap_kprd/{{ $item->id_kurperiode }}"
                                                 class="btn btn-warning btn-xs" title="Klik untuk entri nilai">
                                                 BAP</a>
-                                        @endif
+                                        {{-- @endif --}}
                                     </center>
                                 </td>
                                 <td>

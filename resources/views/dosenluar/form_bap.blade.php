@@ -23,7 +23,7 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id_kurperiode" value="{{ $id }}">
                 <div class="box-body">
-                    <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
+                    {{-- <div class="modal fade" id="modalPilihRps" tabindex="-1" aria-labelledby="modalPilihRps"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -58,9 +58,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-12">
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <input type="hidden" id="selectedRpsId" name="id_rps">
                             <div class="col-md-2">
                                 <label>
@@ -83,7 +83,7 @@
                                 </label>
                                 <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly></textarea>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <div class="col-md-3">
