@@ -2002,11 +2002,14 @@ Route::group(['middleware' => 'gugusmutu'], function () {
     # MASTER EDOM
     Route::get('data_rekapitulasi_edom_gugusmutu', 'GugusMutuController@data_rekapitulasi_edom_gugusmutu');
     Route::post('report_edom_gugusmutu', 'GugusMutuController@report_edom_gugusmutu');
+    # PER MATAKULIAH
     Route::post('download_report_edom_by_makul_gugusmutu', 'GugusMutuController@download_report_edom_by_makul_gugusmutu');
     Route::post('detail_edom_makul_gugusmutu', 'GugusMutuController@detail_edom_makul_gugusmutu');
     Route::post('download_detail_edom_makul_gugusmutu', 'GugusMutuController@download_detail_edom_makul_gugusmutu');
-    
+    #PER DOSEN
+    Route::post('download_report_edom_by_dosen_gugusmutu', 'GugusMutuController@download_report_edom_by_dosen_gugusmutu');
     Route::post('detail_edom_dosen_gugusmutu', 'GugusMutuController@detail_edom_dosen_gugusmutu');
+    Route::post('download_detail_edom_dosen_gugusmutu', 'GugusMutuController@download_detail_edom_dosen_gugusmutu');
 
     Route::get('data_absensi_edom_gugusmutu', 'GugusMutuController@data_absensi_edom_gugusmutu');
 });

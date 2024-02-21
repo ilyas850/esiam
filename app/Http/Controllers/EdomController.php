@@ -592,7 +592,7 @@ class EdomController extends Controller
     return $pdf->download('Report EDOM Matakuliah' . ' ' . $ganti . ' ' . $tp . ' ' . $prd . '.pdf');
   }
 
-  //download report edom dosen PDF
+  #download report edom dosen PDF
   public function download_report_edom_by_dosen(Request $request)
   {
     $idperiodetahun = $request->id_periodetahun;
