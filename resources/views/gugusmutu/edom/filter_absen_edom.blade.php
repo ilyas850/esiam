@@ -10,7 +10,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Laporan Absen EDOM</h3>
             </div>
-            <form class="form" role="form" action="{{ url('report_absen_edom') }}" method="POST">
+            <form class="form" role="form" action="{{ url('report_absen_edom_gugusmutu') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <div class="col-xs-2">

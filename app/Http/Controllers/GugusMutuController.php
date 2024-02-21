@@ -307,4 +307,32 @@ class GugusMutuController extends Controller
         $pdf = PDF::loadView('sadmin/edom/pdf_detail_report_edom_dosen', compact('data', 'periodetahun', 'periodetipe', 'nama'))->setPaper('a4', 'landscape');
         return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
+
+    function data_absensi_edom_gugusmutu()
+    {
+        $periodetahun = Periode_tahun::orderBy('id_periodetahun', 'DESC')->get();
+        $periodetipe = Periode_tipe::orderBy('id_periodetipe', 'DESC')->get();
+
+        return view('gugusmutu/edom/filter_absen_edom', compact('periodetahun', 'periodetipe'));
+    }
+
+    function report_absen_edom_gugusmutu(Request $request)
+    {
+        $tahun = $request->id_periodetahun;
+        $tipe = $request->id_periodetipe;
+        $absen = $request->tipe_absen;
+
+        $idtahun = Periode_tahun::where('id_periodetahun', $tahun)->first();
+        $idtipe = Periode_tipe::where('id_periodetipe', $tipe)->first();
+
+        $data = DB::select('CALL absen_edom_dosen(?,?,?)', [$tahun, $tipe, $absen]);
+     
+        if ($absen == 'dosen') {
+
+            return view('gugusmutu/edom/hasil_absen_edom', compact('data', 'idtahun', 'idtipe'));
+        } elseif ($absen == 'matakuliah') {
+
+            return view('gugusmutu/edom/hasil_absen_edom_makul', compact('data', 'idtahun', 'idtipe'));
+        }
+    }
 }

@@ -6464,7 +6464,7 @@ class SadminController extends Controller
         $idtipe = Periode_tipe::where('id_periodetipe', $tipe)->first();
 
         $data = DB::select('CALL absen_edom_dosen(?,?,?)', [$tahun, $tipe, $absen]);
-
+     
         if ($absen == 'dosen') {
 
             return view('sadmin/edom/hasil_absen_edom', compact('data', 'idtahun', 'idtipe'));

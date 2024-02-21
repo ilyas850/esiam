@@ -2012,6 +2012,7 @@ Route::group(['middleware' => 'gugusmutu'], function () {
     Route::post('download_detail_edom_dosen_gugusmutu', 'GugusMutuController@download_detail_edom_dosen_gugusmutu');
 
     Route::get('data_absensi_edom_gugusmutu', 'GugusMutuController@data_absensi_edom_gugusmutu');
+    Route::post('report_absen_edom_gugusmutu', 'GugusMutuController@report_absen_edom_gugusmutu');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
