@@ -4123,7 +4123,6 @@ class SadminController extends Controller
         return $pdf->download('Report Kuisioner BAAK' . ' ' . $nama_prodi . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
     }
 
-    //komentar komentar komentar
     public function report_kuis_bauk($id)
     {
         $data_prd_thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();

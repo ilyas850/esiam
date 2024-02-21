@@ -276,16 +276,16 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('save_skpi_prodi', 'SadminController@save_skpi_prodi');
     Route::get('download_skpi/{id}', 'SadminController@download_skpi');
 
-    //Kartu ujian mahasiswa
+    #Kartu ujian mahasiswa
     Route::get('kartu_ujian_mhs', 'SadminController@kartu_ujian_mhs');
     Route::get('kartu_uts_mhs/{id}', 'SadminController@kartu_uts_mhs');
     Route::get('kartu_uas_mhs/{id}', 'SadminController@kartu_uas_mhs');
 
-    //report kuisioner
+    #report kuisioner
     Route::get('report_kuisioner', 'SadminController@report_kuisioner');
     Route::get('report_kuisioner_kategori/{id}', 'SadminController@report_kuisioner_kategori');
 
-    //report dosen pembimbing akademik
+    #report dosen pembimbing akademik
     Route::post('post_report_kuisioner_dsn_pa', 'SadminController@post_report_kuisioner_dsn_pa');
     Route::post('detail_kuisioner_dsn_pa', 'SadminController@detail_kuisioner_dsn_pa');
     Route::post('download_kuisioner_dsn_pa', 'SadminController@download_kuisioner_dsn_pa');
@@ -1910,7 +1910,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('validasi_akhir_prausta/{id}', 'AdminPraustaController@validasi_akhir_prausta');
     Route::get('batal_validasi_akhir_prausta/{id}', 'AdminPraustaController@batal_validasi_akhir_prausta');
 
-    //waktu prausta
+    # WAKTU PRAUSTA
     Route::get('waktu_pkl', 'AdminPraustaController@waktu_pkl');
     Route::post('post_waktu_prausta', 'AdminPraustaController@post_waktu_prausta');
     Route::get('hapus_waktu_prausta/{id}', 'AdminPraustaController@hapus_waktu_prausta');
@@ -1919,8 +1919,7 @@ Route::group(['middleware' => 'prausta'], function () {
     Route::get('waktu_sempro', 'AdminPraustaController@waktu_sempro');
     Route::get('waktu_ta', 'AdminPraustaController@waktu_ta');
 
-    //honor prausta
-
+    # HONOR PRAUSTA
     Route::get('honor_ta', 'AdminPraustaController@honor_ta');
     Route::post('filter_honor_ta', 'AdminPraustaController@filter_honor_ta');
 });
@@ -2002,17 +2001,78 @@ Route::group(['middleware' => 'gugusmutu'], function () {
     # MASTER EDOM
     Route::get('data_rekapitulasi_edom_gugusmutu', 'GugusMutuController@data_rekapitulasi_edom_gugusmutu');
     Route::post('report_edom_gugusmutu', 'GugusMutuController@report_edom_gugusmutu');
+    
     # PER MATAKULIAH
     Route::post('download_report_edom_by_makul_gugusmutu', 'GugusMutuController@download_report_edom_by_makul_gugusmutu');
     Route::post('detail_edom_makul_gugusmutu', 'GugusMutuController@detail_edom_makul_gugusmutu');
     Route::post('download_detail_edom_makul_gugusmutu', 'GugusMutuController@download_detail_edom_makul_gugusmutu');
-    #PER DOSEN
+
+    # PER DOSEN
     Route::post('download_report_edom_by_dosen_gugusmutu', 'GugusMutuController@download_report_edom_by_dosen_gugusmutu');
     Route::post('detail_edom_dosen_gugusmutu', 'GugusMutuController@detail_edom_dosen_gugusmutu');
     Route::post('download_detail_edom_dosen_gugusmutu', 'GugusMutuController@download_detail_edom_dosen_gugusmutu');
 
+    # REKAP ABSENSI EDOM
     Route::get('data_absensi_edom_gugusmutu', 'GugusMutuController@data_absensi_edom_gugusmutu');
     Route::post('report_absen_edom_gugusmutu', 'GugusMutuController@report_absen_edom_gugusmutu');
+
+    # MASTER KUISIONER
+    Route::get('data_report_kuisioner_gugusmutu', 'GugusMutuController@data_report_kuisioner_gugusmutu');
+    Route::get('report_kuisioner_kategori_gugusmutu/{id}', 'GugusMutuController@report_kuisioner_kategori_gugusmutu');
+
+    # REPORT DOSEN PEMBIMBING AKADEMIK
+    Route::post('post_report_kuisioner_dsn_pa_gugusmutu', 'GugusMutuController@post_report_kuisioner_dsn_pa_gugusmutu');
+    Route::post('detail_kuisioner_dsn_pa_gugusmutu', 'GugusMutuController@detail_kuisioner_dsn_pa_gugusmutu');
+    Route::post('download_kuisioner_dsn_pa_gugusmutu', 'GugusMutuController@download_kuisioner_dsn_pa_gugusmutu');
+    Route::post('download_detail_kuisioner_dsn_pa_gugusmutu', 'GugusMutuController@download_detail_kuisioner_dsn_pa_gugusmutu');
+
+    # REPORT DOSEN PEMBIMBING PKL
+    Route::post('post_report_kuisioner_dsn_pkl_gugusmutu', 'GugusMutuController@post_report_kuisioner_dsn_pkl_gugusmutu');
+    Route::post('detail_kuisioner_dsn_pkl_gugusmutu', 'GugusMutuController@detail_kuisioner_dsn_pkl_gugusmutu');
+    Route::post('download_kuisioner_dsn_pkl_gugusmutu', 'GugusMutuController@download_kuisioner_dsn_pkl_gugusmutu');
+    Route::post('download_detail_kuisioner_dsn_pkl_gugusmutu', 'GugusMutuController@download_detail_kuisioner_dsn_pkl_gugusmutu');
+
+    # REPORT DOSEN PEMBIMBING TA
+    Route::post('post_report_kuisioner_dsn_ta_gugusmutu', 'GugusMutuController@post_report_kuisioner_dsn_ta_gugusmutu');
+    Route::post('detail_kuisioner_dsn_ta_gugusmutu', 'GugusMutuController@detail_kuisioner_dsn_ta_gugusmutu');
+    Route::post('download_kuisioner_dsn_ta_gugusmutu', 'GugusMutuController@download_kuisioner_dsn_ta_gugusmutu');
+    Route::post('download_detail_kuisioner_dsn_ta_gugusmutu', 'GugusMutuController@download_detail_kuisioner_dsn_ta_gugusmutu');
+
+    # REPORT DOSEN PENGUJI TA 1
+    Route::post('post_report_kuisioner_dsn_peng1_ta_gugusmutu', 'GugusMutuController@post_report_kuisioner_dsn_peng1_ta_gugusmutu');
+    Route::post('detail_kuisioner_dsn_peng1_ta_gugusmutu', 'GugusMutuController@detail_kuisioner_dsn_peng1_ta_gugusmutu');
+    Route::post('download_kuisioner_dsn_peng1_ta_gugusmutu', 'GugusMutuController@download_kuisioner_dsn_peng1_ta_gugusmutu');
+    Route::post('download_detail_kuisioner_dsn_peng1_ta_gugusmutu', 'GugusMutuController@download_detail_kuisioner_dsn_peng1_ta_gugusmutu');
+
+    # REPORT DOSEN PENGUJI TA 2
+    Route::post('post_report_kuisioner_dsn_peng2_ta_gugusmutu', 'GugusMutuController@post_report_kuisioner_dsn_peng2_ta_gugusmutu');
+    Route::post('detail_kuisioner_dsn_peng2_ta_gugusmutu', 'GugusMutuController@detail_kuisioner_dsn_peng2_ta_gugusmutu');
+    Route::post('download_kuisioner_dsn_peng2_ta_gugusmutu', 'GugusMutuController@download_kuisioner_dsn_peng2_ta_gugusmutu');
+    Route::post('download_detail_kuisioner_dsn_peng2_ta_gugusmutu', 'GugusMutuController@download_detail_kuisioner_dsn_peng2_ta_gugusmutu');
+
+    # REPORT KUISIONER BAAK
+    Route::post('post_report_kuisioner_baak_gugusmutu', 'GugusMutuController@post_report_kuisioner_baak_gugusmutu');
+    Route::post('detail_kuisioner_baak_gugusmutu', 'GugusMutuController@detail_kuisioner_baak_gugusmutu');
+    Route::post('download_kuisioner_baak_gugusmutu', 'GugusMutuController@download_kuisioner_baak_gugusmutu');
+    Route::post('download_detail_kuisioner_baak_gugusmutu', 'GugusMutuController@download_detail_kuisioner_baak_gugusmutu');
+
+    # REPORT KUISIONER BAUK
+    Route::post('post_report_kuisioner_bauk_gugusmutu', 'GugusMutuController@post_report_kuisioner_bauk_gugusmutu');
+    Route::post('detail_kuisioner_bauk_gugusmutu', 'GugusMutuController@detail_kuisioner_bauk_gugusmutu');
+    Route::post('download_kuisioner_bauk_gugusmutu', 'GugusMutuController@download_kuisioner_bauk_gugusmutu');
+    Route::post('download_detail_kuisioner_bauk_gugusmutu', 'GugusMutuController@download_detail_kuisioner_bauk_gugusmutu');
+
+    # REPORT KUISIONER PERPUS
+    Route::post('post_report_kuisioner_perpus_gugusmutu', 'GugusMutuController@post_report_kuisioner_perpus_gugusmutu');
+    Route::post('detail_kuisioner_perpus_gugusmutu', 'GugusMutuController@detail_kuisioner_perpus_gugusmutu');
+    Route::post('download_kuisioner_perpus_gugusmutu', 'GugusMutuController@download_kuisioner_perpus_gugusmutu');
+    Route::post('download_detail_kuisioner_perpus_gugusmutu', 'GugusMutuController@download_detail_kuisioner_perpus_gugusmutu');
+
+    # REPORT KUISIONER BEASISWA
+    Route::post('post_report_kuisioner_beasiswa_gugusmutu', 'GugusMutuController@post_report_kuisioner_beasiswa_gugusmutu');
+    Route::post('detail_kuisioner_beasiswa_gugusmutu', 'GugusMutuController@detail_kuisioner_beasiswa_gugusmutu');
+    Route::post('download_kuisioner_beasiswa_gugusmutu', 'GugusMutuController@download_kuisioner_beasiswa_gugusmutu');
+    Route::post('download_detail_kuisioner_beasiswa_gugusmutu', 'GugusMutuController@download_detail_kuisioner_beasiswa_gugusmutu');
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');

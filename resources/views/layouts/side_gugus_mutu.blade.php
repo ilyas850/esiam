@@ -28,4 +28,17 @@
                         
         </ul>
     </li>
+    <li class="treeview">
+    <a href="#">
+            <i class="fa fa-database"></i> <span>Master Kuisioner</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ url('data_report_kuisioner_gugusmutu') }}"><i class="fa fa-circle-o"></i> <span>
+                        Report Kuisioner</span></a></li>
+                        
+        </ul>
+    </li>
 </ul>
