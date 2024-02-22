@@ -817,7 +817,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('simpan_bimbingan_sempro', 'PraustaController@simpan_bimbingan_sempro');
     Route::put('edit_bimbingan_sempro/{id}', 'PraustaController@edit_bimbingan_sempro');
 
-    //upload draft prakerin
+    #upload draft sempro
     Route::post('simpan_draft_sempro', 'PraustaController@simpan_draft_sempro');
 
     //sidang ta
@@ -1019,6 +1019,20 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('ajukan_seminar_magang2', 'MagangSkripsiController@ajukan_seminar_magang2');
     Route::post('simpan_draft_magang2', 'MagangSkripsiController@simpan_draft_magang2');
     Route::post('simpan_data_magang2', 'MagangSkripsiController@simpan_data_magang2');
+
+    #seminar proposal
+    Route::get('sempro_mhs', 'MagangSkripsiController@sempro_mhs');
+    Route::get('pengajuan_sempro/{id}', 'MagangSkripsiController@pengajuan_sempro');
+    Route::post('simpan_ajuan_sempro', 'MagangSkripsiController@simpan_ajuan_sempro');
+    Route::put('put_sempro/{id}', 'MagangSkripsiController@put_sempro');
+
+    #bimbingan sempro
+    Route::post('simpan_bim_sempro', 'MagangSkripsiController@simpan_bim_sempro');
+    Route::put('edit_bim_sempro/{id}', 'MagangSkripsiController@edit_bim_sempro');
+
+    Route::post('ajukan_seminar_proposal', 'MagangSkripsiController@ajukan_seminar_proposal');
+    Route::get('ajukan_seminar_lagi/{id}', 'MagangSkripsiController@ajukan_seminar_lagi');
+    
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
