@@ -1015,7 +1015,6 @@ class DosenluarController extends Controller
                 'id_rps'                    => 'required',
                 'alasan_pembaharuan_materi'                    => 'required',
                 'file_kuliah_tatapmuka'     => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
                 'file_materi_tugas'         => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
             ],
             $message,

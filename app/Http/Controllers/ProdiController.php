@@ -39,7 +39,7 @@ class ProdiController extends Controller
     $data = DB::select("CALL dospem_pkl_magang");
 
     $dosen = Dosen::where('active', 1)
-      ->whereIn('idstatus', [1, 2])
+      ->whereIn('idstatus', [1, 2, 3])
       ->orderBy('nama', 'ASC')
       ->get();
 
@@ -138,7 +138,7 @@ class ProdiController extends Controller
     $data = DB::select('CALL dospem_magang');
 
     $dosen = Dosen::where('active', 1)
-      ->whereIn('idstatus', [1, 2])
+      ->whereIn('idstatus', [1, 2, 3])
       ->orderBy('nama', 'ASC')
       ->get();
 
@@ -267,7 +267,7 @@ class ProdiController extends Controller
       ->get();
 
     $dosen = Dosen::where('active', 1)
-      ->whereIn('idstatus', [1, 2])
+      ->whereIn('idstatus', [1, 2, 3])
       ->orderBy('nama', 'ASC')
       ->get();
 
@@ -324,7 +324,7 @@ class ProdiController extends Controller
       ->get();
 
     $dosen = Dosen::where('active', 1)
-      ->whereIn('idstatus', [1, 2])
+      ->whereIn('idstatus', [1, 2, 3])
       ->orderBy('nama', 'ASC')
       ->get();
 
