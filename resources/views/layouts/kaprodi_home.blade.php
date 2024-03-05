@@ -8,23 +8,34 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
-
-
                     <div class="row">
                         <div class="col-md-12">
-                            <div
+                            @php
+                                $alertClasses = [
+                                    22 => 'alert-info',
+                                    25 => 'alert-info',
+                                    23 => 'alert-danger',
+                                    24 => 'alert-success',
+                                ];
+                            @endphp
+                            <div class="alert {{ $alertClasses[$prd->kodeprodi] ?? '' }} alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h4><i class="icon fa fa-smile-o"></i> Selamat Datang</h4>
+                                <h3><b>KAPRODI {{ $prd->prodi }} ({{ $prd->nama }})</b></h3>
+                            </div>
+                            {{-- <div
                                 class="alert
-          @if ($prd->kodeprodi == 22 or $prd->kodeprodi == 25) alert-info
-          @elseif ($prd->kodeprodi == 23)
-            alert-danger
-          @elseif ($prd->kodeprodi == 24)
-            alert-success @endif
-          alert-dismissible">
+                                    @if ($prd->kodeprodi == 22 or $prd->kodeprodi == 25) alert-info
+                                    @elseif ($prd->kodeprodi == 23)
+                                        alert-danger
+                                    @elseif ($prd->kodeprodi == 24)
+                                        alert-success @endif
+                                    alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert"
                                     aria-hidden="true">&times;</button>
                                 <h4><i class="icon fa fa-smile-o"></i>Selamat Datang</h4>
                                 <h3><b>KAPRODI {{ $prd->prodi }} ({{ $prd->nama }})</b></h3>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="row">

@@ -1514,6 +1514,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('record_bim_sempro_skripsi_kprd/{id}', 'KaprodiController@record_bim_sempro_skripsi_kprd');
     Route::put('komentar_bimbingan_sempro_skripsi_kprd/{id}', 'KaprodiController@komentar_bimbingan_sempro_skripsi_kprd');
     Route::get('acc_sempro_skripsi_kprd/{id}', 'KaprodiController@acc_sempro_skripsi_kprd');
+    Route::get('val_bim_sempro_skripsi_kprd/{id}', 'KaprodiController@val_bim_sempro_skripsi_kprd');
 
     #pembimbing Skripsi
     Route::get('pembimbing_skripsi_kprd', 'KaprodiController@pembimbing_skripsi_kprd');

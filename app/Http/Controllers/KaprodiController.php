@@ -94,6 +94,45 @@ class KaprodiController extends Controller
 
     $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
+//     $query = DB::table('kurikulum_periode as kp')
+//     ->join('matakuliah as mk', 'mk.idmakul', '=', 'kp.id_makul')
+//     ->join('prodi as prd', 'prd.id_prodi', '=', 'kp.id_prodi')
+//     ->join('kelas as kls', 'kls.idkelas', '=', 'kp.id_kelas')
+//     ->leftJoin('dosen as dsn', 'dsn.iddosen', '=', 'kp.id_dosen')
+//     ->leftJoin(DB::raw("(SELECT bp.id_kurperiode, COUNT(bp.id_kurperiode) AS jml_per
+//                         FROM bap bp
+//                         JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
+//                         JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+//                         WHERE bp.`status` = 'ACTIVE' AND kp.`status` = 'ACTIVE' 
+//                             AND kp.id_periodetahun = $tahun->id_periodetahun AND kp.id_periodetipe = $tipe->id_periodetipe
+//                             AND (kp.id_dosen = $id OR kp.id_dosen_2 = $id)
+//                         GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen) as aa"), function($join) {
+//         $join->on('aa.id_kurperiode', '=', 'kp.id_kurperiode');
+//     })
+//     ->select(
+//         'kp.id_kurperiode',
+//         DB::raw('CONCAT(mk.kode,"-",mk.makul) AS makul'),
+//         DB::raw('CONCAT(mk.set_sks_teori, "/", mk.set_sks_praktek) AS sks'),
+//         'prd.prodi',
+//         'kls.kelas',
+//         'dsn.nama',
+//         'aa.jml_per',
+//         DB::raw('ROUND(((aa.jml_per / 16) * 100), 2) AS persentase')
+//     )
+//     ->where('kp.id_periodetahun', '=', $tahun->id_periodetahun)
+//     ->where('kp.id_periodetipe', '=', $tipe->id_periodetipe)
+//     ->where('kp.status', '=', 'ACTIVE')
+//     ->where('mk.active', '=', 1)
+//     ->where(function($query) use ($id) {
+//         $query->where('kp.id_dosen', '=', $id)
+//               ->orWhere('kp.id_dosen_2', '=', $id);
+//     })
+//     ->groupBy('prd.kodeprodi', 'kp.id_kelas', 'kp.id_makul', 'kp.id_hari', 'kp.id_dosen')
+//     ->orderBy('mk.kode', 'asc')
+//     ->orderBy('kls.kelas', 'asc');
+
+// $data_akademik = $query->get();
+
     $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
 
     $ti = Student::where('kodeprodi', 23)
@@ -8932,6 +8971,16 @@ class KaprodiController extends Controller
   }
 
   public function val_bim_magang($id)
+  {
+    $val = Prausta_trans_bimbingan::find($id);
+    $val->validasi = 'SUDAH';
+    $val->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  function val_bim_sempro_skripsi_kprd($id)
   {
     $val = Prausta_trans_bimbingan::find($id);
     $val->validasi = 'SUDAH';
