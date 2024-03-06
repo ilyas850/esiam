@@ -94,8 +94,10 @@
                                         {{ Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}-{{ Carbon\Carbon::parse($item->jam_selsai)->format('H:i') }}
                                     </center>
                                 </td>
-                                <td>
-                                    <center>{{ Carbon\Carbon::parse($item->kurang_jam)->format('H:i') }}</center>
+                                <td align="center">
+                                    @if ($item->kurang_jam != null)
+                                        {{ Carbon\Carbon::parse($item->kurang_jam)->format('H:i') }}
+                                    @endif
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
                                 <td>{{ $item->alasan_pembaharuan_materi }}</td>
