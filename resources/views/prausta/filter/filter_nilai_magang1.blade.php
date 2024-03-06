@@ -53,7 +53,7 @@
                                     <center>Angkatan</center>
                                 </th>
                                 <th>
-                                    <center>Nilai PKL</center>
+                                    <center>Nilai Magang 1</center>
                                 </th>
                                 <th>
                                     <center>Nilai Transkrip</center>
@@ -109,15 +109,6 @@
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},E">
                                             @endif
-                                            {{-- @if ($item->nilai_huruf != null)
-                                                <select name="nilai_AKHIR[]">
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},{{ $item->nilai_huruf }}">
-                                                        {{ $item->nilai_huruf }}</option>
-                                                </select>
-                                            @elseif ($item->nilai_huruf != null)
-                                                {{ $item->nilai_AKHIR }}
-                                            @endif --}}
                                         </center>
                                     </td>
                                     <td align="center">

@@ -28,7 +28,7 @@
                     </tr>
                 </table>
             </div>
-            <form action="{{ url('save_nilai_sempro_ta_to_trans') }}" method="post">
+            <form action="{{ url('save_nilai_to_trans') }}" method="post">
                 {{ csrf_field() }}
                 <div class="box-body">
                     <table class="table table-bordered table-striped">

@@ -753,7 +753,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('keuangan', 'MhsController@uang');
     // Route::get('unduh_krs', 'MhsController@pdf_krs');
     Route::get('lihat_semua', 'MhsController@lihat_semua');
-    
+
 
     #isi KRS
     Route::get('isi_krs', 'KrsController@add_krs');
@@ -1000,7 +1000,7 @@ Route::group(['middleware' => 'mhs'], function () {
 
     #soal ujian 
     Route::get('soal_ujian_mhs', 'MhsController@soal_ujian_mhs');
-    
+
     #magang mahasiswa
     Route::get('magang_mhs', 'MagangSkripsiController@magang_mhs');
     Route::get('input_data_magang/{id}', 'MagangSkripsiController@input_data_magang');
@@ -1032,7 +1032,6 @@ Route::group(['middleware' => 'mhs'], function () {
 
     Route::post('ajukan_seminar_proposal', 'MagangSkripsiController@ajukan_seminar_proposal');
     Route::get('ajukan_seminar_lagi/{id}', 'MagangSkripsiController@ajukan_seminar_lagi');
-    
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1041,12 +1040,12 @@ Route::group(['middleware' => 'nomhs'], function () {
 });
 
 Route::group(['middleware' => 'dosenluar'], function () {
-     #dashboard dosen
-     Route::get('dosenluar_home', 'DosenluarController@dosenluar_home');
+    #dashboard dosen
+    Route::get('dosenluar_home', 'DosenluarController@dosenluar_home');
 
     #persenatse kehadiran mahasiswa
     Route::get('persentase_absensi_mhs_dsnlr/{id}', 'DosenluarController@persentase_absensi_mhs');
-    
+
     Route::get('makul_diampu', 'DosenluarController@makul_diampu');
     Route::get('cekmhs/{id}', 'DosenluarController@cekmhs');
     Route::get('history_makul_dsnlr', 'DosenluarController@history_makul_dsn');
@@ -1766,14 +1765,13 @@ Route::group(['middleware' => 'prausta'], function () {
 
     # nilai prausta
     Route::post('filter_nilai_prausta', 'AdminPraustaController@filter_nilai_prausta');
-    Route::post('save_nilai_pkl_to_trans', 'AdminPraustaController@save_nilai_pkl_to_trans');
-    Route::post('save_nilai_sempro_ta_to_trans', 'AdminPraustaController@save_nilai_sempro_ta_to_trans');
+    Route::post('save_nilai_to_trans', 'AdminPraustaController@save_nilai_to_trans');
 
     # DATA PKL
     Route::get('data_prakerin', 'AdminPraustaController@data_prakerin');
     Route::get('atur_prakerin/{id}', 'AdminPraustaController@atur_prakerin');
     Route::post('simpan_atur_prakerin', 'AdminPraustaController@simpan_atur_prakerin');
-    
+
     # DATA MAGANG
     Route::get('atur_magang/{id}', 'AdminPraustaController@atur_magang');
     Route::post('simpan_atur_magang', 'AdminPraustaController@simpan_atur_magang');
@@ -2016,7 +2014,7 @@ Route::group(['middleware' => 'gugusmutu'], function () {
     # MASTER EDOM
     Route::get('data_rekapitulasi_edom_gugusmutu', 'GugusMutuController@data_rekapitulasi_edom_gugusmutu');
     Route::post('report_edom_gugusmutu', 'GugusMutuController@report_edom_gugusmutu');
-    
+
     # PER MATAKULIAH
     Route::post('download_report_edom_by_makul_gugusmutu', 'GugusMutuController@download_report_edom_by_makul_gugusmutu');
     Route::post('detail_edom_makul_gugusmutu', 'GugusMutuController@detail_edom_makul_gugusmutu');

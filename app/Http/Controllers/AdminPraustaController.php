@@ -55,44 +55,27 @@ class AdminPraustaController extends Controller
         $tipe = Periode_tipe::where('id_periodetipe', $id_tipe)->first();
         $prodi = Prodi::where('kodeprodi', $kd_prodi)->first();
 
-
         if ($tp_prausta == 'PKL') {
 
             $data = DB::select('CALL filter_nilai_pkl(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
 
             return view('prausta/filter/filter_nilai_pkl', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
-        } else {
+        } elseif ($tp_prausta == 'SEMPRO & TA') {
             $data = DB::select('CALL filter_nilai_sempro_ta(?,?,?)', [$id_tahun, $id_tipe, $kd_prodi]);
 
             return view('prausta/filter/filter_nilai_sempro_ta', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
+        } elseif ($tp_prausta == 'MAGANG 1') {
+            $data = DB::select('CALL filter_nilai_magang1(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+
+            return view('prausta/filter/filter_nilai_magang1', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
+        } elseif ($tp_prausta == 'MAGANG 2') {
+            $data = DB::select('CALL filter_nilai_magang2(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+
+            return view('prausta/filter/filter_nilai_magang2', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         }
     }
 
-    public function save_nilai_pkl_to_trans(Request $request)
-    {
-        $jml = count($request->nilai_AKHIR);
-
-        for ($i = 0; $i < $jml; $i++) {
-            $nilai = $request->nilai_AKHIR[$i];
-            $nilaiusta = explode(',', $nilai, 2);
-            $ids = $nilaiusta[0];
-            $nsta = $nilaiusta[1];
-
-            $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
-                ->where('status', 'ACTIVE')
-                ->select('nilai_indeks')
-                ->first();
-
-            Student_record::where('id_studentrecord', $ids)->update([
-                'nilai_AKHIR' => $nsta,
-                'nilai_ANGKA' => $angka->nilai_indeks
-            ]);
-        }
-        Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
-        return redirect('nilai_prausta');
-    }
-
-    public function save_nilai_sempro_ta_to_trans(Request $request)
+    public function save_nilai_to_trans(Request $request)
     {
         $jml = count($request->nilai_AKHIR);
 
