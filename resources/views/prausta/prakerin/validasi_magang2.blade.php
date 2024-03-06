@@ -76,14 +76,14 @@
                                 <td>
                                     <center>{{ $item->nilai_huruf }}</center>
                                 </td>
-                                <td>
-                                    <center><a
-                                            href="/File Laporan Revisi/{{ $item->idstudent }}/{{ $item->file_laporan_revisi }}"
-                                            target="_blank" style="font: white"> File Laporan</a></center>
+                                <td align="center">
+                                    @if ($item->file_laporan_revisi != null)
+                                        <a href="{{ url("/File Laporan Revisi/{$item->idstudent}/{$item->file_laporan_revisi}") }}" target="_blank">File Laporan</a>
+                                    @endif
                                 </td>
                                 <td>
                                     <center>
-                                        @if ($item->validasi_baak == 'BELUM')
+                                        @if ($item->validasi_baak == 'BELUM' && $item->nilai_huruf != null)
                                             <a href="validasi_akhir_prausta/{{ $item->id_settingrelasi_prausta }}"
                                                 class="btn btn-info btn-xs">Validasi</a>
                                         @elseif($item->validasi_baak == 'SUDAH')
