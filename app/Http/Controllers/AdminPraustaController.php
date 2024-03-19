@@ -127,6 +127,7 @@ class AdminPraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->whereIn('matakuliah.idmakul', [135, 177, 180, 205, 235, 281])
             ->where('prausta_master_waktu.tipe_prausta', 'PKL')
+            // ->where('prausta_setting_relasi.id_student', 800)
             ->where('prausta_master_waktu.status', 'ACTIVE')
             ->where('student.active', 1)
             ->select(
@@ -148,7 +149,9 @@ class AdminPraustaController extends Controller
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.status',
                 'prausta_master_kode.batas_waktu',
-                'prausta_setting_relasi.tgl_pengajuan'
+                'prausta_setting_relasi.tgl_pengajuan',
+                'prausta_master_waktu.status as sts',
+                'prausta_master_waktu.id_masterwaktu_prausta'
             )
             ->orderBy('student.nim', 'ASC')
             ->get();

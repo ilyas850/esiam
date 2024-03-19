@@ -395,7 +395,7 @@
                                 @elseif ($jml_bim >= 6)
                                     @if ($hasil_seminar == 0 or $hasil_seminar > 0)
                                         @if ($data->acc_seminar_sidang == null)
-                                            <form class="" action="{{ url('ajukan_seminar_proposal') }}"
+                                            <form class="" action="{{ url('ajukan_seminar_proposal_d4') }}"
                                                 method="post" enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="row">
@@ -439,7 +439,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                        <form action="{{ url('ajukan_seminar_proposal_d4') }}"
                                                             method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
@@ -483,7 +483,7 @@
                                                 @if ($data->validasi_baak == 'BELUM')
                                                     <div class="col-md-4">
                                                         <div class="info-box">
-                                                            <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                            <form action="{{ url('ajukan_seminar_proposal_d4') }}"
                                                                 method="post" enctype="multipart/form-data">
                                                                 {{ csrf_field() }}
                                                                 <input type="hidden" name="id_settingrelasi_prausta"
@@ -531,7 +531,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('ajukan_seminar_proposal') }}"
+                                                        <form action="{{ url('ajukan_seminar_proposal_d4') }}"
                                                             method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"
