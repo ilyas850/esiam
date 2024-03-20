@@ -222,7 +222,7 @@
                                                         <div class="form-group">
                                                             <label>File Bimbingan</label>
                                                             <input type="file" name="file_bimbingan"
-                                                                class="form-control" required>
+                                                                class="form-control" accept=".pdf" required>
                                                             <span>max. size file 4mb format .pdf, .doc, .docx</span>
                                                         </div>
                                                     </div>

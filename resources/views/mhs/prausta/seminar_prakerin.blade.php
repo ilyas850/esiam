@@ -228,7 +228,7 @@
                                                         <div class="form-group">
                                                             <label>File Bimbingan</label>
                                                             <input type="file" name="file_bimbingan"
-                                                                class="form-control" required>
+                                                                class="form-control" accept=".pdf" required>
                                                             <span>Maksimal ukuran file 4mb dan PDF</span>
                                                         </div>
                                                     </div>
