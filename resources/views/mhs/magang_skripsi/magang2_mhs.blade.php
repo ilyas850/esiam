@@ -840,7 +840,7 @@
                             </div>
                             <div class="tab-pane" id="tab_6">
                                 @if ($data->validasi_baak == 'BELUM')
-                                    <span class="badge bg-yellow">Nilai Belum Ada</span>
+                                    <span class="badge bg-red">Nilai Belum Ada atau belum di Validasi oleh BAAK</span>
                                 @else
                                     <div class="row">
                                         <div class="col-lg-3 col-xs-6">
