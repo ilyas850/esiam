@@ -825,7 +825,7 @@ class PraustaController extends Controller
     {
         $idstudent = Auth::user()->id_user;
         $tgl_seminar_pkl = Prausta_setting_relasi::where('id_student', $idstudent)
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
             ->select('prausta_setting_relasi.tanggal_selesai')
             ->first();
 
