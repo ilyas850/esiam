@@ -78,7 +78,8 @@
                                 </td>
                                 <td align="center">
                                     @if ($item->file_laporan_revisi != null)
-                                        <a href="{{ url("/File Laporan Revisi/{$item->idstudent}/{$item->file_laporan_revisi}") }}" target="_blank">File Laporan</a>
+                                        <a href="{{ url("/File Laporan Revisi 2/{$item->idstudent}/{$item->file_laporan_revisi}") }}"
+                                            target="_blank">File Laporan</a>
                                     @endif
                                 </td>
                                 <td>

@@ -6187,7 +6187,6 @@ class SadminController extends Controller
         return view('sadmin/konversi/konversi_makul', compact('data', 'makul', 'angkatan', 'prodi', 'kurikulum'));
     }
 
-    //tambah konversi
     public function tambah_konversi_makul()
     {
         $makul = Matakuliah::where('active', 1)->get();
