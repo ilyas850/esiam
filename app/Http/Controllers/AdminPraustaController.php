@@ -5619,7 +5619,9 @@ class AdminPraustaController extends Controller
 
     public function post_waktu_prausta(Request $request)
     {
-        $cekProdi = Prodi::where('kodeprodi', $request->kodeprodi)->get();
+        $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
+    
+        $cekProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
 
         for ($i = 0; $i < count($cekProdi); $i++) {
             $prodi = $cekProdi[$i];
