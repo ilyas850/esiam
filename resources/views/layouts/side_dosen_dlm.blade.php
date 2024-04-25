@@ -77,10 +77,11 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{ url('jadwal_magang_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi</a>
-            </li>
+            <li><a href="{{ url('jadwal_magang_dsn_dlm') }}"><i class="fa fa-circle-o"></i> Jadwal Magang & Skripsi</a></li>
             <li><a href="{{ url('pembimbing_magang') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang 1</a></li>
             <li><a href="{{ url('pembimbing_magang2') }}"><i class="fa fa-circle-o"></i> Pembimbing Magang 2</a></li>
+            <li><a href="{{ url('pembimbing_sempro_skripsi_dsn_dlm') }}"><i class="fa fa-circle-o"></i>Pembimbing SEMPRO</a></li>
+            <li><a href="{{ url('pembimbing_skripsi_dsn_dlm') }}"><i class="fa fa-circle-o"></i>Pembimbing SKRIPSI</a></li>
             <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 1</a></li>
             <li><a href="{{ url('penguji_magang2_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 2</a></li>
         </ul>
@@ -116,14 +117,14 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{ url('jadwal_seminar_prakerin_dlm') }}"><i class="fa fa-circle-o"></i> Seminar
-                    Prakerin</a></li>
-            <li><a href="{{ url('jadwal_seminar_proposal_dlm') }}"><i class="fa fa-circle-o"></i> Seminar
-                    Proposal</a></li>
-            <li><a href="{{ url('jadwal_sidang_ta_dlm') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
-        </ul>
-    </li> --}}
+    Prakerin</a></li>
+    <li><a href="{{ url('jadwal_seminar_proposal_dlm') }}"><i class="fa fa-circle-o"></i> Seminar
+            Proposal</a></li>
+    <li><a href="{{ url('jadwal_sidang_ta_dlm') }}"><i class="fa fa-circle-o"></i> Sidang TA</a></li>
+</ul>
+</li> --}}
 
-    {{-- <li><a href="{{ url('upload_soal_dsn_dlm') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
-    </li> --}}
+{{-- <li><a href="{{ url('upload_soal_dsn_dlm') }}"><i class="fa  fa-list"></i> <span>Upload Soal Ujian</span></a>
+</li> --}}
 
 </ul>

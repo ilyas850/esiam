@@ -3944,6 +3944,8 @@ class KaprodiController extends Controller
     return redirect()->back();
   }
 
+
+
   public function val_bim_pkl($id)
   {
     $val = Prausta_trans_bimbingan::find($id);
@@ -10440,5 +10442,61 @@ class KaprodiController extends Controller
 
     $pdf = PDF::loadView('kaprodi/edom/pdf_detail_report_edom_dosen', compact('data', 'periodetahun', 'periodetipe', 'nama'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
+  }
+
+  function record_bim_skripsi_kprd($id)
+  {
+    $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+      ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+      ->select(
+        'prausta_setting_relasi.acc_seminar_sidang',
+        'student.idstudent',
+        'student.nim',
+        'student.nama',
+        'prausta_master_kode.kode_prausta',
+        'prausta_master_kode.nama_prausta',
+        'prodi.prodi',
+        'kelas.kelas',
+        'prausta_setting_relasi.id_settingrelasi_prausta',
+        'prausta_setting_relasi.judul_prausta',
+        'prausta_setting_relasi.tempat_prausta',
+        'prausta_setting_relasi.file_draft_laporan',
+        'prausta_setting_relasi.file_laporan_revisi',
+        'prausta_setting_relasi.dosen_pembimbing'
+      )
+      ->first();
+
+    $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+      ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+      ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+      ->get();
+
+    return view('kaprodi/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
+  }
+
+  function val_bim_skripsi_kprd($id)
+  {
+    $val = Prausta_trans_bimbingan::find($id);
+    $val->validasi = 'SUDAH';
+    $val->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
+  }
+
+  public function komentar_bimbingan_skripsi_kprd(Request $request, $id)
+  {
+    $prd = Prausta_trans_bimbingan::find($id);
+    $prd->komentar_bimbingan = $request->komentar_bimbingan;
+    $prd->save();
+
+    Alert::success('', 'Berhasil')->autoclose(3500);
+    return redirect()->back();
   }
 }

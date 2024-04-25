@@ -6239,4 +6239,275 @@ class DosenController extends Controller
 
         return view('dosen/pengajuan/data_pindah_kelas', compact('data', 'kelas'));
     }
+
+    function pembimbing_sempro_skripsi_dsn_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
+            ->select(DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'), 'student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.validasi_baak')
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('dosen/magang_skripsi/pembimbing_sempro', compact('data'));
+    }
+
+    function record_bim_sempro_skripsi_dsn_dlm($id)
+    {
+        $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.dosen_pembimbing'
+            )
+            ->first();
+
+        $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
+            ->get();
+
+        return view('dosen/magang_skripsi/cek_bimbingan_sempro', compact('jdl', 'pkl'));
+    }
+
+    function download_bap_sempro_skripsi_dsn_dlm($id)
+    {
+        $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_trans_hasil.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.id_dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2',
+                'prausta_trans_hasil.nilai_1',
+                'prausta_trans_hasil.nilai_2',
+                'prausta_trans_hasil.nilai_3',
+                'prausta_trans_hasil.nilai_huruf',
+                'dosen.nama as nama_dsn',
+                'dosen.akademik'
+            )
+            ->first();
+
+        if ($data == null) {
+            Alert::warning('', 'Data SEMPRO Belum ada')->autoclose(3500);
+            return redirect('pembimbing_sempro_kprd');
+        } else {
+            $nama = $data->nama;
+            $nim = $data->nim;
+            $kelas = $data->kelas;
+
+
+            $cektgl = date(' d F Y', strtotime($data->tanggal_selesai));
+            $cekhari = date('l', strtotime($data->tanggal_selesai));
+
+            switch ($cekhari) {
+                case 'Sunday':
+                    $hari = 'Minggu';
+                    break;
+                case 'Monday':
+                    $hari = 'Senin';
+                    break;
+                case 'Tuesday':
+                    $hari = 'Selasa';
+                    break;
+                case 'Wednesday':
+                    $hari = 'Rabu';
+                    break;
+                case 'Thursday':
+                    $hari = 'Kamis';
+                    break;
+                case 'Friday':
+                    $hari = 'Jum\'at';
+                    break;
+                case 'Saturday':
+                    $hari = 'Sabtu';
+                    break;
+                default:
+                    $hari = 'Tidak ada';
+                    break;
+            }
+
+            $bulan = array(
+                1 =>   'Januari',
+                'Februari',
+                'Maret',
+                'April',
+                'Mei',
+                'Juni',
+                'Juli',
+                'Agustus',
+                'September',
+                'Oktober',
+                'November',
+                'Desember'
+            );
+
+            $pecahkan = explode('-', $data->tanggal_selesai);
+
+            $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+
+            $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
+
+            $dospeng1 = Dosen::where('iddosen', $data->id_dosen_penguji_1)->first();
+
+            $dospeng2 = Dosen::where('iddosen', $data->id_dosen_penguji_2)->first();
+
+            $pdf = PDF::loadView('prausta/sempro/unduh_bap_sempro', compact('data', 'hari', 'tglhasil', 'dospem', 'dospeng1', 'dospeng2'))->setPaper('a4');
+            return $pdf->download('BAP Sempro' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
+        }
+    }
+
+    function val_bim_sempro_skripsi_dsn_dlm($id)
+    {
+        $val = Prausta_trans_bimbingan::find($id);
+        $val->validasi = 'SUDAH';
+        $val->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function komentar_bimbingan_sempro_skripsi_dsn_dlm(Request $request, $id)
+    {
+        $prd = Prausta_trans_bimbingan::find($id);
+        $prd->komentar_bimbingan = $request->komentar_bimbingan;
+        $prd->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function pembimbing_skripsi_dsn_dlm()
+    {
+        $id = Auth::user()->id_user;
+
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('prausta_trans_bimbingan', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_bimbingan.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_dosen_pembimbing', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->select(
+                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                'student.nim',
+                'student.nama',
+                'prodi.prodi',
+                'kelas.kelas',
+                'angkatan.angkatan',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.validasi_baak'
+            )
+            ->groupBy('student.nama', 'prausta_setting_relasi.id_settingrelasi_prausta', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'prausta_setting_relasi.validasi_baak')
+            ->orderBy('student.nim', 'ASC')
+            ->get();
+
+        return view('dosen/magang_skripsi/pembimbing_skripsi', compact('data'));
+    }
+
+    function record_bim_skripsi_dsn_dlm($id)
+    {
+        $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+        ->leftJoin('prodi', function ($join) {
+          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        })
+        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+        ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+        ->select(
+          'prausta_setting_relasi.acc_seminar_sidang',
+          'student.idstudent',
+          'student.nim',
+          'student.nama',
+          'prausta_master_kode.kode_prausta',
+          'prausta_master_kode.nama_prausta',
+          'prodi.prodi',
+          'kelas.kelas',
+          'prausta_setting_relasi.id_settingrelasi_prausta',
+          'prausta_setting_relasi.judul_prausta',
+          'prausta_setting_relasi.tempat_prausta',
+          'prausta_setting_relasi.file_draft_laporan',
+          'prausta_setting_relasi.file_laporan_revisi',
+          'prausta_setting_relasi.dosen_pembimbing'
+        )
+        ->first();
+  
+      $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+        ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+        ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+        ->get();
+  
+      return view('dosen/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
+    }
+
+    function val_bim_skripsi_dsn_dlm($id)
+    {
+        $val = Prausta_trans_bimbingan::find($id);
+        $val->validasi = 'SUDAH';
+        $val->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function komentar_bimbingan_skripsi_dsn_dlm(Request $request, $id)
+    {
+        $prd = Prausta_trans_bimbingan::find($id);
+        $prd->komentar_bimbingan = $request->komentar_bimbingan;
+        $prd->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
 }

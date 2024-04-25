@@ -727,6 +727,21 @@ Route::group(['middleware' => 'dosen'], function () {
 
     #data pindah kelas
     Route::get('data_pindah_kelas_dsn_pa', 'DosenController@data_pindah_kelas_dsn_pa');
+
+    // PEMBIMBING SEMPRO
+    Route::get('pembimbing_sempro_skripsi_dsn_dlm', 'DosenController@pembimbing_sempro_skripsi_dsn_dlm');
+    Route::get('record_bim_sempro_skripsi_dsn_dlm/{id}', 'DosenController@record_bim_sempro_skripsi_dsn_dlm');
+    Route::get('download_bap_sempro_skripsi_dsn_dlm/{id}', 'DosenController@download_bap_sempro_skripsi_dsn_dlm');
+    Route::get('val_bim_sempro_skripsi_dsn_dlm/{id}', 'DosenController@val_bim_sempro_skripsi_dsn_dlm');
+    Route::put('komentar_bimbingan_sempro_skripsi_dsn_dlm/{id}', 'DosenController@komentar_bimbingan_sempro_skripsi_dsn_dlm');
+    Route::get('acc_seminar_pkl_dsn_dlm/{id}', 'DosenController@acc_seminar_pkl');
+    Route::get('tolak_seminar_pkl_dsn_dlm/{id}', 'DosenController@tolak_seminar_pkl');
+
+    // PEMBIMBING SKRIPSI
+    Route::get('pembimbing_skripsi_dsn_dlm', 'DosenController@pembimbing_skripsi_dsn_dlm');
+    Route::get('record_bim_skripsi_dsn_dlm/{id}', 'DosenController@record_bim_skripsi_dsn_dlm');
+    Route::get('val_bim_skripsi_dsn_dlm/{id}', 'DosenController@val_bim_skripsi_dsn_dlm');
+    Route::put('komentar_bimbingan_skripsi_dsn_dlm/{id}', 'DosenController@komentar_bimbingan_skripsi_dsn_dlm');
 });
 
 Route::group(['middleware' => 'mhs'], function () {
@@ -1515,8 +1530,11 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('acc_sempro_skripsi_kprd/{id}', 'KaprodiController@acc_sempro_skripsi_kprd');
     Route::get('val_bim_sempro_skripsi_kprd/{id}', 'KaprodiController@val_bim_sempro_skripsi_kprd');
 
-    #pembimbing Skripsi
+    // PEMBIMBING SKRIPSI
     Route::get('pembimbing_skripsi_kprd', 'KaprodiController@pembimbing_skripsi_kprd');
+    Route::get('record_bim_skripsi_kprd/{id}', 'KaprodiController@record_bim_skripsi_kprd');
+    Route::get('val_bim_skripsi_kprd/{id}', 'KaprodiController@val_bim_skripsi_kprd');
+    Route::put('komentar_bimbingan_skripsi_kprd/{id}', 'KaprodiController@komentar_bimbingan_skripsi_kprd');
 
     #penguji magang
     Route::get('penguji_magang_kprd', 'KaprodiController@penguji_magang_kprd');
