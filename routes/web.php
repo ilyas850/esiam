@@ -1030,8 +1030,8 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::post('simpan_bim_sempro', 'MagangSkripsiController@simpan_bim_sempro');
     Route::put('edit_bim_sempro/{id}', 'MagangSkripsiController@edit_bim_sempro');
 
-    Route::post('ajukan_seminar_proposal_d4', 'MagangSkripsiController@ajukan_seminar_proposal');
-    Route::get('ajukan_seminar_lagi/{id}', 'MagangSkripsiController@ajukan_seminar_lagi');
+    Route::post('ajukan_seminar_proposal_d4', 'PraustaController@ajukan_seminar_proposal');
+    Route::get('ajukan_seminar_lagi/{id}', 'PraustaController@ajukan_seminar_lagi');
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
