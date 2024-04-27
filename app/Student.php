@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 class Student extends Model
@@ -13,6 +14,11 @@ class Student extends Model
   protected $primaryKey = 'idstudent';
 
   protected $dates = ['tgllahir'];
+
+  public function kelas()
+  {
+    return $this->BelongsTo(Kelas::class, 'idstatus');
+  }
 
   // protected $dateFormat = 'Y-m-d H:i';
 }
