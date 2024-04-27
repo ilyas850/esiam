@@ -6491,21 +6491,21 @@ class DosenController extends Controller
       return view('dosen/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
     }
 
-    function val_bim_skripsi_dsn_dlm($id)
-    {
-        $val = Prausta_trans_bimbingan::find($id);
-        $val->validasi = 'SUDAH';
-        $val->save();
-
-        Alert::success('', 'Berhasil')->autoclose(3500);
-        return redirect()->back();
-    }
-
     function komentar_bimbingan_skripsi_dsn_dlm(Request $request, $id)
     {
         $prd = Prausta_trans_bimbingan::find($id);
         $prd->komentar_bimbingan = $request->komentar_bimbingan;
         $prd->save();
+
+        Alert::success('', 'Berhasil')->autoclose(3500);
+        return redirect()->back();
+    }
+
+    function val_bim_skripsi_dsn_dlm($id)
+    {
+        $val = Prausta_trans_bimbingan::find($id);
+        $val->validasi = 'SUDAH';
+        $val->save();
 
         Alert::success('', 'Berhasil')->autoclose(3500);
         return redirect()->back();
