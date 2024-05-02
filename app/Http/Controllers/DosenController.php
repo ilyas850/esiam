@@ -6240,7 +6240,7 @@ class DosenController extends Controller
         return view('dosen/pengajuan/data_pindah_kelas', compact('data', 'kelas'));
     }
 
-    function pembimbing_sempro_skripsi_dsn_dlm()
+    public function pembimbing_sempro_skripsi_dsn_dlm()
     {
         $id = Auth::user()->id_user;
 
@@ -6262,7 +6262,7 @@ class DosenController extends Controller
         return view('dosen/magang_skripsi/pembimbing_sempro', compact('data'));
     }
 
-    function record_bim_sempro_skripsi_dsn_dlm($id)
+    public function record_bim_sempro_skripsi_dsn_dlm($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
@@ -6298,7 +6298,7 @@ class DosenController extends Controller
         return view('dosen/magang_skripsi/cek_bimbingan_sempro', compact('jdl', 'pkl'));
     }
 
-    function download_bap_sempro_skripsi_dsn_dlm($id)
+    public function download_bap_sempro_skripsi_dsn_dlm($id)
     {
         $data = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -6404,7 +6404,7 @@ class DosenController extends Controller
         }
     }
 
-    function val_bim_sempro_skripsi_dsn_dlm($id)
+    public function val_bim_sempro_skripsi_dsn_dlm($id)
     {
         $val = Prausta_trans_bimbingan::find($id);
         $val->validasi = 'SUDAH';
@@ -6414,7 +6414,7 @@ class DosenController extends Controller
         return redirect()->back();
     }
 
-    function komentar_bimbingan_sempro_skripsi_dsn_dlm(Request $request, $id)
+    public function komentar_bimbingan_sempro_skripsi_dsn_dlm(Request $request, $id)
     {
         $prd = Prausta_trans_bimbingan::find($id);
         $prd->komentar_bimbingan = $request->komentar_bimbingan;
@@ -6424,7 +6424,7 @@ class DosenController extends Controller
         return redirect()->back();
     }
 
-    function pembimbing_skripsi_dsn_dlm()
+    public function pembimbing_skripsi_dsn_dlm()
     {
         $id = Auth::user()->id_user;
 
@@ -6455,7 +6455,7 @@ class DosenController extends Controller
         return view('dosen/magang_skripsi/pembimbing_skripsi', compact('data'));
     }
 
-    function record_bim_skripsi_dsn_dlm($id)
+    public function record_bim_skripsi_dsn_dlm($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
         ->leftJoin('prodi', function ($join) {
@@ -6491,7 +6491,7 @@ class DosenController extends Controller
       return view('dosen/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
     }
 
-    function komentar_bimbingan_skripsi_dsn_dlm(Request $request, $id)
+    public function komentar_bimbingan_skripsi_dsn_dlm(Request $request, $id)
     {
         $prd = Prausta_trans_bimbingan::find($id);
         $prd->komentar_bimbingan = $request->komentar_bimbingan;
@@ -6501,7 +6501,7 @@ class DosenController extends Controller
         return redirect()->back();
     }
 
-    function val_bim_skripsi_dsn_dlm($id)
+    public function val_bim_skripsi_dsn_dlm($id)
     {
         $val = Prausta_trans_bimbingan::find($id);
         $val->validasi = 'SUDAH';

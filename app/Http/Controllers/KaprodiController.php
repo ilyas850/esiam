@@ -10444,7 +10444,7 @@ class KaprodiController extends Controller
     return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
   }
 
-  function record_bim_skripsi_kprd($id)
+  public function record_bim_skripsi_kprd($id)
   {
     $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', function ($join) {
@@ -10480,7 +10480,7 @@ class KaprodiController extends Controller
     return view('kaprodi/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
   }
 
-  function val_bim_skripsi_kprd($id)
+  public function val_bim_skripsi_kprd($id)
   {
     $val = Prausta_trans_bimbingan::find($id);
     $val->validasi = 'SUDAH';

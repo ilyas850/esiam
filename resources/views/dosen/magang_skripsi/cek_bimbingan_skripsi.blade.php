@@ -36,11 +36,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Judul  </label>
+                            <label>Judul </label>
                             <textarea class="form-control" rows="1" cols="60" readonly>{{ $jdl->judul_prausta }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Tempat  </label>
+                            <label>Tempat </label>
                             <input type="text" class="form-control" value="{{ $jdl->tempat_prausta }}" readonly>
                         </div>
                     </div>
@@ -82,27 +82,23 @@
                                 <td align="center">{{ $no++ }}</td>
                                 <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
-                                <td>
-                                    <center>
-                                        @if ($key->komentar_bimbingan == null)
-                                            <button class="btn btn-info btn-xs" data-toggle="modal"
-                                                data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
-                                        @else
-                                            <a class="btn btn-success btn-xs" data-toggle="modal"
-                                                data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
-                                                    class="fa fa-eye "></i> Lihat</a>
-                                        @endif
-                                    </center>
+                                <td align="center">
+                                    @if ($key->komentar_bimbingan == null)
+                                        <button class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
+                                    @else
+                                        <a class="btn btn-success btn-xs" data-toggle="modal"
+                                            data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
+                                                class="fa fa-eye "></i> Lihat</a>
+                                    @endif
                                 </td>
-                                <td>
-                                    <center>
-                                        @if ($key->validasi == 'BELUM')
-                                            <a href="/val_bim_skripsi_dsn_dlm/{{ $key->id_transbimb_prausta }}"
-                                                class="btn btn-info btn-xs">Validasi</a>
-                                        @elseif ($key->validasi == 'SUDAH')
-                                            <span class="badge bg-blue">Sudah</span>
-                                        @endif
-                                    </center>
+                                <td align="center">
+                                    @if ($key->validasi == 'BELUM')
+                                        <a href="/val_bim_skripsi_dsn_dlm/{{ $key->id_transbimb_prausta }}"
+                                            class="btn btn-info btn-xs">Validasi</a>
+                                    @elseif ($key->validasi == 'SUDAH')
+                                        <span class="badge bg-blue">Sudah</span>
+                                    @endif
                                 </td>
 
                                 <td align="center">
@@ -121,7 +117,8 @@
                                             <h5 class="modal-title">Komentar Bimbingan</h5>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/komentar_bimbingan_skripsi_dsn_dlm/{{ $key->id_transbimb_prausta }}"
+                                            <form
+                                                action="/komentar_bimbingan_skripsi_dsn_dlm/{{ $key->id_transbimb_prausta }}"
                                                 method="post" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('put')
@@ -204,9 +201,7 @@
                                 <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
                                     target="_blank" style="font: white"> File Laporan Akhir</a>
                             @endif
-
                         </span>
-
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
@@ -214,6 +209,5 @@
                 </div>
             </div>
         </div>
-
     </section>
 @endsection

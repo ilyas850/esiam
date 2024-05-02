@@ -82,8 +82,7 @@
                                 <td align="center">{{ $no++ }}</td>
                                 <td align="center">{{ $key->tanggal_bimbingan }}</td>
                                 <td>{{ $key->remark_bimbingan }}</td>
-                                <td>
-                                    <center>
+                                <td align="center">
                                         @if ($key->komentar_bimbingan == null)
                                             <button class="btn btn-info btn-xs" data-toggle="modal"
                                                 data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}">Tambah</button>
@@ -92,19 +91,15 @@
                                                 data-target="#modalTambahKomentar{{ $key->id_transbimb_prausta }}"> <i
                                                     class="fa fa-eye "></i> Lihat</a>
                                         @endif
-                                    </center>
                                 </td>
-                                <td>
-                                    <center>
+                                <td align="center">
                                         @if ($key->validasi == 'BELUM')
                                             <a href="/val_bim_sempro_skripsi_dsn_dlm/{{ $key->id_transbimb_prausta }}"
                                                 class="btn btn-info btn-xs">Validasi</a>
                                         @elseif ($key->validasi == 'SUDAH')
                                             <span class="badge bg-blue">Sudah</span>
                                         @endif
-                                    </center>
                                 </td>
-
                                 <td align="center">
                                     @if ($key->file_bimbingan == null)
                                     @elseif ($key->file_bimbingan != null)
@@ -169,7 +164,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-4">
                 <div class="info-box">
@@ -184,7 +178,6 @@
                                 <a href="/File Draft Laporan/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
                                     target="_blank" style="font: white"> File Draft Laporan</a>
                             @endif
-
                         </span>
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
@@ -204,9 +197,7 @@
                                 <a href="/File Laporan Revisi/{{ $jdl->idstudent }}/{{ $jdl->file_laporan_revisi }}"
                                     target="_blank" style="font: white"> File Laporan Akhir</a>
                             @endif
-
                         </span>
-
                         <div class="progress">
                             <div class="progress-bar" style="width: 100%"></div>
                         </div>
