@@ -2,12 +2,12 @@
 
 namespace App\Exports;
 
-use App\Student;
-use App\Kelas;
-use App\Prodi;
-use App\Angkatan;
-use App\Student_record;
-use App\Kurikulum_periode;
+use App\Models\Student;
+use App\Models\Kelas;
+use App\Models\Prodi;
+use App\Models\Angkatan;
+use App\Models\Student_record;
+use App\Models\Kurikulum_periode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -29,7 +29,7 @@ class DataNilaiExport implements FromView, ShouldAutoSize
     {
         return view('export_excel/nilai', [
             'ck' => DB::select("CALL absensi_mahasiswa_prodi_kelas(?)", array($this->id))
-            
+
         ]);
     }
 }

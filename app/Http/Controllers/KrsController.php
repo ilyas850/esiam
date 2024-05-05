@@ -4,30 +4,30 @@ namespace App\Http\Controllers;
 
 use PDF;
 use Alert;
-use App\Mhs;
+use App\Models\Mhs;
 use App\User;
-use App\Dosen;
-use App\Prodi;
-use App\Student;
-use App\Informasi;
-use App\Ruangan;
-use App\Semester;
-use App\Waktu_krs;
-use App\Matakuliah;
-use App\Periode_tipe;
-use App\Periode_tahun;
-use App\Update_Mahasiswa;
-use App\Kurikulum_hari;
-use App\Kurikulum_jam;
-use App\Kurikulum_master;
-use App\Kurikulum_periode;
-use App\Kurikulum_transaction;
-use App\Student_record;
-use App\Bayar;
-use App\Beasiswa;
-use App\Biaya;
-use App\Itembayar;
-use App\Kuitansi;
+use App\Models\Dosen;
+use App\Models\Prodi;
+use App\Models\Student;
+use App\Models\Informasi;
+use App\Models\Ruangan;
+use App\Models\Semester;
+use App\Models\Waktu_krs;
+use App\Models\Matakuliah;
+use App\Models\Periode_tipe;
+use App\Models\Periode_tahun;
+use App\Models\Update_mahasiswa;
+use App\Models\Kurikulum_hari;
+use App\Models\Kurikulum_jam;
+use App\Models\Kurikulum_master;
+use App\Models\Kurikulum_periode;
+use App\Models\Kurikulum_transaction;
+use App\Models\Student_record;
+use App\Models\Bayar;
+use App\Models\Beasiswa;
+use App\Models\Biaya;
+use App\Models\Itembayar;
+use App\Models\Kuitansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -510,7 +510,7 @@ class KrsController extends Controller
           $sk += $ks;
         }
         $hasil_sks_sama = ($sk / count($as));
-      }elseif (count($as) == 1) {
+      } elseif (count($as) == 1) {
         $sk = 0;
         for ($z = 0; $z < count($as); $z++) {
           $g = $as[$z];
@@ -520,8 +520,8 @@ class KrsController extends Controller
         $hasil_sks_sama = ($sk / count($as));
       }
     }
-    
-    
+
+
     $hasil_dari_sks = $k - $hasil_sks_sama;
 
     if ($idtipe == 1 or $idtipe == 2) {

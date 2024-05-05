@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Prausta_setting_relasi;
+use App\Models\Prausta_setting_relasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromQuery;

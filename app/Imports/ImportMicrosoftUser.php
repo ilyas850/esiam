@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Microsoft_user;
+use App\Models\Microsoft_user;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\ToCollection;

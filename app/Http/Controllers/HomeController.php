@@ -3,27 +3,27 @@
 namespace App\Http\Controllers;
 
 use Alert;
-use App\Mhs;
+use App\Models\Mhs;
 use App\User;
-use App\Agama;
-use App\Dosen;
-use App\Visimisi;
-use App\Angkatan;
+use App\Models\Agama;
+use App\Models\Dosen;
+use App\Models\Visimisi;
+use App\Models\Angkatan;
 use Carbon\Carbon;
-use App\Student;
-use App\Kelamin;
-use App\Kaprodi;
-use App\Informasi;
-use App\Update_Mahasiswa;
-use App\Periode_tahun;
-use App\Kurikulum_transaction;
-use App\Periode_tipe;
-use App\Waktu_krs;
-use App\Waktu_edom;
-use App\Kuisioner_transaction;
-use App\Waktu;
-use App\Edom_transaction;
-use App\Student_record;
+use App\Models\Student;
+use App\Models\Kelamin;
+use App\Models\Kaprodi;
+use App\Models\Informasi;
+use App\Models\Update_mahasiswa;
+use App\Models\Periode_tahun;
+use App\Models\Kurikulum_transaction;
+use App\Models\Periode_tipe;
+use App\Models\Waktu_krs;
+use App\Models\Waktu_edom;
+use App\Models\Kuisioner_transaction;
+use App\Models\Waktu;
+use App\Models\Edom_transaction;
+use App\Models\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +37,7 @@ class HomeController extends Controller
 
   public function index()
   {
-  
+
     $id = Auth::user()->id_user;
     $akses = Auth::user()->role;
 

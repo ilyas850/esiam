@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use PDF;
 use Alert;
-use App\Dosen;
-use App\Student;
-use App\Matakuliah;
-use App\Prodi;
-use App\Kurikulum_periode;
-use App\Periode_tahun;
-use App\Periode_tipe;
-use App\Waktu_edom;
-use App\Edom_master;
-use App\Edom_transaction;
+use App\Models\Dosen;
+use App\Models\Student;
+use App\Models\Matakuliah;
+use App\Models\Prodi;
+use App\Models\Kurikulum_periode;
+use App\Models\Periode_tahun;
+use App\Models\Periode_tipe;
+use App\Models\Waktu_edom;
+use App\Models\Edom_master;
+use App\Models\Edom_transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -674,6 +674,4 @@ class EdomController extends Controller
     $pdf = PDF::loadView('sadmin/edom/pdf_detail_report_edom_dosen', compact('data', 'periodetahun', 'periodetipe', 'nama'))->setPaper('a4', 'landscape');
     return $pdf->download('Report EDOM Dosen' . ' ' . $nama . ' ' . $periodetahun . ' ' . $periodetipe . '.pdf');
   }
-
-  
 }

@@ -4,19 +4,19 @@ namespace App\Http\Controllers;
 
 use PDF;
 use Alert;
-use App\Penangguhan_kategori;
-use App\Penangguhan_trans;
-use App\Periode_tahun;
-use App\Periode_tipe;
-use App\Waktu;
-use App\Prausta_setting_relasi;
-use App\Beasiswa_trans;
-use App\Beasiswa;
-use App\Student;
-use App\Min_biaya;
-use App\Kelas;
+use App\Models\Penangguhan_kategori;
+use App\Models\Penangguhan_trans;
+use App\Models\Periode_tahun;
+use App\Models\Periode_tipe;
+use App\Models\Waktu;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Beasiswa_trans;
+use App\Models\Beasiswa;
+use App\Models\Student;
+use App\Models\Min_biaya;
+use App\Models\Kelas;
 use App\Exports\DataPengajuanBeasiswa;
-use App\Pengajuan_trans;
+use App\Models\Pengajuan_trans;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -935,8 +935,8 @@ class BaukController extends Controller
         return redirect()->back();
     }
 
-    public function data_mengundurkan_diri_bauk() 
-     {
+    public function data_mengundurkan_diri_bauk()
+    {
         $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
@@ -969,7 +969,8 @@ class BaukController extends Controller
         return view('bauk/pengajuan/data_mengundurkan_diri', compact('data'));
     }
 
-    public function data_pindah_kelas_bauk() {
+    public function data_pindah_kelas_bauk()
+    {
         $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
@@ -1000,7 +1001,7 @@ class BaukController extends Controller
             ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
             ->get();
 
-            $kelas = Kelas::orderBy('kelas', 'ASC')->get();
+        $kelas = Kelas::orderBy('kelas', 'ASC')->get();
 
         return view('bauk/pengajuan/data_pindah_kelas', compact('data', 'kelas'));
     }

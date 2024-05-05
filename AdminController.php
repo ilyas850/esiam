@@ -7,7 +7,7 @@ use Auth;
 use Alert;
 use File;
 use Session;
-use App\Models\User;
+use App\User;
 use App\Models\Invoice;
 use App\Models\Tingkat;
 use App\Models\Peserta;

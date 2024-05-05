@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Beasiswa_trans;
+use App\Models\Beasiswa_trans;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromQuery;

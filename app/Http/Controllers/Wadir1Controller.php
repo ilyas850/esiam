@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Bap;
-use App\Dosen;
-use App\Periode_tahun;
-use App\Periode_tipe;
-use App\Kuliah_transaction;
-use App\Kurikulum_periode;
-use App\Kurikulum_transaction;
-use App\Prausta_setting_relasi;
-use App\Prausta_trans_bimbingan;
-use App\Prausta_trans_hasil;
-use App\Student;
-use App\Student_record;
+use App\Models\Bap;
+use App\Models\Dosen;
+use App\Models\Periode_tahun;
+use App\Models\Periode_tipe;
+use App\Models\Kuliah_transaction;
+use App\Models\Kurikulum_periode;
+use App\Models\Kurikulum_transaction;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Prausta_trans_bimbingan;
+use App\Models\Prausta_trans_hasil;
+use App\Models\Student;
+use App\Models\Student_record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -666,13 +666,13 @@ class Wadir1Controller extends Controller
       )
       ->get();
 
-      return view('wadir/master/cek_krs', compact('val', 'datamhs'));
+    return view('wadir/master/cek_krs', compact('val', 'datamhs'));
   }
 
   function soal_uts_uas_wadir1()
   {
     $data = DB::select('CALL soal_ujian');
 
-        return view('wadir/master/soal_ujian', compact('data'));
+    return view('wadir/master/soal_ujian', compact('data'));
   }
 }

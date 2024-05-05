@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
-use App\Student;
-use App\Angkatan;
+use App\Models\Student;
+use App\Models\Angkatan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromQuery;

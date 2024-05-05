@@ -3,7 +3,7 @@
 namespace App\Exports;
 
 
-use App\Yudisium;
+use App\Models\Yudisium;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\Student;
-use App\Angkatan;
-use App\Sertifikat;
-use App\Jenis_kegiatan;
-use App\Kritiksaran_kategori;
-use App\Kritiksaran_transaction;
+use App\Models\Student;
+use App\Models\Angkatan;
+use App\Models\Sertifikat;
+use App\Models\Jenis_kegiatan;
+use App\Models\Kritiksaran_kategori;
+use App\Models\Kritiksaran_transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exports\DataMhsExportPerAngkatan;

@@ -7,50 +7,51 @@ use File;
 use Alert;
 use Session;
 use Illuminate\Support\Facades\Crypt;
-use App\Bap;
-use App\Itembayar;
-use App\Absensi_mahasiswa;
-use App\Edom_transaction;
-use App\Kaprodi;
+use App\Models\Bap;
+use App\Models\Itembayar;
+use App\Models\Absensi_mahasiswa;;
+
+use App\Models\Edom_transaction;
+use App\Models\Kaprodi;
 use App\User;
-use App\Dosen;
-use App\Kelas;
-use App\Waktu_krs;
-use App\Kuitansi;
-use App\Biaya;
-use App\Beasiswa;
-use App\Student;
-use App\Matakuliah;
-use App\Periode_tipe;
-use App\Periode_tahun;
-use App\Kurikulum_jam;
-use App\Student_record;
-use App\Dosen_pembimbing;
-use App\Kuliah_transaction;
-use App\Kurikulum_periode;
-use App\Kurikulum_transaction;
-use App\Ujian_transaction;
-use App\Prausta_setting_relasi;
-use App\Prausta_trans_bimbingan;
-use App\Prausta_trans_hasil;
-use App\Prausta_master_penilaian;
-use App\Prausta_trans_penilaian;
-use App\Setting_nilai;
-use App\Standar;
-use App\Pedoman_akademik;
-use App\Penangguhan_trans;
-use App\Perwalian_trans_bimbingan;
+use App\Models\Dosen;
+use App\Models\Kelas;
+use App\Models\Waktu_krs;
+use App\Models\Kuitansi;
+use App\Models\Biaya;
+use App\Models\Beasiswa;
+use App\Models\Student;
+use App\Models\Matakuliah;
+use App\Models\Periode_tipe;
+use App\Models\Periode_tahun;
+use App\Models\Kurikulum_jam;
+use App\Models\Student_record;
+use App\Models\Dosen_pembimbing;
+use App\Models\Kuliah_transaction;
+use App\Models\Kurikulum_periode;
+use App\Models\Kurikulum_transaction;
+use App\Models\Ujian_transaction;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Prausta_trans_bimbingan;
+use App\Models\Prausta_trans_hasil;
+use App\Models\Prausta_master_penilaian;
+use App\Models\Prausta_trans_penilaian;
+use App\Models\Setting_nilai;
+use App\Models\Standar;
+use App\Models\Pedoman_akademik;
+use App\Models\Penangguhan_trans;
+use App\Models\Perwalian_trans_bimbingan;
 use App\Exports\DataNilaiExport;
 use App\Http\Requests;
-use App\Pedoman_khusus;
-use App\Soal_ujian;
+use App\Models\Pedoman_khusus;
+use App\Models\Soal_ujian;
 use App\Models\Absen_ujian;
-use App\Permohonan_ujian;
-use App\Pertemuan;
-use App\Sk_pengajaran;
-use App\Pengajuan_trans;
-use App\Informasi;
-use App\Rps;
+use App\Models\Permohonan_ujian;
+use App\Models\Pertemuan;
+use App\Models\Sk_pengajaran;
+use App\Models\Pengajuan_trans;
+use App\Models\Informasi;
+use App\Models\Rps;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -6458,37 +6459,37 @@ class DosenController extends Controller
     public function record_bim_skripsi_dsn_dlm($id)
     {
         $jdl = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-        ->leftJoin('prodi', function ($join) {
-          $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        })
-        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-        ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-        ->select(
-          'prausta_setting_relasi.acc_seminar_sidang',
-          'student.idstudent',
-          'student.nim',
-          'student.nama',
-          'prausta_master_kode.kode_prausta',
-          'prausta_master_kode.nama_prausta',
-          'prodi.prodi',
-          'kelas.kelas',
-          'prausta_setting_relasi.id_settingrelasi_prausta',
-          'prausta_setting_relasi.judul_prausta',
-          'prausta_setting_relasi.tempat_prausta',
-          'prausta_setting_relasi.file_draft_laporan',
-          'prausta_setting_relasi.file_laporan_revisi',
-          'prausta_setting_relasi.dosen_pembimbing'
-        )
-        ->first();
-  
-      $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
-        ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
-        ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-        ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
-        ->get();
-  
-      return view('dosen/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
+            ->leftJoin('prodi', function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            })
+            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'student.idstudent',
+                'student.nim',
+                'student.nama',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'kelas.kelas',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.dosen_pembimbing'
+            )
+            ->first();
+
+        $pkl = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_student', $jdl->idstudent)
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->get();
+
+        return view('dosen/magang_skripsi/cek_bimbingan_skripsi', compact('jdl', 'pkl'));
     }
 
     public function komentar_bimbingan_skripsi_dsn_dlm(Request $request, $id)

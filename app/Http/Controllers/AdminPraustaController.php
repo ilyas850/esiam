@@ -5,36 +5,36 @@ namespace App\Http\Controllers;
 use PDF;
 use Alert;
 use App\User;
-use App\Angkatan;
-use App\Prodi;
-use App\Student;
-use App\Biaya;
-use App\Matakuliah;
-use App\Beasiswa;
-use App\Kuitansi;
-use App\Bayar;
-use App\Dosen;
-use App\Ruangan;
-use App\Student_record;
-use App\Kurikulum_jam;
-use App\Kurikulum_periode;
-use App\Prausta_setting_relasi;
-use App\Prausta_master_kode;
-use App\Prausta_trans_bimbingan;
-use App\Prausta_master_kategori;
-use App\Prausta_trans_hasil;
-use App\Prausta_master_penilaian;
-use App\Prausta_trans_penilaian;
+use App\Models\Angkatan;
+use App\Models\Prodi;
+use App\Models\Student;
+use App\Models\Biaya;
+use App\Models\Matakuliah;
+use App\Models\Beasiswa;
+use App\Models\Kuitansi;
+use App\Models\Bayar;
+use App\Models\Dosen;
+use App\Models\Ruangan;
+use App\Models\Student_record;
+use App\Models\Kurikulum_jam;
+use App\Models\Kurikulum_periode;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Prausta_master_kode;
+use App\Models\Prausta_trans_bimbingan;
+use App\Models\Prausta_master_kategori;
+use App\Models\Prausta_trans_hasil;
+use App\Models\Prausta_master_penilaian;
+use App\Models\Prausta_trans_penilaian;
 use App\Exports\DataPrakerinExport;
 use App\Exports\DataTaExport;
 use App\Exports\DataMagangExport;
 use App\Exports\DataMagang2Export;
 use App\Exports\DataSkripsiExport;
-use App\Kaprodi;
-use App\Periode_tahun;
-use App\Periode_tipe;
-use App\Prausta_master_waktu;
-use App\Kuliah_nilaihuruf;
+use App\Models\Kaprodi;
+use App\Models\Periode_tahun;
+use App\Models\Periode_tipe;
+use App\Models\Prausta_master_waktu;
+use App\Models\Kuliah_nilaihuruf;
 use DateTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -5620,7 +5620,7 @@ class AdminPraustaController extends Controller
     public function post_waktu_prausta(Request $request)
     {
         $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
-    
+
         $cekProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
 
         for ($i = 0; $i < count($cekProdi); $i++) {

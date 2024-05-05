@@ -2,59 +2,59 @@
 
 namespace App\Http\Controllers;
 
-// use Alert;
+use Alert;
 use File;
 use PDF;
 use App\Models\Absen_ujian;
-use App\Bap;
-use App\Absensi_mahasiswa;
-use App\Pedoman_akademik;
+use App\Models\Bap;
+use App\Models\Absensi_mahasiswa;;
+
+use App\Models\Pedoman_akademik;
 use App\User;
-use App\Dosen;
-use App\Kelas;
-use App\Waktu;
-use App\Prodi;
-use App\Student;
-use App\Informasi;
-use App\Edom_transaction;
-use App\Waktu_krs;
-use App\Periode_tipe;
-use App\Periode_tahun;
-use App\Update_mahasiswa;
-use App\Kurikulum_periode;
-use App\Kurikulum_transaction;
-use App\Student_record;
-use App\Beasiswa;
-use App\Biaya;
-use App\Dosen_pembimbing;
-use App\Itembayar;
-use App\Kuitansi;
-use App\Prausta_setting_relasi;
-use App\Ujian_transaction;
-use App\Kuisioner_master;
-use App\Kuisioner_kategori;
-use App\Kuisioner_transaction;
-use App\Waktu_edom;
-use App\Sertifikat;
-use App\Angkatan;
-use App\Yudisium;
-use App\Wisuda;
-use App\Standar;
-use App\Pengalaman;
-use App\Penangguhan_kategori;
-use App\Penangguhan_trans;
-use App\Kritiksaran_kategori;
-use App\Kritiksaran_transaction;
-use App\Beasiswa_trans;
-use App\Permohonan_ujian;
-use App\Perwalian_trans_bimbingan;
-use App\Min_biaya;
-use App\Pengajuan_trans;
+use App\Models\Dosen;
+use App\Models\Kelas;
+use App\Models\Waktu;
+use App\Models\Prodi;
+use App\Models\Student;
+use App\Models\Informasi;
+use App\Models\Edom_transaction;
+use App\Models\Waktu_krs;
+use App\Models\Periode_tipe;
+use App\Models\Periode_tahun;
+use App\Models\Update_mahasiswa;
+use App\Models\Kurikulum_periode;
+use App\Models\Kurikulum_transaction;
+use App\Models\Student_record;
+use App\Models\Beasiswa;
+use App\Models\Biaya;
+use App\Models\Dosen_pembimbing;
+use App\Models\Itembayar;
+use App\Models\Kuitansi;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Ujian_transaction;
+use App\Models\Kuisioner_master;
+use App\Models\Kuisioner_kategori;
+use App\Models\Kuisioner_transaction;
+use App\Models\Waktu_edom;
+use App\Models\Sertifikat;
+use App\Models\Angkatan;
+use App\Models\Yudisium;
+use App\Models\Wisuda;
+use App\Models\Standar;
+use App\Models\Pengalaman;
+use App\Models\Penangguhan_kategori;
+use App\Models\Penangguhan_trans;
+use App\Models\Kritiksaran_kategori;
+use App\Models\Kritiksaran_transaction;
+use App\Models\Beasiswa_trans;
+use App\Models\Permohonan_ujian;
+use App\Models\Perwalian_trans_bimbingan;
+use App\Models\Min_biaya;
+use App\Models\Pengajuan_trans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Alert;
 use RealRashid\SweetAlert\Facades\Alert as FacadesAlert;
 
 class MhsController extends Controller
@@ -5401,7 +5401,7 @@ class MhsController extends Controller
 
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
-                Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat');
+                Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {
@@ -5592,7 +5592,7 @@ class MhsController extends Controller
                     return redirect('home');
                 }
             } else {
-                Alert::success('', 'Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat ')->autoclose(3500);
+                Alert::success('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat ')->autoclose(3500);
                 //Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat');
                 return redirect('home');
             }

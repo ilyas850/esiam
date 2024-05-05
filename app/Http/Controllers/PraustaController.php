@@ -6,25 +6,25 @@ use PDF;
 use File;
 use Alert;
 use App\User;
-use App\Angkatan;
-use App\Prodi;
-use App\Student;
-use App\Biaya;
-use App\Matakuliah;
-use App\Beasiswa;
-use App\Kuitansi;
-use App\Bayar;
-use App\Dosen;
-use App\Kuliah_nilaihuruf;
-use App\Ruangan;
-use App\Student_record;
-use App\Kurikulum_jam;
-use App\Periode_tahun;
-use App\Periode_tipe;
-use App\Prausta_setting_relasi;
-use App\Prausta_master_kode;
-use App\Prausta_trans_bimbingan;
-use App\Prausta_master_kategori;
+use App\Models\Angkatan;
+use App\Models\Prodi;
+use App\Models\Student;
+use App\Models\Biaya;
+use App\Models\Matakuliah;
+use App\Models\Beasiswa;
+use App\Models\Kuitansi;
+use App\Models\Bayar;
+use App\Models\Dosen;
+use App\Models\Kuliah_nilaihuruf;
+use App\Models\Ruangan;
+use App\Models\Student_record;
+use App\Models\Kurikulum_jam;
+use App\Models\Periode_tahun;
+use App\Models\Periode_tipe;
+use App\Models\Prausta_setting_relasi;
+use App\Models\Prausta_master_kode;
+use App\Models\Prausta_trans_bimbingan;
+use App\Models\Prausta_master_kategori;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -1069,9 +1069,9 @@ class PraustaController extends Controller
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
             ->get();
-          
+
         $hasil_krs = count($cek);
-      
+
         //cek nilai dan file sempro
         $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_student', $id)
@@ -1102,7 +1102,7 @@ class PraustaController extends Controller
                 'prausta_setting_relasi.id_dosen_pembimbing'
             )
             ->get();
-         
+
         if ($hasil_krs == 0) {
 
             Alert::error('Maaf anda belum melakukan pengisian KRS Tugas Akhir', 'MAAF !!');
@@ -1114,7 +1114,7 @@ class PraustaController extends Controller
                 Alert::error('Maaf Dosen Pembimbing Tugas Akhir anda belum di setting', 'MAAF !!');
                 return redirect('home');
             } elseif (count($cekdata) != null) {
-                
+
                 // if ($cekdata_nilai == null) {
                 //     Alert::error('Maaf anda belum melakukan upload draft laporan Sempro', 'MAAF !!');
                 //     return redirect('home');
@@ -1174,7 +1174,7 @@ class PraustaController extends Controller
                         'prausta_setting_relasi.file_plagiarisme'
                     )
                     ->first();
-                   
+
                 // data untuk keuangan
                 $maha = Student::where('idstudent', $id)
                     ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
@@ -1224,7 +1224,7 @@ class PraustaController extends Controller
                 }
 
                 $hasil_sidang = $sisasidang - $sidang;
-               
+
                 if ($hasil_sidang == 0) {
                     $validasi = 'Sudah Lunas';
                 } else {
@@ -1266,7 +1266,7 @@ class PraustaController extends Controller
                     ->limit(1)
                     ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
                     ->first();
-                   
+
                 #cek nilai D atau E
                 $data_nilai_ulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                     ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
@@ -1285,7 +1285,7 @@ class PraustaController extends Controller
                     ->select('student_record.id_studentrecord', 'student_record.id_student', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                     ->groupBy('student_record.id_studentrecord', 'student_record.id_student', 'student_record.id_kurtrans', 'matakuliah.makul', 'student_record.nilai_AKHIR')
                     ->get();
-               
+
                 $JmlMakulUlang = count($data_nilai_ulang);
 
                 return view('mhs/prausta/sidang_ta', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb', 'JmlMakulUlang'));
