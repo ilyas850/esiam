@@ -314,6 +314,23 @@
                                             </form>
                                         </div>
                                     </li>
+                                @elseif (Auth::user()->role == 12)
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="/change_pass_gugusmutu/{{ Auth::user()->id }}"
+                                                class="btn btn-default btn-flat">Ubah Password</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{ route('logout') }}"
+                                                onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();"
+                                                class="btn btn-default btn-flat">Keluar</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </div>
+                                    </li>
                                 @endif
                             </ul>
                         </li>
