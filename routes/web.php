@@ -21,11 +21,12 @@ Route::get('forgot_password', function () {
 Route::get('lihat/{id}', 'MhsController@lihat');
 
 Route::group(['middleware' => 'sadmin'], function () {
-    //master akademik
+    // CRUD MASTER ANGKATAN
     Route::get('master_angkatan', 'SadminController@master_angkatan');
     Route::post('simpan_angkatan', 'SadminController@simpan_angkatan');
-    Route::put('put_angkatan/{id}', 'SadminController@put_angkatan');
-    Route::post('hapusangkatan', 'SadminController@hapusangkatan');
+    Route::put('update_angkatan/{id}', 'SadminController@update_angkatan');
+    Route::post('delete_angkatan', 'SadminController@delete_angkatan');
+
 
     //matakuliah BOM
     Route::get('master_bom', 'SadminController@master_bom');

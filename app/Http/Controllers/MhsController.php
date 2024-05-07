@@ -8,7 +8,6 @@ use PDF;
 use App\Models\Absen_ujian;
 use App\Models\Bap;
 use App\Models\Absensi_mahasiswa;;
-
 use App\Models\Pedoman_akademik;
 use App\User;
 use App\Models\Dosen;
@@ -5201,7 +5200,7 @@ class MhsController extends Controller
                 'student.intake'
             )
             ->first();
-
+        
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
@@ -5240,8 +5239,8 @@ class MhsController extends Controller
         if ($smt % 2 != 0) {
             if ($id_tipe == 1) {
                 //ganjil
-                $a = (($smt + 10) - 1) / 10; // ( 211 + 10 - 1 ) / 10 = 22
-                $b = $a - $idangkatan; // 22 - 20 = 2
+                $a = (($smt + 10) - 1) / 10; 
+                $b = $a - $idangkatan;
                 if ($intake == 2) {
                     $c = ($b * 2) - 1 - 1;
                 } elseif ($intake == 1) {
@@ -5249,9 +5248,9 @@ class MhsController extends Controller
                 } // 2 * 2 - 1 = 3
             } elseif ($id_tipe == 3) {
                 //pendek
-                $a = (($smt + 10) - 3) / 10; // ( 213 + 10 - 3 ) / 10  = 22
-                $b = $a - $idangkatan; // 22 - 20 = 2
-                // $c = ($b * 2);
+                $a = (($smt + 10) - 3) / 10; 
+                $b = $a - $idangkatan; 
+               
                 if ($intake == 2) {
                     $c = $b * 2 - 1;
                 } elseif ($intake == 1) {
@@ -5260,9 +5259,9 @@ class MhsController extends Controller
             }
         } else {
             //genap
-            $a = (($smt + 10) - 2) / 10; // (212 + 10 - 2) / 10 = 22
-            $b = $a - $idangkatan; // 22 - 20 = 2
-            // 2 * 2 = 4
+            $a = (($smt + 10) - 2) / 10; 
+            $b = $a - $idangkatan; 
+            
             if ($intake == 2) {
                 $c = $b * 2 - 1;
             } elseif ($intake == 1) {
@@ -5353,7 +5352,6 @@ class MhsController extends Controller
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
 
-
         if ($hitung_ujian == 1) {
             if ($c == 1) {
                 $cekbyr = $daftar + $awal + ($spp1 * $persen_uts) / 100 - $total_semua_dibayar;
@@ -5396,12 +5394,13 @@ class MhsController extends Controller
             }
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
-
+                
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
 
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
-                Alert::warning('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
+                
+                Alert::success('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {

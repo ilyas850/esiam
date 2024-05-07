@@ -9,4 +9,8 @@ class Angkatan extends Model
   protected $table = 'angkatan';
 
   protected $primaryKey = 'idangkatan';
+
+  public $timestamps = false;
+
+  protected $fillable = ['idangkatan', 'angkatan'];
 }

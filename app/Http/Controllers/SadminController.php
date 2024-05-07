@@ -35,7 +35,6 @@ use App\Models\Kurikulum_transaction;
 use App\Models\Transkrip_nilai;
 use App\Models\Transkrip_final;
 use App\Models\Absensi_mahasiswa;;
-
 use App\Models\Prausta_master_penilaian;
 use App\Models\Visimisi;
 use App\Models\Prausta_master_kategori;
@@ -90,43 +89,75 @@ use Illuminate\Support\Facades\Validator;
 
 class SadminController extends Controller
 {
+    // BEGIN CRUD  ANGKATAN
+
     public function master_angkatan()
     {
         $data = Angkatan::all();
-
-        return view('sadmin/masterakademik/master_angkatan', compact('data'));
+        return view('sadmin.masterakademik.master_angkatan', compact('data'));
     }
 
     public function simpan_angkatan(Request $request)
     {
-        $ang = new Angkatan();
-        $ang->idangkatan = $request->idangkatan;
-        $ang->angkatan = $request->angkatan;
-        $ang->save();
-
-        Alert::success('', 'Master angkatan berhasil ditambahkan')->autoclose(3500);
-        return redirect('master_angkatan');
+        Angkatan::create($request->all());
+        Alert::success('Master angkatan berhasil ditambahkan')->autoclose(3500);
+        return back();
     }
 
-    public function put_angkatan(Request $request, $id)
+    public function update_angkatan(Request $request, $id)
     {
-        $ang = Angkatan::find($id);
-        $ang->idangkatan = $request->idangkatan;
-        $ang->angkatan = $request->angkatan;
-        $ang->save();
-
-        Alert::success('', 'Master angkatan berhasil diedit')->autoclose(3500);
-        return redirect('master_angkatan');
+        $angkatan = Angkatan::findOrFail($id);
+        $angkatan->update($request->all());
+        Alert::success('Master angkatan berhasil diupdate')->autoclose(3500);
+        return back();
     }
 
-    public function hapusangkatan(Request $request)
+    public function delete_angkatan(Request $request)
     {
-        $id = $request->idangkatan;
-        Angkatan::where('idangkatan', $id)->delete();
-
-        Alert::success('', 'Master angkatan berhasil dihapus')->autoclose(3500);
-        return redirect('master_angkatan');
+        Angkatan::destroy($request->idangkatan);
+        Alert::success('Master angkatan berhasil dihapus')->autoclose(3500);
+        return back();
     }
+
+    // public function master_angkatan()
+    // {
+    //     $data = Angkatan::all();
+
+    //     return view('sadmin/masterakademik/master_angkatan', compact('data'));
+    // }
+
+    // public function simpan_angkatan(Request $request)
+    // {
+    //     $ang = new Angkatan();
+    //     $ang->idangkatan = $request->idangkatan;
+    //     $ang->angkatan = $request->angkatan;
+    //     $ang->save();
+
+    //     Alert::success('', 'Master angkatan berhasil ditambahkan')->autoclose(3500);
+    //     return redirect('master_angkatan');
+    // }
+
+    // public function put_angkatan(Request $request, $id)
+    // {
+    //     $ang = Angkatan::find($id);
+    //     $ang->idangkatan = $request->idangkatan;
+    //     $ang->angkatan = $request->angkatan;
+    //     $ang->save();
+
+    //     Alert::success('', 'Master angkatan berhasil diedit')->autoclose(3500);
+    //     return redirect('master_angkatan');
+    // }
+
+    // public function hapusangkatan(Request $request)
+    // {
+    //     $id = $request->idangkatan;
+    //     Angkatan::where('idangkatan', $id)->delete();
+
+    //     Alert::success('', 'Master angkatan berhasil dihapus')->autoclose(3500);
+    //     return redirect('master_angkatan');
+    // }
+
+    // END CRUD ANGKATAN
 
     public function change($id)
     {
