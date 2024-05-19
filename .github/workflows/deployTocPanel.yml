@@ -18,15 +18,5 @@ jobs:
         username: politek1_esiam@politeknikmeta.ac.id
         password: Esiam_mip123++
         exclude: |
-         **/public/adminlte/**
-         **/public/.htaccess/**
-         **/vendor/**
-         **/vendor*/**
-         **/node_modules/**
-         **/node_modules*/**
-         **/resource/css/**
-         **/resource/css*/**
-         **/resource/js/**
-         **/resource/js*/**
-         **/.git/**
-         **/.git*/**
+         - public/adminlte/**
+         - public/.htaccess
