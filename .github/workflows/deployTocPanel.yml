@@ -14,6 +14,6 @@ jobs:
     - name: FTP-Deploy-Action
       uses: samkirkland/ftp-deploy-action@4.0.0
       with:
-        server: ${{ secrets.ESIAM_FTP_SERVER }}
-        username: ${{ secrets.ESIAM_FTP_USERNAME }}
-        password: ${{ secrets.ESIAM_FTP_PASSWORD }}
+        server: 103.233.102.29
+        username: politek1_esiam@politeknikmeta.ac.id
+        password: Esiam_mip123++
