@@ -17,4 +17,6 @@ jobs:
         server: 103.233.102.29
         username: politek1_esiam@politeknikmeta.ac.id
         password: Esiam_mip123++
-        exclude: adminlte/**
+        exclude: |
+          **/adminlte/**
+          
