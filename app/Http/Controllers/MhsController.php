@@ -54,7 +54,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use RealRashid\SweetAlert\Facades\Alert as FacadesAlert;
 
 class MhsController extends Controller
 {
@@ -5200,7 +5199,7 @@ class MhsController extends Controller
                 'student.intake'
             )
             ->first();
-        
+       
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
@@ -5228,9 +5227,9 @@ class MhsController extends Controller
                 'ujian_transaction.jenis_ujian'
             )
             ->get();
-
+           
         $hitung_ujian = count($cek_ujian);
-
+        
         //cek semester
         $sub_thn = substr($periode_tahun->periode_tahun, 6, 2);
 
@@ -5268,7 +5267,7 @@ class MhsController extends Controller
                 $c = $b * 2;
             }
         }
-
+       
         $biaya = Biaya::where('idangkatan', $idangkatan)
             ->where('idstatus', $idstatus)
             ->where('kodeprodi', $kodeprodi)
@@ -5295,7 +5294,7 @@ class MhsController extends Controller
                 'sidang'
             )
             ->first();
-
+            
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
 
         if ($cek_bea != null) {
@@ -5347,10 +5346,12 @@ class MhsController extends Controller
             ->where('kuitansi.idstudent', $id)
             ->whereNotIn('bayar.iditem', [14, 15, 35, 36, 37, 38])
             ->sum('bayar.bayar');
-
+            
         #minimal pembayaran UTS
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
+        $min_uas = Min_biaya::where('kategori', 'UAS')->first();
+        $persen_uas = $min_uas->persentase;
 
         if ($hitung_ujian == 1) {
             if ($c == 1) {
@@ -5404,57 +5405,57 @@ class MhsController extends Controller
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {
-
+           
             if ($c == 1) {
-                $cekbyr = $daftar + $awal + $spp1 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + ($spp1 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 2) {
-                $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + ($spp2 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == '201') {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
             } elseif ($c == 3) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 4) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + ($spp4 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == '401') {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 - $total_semua_dibayar;
             } elseif ($c == 5) {
                 if ($kodeprodi == 23 or $kodeprodi == 24) {
-                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * $persen_uas / 100) - $total_semua_dibayar;
                 } elseif ($kodeprodi == 25) {
-                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 - $total_semua_dibayar;
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 * $persen_uas / 100) - $total_semua_dibayar;
                 }
             } elseif ($c == 6) {
-                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6) - ($total_semua_dibayar);
+                $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 * $persen_uas / 100)) - ($total_semua_dibayar);
             } elseif ($c == '601') {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 - $total_semua_dibayar;
             } elseif ($c == 7) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + ($spp7 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 8) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + ($spp8 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == '801') {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 - $total_semua_dibayar;
             } elseif ($c == 9) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + ($spp9 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 10) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + ($spp10 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == '1001') {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 - $total_semua_dibayar;
             } elseif ($c == 11) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + ($spp11 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 12) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + ($spp12 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 13) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + ($spp13 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 14) {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * $persen_uas / 100) - $total_semua_dibayar;
             }
-
+           
             if (empty($cekbyr == 0 or $cekbyr < 1000)) {
 
                 Alert::success('', 'Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat ')->autoclose(3500);
                 return redirect('home');
             }
-
+            
             $records = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->where('student_record.id_student', $id)
                 ->where('kurikulum_periode.id_periodetipe', $id_tipe)
@@ -5465,7 +5466,7 @@ class MhsController extends Controller
                 ->get();
 
             $hit = count($records);
-
+           
             #cek jumlah pengisian edom
             $cekedom = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 // ->join('kurikulum_transaction', 'edom_transaction.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -5478,11 +5479,11 @@ class MhsController extends Controller
                 ->get();
 
             $sekhit = count($cekedom);
-
+       
             if (empty(($hit - 2) <= $sekhit)) {
 
-                FacadesAlert::error('Maaf anda belum melakukan pengisian edom', 'MAAF !!');
-                return redirect()->back();
+                Alert::success('Maaf anda belum melakukan pengisian edom', 'MAAF !!');
+                return redirect('home');
             }
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
