@@ -1796,4 +1796,167 @@ class MagangSkripsiController extends Controller
         Alert::success('', 'Nilai Magang berhasil disimpan')->autoclose(3500);
         return redirect('penguji_magang2_dlm');
     }
+
+    public function skripsi_mhs()
+    {
+        $id = Auth::user()->id_user;
+
+        //cek ID Skripsi
+        $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'prausta_setting_relasi.id_settingrelasi_prausta'
+            )
+            ->first();
+
+        // CEK KRS SKRIPSI
+        $cek_krs = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->whereIn('matakuliah.idmakul', [490])
+            ->where('student_record.id_student', $id)
+            ->where('student_record.status', 'TAKEN')
+            ->select('student_record.id_studentrecord', 'matakuliah.kode', 'matakuliah.makul')
+            ->get();
+
+        if (empty($cek_krs)) {
+            Alert::error('Maaf anda belum melakukan pengisian KRS Skripsi', 'MAAF !!');
+            return redirect('home');
+        }
+
+        // CEK SETTING DOSEN PEMBIMBING
+        $cekdata_bim_sempro = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.id_dosen_penguji_1',
+                'prausta_setting_relasi.id_dosen_penguji_2',
+                'prausta_setting_relasi.id_dosen_pembimbing'
+            )
+            ->get();
+
+        if (empty($cekdata_bim_sempro)) {
+
+            Alert::error('Maaf Dosen Pembimbing Skripsi anda belum di setting', 'Silahkan hubungi Prodi masing-masing !!');
+            return redirect('home');
+        }
+
+        // CEK NILAI SEMPRO 
+        $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
+            ->first();
+
+        if (empty($cekdata_nilai)) {
+            Alert::error('Maaf anda belum melakukan Upload Laporan Sempro', 'MAAF !!');
+            return redirect('home');
+        }
+
+        if (empty($cekdata_nilai->nilai_huruf)) {
+
+            Alert::error('Maaf nilai Sempro anda belum dientri oleh dosen', 'MAAF !!');
+            return redirect('home');
+        }
+
+        // DATA SKRIPSI
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_setting_relasi.jam_selesai_sidang',
+                'prausta_setting_relasi.jam_mulai_sidang',
+                'prausta_setting_relasi.ruangan',
+                'prausta_setting_relasi.tanggal_selesai',
+                'prausta_setting_relasi.dosen_penguji_1',
+                'prausta_setting_relasi.dosen_penguji_2',
+                'prausta_setting_relasi.tanggal_mulai',
+                'prausta_master_kategori.kategori',
+                'prausta_setting_relasi.acc_seminar_sidang',
+                'prausta_setting_relasi.id_settingrelasi_prausta',
+                'student.nama',
+                'student.nim',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'prodi.prodi',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.judul_prausta',
+                'prausta_setting_relasi.tempat_prausta',
+                'prausta_setting_relasi.acc_judul_dospem',
+                'prausta_setting_relasi.acc_judul_kaprodi',
+                'prausta_setting_relasi.validasi_pembimbing',
+                'prausta_setting_relasi.validasi_penguji_1',
+                'prausta_setting_relasi.validasi_penguji_2',
+                'prausta_setting_relasi.validasi_baak'
+            )
+            ->first();
+
+        $maha = Student::where('idstudent', $id)
+            ->select('student.idstudent', 'student.nama', 'student.idangkatan', 'student.idstatus', 'student.kodeprodi')
+            ->first();
+
+        $idangkatan = $maha->idangkatan;
+        $idstatus = $maha->idstatus;
+        $kodeprodi = $maha->kodeprodi;
+
+        $cek_study = Student::leftJoin('prodi', (function ($join) {
+            $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        }))
+            ->where('student.idstudent', $id)
+            ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
+            ->first();
+
+        $biaya = Biaya::where('idangkatan', $idangkatan)
+            ->where('idstatus', $idstatus)
+            ->where('kodeprodi', $kodeprodi)
+            ->select('sidang')
+            ->first();
+
+        //CEK BEASISWA MAHASISWA
+        $cb = Beasiswa::where('idstudent', $id)->first();
+        if (($cb) != null) {
+
+            $skripsi = $biaya->sidang - ($biaya->sidang * $cb->sidang) / 100;
+        } elseif (($cb) == null) {
+
+            $skripsi = $biaya->sidang;
+        }
+
+        $sisaSkripsi = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->where('bayar.iditem', 38)
+            ->sum('bayar.bayar');
+
+        $hasil_skripsi = $sisaSkripsi - $skripsi;
+
+        if ($hasil_skripsi == 0 or $hasil_skripsi > 0) {
+            $validasi = 'Sudah Lunas';
+        } else {
+            $validasi = 'Belum Lunas';
+        }
+
+
+        dd($cekdata_nilai);
+
+        return view('mhs/magang_skripsi/skripsi_mhs');
+    }
 }

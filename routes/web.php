@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GugusMutuController;
+// use Illuminate\Routing\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -1048,6 +1049,10 @@ Route::group(['middleware' => 'mhs'], function () {
 
     Route::post('ajukan_seminar_proposal_d4', 'PraustaController@ajukan_seminar_proposal');
     Route::get('ajukan_seminar_lagi/{id}', 'PraustaController@ajukan_seminar_lagi');
+
+    // SKRIPSI MAHASISWA
+    Route::get('skripsi_mhs', 'MagangSkripsiController@skripsi_mhs');
+
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
