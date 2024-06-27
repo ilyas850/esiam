@@ -701,7 +701,6 @@
                                 @elseif ($data->acc_seminar_sidang == 'TOLAK')
                                     <span class="badge bg-yellow">Pengajuan di Tolak Dosen Pembimbing</span>
                                 @endif
-
                             </div>
                         @endif
                     </div>

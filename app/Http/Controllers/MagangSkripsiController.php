@@ -993,7 +993,7 @@ class MagangSkripsiController extends Controller
         $prd->updated_by = Auth::user()->name;
         $prd->save();
 
-        Alert::success('', 'Data Seminar Proposal Berhasil Diedit')->autoclose(3500);
+        Alert::success('', 'Data Berhasil Diedit')->autoclose(3500);
         return redirect()->back();
     }
 
@@ -1004,8 +1004,7 @@ class MagangSkripsiController extends Controller
             'required' => ':attribute wajib diisi',
         ];
         $this->validate(
-            $request,
-            [
+            $request,[
                 'file_bimbingan' => 'file:pdf,PDF|max:4096',
             ],
             $message,
@@ -1033,7 +1032,7 @@ class MagangSkripsiController extends Controller
         $usta->save();
 
         Alert::success('', 'Data Bimbingan Seminar Proposal Berhasil Diinput')->autoclose(3500);
-        return redirect('sempro_mhs');
+        return redirect()->back();
     }
 
     public function pembimbing_magang()
@@ -1086,8 +1085,8 @@ class MagangSkripsiController extends Controller
         }
         $sch->save();
 
-        Alert::success('', 'Data Bimbingan Seminar Proposal Berhasil Diedit')->autoclose(3500);
-        return redirect('sempro_mhs');
+        Alert::success('', 'Data Bimbingan Berhasil Diedit')->autoclose(3500);
+        return redirect()->back();
     }
 
     function pembimbing_magang2()
@@ -1852,12 +1851,13 @@ class MagangSkripsiController extends Controller
         // CEK NILAI SEMPRO 
         $cekdata_nilai = Prausta_setting_relasi::join('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
             ->where('prausta_setting_relasi.id_student', $id)
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
+            // ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->select('prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi')
+            ->select('prausta_setting_relasi.id_student', 'prausta_setting_relasi.file_draft_laporan', 'prausta_trans_hasil.nilai_huruf', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.id_masterkode_prausta')
             ->first();
 
         if (empty($cekdata_nilai)) {
+
             Alert::error('Maaf anda belum melakukan Upload Laporan Sempro', 'MAAF !!');
             return redirect('home');
         }
@@ -1954,9 +1954,137 @@ class MagangSkripsiController extends Controller
             $validasi = 'Belum Lunas';
         }
 
+        $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->select(
+                'prausta_trans_bimbingan.id_transbimb_prausta',
+                'prausta_trans_bimbingan.file_bimbingan',
+                'prausta_trans_bimbingan.validasi',
+                'prausta_trans_bimbingan.tanggal_bimbingan',
+                'prausta_trans_bimbingan.remark_bimbingan',
+                'prausta_trans_bimbingan.komentar_bimbingan',
+                'prausta_trans_bimbingan.id_transbimb_prausta',
+                'prausta_trans_bimbingan.id_settingrelasi_prausta'
+            )
+            ->get();
 
-        dd($cekdata_nilai);
+        $jml_bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->count();
 
-        return view('mhs/magang_skripsi/skripsi_mhs');
+        $databimb = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->where('prausta_setting_relasi.status', 'ACTIVE')
+            ->limit(1)
+            ->orderByDesc('prausta_trans_bimbingan.id_transbimb_prausta')
+            ->first();
+
+        return view('mhs/magang_skripsi/skripsi_mhs', compact('data', 'validasi', 'bim', 'jml_bim', 'databimb', 'hasil_skripsi', 'cekdata_nilai'));
+    }
+
+    public function pengajuan_skripsi($id)
+    {
+        $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
+            ->leftJoin('prodi', (function ($join) {
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+            }))
+            ->leftjoin('prausta_master_kategori', 'prausta_setting_relasi.id_kategori_prausta', '=', 'prausta_master_kategori.id')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select(
+                'prausta_setting_relasi.file_laporan_revisi',
+                'prausta_setting_relasi.file_draft_laporan',
+                'prausta_master_kategori.kategori',
+                'prodi.id_prodi',
+                'prausta_master_kode.kode_prausta',
+                'prausta_master_kode.nama_prausta',
+                'student.nama',
+                'student.nim',
+                'prodi.prodi',
+                'prausta_setting_relasi.dosen_pembimbing',
+                'prausta_setting_relasi.id_settingrelasi_prausta'
+            )
+            ->first();
+
+        $kategori = Prausta_master_kategori::where('id_prodi', $data->id_prodi)->get();
+
+        return view('mhs/magang_skripsi/ajuan_skripsi', compact('data', 'kategori'));
+    }
+
+    public function simpan_ajuan_skripsi(Request $request)
+    {
+        $this->validate($request, [
+            'id_settingrelasi_prausta' => 'required',
+            'id_kategori_prausta' => 'required',
+            'tanggal_mulai' => 'required',
+            'judul_prausta' => 'required',
+            'tempat_prausta' => 'required',
+        ]);
+
+        $judul = $request->judul_prausta;
+        $judul_ok = str_replace("'", "", $judul);
+
+        $tempat = $request->tempat_prausta;
+        $tempat_ok = str_replace("'", "", $tempat);
+
+        Prausta_setting_relasi::where('id_settingrelasi_prausta', $request->id_settingrelasi_prausta)->update([
+            'judul_prausta' => $judul_ok,
+            'tempat_prausta' => $tempat_ok,
+            'id_kategori_prausta' => $request->id_kategori_prausta,
+            'tanggal_mulai' => $request->tanggal_mulai,
+        ]);
+
+        Alert::success('', 'Data Skripsi Berhasil Diinput')->autoclose(3500);
+        return redirect('skripsi_mhs');
+    }
+
+    public function simpan_bim_skripsi(Request $request)
+    {
+        $message = [
+            'max' => ':attribute harus diisi maksimal :max KB',
+            'required' => ':attribute wajib diisi',
+        ];
+        $this->validate(
+            $request,
+            [
+                'file_bimbingan' => 'file:pdf,PDF|max:4096',
+            ],
+            $message,
+        );
+
+        $bimbingan = $request->remark_bimbingan;
+        $bim_ok = str_replace("'", "", $bimbingan);
+
+        $usta = new Prausta_trans_bimbingan();
+        $usta->id_settingrelasi_prausta = $request->id_settingrelasi_prausta;
+        $usta->tanggal_bimbingan = $request->tanggal_bimbingan;
+        $usta->remark_bimbingan = $bim_ok;
+        $usta->added_by = Auth::user()->name;
+        $usta->status = 'ACTIVE';
+        $usta->data_origin = 'eSIAM';
+
+        if ($request->hasFile('file_bimbingan')) {
+            $file = $request->file('file_bimbingan');
+            $nama_file = $file->getClientOriginalName();
+            $tujuan_upload = 'File Bimbingan SKRIPSI/' . Auth::user()->id_user;
+            $file->move($tujuan_upload, $nama_file);
+            $usta->file_bimbingan = $nama_file;
+        }
+
+        $usta->save();
+
+        Alert::success('', 'Data Bimbingan Skripsi Berhasil Diinput')->autoclose(3500);
+        return redirect()->back();
     }
 }

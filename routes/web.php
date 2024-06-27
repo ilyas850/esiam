@@ -1046,12 +1046,15 @@ Route::group(['middleware' => 'mhs'], function () {
     #bimbingan sempro
     Route::post('simpan_bim_sempro', 'MagangSkripsiController@simpan_bim_sempro');
     Route::put('edit_bim_sempro/{id}', 'MagangSkripsiController@edit_bim_sempro');
-
+    
     Route::post('ajukan_seminar_proposal_d4', 'PraustaController@ajukan_seminar_proposal');
     Route::get('ajukan_seminar_lagi/{id}', 'PraustaController@ajukan_seminar_lagi');
-
+    
     // SKRIPSI MAHASISWA
     Route::get('skripsi_mhs', 'MagangSkripsiController@skripsi_mhs');
+    Route::get('pengajuan_skripsi/{id}', 'MagangSkripsiController@pengajuan_skripsi');
+    Route::post('simpan_ajuan_skripsi', 'MagangSkripsiController@simpan_ajuan_skripsi');
+    Route::post('simpan_bim_skripsi', 'MagangSkripsiController@simpan_bim_skripsi');
 
 });
 
