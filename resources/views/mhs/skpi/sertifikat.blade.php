@@ -19,8 +19,8 @@
                     </div>
                 </div>
                 <br>
-                <div class="modal fade" id="addsertifikat" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addsertifikat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog">
                         <form method="post" action="{{ url('post_sertifikat') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
@@ -63,120 +63,135 @@
                         </form>
                     </div>
                 </div>
-                <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th width="4px">
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>Nama Kegiatan</center>
-                            </th>
-                            <th>
-                                <center>Prestasi</center>
-                            </th>
-                            <th>
-                                <center>Tingkat</center>
-                            </th>
-                            <th>
-                                <center>Tanggal Pelaksanaan</center>
-                            </th>
-                            <th>
-                                <center>File Sertifikat</center>
-                            </th>
-                            <th>
-                                <center>Aksi</center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $item)
-                            <tr>
-                                <td>
-                                    <center>{{ $no++ }}</center>
-                                </td>
-                                <td>{{ $item->nama_kegiatan }}</td>
-                                <td>
-                                    <center>{{ $item->prestasi }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->tingkat }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->tgl_pelaksanaan }}</center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <a href="/Sertifikat/{{ Auth::user()->id_user }}/{{ $item->file_sertifikat }}"
-                                            target="_blank"> File Sertifikat</a>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <button class="btn btn-success btn-xs" data-toggle="modal"
-                                            data-target="#modalUpdateSertifikat{{ $item->id_sertifikat }}"
-                                            title="klik untuk edit"><i class="fa fa-edit"></i></button>
-                                            <a class="btn btn-danger btn-xs"
-                                            href="/hapus_sertifikat/{{ $item->id_sertifikat }}"
-                                            onclick="return confirm('anda yakin akan menghapus ini ?')"><i
-                                                class="fa fa-trash"></i></a>
-                                    </center>
-                                </td>
-                            </tr>
-                            <div class="modal fade" id="modalUpdateSertifikat{{ $item->id_sertifikat }}"
-                                tabindex="-1" aria-labelledby="modalUpdateSertifikat" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Update Sertifikat</h5>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="/put_sertifikat/{{ $item->id_sertifikat }}" method="post"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                @method('put')
-                                                <div class="form-group">
-                                                    <label>Nama Kegiatan</label>
-                                                    <input type="text" class="form-control" name="nama_kegiatan"
-                                                        value="{{ $item->nama_kegiatan }}" required>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="example42" class="table table-bordered table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <center>No</center>
+                                    </th>
+                                    <th>
+                                        <center>Nama Kegiatan</center>
+                                    </th>
+                                    <th>
+                                        <center>Prestasi</center>
+                                    </th>
+                                    <th>
+                                        <center>Tingkat</center>
+                                    </th>
+                                    <th>
+                                        <center>Tanggal Pelaksanaan</center>
+                                    </th>
+                                    <th>
+                                        <center>File Sertifikat</center>
+                                    </th>
+                                    <th>
+                                        <center>Aksi</center>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $no = 1; ?>
+                                @foreach ($data as $item)
+                                    <tr>
+                                        <td>
+                                            <center>{{ $no++ }}</center>
+                                        </td>
+                                        <td>{{ $item->nama_kegiatan }}</td>
+                                        <td>
+                                            <center>{{ $item->prestasi }}</center>
+                                        </td>
+                                        <td>
+                                            <center>{{ $item->tingkat }}</center>
+                                        </td>
+                                        <td>
+                                            <center>{{ $item->tgl_pelaksanaan }}</center>
+                                        </td>
+                                        <td>
+                                            <center>
+                                                <a href="/Sertifikat/{{ Auth::user()->id_user }}/{{ $item->file_sertifikat }}"
+                                                    target="_blank"> File Sertifikat</a>
+                                            </center>
+                                        </td>
+                                        <td>
+                                            <center>
+                                                <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                    data-target="#modalUpdateSertifikat{{ $item->id_sertifikat }}"
+                                                    title="klik untuk edit"><i class="fa fa-edit"></i></button>
+                                                <a class="btn btn-danger btn-xs"
+                                                    href="/hapus_sertifikat/{{ $item->id_sertifikat }}"
+                                                    onclick="return confirm('anda yakin akan menghapus ini ?')"><i
+                                                        class="fa fa-trash"></i></a>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                    <div class="modal fade" id="modalUpdateSertifikat{{ $item->id_sertifikat }}" tabindex="-1"
+                                        aria-labelledby="modalUpdateSertifikat" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Update Sertifikat</h5>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label>Pretasi (Juara I/Panitia/Peserta/Beasiswa)</label>
-                                                    <input type="text" name="prestasi" class="form-control"
-                                                        value="{{ $item->prestasi }}" required>
+                                                <div class="modal-body">
+                                                    <form action="/put_sertifikat/{{ $item->id_sertifikat }}" method="post"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('put')
+                                                        <div class="form-group">
+                                                            <label>Nama Kegiatan</label>
+                                                            <input type="text" class="form-control" name="nama_kegiatan"
+                                                                value="{{ $item->nama_kegiatan }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Pretasi (Juara I/Panitia/Peserta/Beasiswa)</label>
+                                                            <input type="text" name="prestasi" class="form-control"
+                                                                value="{{ $item->prestasi }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Tingkat</label>
+                                                            <select name="tingkat" class="form-control">
+                                                                <option>{{ $item->tingkat }}
+                                                                </option>
+                                                                <option value="Nasional">Nasional</option>
+                                                                <option value="Internasional">Internasional</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Tanggal Pelaksanaan</label>
+                                                            <input type="date" name="tgl_pelaksanaan" class="form-control"
+                                                                value="{{ $item->tgl_pelaksanaan }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>File Sertifikat</label>
+                                                            <input type="file" name="file_sertifikat"
+                                                                class="form-control">{{ $item->file_sertifikat }}
+                                                            <br>
+                                                            <span>Max. size 4mb, format file JPG, PNG, JPEG</span>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                                    </form>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label>Tingkat</label>
-                                                    <select name="tingkat" class="form-control">
-                                                        <option>{{ $item->tingkat }}
-                                                        </option>
-                                                        <option value="Nasional">Nasional</option>
-                                                        <option value="Internasional">Internasional</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Tanggal Pelaksanaan</label>
-                                                    <input type="date" name="tgl_pelaksanaan" class="form-control"
-                                                        value="{{ $item->tgl_pelaksanaan }}" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>File Sertifikat</label>
-                                                    <input type="file" name="file_sertifikat"
-                                                        class="form-control">{{ $item->file_sertifikat }}
-                                                    <br>
-                                                    <span>Max. size 4mb, format file JPG, PNG, JPEG</span>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Perbarui Data</button>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </tbody>
-                </table>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </section>
+
+    <style>
+        .dataTables_wrapper {
+            width: 100%;
+            overflow-x: scroll;
+        }
+        .dataTables_scrollBody {
+            overflow-x: auto;
+        }
+    </style>
 @endsection

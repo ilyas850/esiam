@@ -490,6 +490,18 @@
 
             });
         });
+        $(document).ready(function() {
+            var table = $('#example42').DataTable({
+                scrollX: true,
+                // scrollY: "465px",
+                // 'info': true,
+                // 'searching': true,
+                // 'lengthChange': true,
+                // 'autoWidth': true,
+                // scrollCollapse: true
+
+            });
+        });
 
         $(document).ready(function() {
             var table = $('#example6').DataTable({
