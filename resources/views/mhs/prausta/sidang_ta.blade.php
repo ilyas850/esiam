@@ -391,9 +391,9 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_3">
-                                @if ($JmlMakulUlang > 0)
+                                {{-- @if ($JmlMakulUlang > 0)
                                     <span class="badge bg-red">Maaf ada nilai matakuliah belum lulus</span>
-                                @else
+                                @else --}}
                                     @if ($jml_bim < 6)
                                         <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
                                     @elseif ($jml_bim >= 6)
@@ -558,7 +558,7 @@
                                             </div>
                                         @endif
                                     @endif
-                                @endif
+                                {{-- @endif --}}
                             </div>
                             <div class="tab-pane" id="tab_4">
                                 @if ($data->acc_seminar_sidang == null)

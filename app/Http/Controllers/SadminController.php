@@ -298,7 +298,7 @@ class SadminController extends Controller
 
     public function save_generate_user(Request $request)
     {
-        dd($request);
+        // dd($request);
         $student = $request->student;
         $jml_student = count($student);
 
@@ -2280,15 +2280,15 @@ class SadminController extends Controller
                 $hitJmlAbs = Absensi_mahasiswa::where('id_bap', $bap->id_bap)
                     ->where('id_studentrecord', $data_abs->id_studentrecord)
                     ->get();
-                dd($hitJmlAbs);
+                // dd($hitJmlAbs);
             }
-            dd('sama');
+            // dd('sama');
             //Absensi_mahasiswa::where('id_absensi', $abs)->delete();
             // $data_abs_mhs = Absensi_mahasiswa::where('id_bap', $data_abs->id_bap)
             //     ->where('id_studentrecord', $data_abs->id_studentrecord)
             //     ->get();
         }
-        dd($jml_bap_sama);
+        // dd($jml_bap_sama);
     }
 
     public function sum_absen($id)
@@ -6195,7 +6195,7 @@ class SadminController extends Controller
         $id_kelas = $request->idkelas;
 
         $data = DB::select('CALL filter_konversi(?,?,?,?)', [$id_kurikulum, $id_prodi, $id_angkatan, $id_kelas]);
-        dd($data);
+        // dd($data);
     }
 
     public function master_konversi_makul()

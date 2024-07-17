@@ -5404,7 +5404,7 @@ class MhsController extends Controller
 
                                     if (count($cek_kuis_beasiswa) > 0) {
                                         $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-dd($data_ujian);
+
                                         return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
                                     } elseif (count($cek_kuis_beasiswa) == 0) {
 
@@ -5611,7 +5611,7 @@ dd($data_ujian);
                 ->where('dosen_pembimbing.status', 'ACTIVE')
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
                 ->first();
-dd($mhs);
+// dd($mhs);
             $prodi = $mhs->prodi;
             $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
 

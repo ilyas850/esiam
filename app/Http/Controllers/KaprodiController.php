@@ -880,7 +880,7 @@ class KaprodiController extends Controller
       ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
       ->get();
 
-      dd($krs->toArray());
+      // dd($krs->toArray());
 
     //data krs diambil
     $val = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
