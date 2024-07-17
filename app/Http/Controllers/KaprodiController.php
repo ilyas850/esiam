@@ -35,7 +35,6 @@ use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Kuliah_transaction;
 use App\Models\Absensi_mahasiswa;;
-
 use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_trans_bimbingan;
 use App\Models\Prausta_trans_hasil;
@@ -880,6 +879,8 @@ class KaprodiController extends Controller
       ->orderBy('semester.semester', 'ASC')
       ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
       ->get();
+
+      dd($krs->toArray());
 
     //data krs diambil
     $val = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
@@ -10499,5 +10500,10 @@ class KaprodiController extends Controller
 
     Alert::success('', 'Berhasil')->autoclose(3500);
     return redirect()->back();
+  }
+
+  public function penguji_sempro_skripsi_kprd()
+  {
+    $id = Auth::user()->id_user;
   }
 }

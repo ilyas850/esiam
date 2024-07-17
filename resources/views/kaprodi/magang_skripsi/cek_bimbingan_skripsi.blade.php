@@ -144,7 +144,7 @@
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
-                Pengajuan Skripsi <span class="badge bg-red">{{ $jdl->acc_seminar_sidang }}</span>
+                Pengajuan Skripsi <span class="badge bg-green">{{ $jdl->acc_seminar_sidang }}</span>
             </div>
             <div class="box-body">
                 <div class="form">
@@ -181,7 +181,7 @@
                             @if ($jdl->file_draft_laporan == null)
                                 Belum ada
                             @elseif ($jdl->file_draft_laporan != null)
-                                <a href="/File Draft Laporan/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
+                                <a href="/File Draft Laporan Skripsi/{{ $jdl->idstudent }}/{{ $jdl->file_draft_laporan }}"
                                     target="_blank" style="font: white"> File Draft Laporan</a>
                             @endif
 

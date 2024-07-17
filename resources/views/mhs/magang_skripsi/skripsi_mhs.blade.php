@@ -198,6 +198,7 @@
                                         <div class="box-body">
                                             <form class="" action="{{ url('simpan_bim_skripsi') }}" method="post"
                                                 enctype="multipart/form-data">
+                                                {{-- {{ csrf_field() }} --}}
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-md-12">
@@ -390,9 +391,9 @@
                                 @endif
                             </div>
                             <div class="tab-pane" id="tab_3">
-                                @if ($jml_bim < 6)
+                                @if ($jml_bim < 2)
                                     <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 6</span>
-                                @elseif ($jml_bim >= 6)
+                                @elseif ($jml_bim >= 2)
                                     @if ($hasil_skripsi == 0 or $hasil_skripsi > 0)
                                         @if ($data->acc_seminar_sidang == null)
                                             <form class="" action="{{ url('ajukan_skripsi_d4') }}" method="post"
@@ -403,7 +404,7 @@
                                                         <div class="form-group">
                                                             <label>File Draft Laporan</label>
                                                             <input type="file" name="file_draft_laporan"
-                                                                class="form-control" required>
+                                                                class="form-control" required accept=".pdf">
                                                             <span>Maksimal ukuran file 4mb dan PDF</span>
                                                         </div>
                                                     </div>
@@ -430,7 +431,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan Skripsi/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -473,7 +474,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan Skripsi/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -522,7 +523,7 @@
                                                                 @if ($data->file_draft_laporan == null)
                                                                     Belum ada
                                                                 @elseif ($data->file_draft_laporan != null)
-                                                                    <a href="/File Draft Laporan/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
+                                                                    <a href="/File Draft Laporan Skripsi/{{ Auth::user()->id_user }}/{{ $data->file_draft_laporan }}"
                                                                         target="_blank"> File Laporan</a>
                                                                 @endif
                                                             </span>
@@ -591,7 +592,7 @@
                                             @if ($data->validasi_baak == 'BELUM')
                                                 <div class="col-md-4">
                                                     <div class="info-box">
-                                                        <form action="{{ url('simpan_draft_skripsi') }}" method="post"
+                                                        <form action="{{ url('simpan_draft_ta') }}" method="post"
                                                             enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             <input type="hidden" name="id_settingrelasi_prausta"

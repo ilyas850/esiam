@@ -2087,4 +2087,44 @@ class MagangSkripsiController extends Controller
         Alert::success('', 'Data Bimbingan Skripsi Berhasil Diinput')->autoclose(3500);
         return redirect()->back();
     }
+
+    public function ajukan_skripsi_d4(Request $request)
+    {
+        $this->validate($request, [
+            'file_draft_laporan' => 'mimes:pdf|max:5000',
+        ]);
+
+        $date_now = date('Y-m-d');
+
+        $id = $request->id_settingrelasi_prausta;
+
+        $bap = Prausta_setting_relasi::find($id);
+        $bap->acc_seminar_sidang = 'PENGAJUAN';
+        $bap->tgl_pengajuan = $date_now;
+        $bap->total_uang_saku = $request->total_uang_saku;
+
+        if ($bap->file_draft_laporan) {
+            if ($request->hasFile('file_draft_laporan')) {
+                File::delete('File Draft Laporan Skripsi/' . Auth::user()->id_user . '/' . $bap->file_draft_laporan);
+                $file = $request->file('file_draft_laporan');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Draft Laporan Skripsi/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_draft_laporan = $nama_file;
+            }
+        } else {
+            if ($request->hasFile('file_draft_laporan')) {
+                $file = $request->file('file_draft_laporan');
+                $nama_file = 'Draft Laporan' . '-' . $file->getClientOriginalName();
+                $tujuan_upload = 'File Draft Laporan Skripsi/' . Auth::user()->id_user;
+                $file->move($tujuan_upload, $nama_file);
+                $bap->file_draft_laporan = $nama_file;
+            }
+        }
+
+        $bap->save();
+
+        Alert::success('', 'Draft Laporan Skripsi Berhasil upload')->autoclose(3500);
+        return redirect()->back();
+    }
 }

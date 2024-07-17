@@ -1,49 +1,36 @@
 @extends('layouts.master')
 
 @section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Penilaian Seminar Prakerin
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('penguji_sempro') }}">Data mahasiswa Seminar Proposal</a></li>
-            <li class="active">Form Nilai Seminar Proposal</li>
-        </ol>
-    </section>
+@include('layouts.side')
 @endsection
 
 @section('content')
-    <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h4 class="box-title"><b>Data Mahasiswa</b> </h4>
-            </div>
-            <div class="box-body">
-                <table width="100%">
-                    <tr>
-                        <td>Nama</td>
-                        <td>:</td>
-                        <td>{{ $data->nama }}</td>
-                    </tr>
-                    <tr>
-                        <td>NIM</td>
-                        <td>:</td>
-                        <td>{{ $data->nim }}</td>
-                    </tr>
-                    <tr>
-                        <td>Tempat Prakerin</td>
-                        <td>:</td>
-                        <td>{{ $data->tempat_prausta }}</td>
-                    </tr>
-                </table>
-            </div>
+<section class="content">
+    <div class="box box-info">
+        <div class="box-header">
+            <h4 class="box-title"><b>Data Mahasiswa</b> </h4>
         </div>
-        <form action="{{ url('simpan_nilai_sempro_dospem') }}" method="post"
+        <div class="box-body">
+            <table width="100%">
+                <tr>
+                    <td>Nama</td>
+                    <td>:</td>
+                    <td>{{ $data->nama }}</td>
+                </tr>
+                <tr>
+                    <td>NIM</td>
+                    <td>:</td>
+                    <td>{{ $data->nim }}</td>
+                </tr>
+                <tr>
+                    <td>Tempat Magang</td>
+                    <td>:</td>
+                    <td>{{ $data->tempat_prausta }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <form action="{{ url('simpan_nilai_sempro_skripsi_dospem') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
@@ -97,9 +84,7 @@
             </div>
             <button type="submit" class="btn btn-info">Simpan</button>
         </form>
-    </section>
-@endsection
-
+</section>
 <script>
     function startCalc() {
 
@@ -128,3 +113,4 @@
         clearInterval(interval);
     }
 </script>
+@endsection

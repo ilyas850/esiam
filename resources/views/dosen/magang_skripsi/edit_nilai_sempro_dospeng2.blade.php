@@ -4,52 +4,34 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Penilaian Seminar Prakerin
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('penguji_sempro') }}">Data mahasiswa Seminar Proposal</a></li>
-            <li class="active">Form Nilai Seminar Proposal</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h4 class="box-title"><b>Data Mahasiswa</b> </h4>
+                <h4 class="box-title"><b>Edit Nilai Sempro</b></h4>
             </div>
             <div class="box-body">
                 <table width="100%">
                     <tr>
-                        <td>Nama</td>
-                        <td>:</td>
-                        <td>{{ $data->nama }}</td>
+                        <td style="width: 10%">Nama</td>
+                        <td style="width: 2%">:</td>
+                        <td style="width: 88%">{{ $datadiri->nama }}</td>
                     </tr>
                     <tr>
                         <td>NIM</td>
                         <td>:</td>
-                        <td>{{ $data->nim }}</td>
-                    </tr>
-                    <tr>
-                        <td>Tempat Prakerin</td>
-                        <td>:</td>
-                        <td>{{ $data->tempat_prausta }}</td>
+                        <td>{{ $datadiri->nim }}</td>
                     </tr>
                 </table>
             </div>
         </div>
-        <form action="{{ url('simpan_nilai_sempro_dospem') }}" method="post"
+        <form class="" action="{{ url('put_nilai_sempro_skripsi_dospeng2_dlm') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
+                    <h3 class="box-title"><b>Form Penilaian Penguji II</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -72,7 +54,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($form_dosbing as $item)
+                            @foreach ($nilai_pem as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>
@@ -84,9 +66,9 @@
                                     </td>
                                     <td>
                                         <center>
-                                            <input type="hidden" name="id_penilaian_prausta[]"
-                                                value="{{ $item->id_penilaian_prausta }}">
-                                            <input type="number" name="nilai[]" required>
+                                            <input type="hidden" name="id_trans_penilaian[]"
+                                                value="{{ $item->id_trans_penilaian }}">
+                                            <input type="number" name="nilai[]" value="{{ $item->nilai }}" required>
                                             <center>
                                     </td>
                                 </tr>
@@ -99,32 +81,3 @@
         </form>
     </section>
 @endsection
-
-<script>
-    function startCalc() {
-
-        interval = setInterval("calc()", 1);
-    }
-
-    function calc() {
-
-        one = document.autoSumForm.nilai_sempro_1.value;
-
-        two = document.autoSumForm.nilai_sempro_2.value;
-
-        three = document.autoSumForm.nilai_sempro_3.value;
-
-        four = document.autoSumForm.nilai_sempro_4.value;
-
-        five = document.autoSumForm.nilai_sempro_5.value;
-
-        document.autoSumForm.total.value = (one * 30 / 100) + (two * 20 / 100) + (three * 35 / 100) + (four * 10 /
-            100) + (five * 5 / 100);
-
-    }
-
-    function stopCalc() {
-
-        clearInterval(interval);
-    }
-</script>

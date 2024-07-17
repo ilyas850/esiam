@@ -1509,7 +1509,7 @@ class PraustaController extends Controller
         $bap->save();
 
         Alert::success('', 'Berhasil')->autoclose(3500);
-        return redirect('sidang_ta');
+        return redirect()->back();
     }
 
     public function simpan_file_plagiarisme(Request $request)

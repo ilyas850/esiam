@@ -486,6 +486,7 @@ class AdminPraustaController extends Controller
             ->first();
 
         $dosen = Dosen::where('active', 1)
+            ->orderBy('nama', 'asc')
             ->get();
 
         $jam = Kurikulum_jam::all();
@@ -721,11 +722,14 @@ class AdminPraustaController extends Controller
 
         $dosen = Dosen::where('idstatus', 1)
             ->where('active', 1)
+            ->orderBy('nama', 'ASC')
             ->get();
 
-        $jam = Kurikulum_jam::all();
+        $jam = Kurikulum_jam::orderBy('jam', 'ASC')
+        ->get();
 
-        $ruangan = Ruangan::all();
+        $ruangan = Ruangan::orderBy('nama_ruangan', 'ASC')
+        ->get();
 
         return view('prausta/ta/atur_ta', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
     }

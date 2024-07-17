@@ -4,19 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Form Penilaian Seminar Prakerin
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('penguji_sempro') }}">Data mahasiswa Seminar Proposal</a></li>
-            <li class="active">Form Nilai Seminar Proposal</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -25,6 +12,7 @@
             </div>
             <div class="box-body">
                 <table width="100%">
+
                     <tr>
                         <td>Nama</td>
                         <td>:</td>
@@ -36,20 +24,20 @@
                         <td>{{ $data->nim }}</td>
                     </tr>
                     <tr>
-                        <td>Tempat Prakerin</td>
+                        <td>Tempat PraUSTA</td>
                         <td>:</td>
                         <td>{{ $data->tempat_prausta }}</td>
                     </tr>
                 </table>
             </div>
         </div>
-        <form action="{{ url('simpan_nilai_sempro_dospem') }}" method="post"
+        <form class="" action="{{ url('simpan_nilai_sempro_skripsi_dosji1') }}" method="post"
             enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
+                    <h3 class="box-title"><b>Form Penilaian Dosen Penguji I</b> </h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -72,7 +60,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($form_dosbing as $item)
+                            @foreach ($form_peng1 as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>

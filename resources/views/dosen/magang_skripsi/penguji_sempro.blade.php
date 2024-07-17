@@ -4,19 +4,6 @@
     @include('layouts.side')
 @endsection
 
-@section('content_header')
-    <section class="content-header">
-        <h1>
-            Data Mahasiswa Seminar Proposal
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-
-            <li class="active">Data mahasiswa Seminar Proposal</li>
-        </ol>
-    </section>
-@endsection
-
 @section('content')
     <section class="content">
         <div class="box box-info">
@@ -92,7 +79,7 @@
                                     <center>{{ number_format($key->nilai_2, 2) }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ number_format($key->nilai_3, 2) }}</center>
+                                    <center> {{ number_format($key->nilai_3, 2) }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>
@@ -116,7 +103,7 @@
                                 <td>
                                     <center>
                                         @if ($key->acc_seminar_sidang == null)
-                                            <span class="badge bg-grey">Belum </span>
+                                            <span class="badge bg-grey">Belum ada pengajuan </span>
                                         @elseif($key->acc_seminar_sidang == 'PENGAJUAN')
                                             <span class="badge bg-yelloe">Belum di Acc. sidang/seminar</span>
                                         @elseif($key->acc_seminar_sidang == 'TOLAK')
@@ -124,20 +111,20 @@
                                         @elseif($key->acc_seminar_sidang == 'TERIMA')
                                             @if ($key->id_dosen_pembimbing == $id && $key->nilai_1 == null)
                                                 <a class="btn btn-success btn-xs"
-                                                    href="/isi_form_nilai_proposal_dospem/{{ $key->id_settingrelasi_prausta }}">
+                                                    href="/isi_form_nilai_sempro_skripsi_dospem/{{ $key->id_settingrelasi_prausta }}">
                                                     Isi Form SEMPRO</a>
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 == null)
                                                 <a class="btn btn-success btn-xs"
-                                                    href="/isi_form_nilai_proposal_dosji1/{{ $key->id_settingrelasi_prausta }}">
+                                                    href="/isi_form_nilai_sempro_skripsi_dosji1/{{ $key->id_settingrelasi_prausta }}">
                                                     Isi Form SEMPRO</a>
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 == null)
                                                 <a class="btn btn-success btn-xs"
-                                                    href="/isi_form_nilai_proposal_dosji2/{{ $key->id_settingrelasi_prausta }}">
+                                                    href="/isi_form_nilai_sempro_skripsi_dosji2/{{ $key->id_settingrelasi_prausta }}">
                                                     Isi Form SEMPRO</a>
                                             @elseif ($key->id_dosen_pembimbing == $id && $key->nilai_1 != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"
-                                                        href="/edit_nilai_sempro_by_dospem_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        href="/edit_nilai_sempro_skripsi_by_dospem_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
                                                         nilai SEMPRO</a>
                                                 @elseif ($key->validasi == 1)
                                                     <span class="badge bg-yellow">Sudah divalidasi </span>
@@ -145,7 +132,7 @@
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"
-                                                        href="/edit_nilai_sempro_by_dospeng1_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        href="/edit_nilai_sempro_skripsi_by_dospeng1_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
                                                         nilai SEMPRO</a>
                                                 @elseif ($key->validasi == 1)
                                                     <span class="badge bg-yellow">Sudah divalidasi </span>
@@ -153,7 +140,7 @@
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"
-                                                        href="/edit_nilai_sempro_by_dospeng2_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
+                                                        href="/edit_nilai_sempro_skripsi_by_dospeng2_dlm/{{ $key->id_settingrelasi_prausta }}">Edit
                                                         nilai SEMPRO</a>
                                                 @elseif ($key->validasi == 1)
                                                     <span class="badge bg-yellow">Sudah divalidasi </span>
@@ -162,44 +149,42 @@
                                         @endif
                                     </center>
                                 </td>
-                                <td>
-                                    <center>
-                                        @if ($key->acc_seminar_sidang == null)
-                                            <span class="badge bg-grey">Belum ada pengajuan </span>
-                                        @elseif($key->acc_seminar_sidang == 'PENGAJUAN')
-                                            <span class="badge bg-yelloe">Belum di Acc. sidang/seminar</span>
-                                        @elseif($key->acc_seminar_sidang == 'TOLAK')
-                                            <span class="badge bg-danger">Pengajuan sidang/seminar ditolak</span>
-                                        @elseif($key->acc_seminar_sidang == 'TERIMA')
-                                            @if ($key->id_dosen_pembimbing == $id && $key->file_laporan_revisi != null)
-                                                @if ($key->validasi_pembimbing == 'BELUM')
-                                                    <a class="btn btn-success btn-xs"
-                                                        href="/validasi_dospem/{{ $key->id_settingrelasi_prausta }}">
-                                                        Validasi</a>
-                                                @elseif($key->validasi_pembimbing == 'SUDAH')
-                                                    <span class="badge bg-blue">Sudah</span>
-                                                @endif
-                                            @elseif($key->id_dosen_penguji_1 == $id && $key->file_laporan_revisi != null)
-                                                @if ($key->validasi_penguji_1 == 'BELUM')
-                                                    <a class="btn btn-success btn-xs"
-                                                        href="/validasi_dosji1/{{ $key->id_settingrelasi_prausta }}">
-                                                        Validasi</a>
-                                                @elseif($key->validasi_penguji_1 == 'SUDAH')
-                                                    <span class="badge bg-blue">Sudah</span>
-                                                @endif
-                                            @elseif($key->id_dosen_penguji_2 == $id && $key->file_laporan_revisi != null)
-                                                @if ($key->validasi_penguji_2 == 'BELUM')
-                                                    <a class="btn btn-success btn-xs"
-                                                        href="/validasi_dosji2/{{ $key->id_settingrelasi_prausta }}">
-                                                        Validasi</a>
-                                                @elseif($key->validasi_penguji_2 == 'SUDAH')
-                                                    <span class="badge bg-blue">Sudah</span>
-                                                @endif
-                                            @else
-                                                <span class="badge bg-blue">Belum</span>
+                                <td align="center">
+                                    @if ($key->acc_seminar_sidang == null)
+                                        <span class="badge bg-grey">Belum ada pengajuan </span>
+                                    @elseif($key->acc_seminar_sidang == 'PENGAJUAN')
+                                        <span class="badge bg-yelloe">Belum di Acc. sidang/seminar</span>
+                                    @elseif($key->acc_seminar_sidang == 'TOLAK')
+                                        <span class="badge bg-danger">Pengajuan sidang/seminar ditolak</span>
+                                    @elseif($key->acc_seminar_sidang == 'TERIMA')
+                                        @if ($key->id_dosen_pembimbing == $id && $key->file_laporan_revisi != null)
+                                            @if ($key->validasi_pembimbing == 'BELUM')
+                                                <a class="btn btn-success btn-xs"
+                                                    href="/validasi_dospem/{{ $key->id_settingrelasi_prausta }}">
+                                                    Validasi</a>
+                                            @elseif($key->validasi_pembimbing == 'SUDAH')
+                                                <span class="badge bg-blue">Sudah</span>
                                             @endif
+                                        @elseif($key->id_dosen_penguji_1 == $id && $key->file_laporan_revisi != null)
+                                            @if ($key->validasi_penguji_1 == 'BELUM')
+                                                <a class="btn btn-success btn-xs"
+                                                    href="/validasi_dosji1/{{ $key->id_settingrelasi_prausta }}">
+                                                    Validasi</a>
+                                            @elseif($key->validasi_penguji_1 == 'SUDAH')
+                                                <span class="badge bg-blue">Sudah</span>
+                                            @endif
+                                        @elseif($key->id_dosen_penguji_2 == $id && $key->file_laporan_revisi != null)
+                                            @if ($key->validasi_penguji_2 == 'BELUM')
+                                                <a class="btn btn-success btn-xs"
+                                                    href="/validasi_dosji2/{{ $key->id_settingrelasi_prausta }}">
+                                                    Validasi</a>
+                                            @elseif($key->validasi_penguji_2 == 'SUDAH')
+                                                <span class="badge bg-blue">Sudah</span>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-blue">Belum</span>
                                         @endif
-                                    </center>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

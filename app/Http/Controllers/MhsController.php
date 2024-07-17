@@ -5317,7 +5317,7 @@ class MhsController extends Controller
                 ->whereNotIn('kurikulum_periode.id_makul', [281, 286, 235, 430, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 490])
                 ->select(DB::raw('DISTINCT(edom_transaction.id_kurperiode)'))
                 ->get();
-dd($cekedom);
+
             $sekhit = count($cekedom);
        
             if (empty(($hit - 2) <= $sekhit)) {
@@ -5404,7 +5404,7 @@ dd($cekedom);
 
                                     if (count($cek_kuis_beasiswa) > 0) {
                                         $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
-
+dd($data_ujian);
                                         return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
                                     } elseif (count($cek_kuis_beasiswa) == 0) {
 
@@ -5611,7 +5611,7 @@ dd($cekedom);
                 ->where('dosen_pembimbing.status', 'ACTIVE')
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
                 ->first();
-
+dd($mhs);
             $prodi = $mhs->prodi;
             $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
 

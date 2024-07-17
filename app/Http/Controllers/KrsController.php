@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use PDF;
 use Alert;
 use App\Models\Mhs;
+use App\Helpers\Helper;
 use App\User;
 use App\Models\Dosen;
 use App\Models\Prodi;
@@ -34,6 +35,28 @@ use Illuminate\Support\Facades\Auth;
 
 class KrsController extends Controller
 {
+  public function getDataMhs($id)
+  {
+    return Student::leftJoin('prodi', (function ($join) {
+      $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+    }))
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->where('student.idstudent', $id)
+      ->select(
+        'student.idstudent',
+        'student.nama',
+        'student.nim',
+        'kelas.kelas',
+        'prodi.prodi',
+        'prodi.konsentrasi',
+        'student.idangkatan',
+        'student.idstatus',
+        'student.kodeprodi',
+        'student.intake'
+      )
+      ->first();
+  }
   public function krs()
   {
     $waktu_krs = Waktu_krs::where('status', 1)->first();
@@ -43,30 +66,13 @@ class KrsController extends Controller
       alert()->error('KRS Belum dibuka', 'Maaf silahkan menghubungi bagian akademik');
       return redirect('home');
     } elseif ($waktu_krs->status == 1) {
+
       $periodetahun_all = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
       $periodetipe_all = Periode_tipe::all();
 
       $id = Auth::user()->id_user;
 
-      $data_mhs = Student::leftJoin('prodi', (function ($join) {
-        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-          ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-      }))
-        ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        ->where('student.idstudent', $id)
-        ->select(
-          'student.idstudent',
-          'student.nama',
-          'student.nim',
-          'kelas.kelas',
-          'prodi.prodi',
-          'prodi.konsentrasi',
-          'student.idangkatan',
-          'student.idstatus',
-          'student.kodeprodi',
-          'student.intake'
-        )
-        ->first();
+      $data_mhs = $this->getDataMhs($id);
 
       $idangkatan = $data_mhs->idangkatan;
       $idstatus = $data_mhs->idstatus;
@@ -81,67 +87,9 @@ class KrsController extends Controller
       $periodetahun = $thn->periode_tahun;
       $periodetipe = $tp->periode_tipe;
 
-      //cek semester
-      $sub_thn = substr($thn->periode_tahun, 6, 2);
-      $tipe = $tp->id_periodetipe;
-      $smt = $sub_thn . $tipe;
+      $c = Helper::cekSemesterMhs($periodetahun, $idperiodetipe, $idangkatan, $intake);    
 
-      if ($smt % 2 != 0) {
-        if ($tipe == 1) {
-          //ganjil
-          $a = (($smt + 10) - 1) / 10;
-          $b = $a - $idangkatan;
-
-          if ($intake == 2) {
-            $c = ($b * 2) - 1 - 1;
-          } elseif ($intake == 1) {
-            $c = ($b * 2) - 1;
-          }
-        } elseif ($tipe == 3) {
-          //pendek
-          $a = (($smt + 10) - 3) / 10;
-          $b = $a - $idangkatan;
-          if ($intake == 2) {
-            $c = ($b * 2) - 1 . '0' . '1';
-          } elseif ($intake == 1) {
-            $c = ($b * 2) . '0' . '1';
-          }
-        }
-      } else {
-        //genap
-        $a = (($smt + 10) - 2) / 10;
-        $b = $a - $idangkatan;
-        if ($intake == 2) {
-          $c = $b * 2 - 1;
-        } elseif ($intake == 1) {
-          $c = $b * 2;
-        }
-      }
-
-      $biaya = Biaya::where('idangkatan', $idangkatan)
-        ->where('idstatus', $idstatus)
-        ->where('kodeprodi', $kodeprodi)
-        ->select(
-          'daftar',
-          'awal',
-          'dsp',
-          'spp1',
-          'spp2',
-          'spp3',
-          'spp4',
-          'spp5',
-          'spp6',
-          'spp7',
-          'spp8',
-          'spp9',
-          'spp10',
-          'spp11',
-          'spp12',
-          'spp13',
-          'spp14',
-          'prakerin'
-        )
-        ->first();
+      $biaya = Helper::cekBiayaKuliah($idangkatan, $idstatus, $kodeprodi);
 
       $cb = Beasiswa::where('idstudent', $id)->first();
 
@@ -193,7 +141,7 @@ class KrsController extends Controller
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
 
-      //test lagi
+        
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 20 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
@@ -212,6 +160,8 @@ class KrsController extends Controller
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4) - $total_semua_dibayar;
       } elseif ($c == 5) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5 / 6)) + ($prakerin * 75 / 100) - $total_semua_dibayar;
+      } elseif ($c == '501') {
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + ($spp5)) + ($prakerin) - $total_semua_dibayar;
       } elseif ($c == 6) {
         $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + ($spp6 / 6)) - $total_semua_dibayar;
       } elseif ($c == '601') {
@@ -466,8 +416,8 @@ class KrsController extends Controller
     } elseif ($kodeprodi == 24) {
       if ($tipe == 3) {
 
+        // dd($krlm->id_kurikulum, $value->id_prodi, $idangkatan, $thn->id_periodetahun, $tipe, $idstatus);
         $final_krs = DB::select('CALL krs_smt_pendek(?,?,?,?,?,?)', [$krlm->id_kurikulum, $value->id_prodi, $idangkatan, $thn->id_periodetahun, $tipe, $idstatus]);
-
         return view('mhs/krs/form_krs', compact('final_krs'));
       } else {
 

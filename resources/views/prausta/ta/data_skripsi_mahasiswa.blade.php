@@ -21,7 +21,7 @@
             </div>
             <div class="box-body">
 
-                <table id="example4" class="table table-bordered table-striped">
+                <table id="example42" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th rowspan="2">No</th>
@@ -43,7 +43,7 @@
                             <th rowspan="2">
                                 <center>Acc. Sidang</center>
                             </th>
-                            <th rowspan="2" width="6%">Aksi</th>
+                            <th rowspan="2">Aksi</th>
                         </tr>
                         <tr>
                             <th>
@@ -141,4 +141,13 @@
             </div>
         </div>
     </section>
+    <style>
+        .dataTables_wrapper {
+            width: 100%;
+            overflow-x: scroll;
+        }
+        .dataTables_scrollBody {
+            overflow-x: auto;
+        }
+    </style>
 @endsection
