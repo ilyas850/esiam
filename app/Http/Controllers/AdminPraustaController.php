@@ -287,7 +287,7 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-        $dosen = Dosen::where('idstatus', 1)
+        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
             ->get();
 
@@ -486,6 +486,7 @@ class AdminPraustaController extends Controller
             ->first();
 
         $dosen = Dosen::where('active', 1)
+
             ->orderBy('nama', 'asc')
             ->get();
 
@@ -720,7 +721,7 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-        $dosen = Dosen::where('idstatus', 1)
+        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
             ->orderBy('nama', 'ASC')
             ->get();
