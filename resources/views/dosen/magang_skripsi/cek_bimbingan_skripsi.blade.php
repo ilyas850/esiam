@@ -141,27 +141,27 @@
         </div>
         <div class="box box-info">
             <div class="box-header with-border">
-                Pengajuan Seminar Magang <span class="badge bg-red">{{ $jdl->acc_seminar_sidang }}</span>
+                Pengajuan Sidang Skripsi <span class="badge bg-red">{{ $jdl->acc_seminar_sidang }}</span>
             </div>
             <div class="box-body">
                 <div class="form">
                     @if ($jdl->acc_seminar_sidang == null)
                         <span class="badge bg-red">Belum ada pengajuan</span>
                     @elseif ($jdl->acc_seminar_sidang == 'PENGAJUAN')
-                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
-                            Seminar Magang</a>
+                        <a href="/acc_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                            Sidang Skripsi</a>
+                        <a href="/tolak_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                            Sidang Skripsi</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TERIMA')
-                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
-                            Seminar Magang</a>
+                        <a href="/acc_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                            Sidang Skripsi</a>
+                        <a href="/tolak_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                            Sidang Skripsi</a>
                     @elseif ($jdl->acc_seminar_sidang == 'TOLAK')
-                        <a href="/acc_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
-                            Seminar Magang</a>
-                        <a href="/tolak_seminar_pkl_kprd/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
-                            Seminar Magang</a>
+                        <a href="/acc_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-info">Acc.
+                            Sidang Skripsi</a>
+                        <a href="/tolak_seminar_pkl_dsn_dlm/{{ $jdl->id_settingrelasi_prausta }}" class="btn btn-danger">Tolak
+                            Sidang Skripsi</a>
                     @endif
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i>
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Draft Laporan Magang</span>
+                        <span class="info-box-text">Draft Laporan Skripsi</span>
                         <span class="info-box-number">
                             @if ($jdl->file_draft_laporan == null)
                                 Belum ada
@@ -193,7 +193,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-red"><i class="fa fa-fw fa-file-pdf-o"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Laporan Akhir Magang</span>
+                        <span class="info-box-text">Laporan Akhir Skripsi</span>
                         <span class="info-box-number">
                             @if ($jdl->file_laporan_revisi == null)
                                 Belum ada

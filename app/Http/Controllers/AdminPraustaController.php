@@ -287,8 +287,9 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
+            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
+            ->orderBy('nama', 'ASC')
             ->get();
 
         $jam = Kurikulum_jam::all();
@@ -361,8 +362,9 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-        $dosen = Dosen::where('idstatus', 1)
+            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
+            ->orderBy('nama', 'ASC')
             ->get();
 
         $jam = Kurikulum_jam::all();
@@ -485,9 +487,9 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-        $dosen = Dosen::where('active', 1)
-
-            ->orderBy('nama', 'asc')
+            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
+            ->where('active', 1)
+            ->orderBy('nama', 'ASC')
             ->get();
 
         $jam = Kurikulum_jam::all();
