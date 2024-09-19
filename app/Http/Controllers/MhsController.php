@@ -97,7 +97,7 @@ class MhsController extends Controller
             )
             ->first();
 
-        $tahun = Periode_tahun::join('kalender_akademik', 'periode_tahun.id_periodetahun', '=', 'kalender_akademik.id_periodetahun')
+        $tahun = Periode_tahun::leftjoin('kalender_akademik', 'periode_tahun.id_periodetahun', '=', 'kalender_akademik.id_periodetahun')
             ->where('periode_tahun.status', 'ACTIVE')
             ->select('periode_tahun.periode_tahun', 'kalender_akademik.file', 'periode_tahun.status', 'periode_tahun.id_periodetahun')
             ->first();
