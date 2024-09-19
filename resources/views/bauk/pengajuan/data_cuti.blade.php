@@ -18,6 +18,9 @@
                                 <center>No</center>
                             </th>
                             <th rowspan="2">
+                                <center>Tgl. Pengajuan</center>
+                            </th>
+                            <th rowspan="2">
                                 <center>Tahun Akademik</center>
                             </th>
                             <th rowspan="2">
@@ -71,6 +74,7 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
+                                <td align="center">{{ $item->tgl_pengajuan }}</td>
                                 <td align="center">{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td align="center">{{ $item->nim }}</td>

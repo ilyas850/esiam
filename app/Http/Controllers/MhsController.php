@@ -50,6 +50,7 @@ use App\Models\Permohonan_ujian;
 use App\Models\Perwalian_trans_bimbingan;
 use App\Models\Min_biaya;
 use App\Models\Pengajuan_trans;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
@@ -6701,6 +6702,7 @@ class MhsController extends Controller
                     $new->sks_ditempuh = $data_sks->sks;
                     $new->alamat = $request->alamat;
                     $new->no_hp = $request->no_hp;
+                    $new->tgl_pengajuan = date('Y-m-d');
                     $new->save();
 
                     Alert::success('', 'Pengajuan Cuti berhasil ditambahkan')->autoclose(3500);
@@ -6726,6 +6728,7 @@ class MhsController extends Controller
                 $new->sks_ditempuh = $data_sks->sks;
                 $new->alamat = $request->alamat;
                 $new->no_hp = $request->no_hp;
+                $new->tgl_pengajuan = date('Y-m-d');
                 $new->save();
 
                 Alert::success('', 'Pengajuan Cuti berhasil ditambahkan')->autoclose(3500);

@@ -454,8 +454,6 @@ class BaukController extends Controller
         return view('bauk/penangguhan/data_penangguhan', compact('data', 'kategori', 'thn_aktif', 'tp_aktif'));
     }
 
-
-
     public function close_penangguhan($id)
     {
         Penangguhan_trans::where('id_penangguhan_trans', $id)->update(['status_penangguhan' => 'CLOSE']);
@@ -911,7 +909,8 @@ class BaukController extends Controller
                 'pengajuan_trans.val_bauk',
                 'pengajuan_trans.val_dsn_pa',
                 'pengajuan_trans.val_baak',
-                'pengajuan_trans.val_kaprodi'
+                'pengajuan_trans.val_kaprodi',
+                'pengajuan_trans.tgl_pengajuan'
             )
             ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
             ->get();
@@ -961,7 +960,8 @@ class BaukController extends Controller
                 'pengajuan_trans.val_bauk',
                 'pengajuan_trans.val_dsn_pa',
                 'pengajuan_trans.val_baak',
-                'pengajuan_trans.val_kaprodi'
+                'pengajuan_trans.val_kaprodi',
+                'pengajuan_trans.tgl_pengajuan'
             )
             ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
             ->get();
