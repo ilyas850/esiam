@@ -910,7 +910,8 @@ class BaukController extends Controller
                 'pengajuan_trans.val_dsn_pa',
                 'pengajuan_trans.val_baak',
                 'pengajuan_trans.val_kaprodi',
-                'pengajuan_trans.tgl_pengajuan'
+                'pengajuan_trans.tgl_pengajuan',
+                'pengajuan_trans.created_at'
             )
             ->orderBy('pengajuan_trans.id_trans_pengajuan', 'DESC')
             ->get();

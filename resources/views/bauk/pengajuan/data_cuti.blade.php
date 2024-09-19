@@ -74,7 +74,13 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td align="center">{{ $no++ }}</td>
-                                <td align="center">{{ $item->tgl_pengajuan }}</td>
+                                <td align="center">
+                                    @if ($item->tgl_pengajuan == null)
+                                        {{ $item->created_at->format('Y-m-d') }}
+                                    @else
+                                        {{ $item->tgl_pengajuan }}
+                                    @endif
+                                </td>
                                 <td align="center">{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td align="center">{{ $item->nim }}</td>
