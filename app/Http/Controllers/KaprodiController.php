@@ -26,7 +26,7 @@ use App\Models\Ujian_transaction;
 use App\Models\Periode_tipe;
 use App\Models\Periode_tahun;
 use App\Models\Student_record;
-use App\Models\Dosen_pembimbing;
+use App\Models\DosenPembimbing;
 use App\Models\Edom_transaction;
 use App\Models\Pertemuan;
 use App\Models\Kurikulum_jam;
@@ -8505,7 +8505,7 @@ class KaprodiController extends Controller
   {
     $id = Auth::user()->id_user;
 
-    $data = Dosen_pembimbing::join('penangguhan_master_trans', 'dosen_pembimbing.id_student', '=', 'penangguhan_master_trans.id_student')
+    $data = DosenPembimbing::join('penangguhan_master_trans', 'dosen_pembimbing.id_student', '=', 'penangguhan_master_trans.id_student')
       ->join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
       ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
       ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')

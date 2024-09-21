@@ -87,7 +87,7 @@ class KrsController extends Controller
       $periodetahun = $thn->periode_tahun;
       $periodetipe = $tp->periode_tipe;
 
-      $c = Helper::cekSemesterMhs($periodetahun, $idperiodetipe, $idangkatan, $intake);    
+      $c = Helper::cekSemesterMhs($periodetahun, $idperiodetipe, $idangkatan, $intake);
 
       $biaya = Helper::cekBiayaKuliah($idangkatan, $idstatus, $kodeprodi);
 
@@ -141,7 +141,7 @@ class KrsController extends Controller
         ->where('kuitansi.idstudent', $id)
         ->sum('bayar.bayar');
 
-        
+
       if ($c == 1) {
         $cekbyr = ($daftar + $awal + ($spp1 * 10 / 100)) - $total_semua_dibayar;
       } elseif ($c == '101') {
@@ -628,5 +628,49 @@ class KrsController extends Controller
 
     $pdf = PDF::loadView('mhs/krs_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'mhs' => $maha, 'tp' => $tp, 'thn' => $thn, 'krs' => $record, 'sks' => $sks])->setPaper('a4', 'portrait');
     return $pdf->download('KRS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $thn->periode_tahun . ' ' . $tp->periode_tipe . ')' . '.pdf');
+  }
+
+  public function krs_manual()
+  {
+    $data = Student::with([
+      'student_records' => function ($q) {
+        $q->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
+          ->where('status', 'TAKEN')
+          ->with(['kurperiode' => function ($q) {
+            $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
+              ->with([
+                'tahun' => function ($q) {
+                  $q->select('id_periodetahun', 'periode_tahun', 'status')
+                    ->where('status', 'ACTIVE');
+                },
+                'tipe' => function ($q) {
+                  $q->select('id_periodetipe', 'periode_tipe', 'status')
+                    ->where('status', 'ACTIVE');
+                },
+                'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+              ])
+              ->where('status', 'ACTIVE');
+          }]);
+      },
+      'prodi' => function ($q) {
+        $q->select('id_prodi', 'prodi', 'kodeprodi', 'konsentrasi', 'kodekonsentrasi');
+      },
+      'kelas:idkelas,kelas',
+      'angkatan:idangkatan,angkatan',
+      'dosenPembimbing' => function ($q) {
+        $q->select('id', 'id_dosen', 'id_student', 'status')
+          ->with(['dosen' => function ($q) {
+            $q->select('iddosen', 'nama', 'akademik');
+          }]);
+      }
+    ])
+      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'kodeprodi', 'kodekonsentrasi', 'intake')
+      ->whereIn('active', [1, 5])
+      ->orderBy('kodeprodi', 'DESC')
+      ->orderBy('nim', 'DESC')
+      ->get();
+
+    // dd($data->toArray());
+    return view('sadmin.krs.krs-manual', compact('data'));
   }
 }

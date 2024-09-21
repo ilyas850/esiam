@@ -117,8 +117,8 @@
             <li><a href="{{ url('data_krs') }}"><i class="fa fa-circle-o"></i>Data KRS Per MK</a></li>
             <li><a href="{{ url('summary_krs') }}"><i class="fa fa-circle-o"></i>Data KRS Per T.A.</a></li>
             <li><a href="{{ url('nilai_khs') }}"><i class="fa fa-circle-o"></i>Data Nilai KHS</a></li>
-            <li><a href="{{ url('rekap_krs_angkatan') }}"><i class="fa fa-circle-o"></i>Data KRS Per Angkatan</a>
-            </li>
+            <li><a href="{{ url('rekap_krs_angkatan') }}"><i class="fa fa-circle-o"></i>Data KRS Per Angkatan</a></li>
+            <li><a href="{{ url('krs-manual') }}"><i class="fa fa-circle-o"></i>KRS Manual</a></li>
         </ul>
     </li>
     <li class="treeview">

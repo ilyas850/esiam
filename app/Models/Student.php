@@ -17,8 +17,33 @@ class Student extends Model
 
   public function kelas()
   {
-    return $this->BelongsTo(Kelas::class, 'idstatus');
+    return $this->BelongsTo(Kelas::class, 'idstatus', 'idkelas');
   }
 
-  // protected $dateFormat = 'Y-m-d H:i';
+  public function student_records()
+  {
+    return $this->hasMany(Student_record::class, 'id_student', 'idstudent');
+  }
+
+  public function angkatan()
+  {
+    return $this->BelongsTo(Angkatan::class, 'idangkatan', 'idangkatan');
+  }
+
+  public function prodi()
+  {
+    return $this->belongsTo(Prodi::class, 'kodeprodi', 'kodeprodi')
+      ->where(function ($query) {
+        // Jika kodekonsentrasi ada, maka tambahkan dalam where clause
+        if (!is_null($this->kodekonsentrasi)) {
+          $query->where('kodekonsentrasi', $this->kodekonsentrasi);
+        }
+      });
+  }
+
+  public function dosenPembimbing()
+  {
+    
+    return $this->belongsTo(DosenPembimbing::class, 'idstudent', 'id_student');
+  }
 }

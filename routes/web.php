@@ -28,7 +28,6 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::put('update_angkatan/{id}', 'SadminController@update_angkatan');
     Route::post('delete_angkatan', 'SadminController@delete_angkatan');
 
-
     //matakuliah BOM
     Route::get('master_bom', 'SadminController@master_bom');
 
@@ -498,6 +497,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     #Ijazah & Transkrip
     Route::get('master_ijazah_transkrip', 'SadminController@master_ijazah_transkrip');
     Route::post('saveedit_data_mhs', 'SadminController@saveedit_data_mhs');
+
+    // KRS Manual
+    Route::get('krs-manual', 'KrsController@krs_manual');
+    Route::get('krs-manual/create/{id}', 'KrsController@create');
+    Route::post('save_krs_manual', 'KrsController@save_krs_manual');
 });
 
 Route::group(['middleware' => 'dosen'], function () {

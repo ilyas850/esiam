@@ -29,7 +29,7 @@ use App\Models\Student_record;
 use App\Models\Matakuliah;
 use App\Models\Matakuliah_bom;
 use App\Models\Semester;
-use App\Models\Dosen_pembimbing;
+use App\Models\DosenPembimbing;
 use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Transkrip_nilai;
@@ -708,7 +708,7 @@ class SadminController extends Controller
 
     public function pembimbing()
     {
-        $pem = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
+        $pem = DosenPembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
             ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
             ->leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');

@@ -9,7 +9,6 @@ use App\Models\Angkatan;
 use App\Models\Student_record;
 use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
-use App\Models\Dosen_pembimbing;
 use App\Models\Periode_tahun;
 use App\Models\Periode_tipe;
 use Illuminate\Support\Facades\DB;

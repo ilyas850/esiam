@@ -26,7 +26,7 @@ use App\Models\Kurikulum_transaction;
 use App\Models\Student_record;
 use App\Models\Beasiswa;
 use App\Models\Biaya;
-use App\Models\Dosen_pembimbing;
+use App\Models\DosenPembimbing;
 use App\Models\Itembayar;
 use App\Models\Kuitansi;
 use App\Models\Prausta_setting_relasi;
@@ -1865,7 +1865,7 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $dosen_pa = Dosen_pembimbing::join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
+        $dosen_pa = DosenPembimbing::join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
             ->where('id_student', $id)
             ->select('dosen.nama')
             ->first();
@@ -1908,7 +1908,7 @@ class MhsController extends Controller
         } elseif ($waktu_edom->status == 1) {
             $ids = Auth()->user()->id_user;
 
-            $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
+            $mhs = DosenPembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
                 ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
                 ->leftJoin('prodi', (function ($join) {
                     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -4956,7 +4956,7 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $dsn_pa = Dosen_pembimbing::where('id_student', $id)->first();
+        $dsn_pa = DosenPembimbing::where('id_student', $id)->first();
 
         $data = Perwalian_trans_bimbingan::join('dosen_pembimbing', 'perwalian_trans_bimbingan.id_dosbim_pa', '=', 'dosen_pembimbing.id')
             ->join('periode_tahun', 'perwalian_trans_bimbingan.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -5602,7 +5602,7 @@ class MhsController extends Controller
         } elseif ($waktu_edom->status == 1) {
             $ids = Auth()->user()->id_user;
 
-            $mhs = Dosen_pembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
+            $mhs = DosenPembimbing::join('student', 'dosen_pembimbing.id_student', '=', 'student.idstudent')
                 ->join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
                 ->leftJoin('prodi', (function ($join) {
                     $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
