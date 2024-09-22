@@ -65,10 +65,10 @@
                                 <td>{{ $totalSKS }} SKS</td>
 
                                 <td align="center">
-                                    <a href="#" class="btn btn-success btn-xs" title="Lihat KRS">
+                                    <a href="{{ url('/lihat-krs/' . $item->idstudent)}}" class="btn btn-success btn-xs" title="Lihat KRS">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a href="{{ url('/krs-manual/create/' . $item->id) }}" class="btn btn-info btn-xs"
+                                    <a href="{{ url('/krs-manual/create/' . $item->idstudent) }}" class="btn btn-info btn-xs"
                                         title="Tambah KRS">
                                         <i class="fa fa-plus"></i>
                                     </a>

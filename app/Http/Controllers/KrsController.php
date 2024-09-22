@@ -673,4 +673,112 @@ class KrsController extends Controller
     // dd($data->toArray());
     return view('sadmin.krs.krs-manual', compact('data'));
   }
+
+  public function createKrsManual($id)
+  {
+    $dataMhs = Student::with(([
+      'prodi:id_prodi,prodi,kodeprodi,konsentrasi,kodekonsentrasi',
+      'angkatan:idangkatan,angkatan',
+      'kelas:idkelas,kelas'
+    ]))
+      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'kodeprodi', 'kodekonsentrasi', 'intake')
+      ->where('idstudent', $id)
+      ->first();
+
+    $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
+    $kurikulumMhs = Kurikulum_master::where('remark', $dataMhs->intake)->first();
+
+    $dataKrsMhs = Student_record::whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
+      $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+        ->where('id_periodetipe', $tipeActive->id_periodetipe);
+    })
+      ->with(['kurperiode' => function ($q) use ($tahunActive, $tipeActive) {
+        $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul', 'id_dosen')
+          ->with([
+            'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+            'tahun' => function ($q) {
+              $q->select('id_periodetahun', 'periode_tahun', 'status');
+            },
+            'tipe' => function ($q) {
+              $q->select('id_periodetipe', 'periode_tipe', 'status');
+            },
+            'dosen' => function ($q) {
+              $q->select('iddosen', 'nama', 'akademik');
+            }
+          ])
+          ->where('id_periodetahun', $tahunActive->id_periodetahun)
+          ->where('id_periodetipe', $tipeActive->id_periodetipe);
+      }])
+      ->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
+      ->where('id_student', $id)
+      ->where('status', 'TAKEN')
+      ->get();
+
+    $dataKrs = Kurikulum_periode::whereHas('kurtrans', function ($q) use ($kurikulumMhs, $dataMhs) {
+      $q->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
+        ->where('id_prodi', $dataMhs->prodi->id_prodi)
+        ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
+        ->where('status', 'ACTIVE');
+    })
+      ->with([
+        'tahun:id_periodetahun,periode_tahun',
+        'tipe:id_periodetipe,periode_tipe',
+        'makul' => function ($q) {
+          $q->select('idmakul', 'kode', 'makul', 'akt_sks_teori', 'akt_sks_praktek', 'active')
+            ->where('active', 1);
+        },
+        'dosen:iddosen,nama',
+        'kurtrans' => function ($q) use ($kurikulumMhs, $dataMhs) {
+          $q->select('idkurtrans', 'id_kurikulum', 'id_prodi', 'id_semester', 'id_angkatan', 'id_makul', 'status')
+            ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
+            ->where('id_prodi', $dataMhs->prodi->id_prodi)
+            ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
+            ->where('status', 'ACTIVE');
+        },
+        'semester:idsemester,semester',
+      ])
+      ->where('id_periodetahun', $tahunActive->id_periodetahun)
+      ->where('id_periodetipe', $tipeActive->id_periodetipe)
+      ->where('id_prodi', $dataMhs->prodi->id_prodi)
+      ->where('id_kelas', $dataMhs->kelas->idkelas)
+      ->where('status', 'ACTIVE')
+      ->orderBy('id_semester', 'ASC')
+      ->orderBy('id_makul', 'ASC')
+      ->get();
+
+
+    return view('sadmin.krs.krs-manual-create', compact('id', 'dataMhs', 'dataKrsMhs', 'dataKrs', 'tahunActive', 'tipeActive'));
+  }
+
+  public function saveKrsManual(Request $request)
+  {
+
+    try {
+
+      $cekKrs = Student_record::where('id_student', $request->id_student)
+        ->where('id_kurperiode', $request->id_kurperiode)
+        ->where('id_kurtrans', $request->id_kurtrans)
+        ->where('status', 'TAKEN')
+        ->first();
+
+      if (empty($cekKrs)) {
+        $krs = new Student_record;
+        $krs->id_student = $request->id_student;
+        $krs->id_kurperiode = $request->id_kurperiode;
+        $krs->id_kurtrans = $request->id_kurtrans;
+        $krs->status = 'TAKEN';
+        $krs->save();
+      } else {
+        Alert::warning('maaf mata kuliah sudah dipilih', 'MAAF !!');
+        return redirect()->back();
+      }
+
+      Alert::success('', 'Matakuliah berhasil ditambahkan')->autoclose(3500);
+    } catch (\Throwable $e) {
+    } finally {
+
+      return redirect('krs-manual/create/' . $request->id_student);
+    }
+  }
 }

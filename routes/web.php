@@ -500,8 +500,8 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     // KRS Manual
     Route::get('krs-manual', 'KrsController@krs_manual');
-    Route::get('krs-manual/create/{id}', 'KrsController@create');
-    Route::post('save_krs_manual', 'KrsController@save_krs_manual');
+    Route::get('krs-manual/create/{id}', 'KrsController@createKrsManual');
+    Route::post('save-krs-manual', 'KrsController@saveKrsManual');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
