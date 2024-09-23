@@ -220,12 +220,12 @@
                                                             <textarea class="form-control" name="remark_bimbingan" cols="30" rows="2" required></textarea>
                                                         </div>
 
-                                                        <div class="form-group">
+                                                        {{-- <div class="form-group">
                                                             <label>File Bimbingan</label>
                                                             <input type="file" name="file_bimbingan"
                                                                 class="form-control" accept=".pdf" required>
                                                             <span>max. size file 4mb format .pdf, .doc</span>
-                                                        </div>
+                                                        </div> --}}
                                                     </div>
                                                 </div>
                                                 @if ($databimb == null)
@@ -280,9 +280,9 @@
                                                         <th>
                                                             <center>Validasi</center>
                                                         </th>
-                                                        <th>
+                                                        {{-- <th>
                                                             <center>File</center>
-                                                        </th>
+                                                        </th> --}}
                                                         <th>
                                                             <center>Aksi</center>
                                                         </th>
@@ -314,13 +314,13 @@
                                                                     <span class="badge bg-blue">Sudah</span>
                                                                 @endif
                                                             </td>
-                                                            <td align="center">
+                                                            {{-- <td align="center">
                                                                 @if ($key->file_bimbingan == null)
                                                                 @elseif ($key->file_bimbingan != null)
                                                                     <a href="/File Bimbingan Magang/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                         target="_blank"> File bimbingan</a>
                                                                 @endif
-                                                            </td>
+                                                            </td> --}}
                                                             <td>
                                                                 <center>
                                                                     <button class="btn btn-primary btn-xs"
@@ -377,7 +377,7 @@
                                                                                     name="remark_bimbingan"
                                                                                     value="{{ $key->remark_bimbingan }}">
                                                                             </div>
-                                                                            <div class="form-group">
+                                                                            {{-- <div class="form-group">
                                                                                 <label>File Bimbingan</label>
                                                                                 <input type="file"
                                                                                     name="file_bimbingan"
@@ -385,7 +385,7 @@
                                                                                     href="/File Bimbingan Magang/{{ Auth::user()->id_user }}/{{ $key->file_bimbingan }}"
                                                                                     target="_blank">
                                                                                     {{ $key->file_bimbingan }}</a>
-                                                                            </div>
+                                                                            </div> --}}
                                                                             <button type="button"
                                                                                 class="btn btn-secondary"
                                                                                 data-dismiss="modal">Batal</button>
