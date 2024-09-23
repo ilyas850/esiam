@@ -106,7 +106,7 @@
                                                     <button type="submit" class="btn btn-danger btn-xs"
                                                         data-toggle="tooltip" data-placement="right">Batal</button>
                                                 </form>
-                                            @elseif ($key->remark == 0)
+                                            @elseif ($key->remark == 0 or $key->remark == null)
                                                 <form action="{{ url('krs_validasi') }}" method="post">
                                                     <input type="hidden" name="id_student" value="{{ $key->id_student }}">
                                                     <input type="hidden" name="remark" value="1">
