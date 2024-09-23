@@ -913,13 +913,13 @@ class PraustaController extends Controller
         $usta->status = 'ACTIVE';
         $usta->data_origin = 'eSIAM';
 
-        if ($request->hasFile('file_bimbingan')) {
-            $file = $request->file('file_bimbingan');
-            $nama_file = $file->getClientOriginalName();
-            $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
-            $file->move($tujuan_upload, $nama_file);
-            $usta->file_bimbingan = $nama_file;
-        }
+        // if ($request->hasFile('file_bimbingan')) {
+        //     $file = $request->file('file_bimbingan');
+        //     $nama_file = $file->getClientOriginalName();
+        //     $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
+        //     $file->move($tujuan_upload, $nama_file);
+        //     $usta->file_bimbingan = $nama_file;
+        // }
 
         $usta->save();
 
@@ -933,25 +933,25 @@ class PraustaController extends Controller
         $sch->tanggal_bimbingan = $request->tanggal_bimbingan;
         $sch->remark_bimbingan = $request->remark_bimbingan;
         $sch->updated_by = Auth::user()->name;
-        if ($sch->file_bimbingan) {
-            if ($request->hasFile('file_bimbingan')) {
+        // if ($sch->file_bimbingan) {
+        //     if ($request->hasFile('file_bimbingan')) {
 
-                File::delete('File Bimbingan SEMPRO/' . Auth::user()->id_user . '/' . $sch->file_bimbingan);
-                $file = $request->file('file_bimbingan');
-                $nama_file = $file->getClientOriginalName();
-                $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $sch->file_bimbingan = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_bimbingan')) {
-                $file = $request->file('file_bimbingan');
-                $nama_file = $file->getClientOriginalName();
-                $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $sch->file_bimbingan = $nama_file;
-            }
-        }
+        //         File::delete('File Bimbingan SEMPRO/' . Auth::user()->id_user . '/' . $sch->file_bimbingan);
+        //         $file = $request->file('file_bimbingan');
+        //         $nama_file = $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $sch->file_bimbingan = $nama_file;
+        //     }
+        // } else {
+        //     if ($request->hasFile('file_bimbingan')) {
+        //         $file = $request->file('file_bimbingan');
+        //         $nama_file = $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Bimbingan SEMPRO/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $sch->file_bimbingan = $nama_file;
+        //     }
+        // }
         $sch->save();
 
         Alert::success('', 'Data Bimbingan Seminar Proposal Berhasil Diedit')->autoclose(3500);
@@ -1390,13 +1390,13 @@ class PraustaController extends Controller
         $usta->status = 'ACTIVE';
         $usta->data_origin = 'eSIAM';
 
-        if ($request->hasFile('file_bimbingan')) {
-            $file = $request->file('file_bimbingan');
-            $nama_file = $file->getClientOriginalName();
-            $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
-            $file->move($tujuan_upload, $nama_file);
-            $usta->file_bimbingan = $nama_file;
-        }
+        // if ($request->hasFile('file_bimbingan')) {
+        //     $file = $request->file('file_bimbingan');
+        //     $nama_file = $file->getClientOriginalName();
+        //     $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
+        //     $file->move($tujuan_upload, $nama_file);
+        //     $usta->file_bimbingan = $nama_file;
+        // }
 
         $usta->save();
 
@@ -1411,25 +1411,25 @@ class PraustaController extends Controller
         $sch->remark_bimbingan = $request->remark_bimbingan;
         $sch->updated_by = Auth::user()->name;
 
-        if ($sch->file_bimbingan) {
-            if ($request->hasFile('file_bimbingan')) {
+        // if ($sch->file_bimbingan) {
+        //     if ($request->hasFile('file_bimbingan')) {
 
-                File::delete('File Bimbingan TA/' . Auth::user()->id_user . '/' . $sch->file_bimbingan);
-                $file = $request->file('file_bimbingan');
-                $nama_file = $file->getClientOriginalName();
-                $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $sch->file_bimbingan = $nama_file;
-            }
-        } else {
-            if ($request->hasFile('file_bimbingan')) {
-                $file = $request->file('file_bimbingan');
-                $nama_file = $file->getClientOriginalName();
-                $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
-                $file->move($tujuan_upload, $nama_file);
-                $sch->file_bimbingan = $nama_file;
-            }
-        }
+        //         File::delete('File Bimbingan TA/' . Auth::user()->id_user . '/' . $sch->file_bimbingan);
+        //         $file = $request->file('file_bimbingan');
+        //         $nama_file = $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $sch->file_bimbingan = $nama_file;
+        //     }
+        // } else {
+        //     if ($request->hasFile('file_bimbingan')) {
+        //         $file = $request->file('file_bimbingan');
+        //         $nama_file = $file->getClientOriginalName();
+        //         $tujuan_upload = 'File Bimbingan TA/' . Auth::user()->id_user;
+        //         $file->move($tujuan_upload, $nama_file);
+        //         $sch->file_bimbingan = $nama_file;
+        //     }
+        // }
 
         $sch->save();
 
