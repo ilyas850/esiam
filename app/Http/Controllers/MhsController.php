@@ -3674,8 +3674,7 @@ class MhsController extends Controller
                     ->where('student_record.status', 'TAKEN')
                     ->where(function ($query) {
                         $query
-                            ->where('student_record.nilai_AKHIR', '0')
-                            ->orWhere('student_record.nilai_AKHIR', 'D')
+                            ->where('student_record.nilai_AKHIR', 'D')
                             ->orWhere('student_record.nilai_AKHIR', 'E');
                     })
                     ->select('kurikulum_transaction.id_makul', 'matakuliah.makul', 'student_record.nilai_AKHIR')
