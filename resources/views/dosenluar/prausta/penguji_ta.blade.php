@@ -135,17 +135,17 @@
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dospem_dsnlr/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_1 == $id && $key->nilai_2 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji1_dsnlr/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif($key->id_dosen_penguji_2 == $id && $key->nilai_3 == null)
                                                 <a class="btn btn-success btn-xs"
                                                     href="/isi_form_nilai_ta_dosji2_dsnlr/{{ $key->id_settingrelasi_prausta }}">Isi
                                                     Form
-                                                    Penilaian SEMPRO</a>
+                                                    Penilaian TA</a>
                                             @elseif ($key->id_dosen_pembimbing == $id && $key->nilai_1 != null)
                                                 @if ($key->validasi == 0)
                                                     <a class="btn btn-success btn-xs"
