@@ -136,6 +136,9 @@
                                         <a href="entri_bap_dsn/{{ $item->id_kurperiode }}" class="btn btn-warning btn-xs"
                                             title="Klik untuk entri nilai">
                                             BAP</a>
+                                            <a href="edit_rps_dsnlr/{{ $item->id_kurperiode }}" class="btn btn-success btn-xs"
+                                                title="Klik untuk edit RPS">
+                                                Edit RPS </a>
                                         @endif
                                     </center>
                                 </td>
