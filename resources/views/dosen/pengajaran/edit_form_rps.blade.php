@@ -54,10 +54,10 @@
                                         <input type="hidden" name="pertemuan[]" value="{{ $item->pertemuan }}">
                                     </td>
                                     <td>
-                                        <textarea type="text" class="form-control" name="kemampuan_akhir_direncanakan[]" rows="3">{{ $item->kemampuan_akhir_direncanakan }}</textarea>
+                                        <textarea type="text" class="form-control" name="kemampuan_akhir_direncanakan[]" rows="3" required>{{ $item->kemampuan_akhir_direncanakan }}</textarea>
                                     </td>
                                     <td>
-                                        <textarea type="text" class="form-control" name="materi_pembelajaran[]" rows="3">{{ $item->materi_pembelajaran }}</textarea>
+                                        <textarea type="text" class="form-control" name="materi_pembelajaran[]" rows="3" required>{{ $item->materi_pembelajaran }}</textarea>
                                     </td>
                                 </tr>
                             @endforeach
