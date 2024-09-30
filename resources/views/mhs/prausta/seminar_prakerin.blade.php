@@ -194,7 +194,7 @@
                                 @if ($usta->judul_prausta == null)
                                     <span class="badge bg-red">Data Prakerin belum ada</span>
                                 @else
-                                    @if (count($errors) > 0)
+                                    {{-- @if (count($errors) > 0)
                                         <div class="alert alert-danger">
                                             Validasi Upload File Error<br><br>
                                             <ul>
@@ -203,7 +203,7 @@
                                                 @endforeach
                                             </ul>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                     <div class="box box-info">
                                         <div class="box-header with-border">
                                             Form Bimbingan PKL
@@ -531,7 +531,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                    <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -579,7 +579,7 @@
                                                             <div class="form-group">
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control">
-                                                                <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                 <button type="submit"
                                                                     class="btn btn-info">Simpan</button>
                                                             </div>
@@ -621,7 +621,7 @@
                                                                 <label>File Draft Laporan Seminar</label>
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control" required>
-                                                                <span>Maksimal ukuran file 4mb dan PDF</span>
+                                                                <span>Maksimal ukuran file 6mb dan PDF</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -675,7 +675,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                    <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -713,7 +713,7 @@
                                                                     <div class="form-group">
                                                                         <input type="file" name="file_draft_laporan"
                                                                             class="form-control">
-                                                                        <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                        <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                         <button type="submit"
                                                                             class="btn btn-info">Simpan</button>
                                                                     </div>
@@ -761,7 +761,7 @@
                                                                 <div class="form-group">
                                                                     <input type="file" name="file_draft_laporan"
                                                                         class="form-control">
-                                                                    <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                    <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                     <button type="submit"
                                                                         class="btn btn-info">Simpan</button>
                                                                 </div>
@@ -806,7 +806,7 @@
 
                                                             <input type="file" name="file_laporan_revisi"
                                                                 class="form-control">
-                                                            <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                            <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                             <button type="submit" class="btn btn-info">Simpan</button>
                                                         </div>
                                                     </form>
@@ -843,7 +843,7 @@
 
                                                                         <input type="file" name="file_laporan_revisi"
                                                                             class="form-control">
-                                                                        <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                        <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                         <button type="submit"
                                                                             class="btn btn-info">Simpan</button>
                                                                     </div>
