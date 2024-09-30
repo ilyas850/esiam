@@ -439,7 +439,7 @@
                                                             <label>File Draft Laporan Seminar</label>
                                                             <input type="file" name="file_draft_laporan"
                                                                 class="form-control" required>
-                                                            <span>Maksimal ukuran file 4mb dan PDF</span>
+                                                            <span>Maksimal ukuran file 6mb dan PDF</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -493,7 +493,7 @@
                                                             <div class="form-group">
                                                                 <input type="file" name="file_draft_laporan"
                                                                     class="form-control">
-                                                                <span>Maksimal ukuran file 4mb dan PDF</span> <br>
+                                                                <span>Maksimal ukuran file 6mb dan PDF</span> <br>
                                                                 <button type="submit"
                                                                     class="btn btn-info">Simpan</button>
                                                             </div>

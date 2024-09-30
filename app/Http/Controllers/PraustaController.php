@@ -507,7 +507,7 @@ class PraustaController extends Controller
     public function ajukan_seminar_pkl(Request $request)
     {
         $this->validate($request, [
-            'file_draft_laporan' => 'mimes:pdf|max:5000',
+            'file_draft_laporan' => 'mimes:pdf|max:6000',
         ]);
 
         $date_now = date('Y-m-d');
