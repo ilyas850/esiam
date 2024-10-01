@@ -6648,9 +6648,11 @@ class SadminController extends Controller
     {
         $nilai = Setting_nilai::where('id_kurperiode', $id)->first();
 
+        $cekMatkul = Kurikulum_periode::with('makul')->where('id_kurperiode', $id)->first();
+
         $data = DB::select('CALL absen_mahasiswa_new(?)', [$id]);
 
-        return view('sadmin/nilai/list_mahasiswa', compact('data', 'nilai', 'id'));
+        return view('sadmin/nilai/list_mahasiswa', compact('data', 'nilai', 'id', 'cekMatkul'));
     }
 
     public function input_kat_admin($id)

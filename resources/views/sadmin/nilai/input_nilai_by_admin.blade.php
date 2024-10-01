@@ -8,7 +8,7 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">List Mahasiswa</h3>
+                <h3 class="box-title">List Mahasiswa <b>({{ $cekMatkul->makul->kode }} - {{ $cekMatkul->makul->makul }})</b></h3>
             </div>
             <div class="box-body">
                 <form action="{{ url('save-nilai-by-admin') }}" method="post">

@@ -621,6 +621,8 @@ class NilaiController extends Controller
   {
     $idKurperiode = $id;
 
+    $cekMatkul = Kurikulum_periode::with('makul')->where('id_kurperiode', $idKurperiode)->first();
+
     $data = DB::table('student_record as b')
       ->join('kurikulum_periode as a', 'b.id_kurperiode', '=', 'a.id_kurperiode')
       ->join('student as c', 'b.id_student', '=', 'c.idstudent')
@@ -659,7 +661,7 @@ class NilaiController extends Controller
       ->orderBy('c.nim', 'ASC')
       ->get();
 
-    return view('sadmin/nilai/input_nilai_by_admin', compact('data', 'idKurperiode'));
+    return view('sadmin/nilai/input_nilai_by_admin', compact('data', 'idKurperiode', 'cekMatkul'));
   }
 
   public function save_nilai_by_admin(Request $request)
