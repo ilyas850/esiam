@@ -35,6 +35,7 @@ use App\Models\Kurikulum_transaction;
 use App\Models\Transkrip_nilai;
 use App\Models\Transkrip_final;
 use App\Models\Absensi_mahasiswa;;
+
 use App\Models\Prausta_master_penilaian;
 use App\Models\Visimisi;
 use App\Models\Prausta_master_kategori;
@@ -818,7 +819,10 @@ class SadminController extends Controller
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student_record.id_student', $id)
-            ->update(['student_record.remark' => 1]);
+            ->update([
+                'student_record.remark' => 1,
+                'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+            ]);
 
         Alert::success('', 'KRS berhasil divalidasi')->autoclose(3500);
         return redirect()->back();
@@ -835,7 +839,10 @@ class SadminController extends Controller
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student_record.id_student', $id)
-            ->update(['student_record.remark' => 0]);
+            ->update([
+                'student_record.remark' => 0,
+                'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+            ]);
 
         Alert::success('', 'KRS berhasil dibatalkan')->autoclose(3500);
         return redirect()->back();
