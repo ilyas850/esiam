@@ -6,7 +6,6 @@
 
 @section('content')
     <section class="content">
-       
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Data List Mahasiswa</h3>
@@ -16,6 +15,7 @@
                     <button type="button" class="btn btn-primary mr-5">
                         Belum Ada Setting Persentase Nilai
                     </button>
+                    <a href="/input-nilai-by-admin/{{ $id }}" class="btn btn-success">Input Nilai Akhir</a>
                 @else
                     <a href="/input_kat_admin/{{ $id }}" class="btn btn-success btn-sm">Input Nilai KAT
                         ({{ $nilai->kat }}%)</a>

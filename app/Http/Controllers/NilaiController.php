@@ -616,4 +616,83 @@ class NilaiController extends Controller
     $pdf = PDF::loadView('mhs/khs/khs_final_pdf', compact('nama_periodetahun', 'nama_periodetipe', 'nxsks', 'sks', 'mhs', 'data', 'd', 'm', 'y'))->setPaper('a4', 'portrait');
     return $pdf->download('KHS FINAL' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $nama_periodetahun . ' ' . $nama_periodetipe . ')' . '.pdf');
   }
+
+  public function input_nilai_by_admin($id)
+  {
+    $idKurperiode = $id;
+
+    $data = DB::table('student_record as b')
+      ->join('kurikulum_periode as a', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+      ->join('student as c', 'b.id_student', '=', 'c.idstudent')
+      ->join('prodi as d', function ($join) {
+        $join->on('d.kodeprodi', '=', 'c.kodeprodi')
+          ->on('d.kodekonsentrasi', '=', 'c.kodekonsentrasi');
+      })
+      ->join('kelas as e', 'c.idstatus', '=', 'e.idkelas')
+      ->join('angkatan as f', 'c.idangkatan', '=', 'f.idangkatan')
+      ->where('b.status', 'TAKEN')
+      ->where('c.active', 1)
+      ->where('a.status', 'ACTIVE')
+      ->whereIn(DB::raw('(a.id_periodetahun, a.id_periodetipe, a.id_semester, a.id_kelas, a.id_makul, a.id_hari, a.id_jam, a.id_dosen)'), function ($query) use ($idKurperiode) {
+        $query->select(DB::raw('id_periodetahun, id_periodetipe, id_semester, id_kelas, id_makul, id_hari, id_jam, id_dosen'))
+          ->from('kurikulum_periode')
+          ->where('id_kurperiode', $idKurperiode);
+      })
+      ->select(
+        'b.id_studentrecord',
+        'b.id_kurperiode',
+        'b.id_kurtrans',
+        'b.id_student',
+        'c.nim',
+        'c.nama',
+        'd.prodi',
+        'e.kelas',
+        'f.angkatan',
+        'b.nilai_KAT',
+        'b.nilai_UTS',
+        'b.nilai_UAS',
+        'b.nilai_AKHIR',
+        'b.nilai_AKHIR_angka'
+      )
+      ->orderBy('d.prodi', 'ASC')
+      ->orderBy('e.kelas', 'ASC')
+      ->orderBy('c.nim', 'ASC')
+      ->get();
+
+    return view('sadmin/nilai/input_nilai_by_admin', compact('data', 'idKurperiode'));
+  }
+
+  public function save_nilai_by_admin(Request $request)
+  {
+    // Data input dari request
+    $idStudentRecords = $request->input('id_studentrecord', []);
+    $nilaiAkhirAngka = $request->input('nilai_AKHIR_angka', []);
+    $nilaiAkhir = $request->input('nilai_AKHIR', []);
+    $nilaiAngka = $request->input('nilai_ANGKA', []);
+
+    DB::beginTransaction();
+
+    try {
+        foreach ($idStudentRecords as $key => $id) {
+            DB::table('student_record')
+                ->where('id_studentrecord', $id)
+                ->update([
+                    'nilai_AKHIR_angka' => $nilaiAkhirAngka[$key],
+                    'nilai_AKHIR' => $nilaiAkhir[$key],
+                    'nilai_ANGKA' => $nilaiAngka[$key],
+                    'updated_at' => now(),
+                ]);
+        }
+    
+        // Commit transaksi jika semua berhasil
+        DB::commit();
+
+        return redirect('list_mahasiswa_makul/' . $request->id_kurperiode)->with('success', 'Data Nilai Berhasil disimpan');
+    } catch (\Exception $e) {
+        // Rollback transaksi jika terjadi error
+        DB::rollBack();
+        // Tangani error sesuai kebutuhan
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+  }
 }

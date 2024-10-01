@@ -502,6 +502,10 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('krs-manual', 'KrsController@krs_manual');
     Route::get('krs-manual/create/{id}', 'KrsController@createKrsManual');
     Route::post('save-krs-manual', 'KrsController@saveKrsManual');
+
+    // Input Nilai Manual
+    Route::get('input-nilai-by-admin/{id}', 'NilaiController@input_nilai_by_admin');
+    Route::post('save-nilai-by-admin', 'NilaiController@save_nilai_by_admin');
 });
 
 Route::group(['middleware' => 'dosen'], function () {
