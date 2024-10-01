@@ -35,6 +35,7 @@ use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Kuliah_transaction;
 use App\Models\Absensi_mahasiswa;;
+
 use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_trans_bimbingan;
 use App\Models\Prausta_trans_hasil;
@@ -800,7 +801,7 @@ class KaprodiController extends Controller
       return redirect('val_krs_kprd');
     } elseif ($totalsks <= 24) {
 
-      $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+      Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
         ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
         ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
         ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -809,7 +810,10 @@ class KaprodiController extends Controller
         ->where('periode_tipe.status', 'ACTIVE')
         ->where('student_record.status', 'TAKEN')
         ->where('student_record.id_student', $id)
-        ->update(['student_record.remark' => $request->remark]);
+        ->update([
+          'student_record.remark' => $request->remark,
+          'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+        ]);
 
       if ($hitungnilai_de > 0) {
         Alert::warning('Mahasiswa ini ada ' . $hitungnilai_de . ' matakuliah mengulang', 'Berhasil')->autoclose(3500);
@@ -834,7 +838,10 @@ class KaprodiController extends Controller
       ->where('periode_tipe.status', 'ACTIVE')
       ->where('student_record.status', 'TAKEN')
       ->where('student_record.id_student', $id)
-      ->update(['student_record.remark' => $request->remark]);
+      ->update([
+        'student_record.remark' => $request->remark,
+        'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+      ]);
 
     Alert::success('', 'KRS berhasil dibatalkan')->autoclose(3500);
     return redirect()->back();
@@ -880,7 +887,7 @@ class KaprodiController extends Controller
       ->orderBy('kurikulum_periode.id_kurperiode', 'ASC')
       ->get();
 
-      // dd($krs->toArray());
+    // dd($krs->toArray());
 
     //data krs diambil
     $val = Student_record::leftjoin('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')

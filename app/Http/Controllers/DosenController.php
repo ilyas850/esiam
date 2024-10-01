@@ -540,7 +540,7 @@ class DosenController extends Controller
             Alert::warning('maaf sks yang diambil mahasiswa ini melebihi 24 sks', 'MAAF !!');
             return redirect('val_krs');
         } elseif ($totalsks <= 24) {
-            $val = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
                 ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
                 ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -549,7 +549,10 @@ class DosenController extends Controller
                 ->where('periode_tipe.status', 'ACTIVE')
                 ->where('student_record.status', 'TAKEN')
                 ->where('student_record.id_student', $id)
-                ->update(['student_record.remark' => $request->remark]);
+                ->update([
+                    'student_record.remark' => $request->remark,
+                    'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+                ]);
 
             if ($hitungnilai_de > 0) {
                 Alert::warning('Mahasiswa ini ada ' . $hitungnilai_de . ' matakuliah mengulang', 'Berhasil')->autoclose(3500);
@@ -574,7 +577,10 @@ class DosenController extends Controller
             ->where('periode_tipe.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('student_record.id_student', $id)
-            ->update(['student_record.remark' => $request->remark]);
+            ->update([
+                'student_record.remark' => $request->remark,
+                'student_record.tanggal_krs' => DB::raw('DATE_FORMAT(student_record.created_at, "%Y-%m-%d")')
+            ]);
 
         Alert::success('', 'KRS berhasil dibatalkan')->autoclose(3500);
         return redirect()->back();
