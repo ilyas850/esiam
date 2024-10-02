@@ -675,26 +675,31 @@ class NilaiController extends Controller
     DB::beginTransaction();
 
     try {
-        foreach ($idStudentRecords as $key => $id) {
-            DB::table('student_record')
-                ->where('id_studentrecord', $id)
-                ->update([
-                    'nilai_AKHIR_angka' => $nilaiAkhirAngka[$key],
-                    'nilai_AKHIR' => $nilaiAkhir[$key],
-                    'nilai_ANGKA' => $nilaiAngka[$key],
-                    'updated_at' => now(),
-                ]);
-        }
-    
-        // Commit transaksi jika semua berhasil
-        DB::commit();
+      foreach ($idStudentRecords as $key => $id) {
 
-        return redirect('list_mahasiswa_makul/' . $request->id_kurperiode)->with('success', 'Data Nilai Berhasil disimpan');
+        $finalNilaiAkhirAngka = isset($nilaiAkhirAngka[$key]) ? $nilaiAkhirAngka[$key] : 0;
+        $finalNilaiAkhir = isset($nilaiAkhir[$key]) ? $nilaiAkhir[$key] : '0'; // Set ke '0' atau nilai lain sesuai kebutuhan
+        $finalNilaiAngka = isset($nilaiAngka[$key]) ? $nilaiAngka[$key] : 0;
+
+        DB::table('student_record')
+          ->where('id_studentrecord', $id)
+          ->update([
+            'nilai_AKHIR_angka' => $finalNilaiAkhirAngka,
+            'nilai_AKHIR' => $finalNilaiAkhir,
+            'nilai_ANGKA' => $finalNilaiAngka,
+            'updated_at' => now(),
+          ]);
+      }
+
+      // Commit transaksi jika semua berhasil
+      DB::commit();
+
+      return redirect('list_mahasiswa_makul/' . $request->id_kurperiode)->with('success', 'Data Nilai Berhasil disimpan');
     } catch (\Exception $e) {
-        // Rollback transaksi jika terjadi error
-        DB::rollBack();
-        // Tangani error sesuai kebutuhan
-        return response()->json(['error' => $e->getMessage()], 500);
+      // Rollback transaksi jika terjadi error
+      DB::rollBack();
+      // Tangani error sesuai kebutuhan
+      return response()->json(['error' => $e->getMessage()], 500);
     }
   }
 }
