@@ -752,9 +752,7 @@ class KrsController extends Controller
 
   public function saveKrsManual(Request $request)
   {
-
     try {
-
       $cekKrs = Student_record::where('id_student', $request->id_student)
         ->where('id_kurperiode', $request->id_kurperiode)
         ->where('id_kurtrans', $request->id_kurtrans)
@@ -762,24 +760,38 @@ class KrsController extends Controller
         ->first();
 
       if (empty($cekKrs)) {
+        // Simpan KRS baru
         $krs = new Student_record;
         $krs->id_student = $request->id_student;
         $krs->id_kurperiode = $request->id_kurperiode;
         $krs->id_kurtrans = $request->id_kurtrans;
         $krs->status = 'TAKEN';
         $krs->save();
+
+        // Mengambil data untuk respons JSON
+        $kurperiode = $krs->kurperiode;
+        $makul = $kurperiode->makul;
+        $dosen = $kurperiode->dosen;
+
+        // Kembalikan respons sukses dalam format JSON dengan data tambahan
+        return response()->json([
+          'success' => true,
+          'message' => 'Matakuliah berhasil ditambahkan.',
+          'id_studentrecord' => $krs->id_studentrecord,
+          'kode_makul' => $makul->kode,
+          'nama_makul' => $makul->makul,
+          'sks' => $makul->akt_sks_teori + $makul->akt_sks_praktek,
+          'nama_dosen' => $dosen ? $dosen->nama : '',
+        ]);
       } else {
-        Alert::warning('maaf mata kuliah sudah dipilih', 'MAAF !!');
-        return redirect()->back();
+        return response()->json(['success' => false, 'message' => 'Maaf, mata kuliah sudah dipilih.']);
       }
-
-      Alert::success('', 'Matakuliah berhasil ditambahkan')->autoclose(3500);
     } catch (\Throwable $e) {
-    } finally {
-
-      return redirect('krs-manual/create/' . $request->id_student);
+      return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menyimpan data.'], 500);
     }
   }
+
+
 
   public function cancelKrsManual($id)
   {
