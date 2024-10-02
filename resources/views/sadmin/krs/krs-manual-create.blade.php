@@ -47,6 +47,8 @@
                                 <th>Kode - Makul</th>
                                 <th>SKS</th>
                                 <th>Dosen</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
                             </thead>
                             <tbody>
                                 @foreach ($dataKrsMhs as $key => $krs)
@@ -56,6 +58,12 @@
                                         <td>{{ $krs->kurperiode->makul->akt_sks_teori + $krs->kurperiode->makul->akt_sks_praktek ?? '' }}
                                         </td>
                                         <td>{{ $krs->kurperiode->dosen->nama ?? '' }}</td>
+                                        <td>{{ $krs->remark == 1 ? 'valid' : 'belum' }}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-xs btn-cancel" data-id="{{ $krs->id_studentrecord }}" title="Batal">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                        </td>                                        
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -108,3 +116,39 @@
         </div>
     </section>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Event listener untuk tombol "Batal"
+        $('.btn-cancel').on('click', function(e) {
+            e.preventDefault(); // Mencegah reload halaman
+            
+            var studentRecordId = $(this).data('id'); // Ambil id_studentrecord dari tombol
+            var row = $(this).closest('tr'); // Ambil baris tabel terkait
+            
+            // Konfirmasi sebelum mengirim permintaan
+            if (!confirm('Apakah Anda yakin ingin membatalkan KRS ini?')) {
+                return;
+            }
+            
+            // Kirim permintaan AJAX
+            $.ajax({
+                url: '/krs-manual-cancel/' + studentRecordId,
+                type: 'GET', // Gunakan metode GET sesuai dengan URL Anda
+                success: function(response) {
+                    // Jika berhasil, hapus baris dari tabel
+                    row.remove();
+                    
+                    // Tambahkan notifikasi atau pesan sukses jika perlu
+                    alert('KRS berhasil dibatalkan.');
+                },
+                error: function(xhr) {
+                    // Tangani error jika terjadi masalah
+                    alert('Terjadi kesalahan. Gagal membatalkan KRS.');
+                }
+            });
+        });
+    });
+</script>
+

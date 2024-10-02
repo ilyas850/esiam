@@ -747,7 +747,6 @@ class KrsController extends Controller
       ->orderBy('id_makul', 'ASC')
       ->get();
 
-
     return view('sadmin.krs.krs-manual-create', compact('id', 'dataMhs', 'dataKrsMhs', 'dataKrs', 'tahunActive', 'tipeActive'));
   }
 
@@ -779,6 +778,21 @@ class KrsController extends Controller
     } finally {
 
       return redirect('krs-manual/create/' . $request->id_student);
+    }
+  }
+
+  public function cancelKrsManual($id)
+  {
+    try {
+      // Logika pembatalan KRS di sini
+      Student_record::where('id_studentrecord', $id)
+        ->update([
+          'status' => 'DROPPED'
+        ]);
+
+      return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+      return response()->json(['error' => 'Gagal membatalkan KRS.'], 500);
     }
   }
 }
