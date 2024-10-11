@@ -5232,7 +5232,7 @@ class AdminPraustaController extends Controller
         Prausta_trans_hasil::where('id_settingrelasi_prausta', $id)->update(['validasi' => '1']);
 
         Alert::success('', 'Validasi Nilai berhasil')->autoclose(3500);
-        return redirect('nilai_ta');
+        return redirect()->back();
     }
 
     public function unvalidate_nilai_ta($id)
@@ -5240,7 +5240,7 @@ class AdminPraustaController extends Controller
         Prausta_trans_hasil::where('id_settingrelasi_prausta', $id)->update(['validasi' => '0']);
 
         Alert::success('', 'Batal Validasi Nilai berhasil')->autoclose(3500);
-        return redirect('nilai_ta');
+        return redirect()->back();
     }
 
     public function validasi_pkl_magang()
