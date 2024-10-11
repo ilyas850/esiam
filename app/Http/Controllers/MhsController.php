@@ -3688,7 +3688,7 @@ class MhsController extends Controller
                     $serti = Sertifikat::where('id_student', $id)->count();
 
                     if ($serti >= 10) {
-                        dd("masuk");
+                        
                         //cek kuisioner dosen pembimbing pkl
                         $cek_kuis_dospem_pkl = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                             ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
