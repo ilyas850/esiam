@@ -8,6 +8,7 @@ use PDF;
 use App\Models\Absen_ujian;
 use App\Models\Bap;
 use App\Models\Absensi_mahasiswa;;
+
 use App\Models\Pedoman_akademik;
 use App\User;
 use App\Models\Dosen;
@@ -277,7 +278,6 @@ class MhsController extends Controller
             ->get();
 
         return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
-
     }
 
     public function change($id)
@@ -2009,12 +2009,28 @@ class MhsController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-601', 'TI-601', 'TK-601', 'FA-5001', 'TI-5001'])
+            ->whereIn('matakuliah.kode', [
+                'FA-601',
+                'TI-601',
+                'TK-601',
+                'FA-5001',
+                'TI-5001',
+                'PL/6001',
+                'PL/6002',
+                'PL/6003',
+                'PL/6004',
+                'PL/6005',
+                'PL/7001',
+                'PL/7002',
+                'PL/7003',
+                'PL/7004',
+                'PL/7005',
+            ])
             ->where('student_record.id_student', $ids)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
             ->get();
-
+        
         $hasil_krs = count($cek);
 
         // if ($hasil_krs == 0) {
@@ -2023,13 +2039,13 @@ class MhsController extends Controller
         // } elseif ($hasil_krs > 0) {
         //cek nilai dan file seminar prakerin
         $cekdata_bim = Prausta_setting_relasi::where('prausta_setting_relasi.id_student', $ids)
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21, 24, 27, 30, 33, 34, 35])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select('prausta_setting_relasi.id_dosen_pembimbing')
             ->get();
 
         if (count($cekdata_bim) == 0) {
-            Alert::error('Maaf dosen pembimbbing anda belum disetting untuk Kerja Praktek/Prakerin', 'MAAF !!');
+            Alert::error('Maaf dosen pembimbbing anda belum disetting untuk Prakerin/Magang', 'MAAF !!');
             return redirect('kuisioner');
         } elseif (count($cekdata_bim) > 0) {
             $mhs = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
@@ -2039,7 +2055,7 @@ class MhsController extends Controller
                         ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                 }))
                 ->where('student.idstudent', $ids)
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21, 24, 27, 30, 33, 34, 35])
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
                 ->first();
 
@@ -2137,7 +2153,7 @@ class MhsController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602'])
+            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602', 'PL/8001'])
             ->where('student_record.id_student', $ids)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
@@ -2151,7 +2167,7 @@ class MhsController extends Controller
         // } elseif ($hasil_krs > 0) {
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
             ->where('prausta_setting_relasi.id_student', $ids)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -2168,7 +2184,7 @@ class MhsController extends Controller
                         ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                 }))
                 ->where('student.idstudent', $ids)
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_pembimbing')
                 ->first();
 
@@ -2266,7 +2282,7 @@ class MhsController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602'])
+            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602', 'PL/8001'])
             ->where('student_record.id_student', $ids)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
@@ -2280,7 +2296,7 @@ class MhsController extends Controller
         // } elseif ($hasil_krs > 0) {
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29,32])
             ->where('prausta_setting_relasi.id_student', $ids)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -2304,7 +2320,7 @@ class MhsController extends Controller
                             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                     }))
                     ->where('student.idstudent', $ids)
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_1')
                     ->first();
 
@@ -2403,7 +2419,7 @@ class MhsController extends Controller
         $cek = Student_record::join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
             ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602'])
+            ->whereIn('matakuliah.kode', ['FA-602', 'TI-602', 'TK-602', 'PL/8001'])
             ->where('student_record.id_student', $ids)
             ->where('student_record.status', 'TAKEN')
             ->select('matakuliah.makul')
@@ -2417,7 +2433,7 @@ class MhsController extends Controller
         // } elseif ($hasil_krs > 0) {
         $cekdata = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
             ->where('prausta_setting_relasi.id_student', $ids)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing')
@@ -2440,7 +2456,7 @@ class MhsController extends Controller
                             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                     }))
                     ->where('student.idstudent', $ids)
-                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+                    ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
                     ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'prausta_setting_relasi.id_dosen_penguji_2')
                     ->first();
 
@@ -3664,7 +3680,7 @@ class MhsController extends Controller
                 ->first();
 
             if ($cekdata_prausta->validasi_baak == 'SUDAH') {
-                
+
                 //cek nilai kosong atau tidak lulus
                 $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
                     ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
@@ -3684,18 +3700,18 @@ class MhsController extends Controller
                 $hitjml_kur = count($cek_kur);
 
                 if ($hitjml_kur == 0) {
-                    
+
                     $serti = Sertifikat::where('id_student', $id)->count();
 
                     if ($serti >= 10) {
-                        
+
                         //cek kuisioner dosen pembimbing pkl
                         $cek_kuis_dospem_pkl = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                             ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
                             ->where('kuisioner_transaction.id_student', $id)
                             ->where('kuisioner_master_kategori.id_kategori_kuisioner', 2)
                             ->count();
-
+                        // dd($cek_kuis_dospem_pkl);
                         if (($cek_kuis_dospem_pkl) > 0) {
 
                             //cek kuisioner dosen pembimbing ta
@@ -5042,7 +5058,7 @@ class MhsController extends Controller
                 'student.intake'
             )
             ->first();
-       
+
         $idangkatan = $datamhs->idangkatan;
         $idstatus = $datamhs->idstatus;
         $kodeprodi = $datamhs->kodeprodi;
@@ -5070,9 +5086,9 @@ class MhsController extends Controller
                 'ujian_transaction.jenis_ujian'
             )
             ->get();
-           
+
         $hitung_ujian = count($cek_ujian);
-        
+
         //cek semester
         $sub_thn = substr($periode_tahun->periode_tahun, 6, 2);
 
@@ -5081,7 +5097,7 @@ class MhsController extends Controller
         if ($smt % 2 != 0) {
             if ($id_tipe == 1) {
                 //ganjil
-                $a = (($smt + 10) - 1) / 10; 
+                $a = (($smt + 10) - 1) / 10;
                 $b = $a - $idangkatan;
                 if ($intake == 2) {
                     $c = ($b * 2) - 1 - 1;
@@ -5090,9 +5106,9 @@ class MhsController extends Controller
                 } // 2 * 2 - 1 = 3
             } elseif ($id_tipe == 3) {
                 //pendek
-                $a = (($smt + 10) - 3) / 10; 
-                $b = $a - $idangkatan; 
-               
+                $a = (($smt + 10) - 3) / 10;
+                $b = $a - $idangkatan;
+
                 if ($intake == 2) {
                     $c = $b * 2 - 1;
                 } elseif ($intake == 1) {
@@ -5101,16 +5117,16 @@ class MhsController extends Controller
             }
         } else {
             //genap
-            $a = (($smt + 10) - 2) / 10; 
-            $b = $a - $idangkatan; 
-            
+            $a = (($smt + 10) - 2) / 10;
+            $b = $a - $idangkatan;
+
             if ($intake == 2) {
                 $c = $b * 2 - 1;
             } elseif ($intake == 1) {
                 $c = $b * 2;
             }
         }
-       
+
         $biaya = Biaya::where('idangkatan', $idangkatan)
             ->where('idstatus', $idstatus)
             ->where('kodeprodi', $kodeprodi)
@@ -5137,7 +5153,7 @@ class MhsController extends Controller
                 'sidang'
             )
             ->first();
-            
+
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
 
         if ($cek_bea != null) {
@@ -5189,7 +5205,7 @@ class MhsController extends Controller
             ->where('kuitansi.idstudent', $id)
             ->whereNotIn('bayar.iditem', [14, 15, 35, 36, 37, 38])
             ->sum('bayar.bayar');
-            
+
         #minimal pembayaran UTS
         $min_uts = Min_biaya::where('kategori', 'UTS')->first();
         $persen_uts = $min_uts->persentase;
@@ -5238,17 +5254,17 @@ class MhsController extends Controller
             }
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
-                
+
                 $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
 
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
-                
+
                 Alert::success('Maaf anda tidak dapat mengakses Absen Ujian UTS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
                 return redirect('home');
             }
         } elseif ($hitung_ujian == 2) {
-           
+
             if ($c == 1) {
                 $cekbyr = $daftar + $awal + ($spp1 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 2) {
@@ -5292,13 +5308,13 @@ class MhsController extends Controller
             } elseif ($c == 14) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * $persen_uas / 100) - $total_semua_dibayar;
             }
-        //    dd($cekbyr);
+            //    dd($cekbyr);
             if (empty($cekbyr == 0 or $cekbyr < 1000)) {
 
                 Alert::error('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
                 return redirect('home');
             }
-            
+
             $records = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 ->where('student_record.id_student', $id)
                 ->where('kurikulum_periode.id_periodetipe', $id_tipe)
@@ -5309,7 +5325,7 @@ class MhsController extends Controller
                 ->get();
 
             $hit = count($records);
-           
+
             #cek jumlah pengisian edom
             $cekedom = Edom_transaction::join('kurikulum_periode', 'edom_transaction.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
                 // ->join('kurikulum_transaction', 'edom_transaction.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
@@ -5322,7 +5338,7 @@ class MhsController extends Controller
                 ->get();
 
             $sekhit = count($cekedom);
-       
+
             if (empty(($hit - 2) <= $sekhit)) {
 
                 Alert::error('Maaf anda belum melakukan pengisian edom')->autoclose(3500);
@@ -5614,7 +5630,7 @@ class MhsController extends Controller
                 ->where('dosen_pembimbing.status', 'ACTIVE')
                 ->select('dosen.nama', 'dosen.akademik', 'prodi.prodi', 'dosen_pembimbing.id_dosen')
                 ->first();
-// dd($mhs);
+
             $prodi = $mhs->prodi;
             $nama_dsn = $mhs->nama . ',' . ' ' . $mhs->akademik;
 
