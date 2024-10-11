@@ -3654,7 +3654,7 @@ class MhsController extends Controller
         if ($hasil_semua < 0 or $hasil_semua == 0) {
             $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+                ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
                 ->where('prausta_setting_relasi.id_student', $id)
                 ->where('prausta_setting_relasi.status', 'ACTIVE')
                 ->select(
@@ -3664,6 +3664,7 @@ class MhsController extends Controller
                 ->first();
 
             if ($cekdata_prausta->validasi_baak == 'SUDAH') {
+                
                 //cek nilai kosong atau tidak lulus
                 $cek_kur = Kurikulum_transaction::join('student_record', 'kurikulum_transaction.idkurtrans', '=', 'student_record.id_kurtrans')
                     ->join('matakuliah', 'kurikulum_transaction.id_makul', '=', 'matakuliah.idmakul')
@@ -3683,9 +3684,11 @@ class MhsController extends Controller
                 $hitjml_kur = count($cek_kur);
 
                 if ($hitjml_kur == 0) {
+                    
                     $serti = Sertifikat::where('id_student', $id)->count();
 
                     if ($serti >= 10) {
+                        dd("masuk");
                         //cek kuisioner dosen pembimbing pkl
                         $cek_kuis_dospem_pkl = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                             ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
