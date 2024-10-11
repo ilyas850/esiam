@@ -791,8 +791,6 @@ class KrsController extends Controller
     }
   }
 
-
-
   public function cancelKrsManual($id)
   {
     try {

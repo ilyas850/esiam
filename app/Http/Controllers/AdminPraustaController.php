@@ -5573,7 +5573,7 @@ class AdminPraustaController extends Controller
     {
         Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'SUDAH']);
 
-        Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'SUDAH']);
+        // Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'SUDAH']);
 
         Alert::success('', 'Berhasil Validasi Akhir')->autoclose(3500);
         return redirect()->back();
@@ -5583,7 +5583,7 @@ class AdminPraustaController extends Controller
     {
         Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
 
-        Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
+        // Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
 
         Alert::success('', 'Berhasil Batal Validasi Akhir')->autoclose(3500);
         return redirect()->back();

@@ -66,7 +66,7 @@
                                                     value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
                                                 <input type="hidden" name="id_studentrecord[]"
                                                     value="{{ $item->id_studentrecord }}">
-                                                <input type="text" name="nilai_KAT[]">
+                                                <input type="text" name="nilai_KAT[]" value="0">
                                             @elseif ($item->nilai_KAT != 0)
                                                 <input type="hidden" name="id_student[]"
                                                     value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
