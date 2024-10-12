@@ -5569,7 +5569,7 @@ class AdminPraustaController extends Controller
     }
 
     public function batal_validasi_akhir_prausta($id)
-    {dd($id);
+    {
         Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
 
         // Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
