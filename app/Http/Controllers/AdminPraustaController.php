@@ -5275,7 +5275,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
@@ -5291,9 +5290,9 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf'
             )
+            ->orderBy('angkatan.angkatan', 'ASC')
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
@@ -5327,7 +5326,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
@@ -5343,7 +5341,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
@@ -5379,7 +5376,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
@@ -5395,7 +5391,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
@@ -5431,7 +5426,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
@@ -5447,7 +5441,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
@@ -5488,7 +5481,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
@@ -5505,7 +5497,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
             )
@@ -5542,7 +5533,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
@@ -5559,7 +5549,6 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                'prausta_trans_bimbingan.validasi_baak',
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
             )
@@ -5580,7 +5569,7 @@ class AdminPraustaController extends Controller
     }
 
     public function batal_validasi_akhir_prausta($id)
-    {
+    {dd($id);
         Prausta_setting_relasi::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);
 
         // Prausta_trans_bimbingan::where('id_settingrelasi_prausta', $id)->update(['validasi_baak' => 'BELUM']);

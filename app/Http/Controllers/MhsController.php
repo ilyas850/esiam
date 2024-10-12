@@ -3976,7 +3976,7 @@ class MhsController extends Controller
 
         //hasil
         $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
-
+        
         if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
             $data = Wisuda::join('prodi', 'wisuda.id_prodi', '=', 'prodi.id_prodi')
                 ->where('wisuda.id_student', $id)

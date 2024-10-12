@@ -21,6 +21,7 @@
                 <h3 class="box-title">Validasi PKL</h3>
             </div>
             <div class="box-body">
+                {{-- @dump($data->toArray()) --}}
                 <table id="example1" class="table table-bordered">
                     <thead>
                         <tr>
@@ -54,6 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                         <?php $no = 1; ?>
                         @foreach ($data as $item)
                             <tr>
