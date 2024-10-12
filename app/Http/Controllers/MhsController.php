@@ -4017,20 +4017,13 @@ class MhsController extends Controller
             ->select('prodi.study_year', 'student.idstudent', 'prodi.kodeprodi')
             ->first();
 
-        if ($cek_study->study_year == 3) {
-            $pembayaranwisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 16)
-                ->sum('bayar.bayar');
-        } elseif ($cek_study->study_year == 4) {
+        $idItem = ($cek_study->study_year == 3) ? 16 : 40;
 
-            $pembayaranwisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
-                ->where('kuitansi.idstudent', $id)
-                ->where('bayar.iditem', 39)
-                ->sum('bayar.bayar');
-        }
+        $pembayaranwisuda = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->where('bayar.iditem', $idItem)
+            ->sum('bayar.bayar');
 
-        //hasil
         $hasil_wisuda = $biayawisuda - $pembayaranwisuda;
 
         if ($hasil_wisuda < 0 or $hasil_wisuda == 0) {
