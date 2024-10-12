@@ -3604,7 +3604,8 @@ class MhsController extends Controller
                 'student.idangkatan',
                 'student.idstatus',
                 'student.kodeprodi',
-                'prodi.id_prodi'
+                'prodi.id_prodi',
+                'prodi.study_year'
             )
             ->first();
 
@@ -3635,6 +3636,8 @@ class MhsController extends Controller
                 'spp13',
                 'spp14',
                 'prakerin',
+                'magang1',
+                'magang2',
                 'seminar',
                 'sidang',
                 'wisuda'
@@ -3664,6 +3667,8 @@ class MhsController extends Controller
             $spp13 = $biaya->spp13 - (($biaya->spp13 * ($cb->spp13)) / 100);
             $spp14 = $biaya->spp14 - (($biaya->spp14 * ($cb->spp14)) / 100);
             $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cb->prakerin)) / 100);
+            $magang1 = $biaya->magang1 - (($biaya->magang1 * ($cb->magang1)) / 100);
+            $magang2 = $biaya->magang2 - (($biaya->magang2 * ($cb->magang2)) / 100);
             $seminar = $biaya->seminar - (($biaya->seminar * ($cb->seminar)) / 100);
             $sidang = $biaya->sidang - (($biaya->sidang * ($cb->sidang)) / 100);
             $wisuda = $biaya->wisuda - (($biaya->wisuda * ($cb->wisuda)) / 100);
@@ -3687,6 +3692,8 @@ class MhsController extends Controller
             $spp13 = $biaya->spp13;
             $spp14 = $biaya->spp14;
             $prakerin = $biaya->prakerin;
+            $magang1 = $biaya->magang1;
+            $magang2 = $biaya->magang2;
             $seminar = $biaya->seminar;
             $sidang = $biaya->sidang;
             $wisuda = $biaya->wisuda;
@@ -3698,12 +3705,25 @@ class MhsController extends Controller
             ->sum('bayar.bayar');
 
         //total semua pembayaran kecuali wisuda
-        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 + $prakerin + $seminar + $sidang);
-
+        $cekbyr = ($daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + $spp14 + $prakerin + $magang1 + $magang2 + $seminar + $sidang);
         //hasil
         $hasil_semua = $cekbyr - $total_semua_dibayar;
 
-        if ($hasil_semua < 0 or $hasil_semua == 0) {
+        if ($data_mhs->study_year == 4) {
+            $idItem = 39;
+        } elseif ($data_mhs->study_year == 3) {
+            $idItem = 15;
+        }
+
+        $cekBayarSidang = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+            ->where('kuitansi.idstudent', $id)
+            ->where('bayar.iditem', $idItem)
+            ->sum('bayar.bayar');
+
+        $syaratYudisium = $sidang - $cekBayarSidang;
+
+        if ($syaratYudisium < 0 or $syaratYudisium == 0) {
+
             $cekdata_prausta = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
                 ->join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
                 ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23, 26, 29, 32])
