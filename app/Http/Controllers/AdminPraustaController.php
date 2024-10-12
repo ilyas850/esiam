@@ -2081,7 +2081,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 24, 27, 30])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->select(
@@ -2117,7 +2117,7 @@ class AdminPraustaController extends Controller
             }))
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
             ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student.kodeprodi', $request->kodeprodi)
