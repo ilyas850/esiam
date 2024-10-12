@@ -260,7 +260,6 @@
                                         @currency($key_total->wisuda - ($key_beasiswa->wisuda * $key_total->wisuda) / 100 - $item->telah_dibayar)
                                     @endif
                                 </td>
-
                             </tr>
                         @endforeach
                     </tbody>
