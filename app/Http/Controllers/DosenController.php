@@ -3795,13 +3795,14 @@ class DosenController extends Controller
                     ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
+            ->where('student.active', 1)
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             //->where('prausta_trans_hasil.status', 'ACTIVE')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
             ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.id_student', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_pembimbing', 'prausta_setting_relasi.validasi_penguji_1', 'prausta_setting_relasi.validasi_penguji_2', 'prausta_trans_hasil.validasi')
             ->get();
 
-        return view('dosen/prausta/penguji_sempro', compact('data', 'id'));
+        return view('dosen/magang_skripsi/penguji_sempro', compact('data', 'id'));
     }
 
     public function isi_form_nilai_proposal_dospem($id)

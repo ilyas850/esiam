@@ -629,7 +629,6 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('edit_nilai_sempro_by_dospeng2_dlm/{id}', 'DosenController@edit_nilai_sempro_by_dospeng2_dlm');
     Route::post('put_nilai_sempro_dospeng2_dlm', 'DosenController@put_nilai_sempro_dospeng2_dlm');
 
-
     #validasi revisi
     Route::get('validasi_dospem/{id}', 'DosenController@validasi_dospem');
     Route::get('validasi_dosji1/{id}', 'DosenController@validasi_dosji1');
@@ -740,7 +739,6 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('put_nilai_sempro_skripsi_dospeng1_dlm', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng1_dlm');
     Route::get('edit_nilai_sempro_skripsi_by_dospeng2_dlm/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospeng2_dlm');
     Route::post('put_nilai_sempro_skripsi_dospeng2_dlm', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng2_dlm');
-
 
     #SK Mengajar
     Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
@@ -1425,6 +1423,8 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('edit_nilai_sempro_by_dospeng2_kprd/{id}', 'KaprodiController@edit_nilai_sempro_by_dospeng2_kprd');
     Route::post('put_nilai_sempro_dospeng2_kprd', 'KaprodiController@put_nilai_sempro_dospeng2_kprd');
 
+    Route::get('penguji_skripsi_kprd', 'KaprodiController@penguji_skripsi');
+
     //validasi revisi
     Route::get('validasi_dospem_kprd/{id}', 'KaprodiController@validasi_dospem_kprd');
     Route::get('validasi_dosji1_kprd/{id}', 'KaprodiController@validasi_dosji1_kprd');
@@ -1580,7 +1580,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('edit_nilai_magang_by_kaprodi/{id}', 'KaprodiController@edit_nilai_magang_by_kaprodi');
     Route::post('put_nilai_magang_by_kaprodi', 'KaprodiController@put_nilai_magang_by_kaprodi');
 
-    #penguji magang 2
+    // PENGUJI MAGANG 2
     Route::get('penguji_magang2_kprd', 'KaprodiController@penguji_magang2_kprd');
     Route::get('isi_form_nilai_magang2_kaprodi/{id}', 'KaprodiController@isi_form_nilai_magang2_kaprodi');
     Route::post('simpan_nilai_magang2_kaprodi', 'KaprodiController@simpan_nilai_magang2_kaprodi');
@@ -1589,8 +1589,21 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     // PRNGUJI SEMPRO SKRIPSI
     Route::get('penguji_sempro_skripsi_kprd', 'KaprodiController@penguji_sempro_skripsi_kprd');
+    Route::get('isi_form_nilai_sempro_skripsi_dospem_kprd/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dospem_kprd');
+    Route::post('simpan_nilai_sempro_skripsi_dospem_kprd', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dospem_kprd');
+    Route::get('isi_form_nilai_sempro_skripsi_dosji1_kprd/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dosji1_kprd');
+    Route::post('simpan_nilai_sempro_skripsi_dosji1_kprd', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dosji1_kprd');
+    Route::get('isi_form_nilai_sempro_skripsi_dosji2_kprd/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dosji2_kprd');
+    Route::post('simpan_nilai_sempro_skripsi_dosji2_kprd', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dosji2_kprd');
 
-    #monitoring magang dan skripsi
+    Route::get('edit_nilai_sempro_skripsi_by_dospem_kprd/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospem_kprd');
+    Route::post('put_nilai_sempro_skripsi_dospem_kprd', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospem_kprd');
+    Route::get('edit_nilai_sempro_skripsi_by_dospeng1_kprd/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospeng1_kprd');
+    Route::post('put_nilai_sempro_skripsi_dospeng1_kprd', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng1_kprd');
+    Route::get('edit_nilai_sempro_skripsi_by_dospeng2_kprd/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospeng2_kprd');
+    Route::post('put_nilai_sempro_skripsi_dospeng2_kprd', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng2_kprd');
+
+    // monitoring magang dan skripsi
     Route::get('bimbingan_magang_kprd', 'KaprodiController@bimbingan_magang_kprd');
     Route::get('detail_bim_magang/{id}', 'KaprodiController@detail_bim_magang');
     Route::get('bimbingan_sempro_kprd', 'KaprodiController@bimbingan_sempro_kprd');
