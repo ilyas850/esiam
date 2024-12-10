@@ -287,7 +287,7 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
+        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
             ->orderBy('nama', 'ASC')
             ->get();
@@ -362,7 +362,7 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
+        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
             ->orderBy('nama', 'ASC')
             ->get();
@@ -487,7 +487,7 @@ class AdminPraustaController extends Controller
             )
             ->first();
 
-            $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
+        $dosen = Dosen::whereIn('idstatus', [1, 2, 3])
             ->where('active', 1)
             ->orderBy('nama', 'ASC')
             ->get();
@@ -729,10 +729,10 @@ class AdminPraustaController extends Controller
             ->get();
 
         $jam = Kurikulum_jam::orderBy('jam', 'ASC')
-        ->get();
+            ->get();
 
         $ruangan = Ruangan::orderBy('nama_ruangan', 'ASC')
-        ->get();
+            ->get();
 
         return view('prausta/ta/atur_ta', compact('id', 'data', 'dosen', 'jam', 'ruangan'));
     }
@@ -5616,8 +5616,9 @@ class AdminPraustaController extends Controller
     public function post_waktu_prausta(Request $request)
     {
         $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
+        // dd($request->toArray(), $prd);
 
-        $cekProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
+        $cekProdi = Prodi::where('kodeprodi', $request->kodeprodi)->get();
 
         for ($i = 0; $i < count($cekProdi); $i++) {
             $prodi = $cekProdi[$i];
