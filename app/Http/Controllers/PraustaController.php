@@ -228,51 +228,82 @@ class PraustaController extends Controller
             $biaya = Biaya::where('idangkatan', $idangkatan)
                 ->where('idstatus', $idstatus)
                 ->where('kodeprodi', $kodeprodi)
-                ->select('spp5', 'spp6')
+                ->select('spp5', 'spp6', 'prakerin', 'magang1', 'magang2')
                 ->first();
 
             #cek beasiswa mahasiswa
             $cb = Beasiswa::where('idstudent', $id)->first();
 
             if ($cek_study->study_year == 3) {
+                // D3
                 $biaya_spp = $biaya->spp5;
 
-                if (($cb) != null) {
-
+                if ($cb != null) {
                     $spp = $biaya->spp5 - ($biaya->spp5 * $cb->spp5) / 100;
-                } elseif (($cb) == null) {
-
+                } else {
                     $spp = $biaya->spp5;
                 }
 
+                // Total pembayaran SPP5 (misal itemnya [8])
                 $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                     ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 8)
+                    ->whereIn('bayar.iditem', [8])
                     ->sum('bayar.bayar');
+
+                // Cek persentase pembayaran SPP5
+                $persentase_spp = ($sisaspp / $spp) * 100;
+
+                // Cek pelunasan Prakerin (misalnya iditem prakerin adalah 36, ini contoh saja)
+                $prakerin_paid = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                    ->where('kuitansi.idstudent', $id)
+                    ->where('bayar.iditem', 36) // ganti dengan iditem prakerin sebenarnya
+                    ->sum('bayar.bayar');
+
+                // Misalkan biaya prakerin terdapat di $biaya->prakerin
+                $biaya_prakerin = $biaya->prakerin;
+
+                // Validasi D3: minimal 75% SPP5 terbayar dan prakerin lunas
+                if ($persentase_spp >= 75 && $prakerin_paid >= $biaya_prakerin) {
+                    $validasi = 'Sudah Lunas';
+                } else {
+                    $validasi = 'Belum Lunas';
+                }
             } elseif ($cek_study->study_year == 4) {
+                // D4
                 $biaya_spp = $biaya->spp6;
 
-                if (($cb) != null) {
-
+                if ($cb != null) {
                     $spp = $biaya->spp6 - ($biaya->spp6 * $cb->spp6) / 100;
-                } elseif (($cb) == null) {
-
+                } else {
                     $spp = $biaya->spp6;
                 }
 
+                // Total pembayaran SPP6 (misal itemnya [26])
                 $sisaspp = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
                     ->where('kuitansi.idstudent', $id)
-                    ->where('bayar.iditem', 26)
+                    ->whereIn('bayar.iditem', [26])
                     ->sum('bayar.bayar');
+
+                // Cek persentase pembayaran SPP6
+                $persentase_spp = ($sisaspp / $spp) * 100;
+
+                // Cek pelunasan magang 1 (misalnya iditem magang 1 adalah 35, ini contoh saja)
+                $magang1_paid = Kuitansi::join('bayar', 'kuitansi.idkuit', '=', 'bayar.idkuit')
+                    ->where('kuitansi.idstudent', $id)
+                    ->where('bayar.iditem', 35) // ganti dengan iditem magang 1 sebenarnya
+                    ->sum('bayar.bayar');
+
+                // Misalkan biaya magang1 terdapat di $biaya->magang1
+                $biaya_magang1 = $biaya->magang1;
+
+                // Validasi D4: minimal 75% SPP6 terbayar dan magang 1 lunas
+                if ($persentase_spp >= 75 && $magang1_paid >= $biaya_magang1) {
+                    $validasi = 'Sudah Lunas';
+                } else {
+                    $validasi = 'Belum Lunas';
+                }
             }
 
-            $hasil_spp = $sisaspp - $spp;
-
-            if ($hasil_spp == 0 or $hasil_spp > 0) {
-                $validasi = 'Sudah Lunas';
-            } elseif ($hasil_spp < 0) {
-                $validasi = 'Belum Lunas';
-            }
 
             #data bimbingan
             $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
