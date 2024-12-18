@@ -304,6 +304,7 @@ class PraustaController extends Controller
                 }
             }
 
+            // dd($persentase_spp >= 75 && $magang1_paid >= $biaya_magang1);
 
             #data bimbingan
             $bim = Prausta_trans_bimbingan::join('prausta_setting_relasi', 'prausta_trans_bimbingan.id_settingrelasi_prausta', '=', 'prausta_setting_relasi.id_settingrelasi_prausta')
@@ -352,7 +353,7 @@ class PraustaController extends Controller
                 foreach ($data as $usta) {
                 }
 
-                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'hasil_spp', 'cekdata_nilai', 'angkatan'));
+                return view('mhs/prausta/seminar_prakerin', compact('usta', 'cekdata', 'bim', 'validasi', 'jml_bim', 'databimb', 'cekdata_nilai', 'angkatan'));
             }
         }
     }

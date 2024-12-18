@@ -419,7 +419,7 @@
                             </div>
                             <div class="tab-pane" id="tab_3">
                                 @if ($angkatan == 18 or $angkatan == 19)
-                                    @if ($hasil_spp >= 0)
+                                    @if ($validasi == "Sudah Lunas")
                                         @if ($usta->acc_seminar_sidang == null)
                                             <form class="" action="{{ url('ajukan_seminar_pkl') }}" method="post"
                                                 enctype="multipart/form-data">
@@ -601,7 +601,7 @@
                                     @if ($jml_bim < 12)
                                         <span class="badge bg-red">Maaf jumlah bimbingan anda kurang dari 12</span>
                                     @elseif ($jml_bim >= 12)
-                                        @if ($hasil_spp >= 0)
+                                        @if ($validasi == "Sudah Lunas")
                                             @if ($usta->acc_seminar_sidang == null)
                                                 <form class="" action="{{ url('ajukan_seminar_pkl') }}"
                                                     method="post" enctype="multipart/form-data">
