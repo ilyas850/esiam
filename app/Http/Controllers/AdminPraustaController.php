@@ -421,7 +421,7 @@ class AdminPraustaController extends Controller
                     ->on('prausta_master_waktu.id_prodi', '=', 'kurikulum_periode.id_prodi');
             })
             ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
-            ->whereIn('kurikulum_periode.id_makul', [136, 178, 179, 206, 286, 316, 430, 490])
+            ->whereIn('kurikulum_periode.id_makul', [136, 172, 178, 179, 206, 286, 316, 430, 490])
             ->where('prausta_setting_relasi.status', 'ACTIVE')
             ->where('student_record.status', 'TAKEN')
             ->where('kurikulum_periode.status', 'ACTIVE')
@@ -5617,8 +5617,8 @@ class AdminPraustaController extends Controller
     {
         $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
         // dd($request->toArray(), $prd);
-
-        $cekProdi = Prodi::where('kodeprodi', $request->kodeprodi)->get();
+        // dd($request->toArray());
+        $cekProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
 
         for ($i = 0; $i < count($cekProdi); $i++) {
             $prodi = $cekProdi[$i];
@@ -5691,6 +5691,7 @@ class AdminPraustaController extends Controller
                 'prausta_master_waktu.tipe_prausta',
                 'prausta_master_waktu.status'
             )
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
             ->get();
 
         return view('prausta/sempro/waktu_sempro', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
