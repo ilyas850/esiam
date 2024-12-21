@@ -728,10 +728,10 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('penguji_sempro_dlm', 'SemproSkripsiController@penguji_sempro_dlm');
     Route::get('isi_form_nilai_sempro_skripsi_dospem/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dospem');
     Route::post('simpan_nilai_sempro_skripsi_dospem', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dospem');
-    Route::get('isi_form_nilai_sempro_skripsi_dosji1/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dosji1');
+    Route::get('isi_form_nilai_sempro_skripsi_dosji1_dlm/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dosji1_dlm');
     Route::post('simpan_nilai_sempro_skripsi_dosji1', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dosji1');
     Route::get('isi_form_nilai_sempro_skripsi_dosji2/{id}', 'SemproSkripsiController@isi_form_nilai_sempro_skripsi_dosji2');
-    Route::post('simpan_nilai_sempro_skripsi_dosji2', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dosji2');
+    Route::post('simpan_nilai_sempro_skripsi_dosji2', 'SemproSkripsiController@simpan_nilai_sempro_skripsi_dosji2_dlm');
 
     Route::get('edit_nilai_sempro_skripsi_by_dospem_dlm/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospem_dlm');
     Route::post('put_nilai_sempro_skripsi_dospem_dlm', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospem_dlm');
@@ -740,7 +740,23 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::get('edit_nilai_sempro_skripsi_by_dospeng2_dlm/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospeng2_dlm');
     Route::post('put_nilai_sempro_skripsi_dospeng2_dlm', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng2_dlm');
 
-    #SK Mengajar
+    // PENGUJI SKRIPSI
+    Route::get('penguji_skripsi_dlm', 'SemproSkripsiController@penguji_skripsi_dlm');
+    Route::get('isi_form_nilai_skripsi_dospem_dlm', 'SemproSkripsiController@isi_form_nilai_skripsi_dospem_dlm');
+    Route::post('simpan_nilai_skripsi_dospem_dlm', 'SemproSkripsiController@simpan_nilai_skripsi_dospem_dlm');
+    Route::get('isi_form_nilai_skripsi_dosji1/{id}', 'SemproSkripsiController@isi_form_nilai_skripsi_dosji1');
+    Route::post('simpan_nilai_skripsi_dosji1', 'SemproSkripsiController@simpan_nilai_skripsi_dosji1');
+    Route::get('isi_form_nilai_skripsi_dosji2/{id}', 'SemproSkripsiController@isi_form_nilai_skripsi_dosji2');
+    Route::post('simpan_nilai_skripsi_dosji2', 'SemproSkripsiController@simpan_nilai_skripsi_dosji2');
+
+    Route::get('edit_nilai_skripsi_by_dospem_dlm/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospem_dlm');
+    Route::post('put_nilai_skripsi_dospem_dlm', 'SemproSkripsiController@put_nilai_skripsi_dospem_dlm');
+    Route::get('edit_nilai_skripsi_by_dospeng1_dlm/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospeng1_dlm');
+    Route::post('put_nilai_skripsi_dospeng1_dlm', 'SemproSkripsiController@put_nilai_skripsi_dospeng1_dlm');
+    Route::get('edit_nilai_skripsi_by_dospeng2_dlm/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospeng2_dlm');
+    Route::post('put_nilai_skripsi_dospeng2_dlm', 'SemproSkripsiController@put_nilai_skripsi_dospeng2_dlm');
+
+    // SK MENGAJAR
     Route::get('sk_pengajaran_dsn_dlm', 'DosenController@sk_pengajaran_dsn_dlm');
     Route::get('unduh_lkd_dosen_dlm/{id}', 'DosenController@unduh_lkd_dosen_dlm');
 
@@ -1039,7 +1055,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('absen_ujian_uas_tdk_memenuhi/{id}', 'MhsController@absen_ujian_uas_tdk_memenuhi');
     Route::get('ajukan_keringanan_absen/{id}', 'MhsController@ajukan_keringanan_absen');
 
-    #soal ujian 
+    #soal ujian
     Route::get('soal_ujian_mhs', 'MhsController@soal_ujian_mhs');
 
     #magang mahasiswa
@@ -1070,17 +1086,16 @@ Route::group(['middleware' => 'mhs'], function () {
     #bimbingan sempro
     Route::post('simpan_bim_sempro', 'MagangSkripsiController@simpan_bim_sempro');
     Route::put('edit_bim_sempro/{id}', 'MagangSkripsiController@edit_bim_sempro');
-    
+
     Route::post('ajukan_seminar_proposal_d4', 'PraustaController@ajukan_seminar_proposal');
     Route::get('ajukan_seminar_lagi/{id}', 'PraustaController@ajukan_seminar_lagi');
-    
+
     // SKRIPSI MAHASISWA
     Route::get('skripsi_mhs', 'MagangSkripsiController@skripsi_mhs');
     Route::get('pengajuan_skripsi/{id}', 'MagangSkripsiController@pengajuan_skripsi');
     Route::post('simpan_ajuan_skripsi', 'MagangSkripsiController@simpan_ajuan_skripsi');
     Route::post('simpan_bim_skripsi', 'MagangSkripsiController@simpan_bim_skripsi');
     Route::post('ajukan_skripsi_d4', 'MagangSkripsiController@ajukan_skripsi_d4');
-
 });
 
 Route::group(['middleware' => 'nomhs'], function () {
@@ -1251,7 +1266,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
 });
 
 Route::group(['middleware' => 'kaprodi'], function () {
-    // DASHBOARD 
+    // DASHBOARD
     Route::get('kaprodi_home', 'KaprodiController@kaprodi_home');
 
     #persenatse kehadiran mahasiswa
@@ -1603,7 +1618,23 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('edit_nilai_sempro_skripsi_by_dospeng2_kprd/{id}', 'SemproSkripsiController@edit_nilai_sempro_skripsi_by_dospeng2_kprd');
     Route::post('put_nilai_sempro_skripsi_dospeng2_kprd', 'SemproSkripsiController@put_nilai_sempro_skripsi_dospeng2_kprd');
 
-    // monitoring magang dan skripsi
+    // PENGUJI SKRIPSI
+    Route::get('penguji_skripsi_kprd', 'SemproSkripsiController@penguji_skripsi_kprd');
+    Route::get('isi_form_nilai_skripsi_dospem_kaprodi/{id}', 'SemproSkripsiController@isi_form_nilai_skripsi_dospem_kaprodi');
+    Route::post('simpan_nilai_skripsi_dospem_kaprodi', 'SemproSkripsiController@simpan_nilai_skripsi_dospem_kaprodi');
+    Route::get('isi_form_nilai_skripsi_dosji1_kaprodi/{id}', 'SemproSkripsiController@isi_form_nilai_skripsi_dosji1_kaprodi');
+    Route::post('simpan_nilai_skripsi_dosji1_kaprodi', 'SemproSkripsiController@simpan_nilai_skripsi_dosji1_kaprodi');
+    Route::get('isi_form_nilai_skripsi_dosji2_kaprodi/{id}', 'SemproSkripsiController@isi_form_nilai_skripsi_dosji2_kaprodi');
+    Route::post('simpan_nilai_skripsi_dosji2_kaprodi', 'SemproSkripsiController@simpan_nilai_skripsi_dosji2_kaprodi');
+
+    Route::get('edit_nilai_skripsi_by_dospem_kaprodi/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospem_kaprodi');
+    Route::post('put_nilai_skripsi_dospem_kaprodi', 'SemproSkripsiController@put_nilai_skripsi_dospem_kaprodi');
+    Route::get('edit_nilai_skripsi_by_dospeng1_kaprodi/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospeng1_kaprodi');
+    Route::post('put_nilai_skripsi_dospeng1_kaprodi', 'SemproSkripsiController@put_nilai_skripsi_dospeng1_kaprodi');
+    Route::get('edit_nilai_skripsi_by_dospeng2_kaprodi/{id}', 'SemproSkripsiController@edit_nilai_skripsi_by_dospeng2_kaprodi');
+    Route::post('put_nilai_skripsi_dospeng2_kaprodi', 'SemproSkripsiController@put_nilai_skripsi_dospeng2_kaprodi');
+
+    // MONITORING MAGANG DAN SKRIPSI
     Route::get('bimbingan_magang_kprd', 'KaprodiController@bimbingan_magang_kprd');
     Route::get('detail_bim_magang/{id}', 'KaprodiController@detail_bim_magang');
     Route::get('bimbingan_sempro_kprd', 'KaprodiController@bimbingan_sempro_kprd');
@@ -1613,7 +1644,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('nilai_sempro_skripsi_kprd', 'KaprodiController@nilai_sempro_skripsi_kprd');
     Route::get('nilai_skripsi_kprd', 'KaprodiController@nilai_skripsi_kprd');
 
-    #data cuti mhs bimbingan
+    // DATA CUTI MHS BIMBINGAN
     Route::get('data_cuti_kprd_bim', 'KaprodiController@data_cuti_kprd_bim');
     Route::get('val_pengajuan_kprd/{id}', 'KaprodiController@val_pengajuan_kprd');
     Route::get('batal_val_pengajuan_kprd/{id}', 'KaprodiController@batal_val_pengajuan_kprd');

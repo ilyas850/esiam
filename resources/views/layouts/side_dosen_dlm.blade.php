@@ -89,6 +89,7 @@
             <li><a href="{{ url('penguji_magang_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 1</a></li>
             <li><a href="{{ url('penguji_magang2_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Magang 2</a></li>
             <li><a href="{{ url('penguji_sempro_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Sempro</a></li>
+            <li><a href="{{ url('penguji_skripsi_dlm') }}"><i class="fa fa-circle-o"></i> Penguji Skripsi</a></li>
         </ul>
     </li>
 
