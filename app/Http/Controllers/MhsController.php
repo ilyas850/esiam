@@ -1899,7 +1899,12 @@ class MhsController extends Controller
 
     public function dosbing()
     {
+
         $id = Auth::user()->id_user;
+
+        $student = Student::with(['prodi'])
+            ->where('idstudent', $id)
+            ->first();
 
         $dosen_pa = DosenPembimbing::join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
             ->where('id_student', $id)
@@ -1907,13 +1912,25 @@ class MhsController extends Controller
             ->first();
 
         $dosen_pkl = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->select('dosen.nama')
+            ->first();
+
+        $dosen_magang1 = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [24, 27, 30])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->select('dosen.nama')
+            ->first();
+
+        $dosen_magang2 = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [33, 34, 35])
             ->where('prausta_setting_relasi.id_student', $id)
             ->select('dosen.nama')
             ->first();
 
         $dosen_sempro = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
             ->where('prausta_setting_relasi.id_student', $id)
             ->select('dosen.nama')
             ->first();
@@ -1924,7 +1941,22 @@ class MhsController extends Controller
             ->select('dosen.nama')
             ->first();
 
-        return view('mhs/dosbing', compact('dosen_pa', 'dosen_pkl', 'dosen_sempro', 'dosen_ta'));
+        $dosen_skripsi = Prausta_setting_relasi::join('dosen', 'prausta_setting_relasi.id_dosen_pembimbing', '=', 'dosen.iddosen')
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
+            ->where('prausta_setting_relasi.id_student', $id)
+            ->select('dosen.nama')
+            ->first();
+
+        return view('mhs/dosbing', compact(
+            'dosen_pa',
+            'dosen_pkl',
+            'dosen_sempro',
+            'dosen_ta',
+            'dosen_magang1',
+            'dosen_magang2',
+            'dosen_skripsi',
+            'student'
+        ));
     }
 
     public function kuisioner()
