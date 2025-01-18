@@ -30,8 +30,8 @@
                 </table>
             </div>
         </div>
-        <form action="{{ url('simpan_nilai_sempro_skripsi_dospem') }}" method="post" enctype="multipart/form-data"
-            name="autoSumForm">
+
+        <form action="{{ url('simpan_nilai_skripsi_dospem_kprd') }}" method="post" enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
@@ -39,6 +39,7 @@
                     <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
                 </div>
                 <div class="box-body">
+                    <p><em><strong>Catatan:</strong> Isi nilai dengan rentang 1–100.</em></p>
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -73,8 +74,10 @@
                                         <center>
                                             <input type="hidden" name="id_penilaian_prausta[]"
                                                 value="{{ $item->id_penilaian_prausta }}">
-                                            <input type="number" name="nilai[]" required>
-                                            <center>
+                                            {{-- <input type="number" name="nilai[]" required> --}}
+                                            <input type="number" name="nilai[]" required min="1" max="100"
+                                                oninput="if(this.value>100) this.value=100; if(this.value<1) this.value=1;">
+                                        <center>
                                     </td>
                                 </tr>
                             @endforeach

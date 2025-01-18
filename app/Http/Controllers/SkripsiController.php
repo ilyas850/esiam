@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_master_penilaian;
+use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_trans_hasil;
 use App\Models\Prausta_trans_penilaian;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class SemproSkripsiController extends Controller
+class SkripsiController extends Controller
 {
-    public function penguji_sempro($view)
+    public function penguji_skripsi($view)
     {
         $id = Auth::user()->id_user;
 
@@ -31,7 +31,7 @@ class SemproSkripsiController extends Controller
                     ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
             })
             ->where('prausta_setting_relasi.status', 'ACTIVE')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [25, 28, 31])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [26, 29, 32])
             ->select(
                 'prausta_setting_relasi.id_settingrelasi_prausta',
                 'prausta_setting_relasi.id_dosen_penguji_1',
@@ -63,24 +63,24 @@ class SemproSkripsiController extends Controller
         return view($view, compact('data', 'id'));
     }
 
-    public function penguji_sempro_dlm()
+    public function penguji_skripsi_dlm()
     {
-        return $this->penguji_sempro('dosen/magang_skripsi/penguji_sempro');
+        return $this->penguji_skripsi('dosen/magang_skripsi/penguji_skripsi');
     }
 
-    public function penguji_sempro_skripsi_kprd()
+    public function penguji_skripsi_kprd()
     {
-        return $this->penguji_sempro('kaprodi/magang_skripsi/penguji_sempro');
+        return $this->penguji_skripsi('kaprodi/magang_skripsi/penguji_skripsi');
     }
 
-    public function isi_form_nilai_sempro_skripsi($id, $view)
+    public function isi_form_nilai_skripsi($id, $view)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        $form_dosbing = Prausta_master_penilaian::where('kategori', 2)
+        $form_dosbing = Prausta_master_penilaian::where('kategori', 3)
             ->where('jenis_form', 'Form Pembimbing')
             ->where('status', 'ACTIVE')
             ->get();
@@ -88,54 +88,14 @@ class SemproSkripsiController extends Controller
         return view($view, compact('data', 'id', 'form_dosbing'));
     }
 
-    public function isi_form_nilai_sempro_skripsi_dospem($id)
+    public function isi_form_nilai_skripsi_dospem_dlm($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi($id, 'dosen/magang_skripsi/form_nilai_sempro');
+        return $this->isi_form_nilai_skripsi($id, 'dosen/magang_skripsi/form_nilai_skripsi');
     }
 
-    public function isi_form_nilai_sempro_skripsi_dospem_kprd($id)
+    public function isi_form_nilai_skripsi_dospem_kprd($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi($id, 'kaprodi/magang_skripsi/form_nilai_sempro');
-    }
-
-    public function simpan_nilai_sempro_skripsi(Request $request, $redirectRoute)
-    {
-        $id_prausta = $request->id_settingrelasi_prausta;
-        $id_penilaian = $request->id_penilaian_prausta;
-        $nilai = $request->nilai;
-
-        foreach ($id_penilaian as $i => $id_nilai) {
-            Prausta_trans_penilaian::create([
-                'id_settingrelasi_prausta' => $id_prausta,
-                'id_penilaian_prausta' => $id_nilai,
-                'nilai' => $nilai[$i],
-                'created_by' => Auth::user()->name
-            ]);
-        }
-
-        $nilai_dospem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
-            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
-            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
-            ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->sum(DB::raw('prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100'));
-
-        $cek_nilai = Prausta_trans_hasil::firstOrNew(['id_settingrelasi_prausta' => $id_prausta]);
-        $hasil = $cek_nilai->exists ? ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3 : $nilai_dospem / 3;
-        $hasilavg = round($hasil, 2);
-
-        $nilai_huruf = $this->tentukan_nilai_huruf($hasilavg);
-
-        $cek_nilai->fill([
-            'nilai_1' => $nilai_dospem,
-            'nilai_huruf' => $nilai_huruf,
-            'added_by' => Auth::user()->name,
-            'status' => 'ACTIVE',
-            'data_origin' => 'eSIAM'
-        ])->save();
-
-        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
-        return redirect($redirectRoute);
+        return $this->isi_form_nilai_skripsi($id, 'kaprodi/magang_skripsi/form_nilai_skripsi');
     }
 
     private function tentukan_nilai_huruf($hasilavg)
@@ -149,24 +109,81 @@ class SemproSkripsiController extends Controller
         return 'E';
     }
 
-    public function simpan_nilai_sempro_skripsi_dospem(Request $request)
+    public function simpan_nilai_skripsi(Request $request, $redirectRoute)
     {
-        return $this->simpan_nilai_sempro_skripsi($request, 'penguji_sempro_dlm');
+        DB::beginTransaction();
+
+        try {
+            $id_prausta = $request->id_settingrelasi_prausta;
+            $id_penilaian = $request->id_penilaian_prausta;
+            $nilai = $request->nilai;
+
+            foreach ($id_penilaian as $i => $id_nilai) {
+                Prausta_trans_penilaian::create([
+                    'id_settingrelasi_prausta' => $id_prausta,
+                    'id_penilaian_prausta' => $id_nilai,
+                    'nilai' => $nilai[$i],
+                    'created_by' => Auth::user()->name
+                ]);
+            }
+            
+            $nilai_dospem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+                ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
+                ->where('prausta_master_penilaian.kategori', 3)
+                ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+                ->where('prausta_master_penilaian.status', 'ACTIVE')
+                ->sum(DB::raw('prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100'));
+                
+            $cek_nilai = Prausta_trans_hasil::firstOrNew(['id_settingrelasi_prausta' => $id_prausta]);
+            $hasil = $cek_nilai->exists
+                ? ($nilai_dospem + $cek_nilai->nilai_2 + $cek_nilai->nilai_3) / 3
+                : $nilai_dospem / 3;
+            $hasilavg = round($hasil, 2);
+            
+            $nilai_huruf = $this->tentukan_nilai_huruf($hasilavg);
+            
+            $cek_nilai->fill([
+                'nilai_1'     => $nilai_dospem,
+                'nilai_huruf' => $nilai_huruf,
+                'added_by'    => Auth::user()->name,
+                'status'      => 'ACTIVE',
+                'data_origin' => 'eSIAM'
+            ])->save();
+            // dd($request->toArray(), $nilai_dospem, $cek_nilai->toArray(), $hasilavg, $nilai_huruf);
+            // Commit transaksi jika semua proses berhasil
+            DB::commit();
+
+            Alert::success('', 'Nilai Skripsi berhasil disimpan')->autoclose(3500);
+            return redirect($redirectRoute);
+        } catch (\Exception $e) {
+            dd($e);
+            // Rollback transaksi jika ada error
+            DB::rollBack();
+
+            // Tampilkan notifikasi atau log error
+            Alert::error('Error', 'Terjadi kesalahan saat menyimpan nilai: ' . $e->getMessage())->autoclose(3500);
+            return redirect()->back();
+        }
     }
 
-    public function simpan_nilai_sempro_skripsi_dospem_kprd(Request $request)
+    public function simpan_nilai_skripsi_dospem_dlm(Request $request)
     {
-        return $this->simpan_nilai_sempro_skripsi($request, 'penguji_sempro_skripsi_kprd');
+        return $this->simpan_nilai_skripsi($request, 'penguji_skripsi_dlm');
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji1($id, $view)
+    public function simpan_nilai_skripsi_dospem_kprd(Request $request)
+    {
+        return $this->simpan_nilai_skripsi($request, 'penguji_skripsi_kprd');
+    }
+
+    public function isi_form_nilai_skripsi_dosji1($id, $view)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        $form_peng1 = Prausta_master_penilaian::where('kategori', 2)
+        $form_peng1 = Prausta_master_penilaian::where('kategori', 3)
             ->where('jenis_form', 'Form Penguji I')
             ->where('status', 'ACTIVE')
             ->get();
@@ -174,17 +191,17 @@ class SemproSkripsiController extends Controller
         return view($view, compact('data', 'id', 'form_peng1'));
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji1_dlm($id)
+    public function isi_form_nilai_skripsi_dosji1_dlm($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi_dosji1($id, 'dosen/magang_skripsi/form_nilai_sempro_dosji1');
+        return $this->isi_form_nilai_skripsi_dosji1($id, 'dosen/magang_skripsi/form_nilai_skripsi_dosji1');
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji1_kprd($id)
+    public function isi_form_nilai_skripsi_dosji1_kprd($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi_dosji1($id, 'kaprodi/magang_skripsi/form_nilai_sempro_dosji1');
+        return $this->isi_form_nilai_skripsi_dosji1($id, 'kaprodi/magang_skripsi/form_nilai_skripsi_dosji1');
     }
 
-    public function simpan_nilai_sempro(Request $request, $redirectRoute)
+    public function simpan_nilai_skripsi_dosji1(Request $request, $redirectRoute)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_penilaian_prausta;
@@ -203,7 +220,7 @@ class SemproSkripsiController extends Controller
         // Hitung nilai dosji1
         $nilai_dosji1 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
@@ -230,7 +247,7 @@ class SemproSkripsiController extends Controller
             ]);
         }
 
-        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
+        Alert::success('', 'Nilai Skripsi berhasil disimpan')->autoclose(3500);
         return redirect($redirectRoute);
     }
 
@@ -261,24 +278,24 @@ class SemproSkripsiController extends Controller
         }
     }
 
-    public function simpan_nilai_sempro_skripsi_dosji1(Request $request)
+    public function simpan_nilai_skripsi_dosji1_dlm(Request $request)
     {
-        return $this->simpan_nilai_sempro($request, 'penguji_sempro_dlm');
+        return $this->simpan_nilai_skripsi_dosji1($request, 'penguji_skripsi_dlm');
     }
 
-    public function simpan_nilai_sempro_skripsi_dosji1_kprd(Request $request)
+    public function simpan_nilai_skripsi_dosji1_kprd(Request $request)
     {
-        return $this->simpan_nilai_sempro($request, 'penguji_sempro_skripsi_kprd');
+        return $this->simpan_nilai_skripsi_dosji1($request, 'penguji_skripsi_kprd');
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji2_dosen($id, $viewPath)
+    public function isi_form_nilai_skripsi_dosji2_dosen($id, $viewPath)
     {
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
             ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
             ->first();
 
-        $form_peng2 = Prausta_master_penilaian::where('kategori', 2)
+        $form_peng2 = Prausta_master_penilaian::where('kategori', 3)
             ->where('jenis_form', 'Form Penguji II')
             ->where('status', 'ACTIVE')
             ->get();
@@ -286,17 +303,17 @@ class SemproSkripsiController extends Controller
         return view($viewPath, compact('data', 'id', 'form_peng2'));
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji2($id)
+    public function isi_form_nilai_skripsi_dosji2_dlm($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi_dosji2_dosen($id, 'dosen/magang_skripsi/form_nilai_sempro_dosji2');
+        return $this->isi_form_nilai_skripsi_dosji2_dosen($id, 'dosen/magang_skripsi/form_nilai_skripsi_dosji2');
     }
 
-    public function isi_form_nilai_sempro_skripsi_dosji2_kprd($id)
+    public function isi_form_nilai_skripsi_dosji2_kprd($id)
     {
-        return $this->isi_form_nilai_sempro_skripsi_dosji2_dosen($id, 'kaprodi/magang_skripsi/form_nilai_sempro_dosji2');
+        return $this->isi_form_nilai_skripsi_dosji2_dosen($id, 'kaprodi/magang_skripsi/form_nilai_skripsi_dosji2');
     }
 
-    public function simpan_nilai_sempro_skripsi_dosji2(Request $request, $redirectRoute)
+    public function simpan_nilai_skripsi_dosji2(Request $request, $redirectRoute)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_penilaian_prausta;
@@ -315,7 +332,7 @@ class SemproSkripsiController extends Controller
         // Hitung nilai dosji2
         $nilai_dosji2 = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
@@ -342,7 +359,7 @@ class SemproSkripsiController extends Controller
             ]);
         }
 
-        Alert::success('', 'Nilai Sempro berhasil disimpan')->autoclose(3500);
+        Alert::success('', 'Nilai Skripsi berhasil disimpan')->autoclose(3500);
         return redirect($redirectRoute);
     }
 
@@ -373,35 +390,17 @@ class SemproSkripsiController extends Controller
         }
     }
 
-    public function simpan_nilai_sempro_skripsi_dosji2_dlm(Request $request)
+    public function simpan_nilai_skripsi_dosji2_dlm(Request $request)
     {
-        return $this->simpan_nilai_sempro_skripsi_dosji2($request, 'penguji_sempro_dlm');
+        return $this->simpan_nilai_skripsi_dosji2($request, 'penguji_skripsi_dlm');
     }
 
-    public function simpan_nilai_sempro_skripsi_dosji2_kprd(Request $request)
+    public function simpan_nilai_skripsi_dosji2_kprd(Request $request)
     {
-        return $this->simpan_nilai_sempro_skripsi_dosji2($request, 'penguji_sempro_skripsi_kprd');
+        return $this->simpan_nilai_skripsi_dosji2($request, 'penguji_skripsi_kprd');
     }
 
-    public function edit_nilai_sempro_skripsi_by_dospem_dlm($id)
-    {
-        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
-            ->first();
-
-        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
-            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
-            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
-            ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
-            ->get();
-
-        return view('dosen/magang_skripsi/edit_nilai_sempro_dospem', compact('nilai_pem', 'datadiri', 'id'));
-    }
-
-    public function edit_nilai_sempro_skripsi_by_dospem_kprd($id)
+    public function edit_nilai_skripsi_by_dospem_dlm($id)
     {
         $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -410,16 +409,34 @@ class SemproSkripsiController extends Controller
 
         $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
-        return view('kaprodi/magang_skripsi/edit_nilai_sempro_dospem', compact('nilai_pem', 'datadiri', 'id'));
+        return view('dosen/magang_skripsi/edit_nilai_skripsi_dospem', compact('nilai_pem', 'datadiri', 'id'));
     }
 
-    public function put_nilai_sempro_skripsi_dospem(Request $request, $redirectRoute)
+    public function edit_nilai_skripsi_by_dospem_kprd($id)
+    {
+        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+            ->first();
+
+        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
+            ->get();
+
+        return view('kaprodi/magang_skripsi/edit_nilai_skripsi_dospem', compact('nilai_pem', 'datadiri', 'id'));
+    }
+
+    public function put_nilai_skripsi_dospem(Request $request, $redirectRoute)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_trans_penilaian;
@@ -436,7 +453,7 @@ class SemproSkripsiController extends Controller
         // Hitung nilai dospem
         $nilai_dospem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Pembimbing')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai1'))
@@ -456,7 +473,7 @@ class SemproSkripsiController extends Controller
             'updated_by' => Auth::user()->name,
         ]);
 
-        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        Alert::success('', 'Nilai Skripsi berhasil diedit')->autoclose(3500);
         return redirect($redirectRoute);
     }
 
@@ -479,35 +496,17 @@ class SemproSkripsiController extends Controller
         }
     }
 
-    public function put_nilai_sempro_skripsi_dospem_dlm(Request $request)
+    public function put_nilai_skripsi_dospem_dlm(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospem($request, 'penguji_sempro_dlm');
+        return $this->put_nilai_skripsi_dospem($request, 'penguji_skripsi_dlm');
     }
 
-    public function put_nilai_sempro_skripsi_dospem_kprd(Request $request)
+    public function put_nilai_skripsi_dospem_kprd(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospem($request, 'penguji_sempro_skripsi_kprd');
+        return $this->put_nilai_skripsi_dospem($request, 'penguji_skripsi_kprd');
     }
 
-    public function edit_nilai_sempro_skripsi_by_dospeng1_dlm($id)
-    {
-        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
-            ->first();
-
-        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
-            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
-            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
-            ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
-            ->get();
-
-        return view('dosen/magang_skripsi/edit_nilai_sempro_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
-    }
-
-    public function edit_nilai_sempro_skripsi_by_dospeng1_kprd($id)
+    public function edit_nilai_skripsi_by_dospeng1_dlm($id)
     {
         $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -516,16 +515,34 @@ class SemproSkripsiController extends Controller
 
         $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
-        return view('kaprodi/magang_skripsi/edit_nilai_sempro_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
+        return view('dosen/magang_skripsi/edit_nilai_skripsi_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
     }
 
-    public function put_nilai_sempro_skripsi_dospeng1(Request $request, $redirectRoute)
+    public function edit_nilai_skripsi_by_dospeng1_kprd($id)
+    {
+        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+            ->first();
+
+        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
+            ->get();
+
+        return view('kaprodi/magang_skripsi/edit_nilai_skripsi_dospeng1', compact('nilai_pem', 'datadiri', 'id'));
+    }
+
+    public function put_nilai_skripsi_dospeng1(Request $request, $redirectRoute)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_trans_penilaian;
@@ -542,7 +559,7 @@ class SemproSkripsiController extends Controller
         // Hitung nilai dospeng
         $nilai_dospem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji I')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai2'))
@@ -562,39 +579,21 @@ class SemproSkripsiController extends Controller
             'updated_by' => Auth::user()->name,
         ]);
 
-        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        Alert::success('', 'Nilai Skripsi berhasil diedit')->autoclose(3500);
         return redirect($redirectRoute);
     }
 
-    public function put_nilai_sempro_skripsi_dospeng1_dlm(Request $request)
+    public function put_nilai_skripsi_dospeng1_dlm(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospeng1($request, 'penguji_sempro_dlm');
+        return $this->put_nilai_skripsi_dospeng1($request, 'penguji_skripsi_dlm');
     }
 
-    public function put_nilai_sempro_skripsi_dospeng1_kprd(Request $request)
+    public function put_nilai_skripsi_dospeng1_kprd(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospeng1($request, 'penguji_sempro_skripsi_kprd');
+        return $this->put_nilai_skripsi_dospeng1($request, 'penguji_skripsi_kprd');
     }
 
-    public function edit_nilai_sempro_skripsi_by_dospeng2_dlm($id)
-    {
-        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
-            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
-            ->first();
-
-        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
-            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
-            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
-            ->where('prausta_master_penilaian.status', 'ACTIVE')
-            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
-            ->get();
-
-        return view('dosen/magang_skripsi/edit_nilai_sempro_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
-    }
-
-    public function edit_nilai_sempro_skripsi_by_dospeng2_kprd($id)
+    public function edit_nilai_skripsi_by_dospeng2_dlm($id)
     {
         $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
@@ -603,16 +602,34 @@ class SemproSkripsiController extends Controller
 
         $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
             ->get();
 
-        return view('kaprodi/magang_skripsi/edit_nilai_sempro_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
+        return view('dosen/magang_skripsi/edit_nilai_skripsi_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
     }
 
-    public function put_nilai_sempro_skripsi_dospeng2(Request $request, $redirectRoute)
+    public function edit_nilai_skripsi_by_dospeng2_kprd($id)
+    {
+        $datadiri = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+            ->where('prausta_setting_relasi.id_settingrelasi_prausta', $id)
+            ->select('prausta_setting_relasi.id_settingrelasi_prausta', 'student.nama', 'student.nim', 'prausta_setting_relasi.tempat_prausta')
+            ->first();
+
+        $nilai_pem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
+            ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id)
+            ->where('prausta_master_penilaian.kategori', 3)
+            ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
+            ->where('prausta_master_penilaian.status', 'ACTIVE')
+            ->select('prausta_master_penilaian.komponen', 'prausta_master_penilaian.bobot', 'prausta_master_penilaian.acuan', 'prausta_trans_penilaian.nilai', 'prausta_trans_penilaian.id_trans_penilaian')
+            ->get();
+
+        return view('kaprodi/magang_skripsi/edit_nilai_skripsi_dospeng2', compact('nilai_pem', 'datadiri', 'id'));
+    }
+
+    public function put_nilai_skripsi_dospeng2(Request $request, $redirectRoute)
     {
         $id_prausta = $request->id_settingrelasi_prausta;
         $id_penilaian = $request->id_trans_penilaian;
@@ -629,7 +646,7 @@ class SemproSkripsiController extends Controller
         // Hitung nilai dospeng
         $nilai_dospem = Prausta_trans_penilaian::join('prausta_master_penilaian', 'prausta_trans_penilaian.id_penilaian_prausta', '=', 'prausta_master_penilaian.id_penilaian_prausta')
             ->where('prausta_trans_penilaian.id_settingrelasi_prausta', $id_prausta)
-            ->where('prausta_master_penilaian.kategori', 2)
+            ->where('prausta_master_penilaian.kategori', 3)
             ->where('prausta_master_penilaian.jenis_form', 'Form Penguji II')
             ->where('prausta_master_penilaian.status', 'ACTIVE')
             ->select(DB::raw('sum(prausta_trans_penilaian.nilai * prausta_master_penilaian.bobot / 100) as nilai3'))
@@ -649,7 +666,7 @@ class SemproSkripsiController extends Controller
             'updated_by' => Auth::user()->name,
         ]);
 
-        Alert::success('', 'Nilai Sempro berhasil diedit')->autoclose(3500);
+        Alert::success('', 'Nilai Skripsi berhasil diedit')->autoclose(3500);
         return redirect($redirectRoute);
     }
 
@@ -672,14 +689,13 @@ class SemproSkripsiController extends Controller
         }
     }
 
-    public function put_nilai_sempro_skripsi_dospeng2_dlm(Request $request)
+    public function put_nilai_skripsi_dospeng2_dlm(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospeng2($request, 'penguji_sempro_dlm');
+        return $this->put_nilai_skripsi_dospeng2($request, 'penguji_skripsi_dlm');
     }
 
-    public function put_nilai_sempro_skripsi_dospeng2_kprd(Request $request)
+    public function put_nilai_skripsi_dospeng2_kprd(Request $request)
     {
-        return $this->put_nilai_sempro_skripsi_dospeng2($request, 'penguji_sempro_skripsi_kprd');
+        return $this->put_nilai_skripsi_dospeng2($request, 'penguji_skripsi_kprd');
     }
-
 }

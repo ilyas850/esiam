@@ -12,6 +12,7 @@
             </div>
             <div class="box-body">
                 <table width="100%">
+
                     <tr>
                         <td>Nama</td>
                         <td>:</td>
@@ -23,22 +24,23 @@
                         <td>{{ $data->nim }}</td>
                     </tr>
                     <tr>
-                        <td>Tempat Magang</td>
+                        <td>Tempat PraUSTA</td>
                         <td>:</td>
                         <td>{{ $data->tempat_prausta }}</td>
                     </tr>
                 </table>
             </div>
         </div>
-        <form action="{{ url('simpan_nilai_sempro_skripsi_dospem') }}" method="post" enctype="multipart/form-data"
-            name="autoSumForm">
+        <form class="" action="{{ url('simpan_nilai_skripsi_dosji2_kprd') }}" method="post"
+            enctype="multipart/form-data" name="autoSumForm">
             {{ csrf_field() }}
             <input type="hidden" name="id_settingrelasi_prausta" value="{{ $id }}">
             <div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><b>Form Penilaian Pembimbing</b> </h3>
+                    <h3 class="box-title"><b>Form Penilaian Dosen Penguji II</b> </h3>
                 </div>
                 <div class="box-body">
+                    <p><em><strong>Catatan:</strong> Isi nilai dengan rentang 1–100.</em></p>
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -59,7 +61,7 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($form_dosbing as $item)
+                            @foreach ($form_peng2 as $item)
                                 <tr>
                                     <td>
                                         <center>{{ $no++ }}</center>
@@ -73,7 +75,8 @@
                                         <center>
                                             <input type="hidden" name="id_penilaian_prausta[]"
                                                 value="{{ $item->id_penilaian_prausta }}">
-                                            <input type="number" name="nilai[]" required>
+                                                <input type="number" name="nilai[]" required min="1" max="100"
+                                                oninput="if(this.value>100) this.value=100; if(this.value<1) this.value=1;">
                                             <center>
                                     </td>
                                 </tr>
@@ -85,32 +88,33 @@
             <button type="submit" class="btn btn-info">Simpan</button>
         </form>
     </section>
-    <script>
-        function startCalc() {
-
-            interval = setInterval("calc()", 1);
-        }
-
-        function calc() {
-
-            one = document.autoSumForm.nilai_sempro_1.value;
-
-            two = document.autoSumForm.nilai_sempro_2.value;
-
-            three = document.autoSumForm.nilai_sempro_3.value;
-
-            four = document.autoSumForm.nilai_sempro_4.value;
-
-            five = document.autoSumForm.nilai_sempro_5.value;
-
-            document.autoSumForm.total.value = (one * 30 / 100) + (two * 20 / 100) + (three * 35 / 100) + (four * 10 /
-                100) + (five * 5 / 100);
-
-        }
-
-        function stopCalc() {
-
-            clearInterval(interval);
-        }
-    </script>
 @endsection
+
+<script>
+    function startCalc() {
+
+        interval = setInterval("calc()", 1);
+    }
+
+    function calc() {
+
+        one = document.autoSumForm.nilai_sempro_1.value;
+
+        two = document.autoSumForm.nilai_sempro_2.value;
+
+        three = document.autoSumForm.nilai_sempro_3.value;
+
+        four = document.autoSumForm.nilai_sempro_4.value;
+
+        five = document.autoSumForm.nilai_sempro_5.value;
+
+        document.autoSumForm.total.value = (one * 30 / 100) + (two * 20 / 100) + (three * 35 / 100) + (four * 10 /
+            100) + (five * 5 / 100);
+
+    }
+
+    function stopCalc() {
+
+        clearInterval(interval);
+    }
+</script>
