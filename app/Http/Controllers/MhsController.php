@@ -2003,13 +2003,15 @@ class MhsController extends Controller
             $idtp = $tp->id_periodetipe;
 
             $cekkuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+                ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
                 ->where('kuisioner_transaction.id_student', $ids)
                 ->where('kuisioner_transaction.id_dosen_pembimbing', $id_dsn)
                 ->where('kuisioner_transaction.id_periodetahun', $idthn)
                 ->where('kuisioner_transaction.id_periodetipe', $idtp)
                 ->where('kuisioner_master.id_kategori_kuisioner', $id)
+                ->where('kuisioner_master_kategori.id_kategori_kuisioner', 1)
                 ->get();
-
+            // dd($cekkuis);
             if (count($cekkuis) > 0) {
                 Alert::warning('maaf kuisioner isi sudah diisi', 'MAAF !!');
                 return redirect('kuisioner');
@@ -2038,12 +2040,15 @@ class MhsController extends Controller
         $nama = $mhs->nama;
         $nama_ok = str_replace("'", '', $nama);
 
-        $cek_kuis = Kuisioner_transaction::where('id_student', $id_student)
-            ->where('id_dosen_pembimbing', $id_dosen)
-            ->where('id_periodetahun', $id_tahun)
-            ->where('id_periodetipe', $id_tipe)
+        $cek_kuis = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
+            ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
+            ->where('kuisioner_transaction.id_student', $id_student)
+            ->where('kuisioner_transaction.id_dosen_pembimbing', $id_dosen)
+            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
+            ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
+            ->where('kuisioner_master_kategori.id_kategori_kuisioner', 1)
             ->get();
-
+        // dd($cek_kuis->toArray());
         if (count($cek_kuis) > 0) {
             Alert::warning('maaf kuisioner ini sudah anda isi', 'MAAF !!');
             return redirect('kuisioner');
