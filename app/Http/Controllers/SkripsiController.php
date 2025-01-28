@@ -670,6 +670,8 @@ class SkripsiController extends Controller
         return redirect($redirectRoute);
     }
 
+    // test function
+
     private function determine_grade_if($hasilavg)
     {
         if ($hasilavg >= 80) {
