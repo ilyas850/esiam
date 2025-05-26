@@ -20,10 +20,7 @@
                                         <th>
                                             <center>No</center>
                                         </th>
-                                        <th>Nama Mahasiswa</th>
-                                        <th>
-                                            <center>NIM</center>
-                                        </th>
+                                        <th>Mahasiswa</th>
                                         <th>
                                             <center>Program Studi</center>
                                         </th>
@@ -31,7 +28,7 @@
                                             <center>Kelas</center>
                                         </th>
                                         <th>
-                                            <center>Kelas</center>
+                                            <center>Angkatan</center>
                                         </th>
                                         <th>
                                             <center>Status</center>
@@ -44,6 +41,7 @@
                                         </th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     <?php $no = 1; ?>
                                     @foreach ($users as $item)
@@ -51,34 +49,32 @@
                                             <td>
                                                 <center>{{ $no++ }}</center>
                                             </td>
-                                            <td>{{ $item->nama }}</td>
                                             <td>
-                                                <center>{{ $item->nim }}</center>
-                                            </td>
+                                                {{ $item->nim }} / {{ $item->nama }}</td>
+
                                             <td>
                                                 <center>{{ $item->prodi }}</center>
                                             </td>
                                             <td>
-                                                <center>{{ $item->kelas }}</center>
+                                                <center>{{ $item->kelas->kelas }}</center>
                                             </td>
                                             <td>
-                                                <center>{{ $item->angkatan }}</center>
+                                                <center>{{ $item->angkatan->angkatan }}</center>
                                             </td>
                                             <td>
                                                 <center>
-                                                    @if ($item->role == 3)
+                                                    @if (optional($item->user)->role == 3)
                                                         Mahasiswa Aktif
-                                                    @elseif ($item->role == 4)
+                                                    @elseif (optional($item->user)->role == 4)
                                                         Belum Aktif
+                                                    @else
+                                                        Status Tidak Diketahui
                                                     @endif
                                                 </center>
                                             </td>
                                             <td>
                                                 <center>
-                                                    @if ($item->username == null)
-                                                        {{-- <a class="btn btn-info btn-xs"
-                                                        href="/usermhs/{{ $item->nim }}">Generate</a> --}}
-
+                                                    @if (empty($item->user->username))
                                                         <form action="{{ url('saveuser_mhs') }}" method="post">
                                                             <input type="hidden" name="role" value="4">
                                                             <input type="hidden" name="student"
@@ -89,45 +85,34 @@
                                                                 value="{{ $item->nama }}">
                                                             {{ csrf_field() }}
                                                             <button type="submit"
-                                                                class="btn btn-success btn-xs">Generate</button>
+                                                                class="btn btn-info btn-xs">Generate</button>
                                                         </form>
-                                                    @elseif($item->username != null)
-                                                        <div class="btn-group">
-                                                            <button type="button"
-                                                                class="btn btn-warning btn-xs">Pilih</button>
-                                                            <button type="button"
-                                                                class="btn btn-warning btn-xs dropdown-toggle"
-                                                                data-toggle="dropdown">
-                                                                <span class="caret"></span>
-                                                                <span class="sr-only">Toggle Dropdown</span>
-                                                            </button>
-                                                            <ul class="dropdown-menu" role="menu">
-                                                                <li>
-                                                                    <form method="POST" action="{{ url('resetuser') }}">
-                                                                        <input type="hidden" name="role" value="4">
-                                                                        <input type="hidden" name="password"
-                                                                            value="{{ $item->username }}">
-                                                                        <input type="hidden" name="id"
-                                                                            value="{{ $item->id }}">
-                                                                        {{ csrf_field() }}
-                                                                        <button type="submit"
-                                                                            class="btn btn-success btn-block btn-xs"
-                                                                            data-toggle="tooltip"
-                                                                            data-placement="right">Reset</button>
-                                                                    </form>
-                                                                </li>
-                                                                <li>
-                                                                    <form action="/hapususer/{{ $item->id_user }}"
-                                                                        method="post">
-                                                                        <button class="btn btn-danger btn-block btn-xs"
-                                                                            title="klik untuk hapus" type="submit"
-                                                                            name="submit"
-                                                                            onclick="return confirm('apakah anda yakin akan menghapus user ini?')">Hapus</button>
-                                                                        {{ csrf_field() }}
-                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                    </form>
-                                                                </li>
-                                                            </ul>
+                                                    @elseif(!empty($item->user->username))
+                                                        <div style="display: flex; gap: 5px; justify-content: center;">
+                                                            <form method="POST" action="{{ url('resetuser') }}">
+                                                                <input type="hidden" name="role" value="4">
+                                                                <input type="hidden" name="password"
+                                                                    value="{{ $item->user->username }}">
+                                                                <input type="hidden" name="id"
+                                                                    value="{{ $item->user->id }}">
+                                                                {{ csrf_field() }}
+                                                                <button type="submit" class="btn btn-success btn-xs"
+                                                                    data-toggle="tooltip" data-placement="right"
+                                                                    title="klik untuk reset password">
+                                                                    <i class="fa fa-refresh"></i>
+                                                                </button>
+                                                            </form>
+
+                                                            <form action="/hapususer/{{ $item->id_user }}" method="post">
+                                                                <button class="btn btn-danger btn-xs" type="submit"
+                                                                    name="submit"
+                                                                    onclick="return confirm('apakah anda yakin akan menghapus user ini?')"
+                                                                    title="klik untuk hapus user">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                                {{ csrf_field() }}
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                            </form>
                                                         </div>
                                                     @endif
                                                 </center>

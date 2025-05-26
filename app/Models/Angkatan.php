@@ -13,4 +13,10 @@ class Angkatan extends Model
   public $timestamps = false;
 
   protected $fillable = ['idangkatan', 'angkatan'];
+
+  // Relasi ke Student
+  public function students()
+  {
+      return $this->hasMany(Student::class, 'idangkatan', 'idangkatan');
+  }
 }

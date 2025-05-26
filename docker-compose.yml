@@ -1,0 +1,54 @@
+# version: '3.8'
+
+# services:
+#   app:
+#     build:
+#       context: ./docker/php
+#       dockerfile: Dockerfile
+#     container_name: laravel_app
+#     restart: unless-stopped
+#     working_dir: /var/www/html
+#     volumes:
+#       - .:/var/www/html
+#     networks:
+#       - laravel
+#     depends_on:
+#       - nginx
+
+#   nginx:
+#     image: nginx:alpine
+#     container_name: nginx_server
+#     restart: unless-stopped
+#     ports:
+#       - "8008:80"
+#     volumes:
+#       - .:/var/www/html
+#       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+#     networks:
+#       - laravel
+
+# networks:
+#   laravel:
+#     driver: bridge
+
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8008:8000"  # <- Laravel akan listen di port 8000 dalam container
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
