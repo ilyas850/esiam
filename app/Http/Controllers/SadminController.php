@@ -34,8 +34,7 @@ use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Transkrip_nilai;
 use App\Models\Transkrip_final;
-use App\Models\Absensi_mahasiswa;;
-
+use App\Models\Absensi_mahasiswa;
 use App\Models\Prausta_master_penilaian;
 use App\Models\Visimisi;
 use App\Models\Prausta_master_kategori;
@@ -219,12 +218,12 @@ class SadminController extends Controller
 
     public function show_user()
     {
-        $data = Student::leftjoin('users', 'student.idstudent', '=', 'users.id_user')
+        $data1 = Student::leftjoin('users', 'student.idstudent', '=', 'users.id_user')
             ->leftjoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->leftjoin('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->select(
                 'users.id',
                 'users.id_user',
@@ -245,32 +244,24 @@ class SadminController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-
-        $usermhs = Student::leftJoin('passwords', 'user', '=', 'student.nim')
-            ->leftJoin('users', 'username', '=', 'passwords.user')
+            $data = Student::with([
+                'user:id,id_user,username,deleted_at,role',
+                'kelas:idkelas,kelas',
+                'angkatan:idangkatan,angkatan'
+            ])
             ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                     ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->select(
-                'users.id',
-                'users.id_user',
-                'users.username',
-                'users.deleted_at',
-                'passwords.pwd',
-                'student.nim',
-                'student.nama',
-                'kelas.kelas',
-                'prodi.prodi',
-                'student.idstudent',
-                'users.role',
-                'angkatan.angkatan'
-            )
-            ->where('student.active', 1)
+            ->leftJoin('kelas as k', 'student.idstatus', '=', 'k.idkelas')
+            ->active()
+            ->select([
+                'student.*',
+                'prodi.prodi'
+            ])
             ->orderBy('student.idangkatan', 'DESC')
             ->orderBy('prodi.prodi', 'ASC')
-            ->orderBy('kelas.kelas', 'ASC')
+            ->orderBy('k.kelas', 'ASC')
             ->orderBy('student.nim', 'ASC')
             ->get();
 
@@ -1825,7 +1816,7 @@ class SadminController extends Controller
             })
             ->join('prausta_setting_relasi', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->join('transkrip_final', 'student.idstudent', '=', 'transkrip_final.id_student')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9,  14, 17, 20, 23])
+            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
             ->where('yudisium.id_student', $id)
             ->select(
                 'student.idstudent',
@@ -2497,7 +2488,7 @@ class SadminController extends Controller
         $m = $bulan[date('m')];
         $y = date('Y');
 
-        return view('sadmin/perkuliahan/cek_cetak_absensi', ['d' => $d, 'm' => $m, 'y' => $y,  'abs' => $abs, 'bap' => $key]);
+        return view('sadmin/perkuliahan/cek_cetak_absensi', ['d' => $d, 'm' => $m, 'y' => $y, 'abs' => $abs, 'bap' => $key]);
     }
 
     public function jurnal_bap($id)
