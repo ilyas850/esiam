@@ -17,6 +17,11 @@ class Angkatan extends Model
   // Relasi ke Student
   public function students()
   {
-      return $this->hasMany(Student::class, 'idangkatan', 'idangkatan');
+    return $this->hasMany(Student::class, 'idangkatan', 'idangkatan');
+  }
+
+  public function kurikulumTransactions()
+  {
+    return $this->hasMany(Kurikulum_transaction::class, 'id_angkatan', 'idangkatan');
   }
 }

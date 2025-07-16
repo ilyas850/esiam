@@ -7,8 +7,7 @@ use File;
 use PDF;
 use App\Models\Absen_ujian;
 use App\Models\Bap;
-use App\Models\Absensi_mahasiswa;;
-
+use App\Models\Absensi_mahasiswa;
 use App\Models\Pedoman_akademik;
 use App\User;
 use App\Models\Dosen;
@@ -125,6 +124,7 @@ class MhsController extends Controller
         $idangkatan = $mhs->idangkatan;
 
         $data = DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id));
+        // $data = $this->getStandardKurikulum($idprodi, $idangkatan, $id);
 
         $data_mengulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('prodi', function ($join) {
@@ -278,6 +278,54 @@ class MhsController extends Controller
         //     ->get();
 
         // return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+    }
+
+    public function getStandardKurikulum($id_prodi, $idangkatan, $id_student)
+    {
+        return Kuisioner_transaction::with([
+            'kurikulumMaster:id_kurikulum,nama_kurikulum',
+            'prodi:id_prodi,prodi',
+            'semester:idsemester,semester',
+            'angkatan:idangkatan,angkatan',
+            'matakuliah:idmakul,kode,makul'
+        ])
+        ->active() // Sekarang scope sudah didefinisikan dengan benar
+        ->byProdi($id_prodi)
+        ->byAngkatan($idangkatan)
+        ->select([
+            'kurikulum_transaction.idkurtrans', 
+            'kurikulum_transaction.id_kurikulum', 
+            'kurikulum_transaction.id_prodi', 
+            'kurikulum_transaction.id_semester', 
+            'kurikulum_transaction.id_angkatan', 
+            'kurikulum_transaction.id_makul'
+        ])
+        ->orderBy('kurikulum_transaction.id_semester')
+        ->orderBy(function($query) {
+            $query->select('kode')
+                  ->from('matakuliah')
+                  ->whereColumn('matakuliah.idmakul', 'kurikulum_transaction.id_makul');
+        })
+        ->get()
+        ->map(function($item) use ($id_student) {
+            // Get student record for this kurikulum transaction
+            $studentRecord = Student_record::where('id_kurtrans', $item->idkurtrans)
+                ->where('id_student', $id_student)
+                ->where('status', 'TAKEN')
+                ->first();
+            
+            return [
+                'idkurtrans' => $item->idkurtrans,
+                'nama_kurikulum' => $item->kurikulumMaster->nama_kurikulum ?? null,
+                'prodi' => $item->prodi->prodi ?? null,
+                'semester' => $item->semester->semester ?? null,
+                'angkatan' => $item->angkatan->angkatan ?? null,
+                'kode' => $item->matakuliah->kode ?? null,
+                'makul' => $item->matakuliah->makul ?? null,
+                'id_studentrecord' => $studentRecord->id_studentrecord ?? null,
+                'nilai_AKHIR' => $studentRecord->nilai_AKHIR ?? null,
+            ];
+        });
     }
 
     public function change($id)
@@ -3271,7 +3319,7 @@ class MhsController extends Controller
         } elseif ($c == 2) {
             $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
         } elseif ($c == '201') {
-            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
+            $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 - $total_semua_dibayar;
         } elseif ($c == 3) {
             $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
         } elseif ($c == 4) {
@@ -3879,12 +3927,12 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'nama_lengkap'  => 'required',
-                'tmpt_lahir'    => 'required',
-                'tgl_lahir'     => 'required',
-                'nik'           => 'required',
-                'file_ijazah'   => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
-                'file_ktp'      => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
+                'nama_lengkap' => 'required',
+                'tmpt_lahir' => 'required',
+                'tgl_lahir' => 'required',
+                'nik' => 'required',
+                'file_ijazah' => 'mimes:jpg,jpeg,JPG,JPEG|max:4000',
+                'file_ktp' => 'mimes:jpg,jpeg,JPG,JPEG|max:4000'
             ],
             $message,
         );
@@ -4086,50 +4134,50 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'ukuran_toga'       => 'required',
-                'status_vaksin'     => 'required',
-                'tahun_lulus'       => 'required',
-                'nim'               => 'required',
-                'nama_lengkap'      => 'required',
-                'id_prodi'          => 'required',
-                'no_hp'             => 'required',
-                'email'             => 'required',
-                'npwp'              => 'required',
-                'alamat_ktp'        => 'required',
-                'alamat_domisili'   => 'required',
-                'nama_ayah'         => 'required',
-                'nama_ibu'          => 'required',
-                'no_hp_ayah'        => 'required',
-                'alamat_ortu'       => 'required',
-                'tempat_kerja'       => 'required',
-                'file_foto'       => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
+                'ukuran_toga' => 'required',
+                'status_vaksin' => 'required',
+                'tahun_lulus' => 'required',
+                'nim' => 'required',
+                'nama_lengkap' => 'required',
+                'id_prodi' => 'required',
+                'no_hp' => 'required',
+                'email' => 'required',
+                'npwp' => 'required',
+                'alamat_ktp' => 'required',
+                'alamat_domisili' => 'required',
+                'nama_ayah' => 'required',
+                'nama_ibu' => 'required',
+                'no_hp_ayah' => 'required',
+                'alamat_ortu' => 'required',
+                'tempat_kerja' => 'required',
+                'file_foto' => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
             ],
             $message,
         );
 
         $bap = new Wisuda();
-        $bap->id_student        = $request->id_student;
-        $bap->ukuran_toga       = $request->ukuran_toga;
-        $bap->status_vaksin     = $request->status_vaksin;
-        $bap->tahun_lulus       = $request->tahun_lulus;
-        $bap->nim               = $request->nim;
-        $bap->nama_lengkap      = $request->nama_lengkap;
-        $bap->id_prodi          = $request->id_prodi;
-        $bap->no_hp             = $request->no_hp;
-        $bap->email             = $request->email;
-        $bap->npwp              = $request->npwp;
-        $bap->alamat_ktp        = $request->alamat_ktp;
-        $bap->alamat_domisili   = $request->alamat_domisili;
-        $bap->nama_ayah         = $request->nama_ayah;
-        $bap->nama_ibu          = $request->nama_ibu;
-        $bap->no_hp_ayah        = $request->no_hp_ayah;
-        $bap->no_hp_ibu         = $request->no_hp_ibu;
-        $bap->alamat_ortu       = $request->alamat_ortu;
-        $bap->tempat_kerja       = $request->tempat_kerja;
+        $bap->id_student = $request->id_student;
+        $bap->ukuran_toga = $request->ukuran_toga;
+        $bap->status_vaksin = $request->status_vaksin;
+        $bap->tahun_lulus = $request->tahun_lulus;
+        $bap->nim = $request->nim;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->id_prodi = $request->id_prodi;
+        $bap->no_hp = $request->no_hp;
+        $bap->email = $request->email;
+        $bap->npwp = $request->npwp;
+        $bap->alamat_ktp = $request->alamat_ktp;
+        $bap->alamat_domisili = $request->alamat_domisili;
+        $bap->nama_ayah = $request->nama_ayah;
+        $bap->nama_ibu = $request->nama_ibu;
+        $bap->no_hp_ayah = $request->no_hp_ayah;
+        $bap->no_hp_ibu = $request->no_hp_ibu;
+        $bap->alamat_ortu = $request->alamat_ortu;
+        $bap->tempat_kerja = $request->tempat_kerja;
 
         if ($request->hasFile('file_foto')) {
             $file = $request->file('file_foto');
-            $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+            $nama_file = 'File Foto' . '-' . $file->getClientOriginalName();
             $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
             $file->move($tujuan_upload, $nama_file);
             $bap->file_foto = $nama_file;
@@ -4150,23 +4198,23 @@ class MhsController extends Controller
         $this->validate(
             $request,
             [
-                'ukuran_toga'       => 'required',
-                'status_vaksin'     => 'required',
-                'tahun_lulus'       => 'required',
-                'nim'               => 'required',
-                'nama_lengkap'      => 'required',
-                'id_prodi'          => 'required',
-                'no_hp'             => 'required',
-                'email'             => 'required',
-                'npwp'              => 'required',
-                'alamat_ktp'        => 'required',
-                'alamat_domisili'   => 'required',
-                'nama_ayah'         => 'required',
-                'nama_ibu'          => 'required',
-                'no_hp_ayah'        => 'required',
-                'alamat_ortu'       => 'required',
-                'tempat_kerja'       => 'required',
-                'file_foto'         => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
+                'ukuran_toga' => 'required',
+                'status_vaksin' => 'required',
+                'tahun_lulus' => 'required',
+                'nim' => 'required',
+                'nama_lengkap' => 'required',
+                'id_prodi' => 'required',
+                'no_hp' => 'required',
+                'email' => 'required',
+                'npwp' => 'required',
+                'alamat_ktp' => 'required',
+                'alamat_domisili' => 'required',
+                'nama_ayah' => 'required',
+                'nama_ibu' => 'required',
+                'no_hp_ayah' => 'required',
+                'alamat_ortu' => 'required',
+                'tempat_kerja' => 'required',
+                'file_foto' => 'mimes:jpg,jpeg,JPG,JPEG,PNG,png|max:4000'
             ],
             $message,
         );
@@ -4175,28 +4223,28 @@ class MhsController extends Controller
         $bap->id_student = Auth::user()->id_user;
         $bap->ukuran_toga = $request->ukuran_toga;
         $bap->status_vaksin = $request->status_vaksin;
-        $bap->tahun_lulus       = $request->tahun_lulus;
-        $bap->nim               = $request->nim;
-        $bap->nama_lengkap      = $request->nama_lengkap;
-        $bap->id_prodi          = $request->id_prodi;
-        $bap->no_hp             = $request->no_hp;
-        $bap->email             = $request->email;
+        $bap->tahun_lulus = $request->tahun_lulus;
+        $bap->nim = $request->nim;
+        $bap->nama_lengkap = $request->nama_lengkap;
+        $bap->id_prodi = $request->id_prodi;
+        $bap->no_hp = $request->no_hp;
+        $bap->email = $request->email;
         // $bap->nik               = $request->nik;
-        $bap->npwp              = $request->npwp;
-        $bap->alamat_ktp        = $request->alamat_ktp;
-        $bap->alamat_domisili   = $request->alamat_domisili;
-        $bap->nama_ayah         = $request->nama_ayah;
-        $bap->nama_ibu          = $request->nama_ibu;
-        $bap->no_hp_ayah        = $request->no_hp_ayah;
-        $bap->no_hp_ibu         = $request->no_hp_ibu;
-        $bap->alamat_ortu       = $request->alamat_ortu;
-        $bap->tempat_kerja       = $request->tempat_kerja;
+        $bap->npwp = $request->npwp;
+        $bap->alamat_ktp = $request->alamat_ktp;
+        $bap->alamat_domisili = $request->alamat_domisili;
+        $bap->nama_ayah = $request->nama_ayah;
+        $bap->nama_ibu = $request->nama_ibu;
+        $bap->no_hp_ayah = $request->no_hp_ayah;
+        $bap->no_hp_ibu = $request->no_hp_ibu;
+        $bap->alamat_ortu = $request->alamat_ortu;
+        $bap->tempat_kerja = $request->tempat_kerja;
 
         if ($bap->file_foto) {
             if ($request->hasFile('file_foto')) {
                 File::delete('File Wisuda/' . Auth::user()->id_user . '/' . $bap->file_foto);
                 $file = $request->file('file_foto');
-                $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+                $nama_file = 'File Foto' . '-' . $file->getClientOriginalName();
                 $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
                 $file->move($tujuan_upload, $nama_file);
                 $bap->file_foto = $nama_file;
@@ -4204,7 +4252,7 @@ class MhsController extends Controller
         } else {
             if ($request->hasFile('file_foto')) {
                 $file = $request->file('file_foto');
-                $nama_file = 'File Foto' .  '-' . $file->getClientOriginalName();
+                $nama_file = 'File Foto' . '-' . $file->getClientOriginalName();
                 $tujuan_upload = 'File Wisuda/' . Auth::user()->id_user;
                 $file->move($tujuan_upload, $nama_file);
                 $bap->file_foto = $nama_file;
@@ -4535,7 +4583,7 @@ class MhsController extends Controller
                 } elseif ($c == 2) {
                     $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + $spp2 - $total_semua_dibayar;
                 } elseif ($c == '201') {
-                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
+                    $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 - $total_semua_dibayar;
                 } elseif ($c == 3) {
                     $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 - $total_semua_dibayar;
                 } elseif ($c == 4) {
@@ -4979,7 +5027,7 @@ class MhsController extends Controller
         } elseif ($c == 4) {
             $cekbyr = ($spp4 / 6) - $jml_telah_dibayar_spp4;
         } elseif ($c == 5) {
-            $cekbyr = ($spp5 / 6)  - $jml_telah_dibayar_spp5;
+            $cekbyr = ($spp5 / 6) - $jml_telah_dibayar_spp5;
         } elseif ($c == 6) {
             $cekbyr = ($spp6 / 6) - $jml_telah_dibayar_spp6;
         } elseif ($c == 7) {
@@ -5356,7 +5404,7 @@ class MhsController extends Controller
             } elseif ($c == 2) {
                 $cekbyr = $daftar + $awal + ($dsp * 91) / 100 + $spp1 + ($spp2 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == '201') {
-                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2  - $total_semua_dibayar;
+                $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 - $total_semua_dibayar;
             } elseif ($c == 3) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + ($spp3 * $persen_uas / 100) - $total_semua_dibayar;
             } elseif ($c == 4) {
@@ -5473,7 +5521,7 @@ class MhsController extends Controller
                             ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
                             ->where('kuisioner_transaction.id_student', $id)
                             ->where('kuisioner_master_kategori.id_kategori_kuisioner', 6)
-                            ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                            ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
                             ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                             ->get();
 
@@ -5493,7 +5541,7 @@ class MhsController extends Controller
                                     ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
                                     ->where('kuisioner_transaction.id_student', $id)
                                     ->where('kuisioner_master_kategori.id_kategori_kuisioner', 8)
-                                    ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                                    ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
                                     ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                                     ->get();
 
@@ -5503,7 +5551,7 @@ class MhsController extends Controller
                                         ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
                                         ->where('kuisioner_transaction.id_student', $id)
                                         ->where('kuisioner_master_kategori.id_kategori_kuisioner', 9)
-                                        ->where('kuisioner_transaction.id_periodetahun',  $id_tahun)
+                                        ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
                                         ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                                         ->get();
 
@@ -6783,7 +6831,7 @@ class MhsController extends Controller
                 $cek_tahun = $data_semester_cuti->id_periodetahun;
                 $cek_tipe = $data_semester_cuti->id_periodetipe;
 
-                if ($request->id_periodetahun == $cek_tahun && $request->id_periodetipe ==  $cek_tipe) {
+                if ($request->id_periodetahun == $cek_tahun && $request->id_periodetipe == $cek_tipe) {
                     Alert::warning('', 'Maaf Pengajuan Cuti berlaku 1 semester, jika ingin perpanjang harap ajukan semester berikutnya')->autoclose(3500);
                     return redirect('cuti_mhs');
                 } else {

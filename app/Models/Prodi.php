@@ -24,6 +24,11 @@ class Prodi extends Model
   // Relasi ke Student
   public function students()
   {
-      return $this->hasMany(Student::class, ['kodeprodi', 'kodekonsentrasi'], ['kodeprodi', 'kodekonsentrasi']);
+    return $this->hasMany(Student::class, ['kodeprodi', 'kodekonsentrasi'], ['kodeprodi', 'kodekonsentrasi']);
+  }
+
+  public function kurikulumTransactions()
+  {
+    return $this->hasMany(Kurikulum_transaction::class, 'id_prodi', 'id_prodi');
   }
 }

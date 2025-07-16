@@ -75,15 +75,15 @@
                                     </td>
                                     <td>
                                         <center>
-                                            @if ($item->absen_uas != null)
+                                            <!-- @if ($item->absen_uas != null)
                                                 @if ($item->ket_absensi == 'MEMENUHI')
-                                                    @if ($item->nilai_UAS == 0)
+                                                    @if ($item->nilai_UAS == 0) -->
                                                         <input type="hidden" name="id_student[]"
                                                             value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
                                                         <input type="hidden" name="id_studentrecord[]"
                                                             value="{{ $item->id_studentrecord }}">
                                                         <input type="text" name="nilai_UAS[]">
-                                                    @elseif ($item->nilai_UAS != 0)
+                                                    <!-- @elseif ($item->nilai_UAS != 0)
                                                         <input type="hidden" name="id_student[]"
                                                             value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
                                                         <input type="hidden" name="id_studentrecord[]"
@@ -117,7 +117,7 @@
                                                 @endif
                                             @elseif($item->absen_uas == null)
                                                 <span class="badge bg-yellow"> Tidak Absen Ujian</span>
-                                            @endif
+                                            @endif -->
                                         </center>
                                     </td>
                                 </tr>
