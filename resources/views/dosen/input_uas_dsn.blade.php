@@ -75,8 +75,8 @@
                                     </td>
                                     <td>
                                         <center>
-                                            <!-- @if ($item->absen_uas != null)
-                                                @if ($item->ket_absensi == 'MEMENUHI') -->
+                                            @if ($item->absen_uas != null)
+                                                @if ($item->ket_absensi == 'MEMENUHI')
                                                     @if ($item->nilai_UAS == 0)
                                                         <input type="hidden" name="id_student[]"
                                                             value="{{ $item->id_student }},{{ $item->id_kurtrans }}">
@@ -91,7 +91,7 @@
                                                         <input type="text" name="nilai_UAS[]"
                                                             value="{{ $item->nilai_UAS }}">
                                                     @endif
-                                                <!-- @elseif($item->ket_absensi == 'TIDAK MEMENUHI')
+                                                @elseif($item->ket_absensi == 'TIDAK MEMENUHI')
                                                     @if ($item->permohonan == 'MENGAJUKAN')
                                                         <span class="badge bg-blue"> Pengajuan belum di Acc/Reject</span>
                                                     @elseif($item->permohonan == 'TIDAK DISETUJUI')
@@ -114,10 +114,10 @@
                                                     @elseif($item->permohonan == null)
                                                         <span class="badge bg-red"> Absen Tidak Memenuhi</span>
                                                     @endif
-                                                @endif -->
-                                            <!-- @elseif($item->absen_uas == null)
+                                                @endif
+                                            @elseif($item->absen_uas == null)
                                                 <span class="badge bg-yellow"> Tidak Absen Ujian</span>
-                                            @endif -->
+                                            @endif
                                         </center>
                                     </td>
                                 </tr>
