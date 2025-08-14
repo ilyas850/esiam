@@ -35,13 +35,21 @@ class Kurikulum_periode extends Model
     return $this->hasOne(Kurikulum_transaction::class, 'id_makul', 'id_makul');
   }
 
-  public function semester ()
+  public function semester()
   {
     return $this->belongsTo(Semester::class, 'id_semester', 'idsemester');
   }
 
   public function kelas()
   {
-    return $this->belongsTo(Kelas::class, 'id_kelas', 'idkelas');  
+    return $this->belongsTo(Kelas::class, 'id_kelas', 'idkelas');
   }
+  public function prodi()
+  {
+    return $this->belongsTo(Prodi::class, 'id_prodi', 'id_prodi');
+  }
+  public function baps()
+    {
+        return $this->hasMany(Bap::class, 'id_kurperiode', 'id_kurperiode');
+    }
 }

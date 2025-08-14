@@ -31,4 +31,9 @@ class Bap extends Model
         'id_rps',
         'alasan_pembaharuan_materi',
     ];
+
+    public function kurikulumPeriode()
+    {
+        return $this->belongsTo(Kurikulum_periode::class, 'id_kurperiode', 'id_kurperiode');
+    }
 }

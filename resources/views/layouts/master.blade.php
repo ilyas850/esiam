@@ -365,7 +365,7 @@
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
             </div>
-            <strong>Copyright &copy; 2020-2024 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
+            <strong>Copyright &copy; 2020-2025 <a href="#">Politeknik META Industri Cikarang</a>.</strong> All
             rights
             reserved.
         </footer>
