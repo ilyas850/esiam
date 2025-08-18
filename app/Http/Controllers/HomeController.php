@@ -98,7 +98,7 @@ class HomeController extends Controller
     $angk = Angkatan::all();
 
     if ($akses == 1) {
-      $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+      $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->limit(7)->get();
       $tp = Periode_tipe::orderBy('periode_tipe', 'DESC')->get();
 
       $ldate = date('m/d/Y');

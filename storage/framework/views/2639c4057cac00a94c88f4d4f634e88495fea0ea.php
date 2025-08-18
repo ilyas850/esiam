@@ -2,7 +2,7 @@
     <div class="col-lg-4 col-xs-6">
         <div class="small-box bg-red">
             <div class="inner">
-                <h3>{{ $ti }} orang</h3>
+                <h3><?php echo e($ti); ?> orang</h3>
                 <p>Mahasiswa Teknik Industri</p>
             </div>
             <div class="icon">
@@ -13,7 +13,7 @@
     <div class="col-lg-4 col-xs-6">
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3>{{ $tk }} orang</h3>
+                <h3><?php echo e($tk); ?> orang</h3>
                 <p>Mahasiswa Teknologi Rekayasa Perangkat Lunak</p>
             </div>
             <div class="icon">
@@ -24,7 +24,7 @@
     <div class="col-lg-4 col-xs-6">
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>{{ $fa }} orang</h3>
+                <h3><?php echo e($fa); ?> orang</h3>
                 <p>Mahasiswa Farmasi</p>
             </div>
             <div class="icon">
@@ -42,8 +42,9 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <form class="form" role="form" action="{{ url('add_ta') }}" method="POST">
-                        {{ csrf_field() }}
+                    <form class="form" role="form" action="<?php echo e(url('add_ta')); ?>" method="POST">
+                        <?php echo e(csrf_field()); ?>
+
                         <div class="col-xs-7">
                             <input type="text" class="form-control enhanced-animations" name="periode_tahun"
                                 placeholder="T.A.2019/2020" required id="periode-input">
@@ -69,25 +70,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($tahun as $item)
+                        <?php $__currentLoopData = $tahun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $item->periode_tahun }}</td>
-                                <td>{{ $item->status }}</td>
+                                <td><?php echo e($item->periode_tahun); ?></td>
+                                <td><?php echo e($item->status); ?></td>
                                 <td>
-                                    @if ($item->status == 'ACTIVE')
+                                    <?php if($item->status == 'ACTIVE'): ?>
                                         <span class="badge bg-yellow">AKTIF</span>
-                                    @elseif ($item->status == 'NOT ACTIVE')
-                                        <form method="POST" action="{{ url('change_ta_thn') }}">
+                                    <?php elseif($item->status == 'NOT ACTIVE'): ?>
+                                        <form method="POST" action="<?php echo e(url('change_ta_thn')); ?>">
                                             <input type="hidden" name="status" value="ACTIVE">
-                                            <input type="hidden" name="id_periodetahun" value="{{ $item->id_periodetahun }}">
-                                            {{ csrf_field() }}
+                                            <input type="hidden" name="id_periodetahun" value="<?php echo e($item->id_periodetahun); ?>">
+                                            <?php echo e(csrf_field()); ?>
+
                                             <button type="submit" class="btn btn-info btn-xs"
                                                 data-tooltip="Aktifkan periode ini">Aktifkan</button>
                                         </form>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
@@ -105,48 +107,52 @@
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
-                    @foreach ($tipe as $item)
+                    <?php $__currentLoopData = $tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td>{{ $item->periode_tipe }}</td>
-                            <td>{{ $item->status }}</td>
+                            <td><?php echo e($item->periode_tipe); ?></td>
+                            <td><?php echo e($item->status); ?></td>
                             <td>
-                                @if ($item->status == 'ACTIVE')
+                                <?php if($item->status == 'ACTIVE'): ?>
                                     <span class="badge bg-yellow">AKTIF</span>
-                                @elseif ($item->status == 'NOT ACTIVE')
-                                    <form method="POST" action="{{ url('change_ta_tp') }}">
+                                <?php elseif($item->status == 'NOT ACTIVE'): ?>
+                                    <form method="POST" action="<?php echo e(url('change_ta_tp')); ?>">
                                         <input type="hidden" name="status" value="ACTIVE">
-                                        <input type="hidden" name="id_periodetipe" value="{{ $item->id_periodetipe }}">
-                                        {{ csrf_field() }}
+                                        <input type="hidden" name="id_periodetipe" value="<?php echo e($item->id_periodetipe); ?>">
+                                        <?php echo e(csrf_field()); ?>
+
                                         <button type="submit" class="btn btn-info btn-xs"
                                             data-tooltip="Aktifkan tipe periode ini">Aktifkan</button>
                                     </form>
-                                @endif
+                                <?php endif; ?>
                             </td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </table>
             </div>
         </div>
         <div class="box box-info enhanced-animations">
             <div class="box-header with-border">
                 <span class="fa fa-calendar-check-o"></span>
-                <h3 class="box-title"><b>KRS Periode @foreach ($tahun as $key)
-                    @if ($key->status == 'ACTIVE')
-                        {{ $key->periode_tahun }}
-                    @endif
-                @endforeach
-                        @foreach ($tipe as $key)
-                            @if ($key->status == 'ACTIVE')
-                                {{ $key->periode_tipe }}
-                            @endif
-                        @endforeach
+                <h3 class="box-title"><b>KRS Periode <?php $__currentLoopData = $tahun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($key->status == 'ACTIVE'): ?>
+                        <?php echo e($key->periode_tahun); ?>
+
+                    <?php endif; ?>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php $__currentLoopData = $tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if($key->status == 'ACTIVE'): ?>
+                                <?php echo e($key->periode_tipe); ?>
+
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </b></h3>
             </div>
             <div class="box-body">
-                @if ($time->status == 0)
+                <?php if($time->status == 0): ?>
                     <div id="krs-status-open" style="display: block;">
-                        <form method="POST" action="{{ url('save_krs_time') }}" id="krs-open-form">
-                            {{ csrf_field() }}
+                        <form method="POST" action="<?php echo e(url('save_krs_time')); ?>" id="krs-open-form">
+                            <?php echo e(csrf_field()); ?>
+
 
                             <div class="row">
                                 <div class="col-md-6">
@@ -156,7 +162,7 @@
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
-                                            <input type="text" class="form-control" id="datepicker3" value="{{ $now }}"
+                                            <input type="text" class="form-control" id="datepicker3" value="<?php echo e($now); ?>"
                                                 disabled>
                                         </div>
                                     </div>
@@ -168,24 +174,25 @@
                                             <i class="fa fa-calendar"></i>
                                         </span>
                                         <input type="text" class="form-control enhanced-animations" id="datepicker"
-                                            name="waktu_akhir" value="{{ $time->waktu_akhir }}" required>
+                                            name="waktu_akhir" value="<?php echo e($time->waktu_akhir); ?>" required>
                                     </div>
                                 </div>
                             </div>
 
                             <input type="hidden" name="status" value="1">
-                            <input type="hidden" name="waktu_awal" value="{{ $now }}">
-                            <input type="hidden" name="id" value="{{ $time->id }}">
+                            <input type="hidden" name="waktu_awal" value="<?php echo e($now); ?>">
+                            <input type="hidden" name="id" value="<?php echo e($time->id); ?>">
                             <button type="submit" class="btn btn-info btn-lg btn-block"
                                 data-tooltip="Mulai periode pengisian KRS">
                                 <i class="fa fa-unlock"></i> KRS Dibuka
                             </button>
                         </form>
                     </div>
-                @elseif ($time->status == 1)
+                <?php elseif($time->status == 1): ?>
                     <div id="krs-status-close">
-                        <form method="POST" action="{{ url('delete_time_krs') }}" id="krs-close-form">
-                            {{ csrf_field() }}
+                        <form method="POST" action="<?php echo e(url('delete_time_krs')); ?>" id="krs-close-form">
+                            <?php echo e(csrf_field()); ?>
+
                             <div class="form-group">
                                 <label>Hentikan Waktu Pengisian KRS:</label>
                                 <div class="input-group">
@@ -193,11 +200,11 @@
                                         <i class="fa fa-calendar"></i>
                                     </div>
                                     <input type="text" class="form-control pull-right"
-                                        value="{{ $time->waktu_awal }} sampai {{ $time->waktu_akhir }}" readonly>
+                                        value="<?php echo e($time->waktu_awal); ?> sampai <?php echo e($time->waktu_akhir); ?>" readonly>
                                 </div>
                             </div>
                             <input type="hidden" name="status" value="0">
-                            <input type="hidden" name="id" value="{{ $time->id }}">
+                            <input type="hidden" name="id" value="<?php echo e($time->id); ?>">
                             <button type="button" class="btn btn-warning btn-lg btn-block" data-toggle="modal"
                                 data-target="#modal-warning" data-tooltip="Tutup periode pengisian KRS">
                                 <i class="fa fa-lock"></i> Tutup Pengisian KRS
@@ -223,7 +230,7 @@
                             </div>
                         </form>
                     </div>
-                @endif
+                <?php endif; ?>
 
             </div>
         </div>
@@ -234,16 +241,16 @@
             </div>
             <div class="box-body">
                 <div id="waktumundur">
-                    @if ($time->status != 0)
+                    <?php if($time->status != 0): ?>
                         <span id="countdown">Loading countdown...</span>
-                    @else
+                    <?php else: ?>
                         Belum ada info perwalian
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
             <script type='text/javascript'>
                 //<![CDATA[
-                var target_date = new Date("{{ $time->waktu_akhir }}").getTime();
+                var target_date = new Date("<?php echo e($time->waktu_akhir); ?>").getTime();
                 var days, hours, minutes, seconds;
                 var countdown = document.getElementById("countdown");
                 setInterval(function () {
@@ -286,4 +293,4 @@
         </style>
     </div>
 
-    
+    <?php /**PATH /var/www/html/resources/views/layouts/admin_home.blade.php ENDPATH**/ ?>

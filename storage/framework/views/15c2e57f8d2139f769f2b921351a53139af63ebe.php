@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
         /* Enhancement styles that don't override existing CSS */
         .enhanced-animations {
@@ -42,7 +40,7 @@
             animation: countUp 1.5s ease-out;
         }
         
-        @keyframes countUp {
+        @keyframes  countUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -106,7 +104,7 @@
             animation: pulse 2s infinite;
         }
         
-        @keyframes pulse {
+        @keyframes  pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
@@ -125,7 +123,7 @@
             animation: fadeInUp 0.6s ease-out;
         }
         
-        @keyframes fadeInUp {
+        @keyframes  fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -140,7 +138,7 @@
             animation: slideInLeft 0.8s ease-out;
         }
         
-        @keyframes slideInLeft {
+        @keyframes  slideInLeft {
             from {
                 opacity: 0;
                 transform: translateX(-50px);
@@ -155,7 +153,7 @@
             animation: slideInRight 0.8s ease-out;
         }
         
-        @keyframes slideInRight {
+        @keyframes  slideInRight {
             from {
                 opacity: 0;
                 transform: translateX(50px);
@@ -181,7 +179,7 @@
             animation: glow 2s ease-in-out infinite alternate;
         }
         
-        @keyframes glow {
+        @keyframes  glow {
             from { box-shadow: 0 4px 15px rgba(49, 38, 107, 0.3); }
             to { box-shadow: 0 6px 20px rgba(49, 38, 107, 0.5), 0 0 30px rgba(254, 197, 3, 0.2); }
         }
@@ -258,13 +256,13 @@
         }
     </style>
     <section class="content">
-        @if (Auth::user()->role == 1)
-            @include('layouts.admin_home')
-        @elseif (Auth::user()->role == 2)
-            @include('layouts.dosen_home')
-        @elseif (Auth::user()->role == 3)
-            @include('layouts.mhs_home')
-        @elseif (Auth::user()->role == 4)
+        <?php if(Auth::user()->role == 1): ?>
+            <?php echo $__env->make('layouts.admin_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 2): ?>
+            <?php echo $__env->make('layouts.dosen_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 3): ?>
+            <?php echo $__env->make('layouts.mhs_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 4): ?>
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                     <div class="box box-info">
@@ -273,12 +271,13 @@
                             <h3 class="box-title">Selamat Datang Mahasiswa Politeknik META Industri Cikarang</h3>
                         </div>
                         <form class="form-horizontal" role="form" method="POST"
-                            action="/new_pwd_user/{{ Auth::user()->username }}">
-                            {{ csrf_field() }}
+                            action="/new_pwd_user/<?php echo e(Auth::user()->username); ?>">
+                            <?php echo e(csrf_field()); ?>
+
                             <input id="role" type="hidden" class="form-control" name="role" value="3">
                             <div class="box-body">
                                 <center>
-                                    <a class="btn btn-warning" href="pwd/{{ Auth::user()->id }}"
+                                    <a class="btn btn-warning" href="pwd/<?php echo e(Auth::user()->id); ?>"
                                         class="btn btn-default btn-flat">Klik disini untuk ganti password !!!</a>
                                 </center>
                             </div>
@@ -286,22 +285,24 @@
                     </div>
                 </div>
             </div>
-        @elseif (Auth::user()->role == 5)
-            @include('layouts.dosenluar_home')
-        @elseif (Auth::user()->role == 6)
-            @include('layouts.kaprodi_home')
-        @elseif (Auth::user()->role == 7)
-            @include('layouts.wadir1_home')
-        @elseif (Auth::user()->role == 8)
-            @include('layouts.bauk_home')
-        @elseif (Auth::user()->role == 9)
-            @include('layouts.adminprodi_home')
-        @elseif (Auth::user()->role == 10)
-            @include('layouts.wadir3_home')
-        @elseif (Auth::user()->role == 11)
-            @include('layouts.prausta_home')
-        @elseif (Auth::user()->role == 12)
-            @include('layouts.gugusmutu_home')
-        @endif
+        <?php elseif(Auth::user()->role == 5): ?>
+            <?php echo $__env->make('layouts.dosenluar_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 6): ?>
+            <?php echo $__env->make('layouts.kaprodi_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 7): ?>
+            <?php echo $__env->make('layouts.wadir1_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 8): ?>
+            <?php echo $__env->make('layouts.bauk_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 9): ?>
+            <?php echo $__env->make('layouts.adminprodi_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 10): ?>
+            <?php echo $__env->make('layouts.wadir3_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 11): ?>
+            <?php echo $__env->make('layouts.prausta_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif(Auth::user()->role == 12): ?>
+            <?php echo $__env->make('layouts.gugusmutu_home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php endif; ?>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/home.blade.php ENDPATH**/ ?>
