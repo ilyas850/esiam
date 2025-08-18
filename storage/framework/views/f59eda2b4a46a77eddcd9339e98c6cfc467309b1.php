@@ -1,0 +1,472 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <?php if($foto == null): ?>
+                    <img class="profile-user-img img-responsive img-circle" src="<?php echo e(asset('/adminlte/img/default.jpg')); ?>"
+                        alt="User profile picture">
+                    <center>
+                        <a href="/ganti_foto/<?php echo e($mhs->nim); ?>"><span class="fa fa-camera"></span>
+                            Ganti foto</a>
+                    </center>
+                <?php else: ?>
+                    <img class="profile-user-img img-responsive img-circle" src="<?php echo e(asset('/foto_mhs/' . $foto)); ?>"
+                        alt="User profile picture">
+                    <center>
+                        <a href="/ganti_foto/<?php echo e($mhs->nim); ?>"><span class="fa fa-camera"></span>
+                            Ganti foto</a>
+                    </center>
+                <?php endif; ?>
+                <h3 class="profile-username text-center"><?php echo e($mhs->nama); ?></h3>
+                <p class="text-muted text-center">
+                    <center>
+                        <h4><?php echo e($mhs->nim); ?></h4>
+                    </center>
+                </p>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <center>
+                            <b><?php echo e($mhs->prodi); ?> - <?php echo e($mhs->konsentrasi); ?></b> <a class="pull-right"> <b></b></a>
+                        </center>
+                    </li>
+                    <li class="list-group-item">
+                        <center>
+                            <b><?php echo e($mhs->kelas); ?> </b> <a class="pull-right"><b></b></a>
+                        </center>
+                    </li>
+                    <li class="list-group-item">
+                        <center>
+                            <b><?php echo e($mhs->angkatan); ?></b> <a class="pull-right"></a>
+                        </center>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">About Me</h3>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-file-text-o margin-r-5"></i> Microsoft Teams (Username)</strong>
+                <p><?php echo e($mhs->username); ?></p>
+                <hr>
+
+                <strong><i class="fa fa-file-text-o margin-r-5"></i> Microsoft Teams (Password)</strong>
+                <p> <?php echo e($mhs->password); ?> </p>
+                <hr>
+                <strong><i class="fa fa-barcode margin-r-5"></i> NISN</strong>
+                <p class="text-muted"><?php echo e($mhs->nisn); ?>
+
+                    <a class="btn btn-warning btn-xs" data-toggle="modal"
+                        data-target="#modalUpdateNisn<?php echo e($mhs->idstudent); ?>" title="klik untuk edit"><i
+                            class="fa fa-edit"> </i></a>
+                </p>
+                <div class="modal fade" id="modalUpdateNisn<?php echo e($mhs->idstudent); ?>" tabindex="-1"
+                    aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update NISN</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/put_nisn/<?php echo e($mhs->idstudent); ?>" method="post">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('put'); ?>
+                                    <div class="form-group">
+                                        <label>NISN Mahasiswa</label>
+                                        <input class="form-control" type="number" name="nisn"
+                                            value="<?php echo e($mhs->nisn); ?>">
+                                    </div>
+                                    <input type="hidden" name="updated_by" value="<?php echo e(Auth::user()->name); ?>">
+                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <strong><i class="fa fa-phone margin-r-5"></i> No. HP</strong>
+                <p class="text-muted">
+                    <?php if($mhs->hp_baru == null): ?>
+                        <?php echo e($mhs->hp); ?>
+
+                    <?php elseif($mhs->hp_baru != null): ?>
+                        <?php echo e($mhs->hp_baru); ?>
+
+                    <?php endif; ?>
+                </p>
+                <hr>
+                <strong><i class="fa fa-envelope margin-r-5"></i> E-mail</strong>
+                <p class="text-muted">
+                    <?php if($mhs->email_baru == null): ?>
+                        <?php echo e($mhs->email); ?>
+
+                    <?php elseif($mhs->email_baru != null): ?>
+                        <?php echo e($mhs->email_baru); ?>
+
+                    <?php endif; ?>
+                </p>
+                <hr>
+                <strong><i class="fa fa-cc-mastercard"></i> Virtual Account</strong>
+                <p class="text-muted"><?php echo e($mhs->virtual_account); ?></p>
+                <hr>
+
+                <?php if($mhs->id_mhs == null): ?>
+                    <a class="btn btn-success btn-block" href="/update/<?php echo e($mhs->idstudent); ?>"><i
+                            class="fa fa-edit"></i> Edit No HP dan E-mail</a>
+                <?php elseif($mhs->id_mhs != null): ?>
+                    <a class="btn btn-success btn-block" href="/change/<?php echo e($mhs->id); ?>"><i class="fa fa-edit"></i>
+                        Edit data No HP dan E-mail</a>
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#activity" data-toggle="tab">Aktivitas</a></li>
+                <li><a href="#timeline" data-toggle="tab">Matakuliah Paket</a></li>
+                <li><a href="#settings" data-toggle="tab">Matakuliah Mengulang</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane" id="activity">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Tahun Akademik</span>
+                                    <span class="info-box-number">
+                                        <?php echo e($tahun->periode_tahun); ?></span>
+                                    <span class="info-box-number"><?php echo e($tipe->periode_tipe); ?></span>
+                                    <a href="<?php echo e(asset('/Kalender Akademik/' . $tahun->file)); ?>" target="_blank"
+                                        class="small-box-footer">Unduh Kalender Akademik <i
+                                            class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Jadwal KRS</span>
+                                    <span class="info-box-number">
+                                        <?php if($time->status == 0): ?>
+                                            Jadwal Belum ada
+                                        <?php elseif($time->status == 1): ?>
+                                            <?php echo e(date(' d-m-Y', strtotime($time->waktu_awal))); ?> s/d
+                                            <?php echo e(date(' d-m-Y', strtotime($time->waktu_akhir))); ?>
+
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <h3 class="box-title">Waktu Pengisian KRS</h3>
+                                </div>
+                                <div class="box-body">
+                                    <form role="form">
+                                        <div id="waktumundur">
+                                            <?php if($time->status != 0): ?>
+                                                <span id="countdown"></span>
+                                            <?php else: ?>
+                                                Belum ada info perwalian
+                                            <?php endif; ?>
+                                        </div>
+                                    </form>
+                                </div>
+                                <script type='text/javascript'>
+                                    //<![CDATA[
+                                    var target_date = new Date("<?php echo e($time->waktu_akhir); ?>").getTime();
+                                    var days, hours, minutes, seconds;
+                                    var countdown = document.getElementById("countdown");
+                                    setInterval(function() {
+                                        var current_date = new Date().getTime();
+                                        var seconds_left = (target_date - current_date) / 1000;
+                                        days = parseInt(seconds_left / 86400);
+                                        seconds_left = seconds_left % 86400;
+                                        hours = parseInt(seconds_left / 3600);
+                                        seconds_left = seconds_left % 3600;
+                                        minutes = parseInt(seconds_left / 60);
+                                        seconds = parseInt(seconds_left % 60);
+                                        countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
+                                            " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
+                                            " <span class=\'digit\'>detik </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian KRS</span>";
+                                    }, 1000);
+                                    //]]>
+                                </script>
+
+                                <style scoped="" type="text/css">
+                                    #waktumundur {
+
+                                        background: #31266b;
+                                        color: #fec503;
+                                        font-size: 100%;
+                                        text-transform: uppercase;
+                                        text-align: center;
+                                        padding: 20px 0;
+                                        font-weight: bold;
+                                        border-radius: 5px;
+                                        line-height: 1.8em;
+                                        font-family: Arial, sans-serif;
+                                    }
+
+                                    .digit {
+                                        color: white
+                                    }
+
+                                    .judul {
+                                        color: white
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <h3 class="box-title">Waktu Pengisian EDOM</h3>
+                                </div>
+                                <div class="box-body">
+                                    <form role="form">
+                                        <div id="waktumunduredom">
+                                            <?php if($edom->status != 0): ?>
+                                                <span id="countdownedom"></span>
+                                            <?php else: ?>
+                                                Belum ada info pengisian EDOM
+                                            <?php endif; ?>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <script type='text/javascript'>
+                                //<![CDATA[
+                                var target_date_edom = new Date("<?php echo e($edom->waktu_akhir); ?>").getTime();
+                                var days_edom, hours_edom, minutes_edom, seconds_edom;
+                                var countdownedom = document.getElementById("countdownedom");
+                                setInterval(function() {
+                                    var current_date_edom = new Date().getTime();
+                                    var seconds_left_edom = (target_date_edom - current_date_edom) / 1000;
+                                    days_edom = parseInt(seconds_left_edom / 86400);
+                                    seconds_left_edom = seconds_left_edom % 86400;
+                                    hours_edom = parseInt(seconds_left_edom / 3600);
+                                    seconds_left_edom = seconds_left_edom % 3600;
+                                    minutes_edom = parseInt(seconds_left_edom / 60);
+                                    seconds_edom = parseInt(seconds_left_edom % 60);
+                                    countdownedom.innerHTML = days_edom + " <span class=\'digit\'>hari</span> " + hours_edom +
+                                        " <span class=\'digit\'>jam</span> " + minutes_edom + " <span class=\'digit\'>menit</span> " +
+                                        seconds_edom +
+                                        " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian EDOM</span>";
+                                }, 1000);
+                                //]]>
+                            </script>
+                            <style scoped="" type="text/css">
+                                #waktumunduredom {
+
+                                    background: #31266b;
+                                    color: #fec503;
+                                    font-size: 100%;
+                                    text-transform: uppercase;
+                                    text-align: center;
+                                    padding: 20px 0;
+                                    font-weight: bold;
+                                    border-radius: 5px;
+                                    line-height: 1.8em;
+                                    font-family: Arial, sans-serif;
+                                }
+
+                                .digit {
+                                    color: white
+                                }
+
+                                .judul {
+                                    color: white
+                                }
+                            </style>
+                        </div>
+                    </div>
+
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Informasi Terbaru</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="products-list product-list-in-box">
+                                        <?php $__currentLoopData = $info; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <?php if($item->file != null): ?>
+                                                        <img class="img-circle" src="/images/bell.jpg">
+                                                    <?php else: ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="product-info">
+                                                    <a href="/lihat/<?php echo e($item->id_informasi); ?>"
+                                                        class="product-title"><?php echo e($item->judul); ?>
+
+                                                        <span class="label label-info pull-right">
+                                                            <?php echo e(date('l, d F Y', strtotime($item->created_at))); ?><br>
+                                                            <?php echo e($item->created_at->diffForHumans()); ?>
+
+                                                        </span></a>
+                                                    <span class="product-description">
+                                                        <?php echo e($item->deskripsi); ?>
+
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </ul>
+                                </div>
+                                <div class="box-footer text-center">
+                                    <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="timeline">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Paket Matakuliah</h3>
+                                </div>
+                                <div class="box-body ">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <center>No</center>
+                                                </th>
+                                                <th>
+                                                    <center>Kurikulum</center>
+                                                </th>
+                                                <th>
+                                                    <center>Prodi</center>
+                                                </th>
+                                                <th>
+                                                    <center>Semester</center>
+                                                </th>
+                                                <th>
+                                                    <center>Angkatan</center>
+                                                </th>
+                                                <th>
+                                                    <center>Matakuliah</center>
+                                                </th>
+                                                <th>
+                                                    <center>Status</center>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no = 1; ?>
+                                            <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <tr>
+                                                    <td align="center"><?php echo e($no++); ?></td>
+                                                    <td align="center"><?php echo e($item->nama_kurikulum); ?></td>
+                                                    <td align="center"><?php echo e($item->prodi); ?></td>
+                                                    <td align="center"><?php echo e($item->semester); ?></td>
+                                                    <td align="center"><?php echo e($item->angkatan); ?></td>
+                                                    <td><?php echo e($item->kode); ?> / <?php echo e($item->makul); ?></td>
+                                                    <td align="center">
+                                                        <?php if($item->id_studentrecord != null): ?>
+                                                            <span class="label label-success">diambil</span>
+                                                        <?php else: ?>
+                                                            <span class="label label-warning">belum</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="settings">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Matakuliah Wajib Ulang</h3>
+                                </div>
+                                <div class="box-body ">
+                                    <table id="example3" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <center>No</center>
+                                                </th>
+                                                <th>
+                                                    <center>Kurikulum</center>
+                                                </th>
+                                                <th>
+                                                    <center>Prodi</center>
+                                                </th>
+                                                <th>
+                                                    <center>Semester</center>
+                                                </th>
+                                                <th>
+                                                    <center>Angkatan</center>
+                                                </th>
+                                                <th>
+                                                    <center>Matakuliah</center>
+                                                </th>
+                                                <th>
+                                                    <center>Nilai</center>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no = 1; ?>
+                                            <?php $__currentLoopData = $data_mengulang; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <tr>
+                                                    <td align="center"><?php echo e($no++); ?></td>
+                                                    <td align="center"><?php echo e($item->nama_kurikulum); ?></td>
+                                                    <td align="center"><?php echo e($item->prodi); ?></td>
+                                                    <td align="center"><?php echo e($item->semester); ?></td>
+                                                    <td align="center"><?php echo e($item->angkatan); ?></td>
+                                                    <td><?php echo e($item->kode); ?> / <?php echo e($item->makul); ?></td>
+                                                    <td align="center">
+                                                        <?php echo e($item->nilai_AKHIR); ?>
+
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?php /**PATH /var/www/html/resources/views/layouts/mhs_home.blade.php ENDPATH**/ ?>
