@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="<?php echo e(asset('images/Logo Meta.png')); ?>">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -18,198 +18,172 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --text-white: #ffffff;
-            --text-light: rgba(255, 255, 255, 0.9);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.15);
-            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             overflow-x: hidden;
-        }
-
-        /* Background with overlay */
-        .background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-        }
-
-        .background-image {
-            width: 100%;
-            height: 100%;
-            background-image: url('<?php echo e(asset("images/walpaper welcome page.jpg")); ?>');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Menghilangkan filter brightness agar background asli terlihat */
-        }
-
-        .background-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.2); /* Overlay yang sangat subtle */
-            z-index: -1;
         }
 
         /* Navigation */
         .navigation {
-            position: absolute;
+            position: fixed;
             top: 0;
             right: 0;
             padding: 2rem;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .nav-button {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-white);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
             padding: 12px 24px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: var(--shadow-light);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
         }
 
         .nav-button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-            color: var(--text-white);
+            color: white;
             text-decoration: none;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         /* Main container */
         .main-container {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            position: relative;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         /* Hero section */
         .hero-section {
             text-align: center;
-            max-width: 900px;
+            margin-bottom: 4rem;
             width: 100%;
-            position: relative;
         }
 
-        /* Logo container */
-        .logo-container {
-            margin-bottom: 3rem;
-            position: relative;
+        /* Logo section */
+        .logo-section {
+            margin-bottom: 2rem;
         }
 
         .logo-wrapper {
             display: inline-block;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            transition: all 0.4s ease;
-            /* Menghilangkan animasi float */
-        }
-
-        .logo-wrapper:hover {
-            transform: scale(1.05);
+            margin-bottom: 0;
+            position: relative;
         }
 
         .logo-img {
-            width: 120px;
-            height: 120px;
+            width: 350px;
+            height: 150px;
             object-fit: contain;
-            filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.3));
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.2));
             transition: all 0.3s ease;
         }
 
-        .logo-wrapper:hover .logo-img {
-            filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.4));
+        .logo-img:hover {
+            transform: scale(1.02);
+            filter: drop-shadow(0 6px 25px rgba(0, 0, 0, 0.3));
         }
 
         .logo-fallback {
-            width: 120px;
-            height: 120px;
+            width: 160px;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
-            color: var(--text-white);
-            filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.3));
-            transition: all 0.3s ease;
-        }
-
-        .logo-wrapper:hover .logo-fallback {
-            filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.4));
+            font-size: 5rem;
+            color: #ffffff;
+            opacity: 0.9;
         }
 
         /* Typography */
         .main-title {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 800;
-            color: var(--text-white);
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            color: #ffffff;
             margin-bottom: 1rem;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            line-height: 1.1;
+            line-height: 0.9;
             letter-spacing: -0.02em;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .subtitle {
-            font-size: clamp(1.2rem, 4vw, 2rem);
-            font-weight: 300;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            line-height: 1.3;
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            opacity: 0.95;
         }
 
         .tagline {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: var(--text-light);
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: #ffffff;
             margin-bottom: 3rem;
             font-weight: 400;
-            max-width: 600px;
+            line-height: 1.6;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.6;
+            opacity: 0.9;
         }
 
-        /* Login section - Simplified */
-        .login-section {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 4rem;
+        /* Academic info section */
+        .academic-info {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .academic-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .academic-desc {
+            font-size: 1rem;
+            color: #ffffff;
+            line-height: 1.6;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        /* Action section */
+        .action-section {
+            margin-bottom: 3rem;
         }
 
         .action-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-white);
-            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 36px;
             border: none;
             border-radius: 50px;
             font-weight: 600;
@@ -217,140 +191,129 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow-light);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .action-btn:hover::before {
-            left: 100%;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .action-btn:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-heavy);
-            color: var(--text-white);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+            color: white;
             text-decoration: none;
         }
 
-        .action-btn.secondary {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
+        /* Quick access section */
+        .quick-access {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+
+        .quick-access-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .access-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .access-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .access-icon {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .access-label {
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
         /* Contact section */
         .contact-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-            box-shadow: var(--shadow-light);
+            padding: 2.5rem;
+            width: 100%;
+            backdrop-filter: blur(10px);
         }
 
         .contact-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-white);
-            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: var(--text-light);
-            font-size: 0.95rem;
+            gap: 15px;
+            color: #ffffff;
+            font-size: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            word-break: break-word;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
 
         .contact-item i {
-            color: var(--accent-color);
-            font-size: 1.1rem;
+            color: #ffffff;
+            font-size: 1.3rem;
+            min-width: 24px;
+            opacity: 0.8;
+            flex-shrink: 0;
         }
 
-        /* Floating shapes animation */
-        .floating-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03); /* Sangat subtle */
-            animation: floatShapes 25s infinite linear; /* Lebih lambat */
-        }
-
-        .shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 10%;
-            animation-delay: 5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 30%;
-            left: 20%;
-            animation-delay: 10s;
-        }
-
-        .shape:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            top: 40%;
-            right: 30%;
-            animation-delay: 15s;
-        }
-
-        /* Animations */
-        @keyframes  float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        @keyframes  floatShapes {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        .contact-item span {
+            flex: 1;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
 
         /* Responsive Design */
@@ -360,152 +323,194 @@
             }
 
             .main-container {
-                padding: 1rem;
+                padding: 2rem 1rem;
             }
 
-            .logo-wrapper {
-                padding: 0.8rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .logo-img, .logo-fallback {
-                width: 80px;
-                height: 80px;
-            }
-
-            .logo-fallback {
-                font-size: 2.5rem;
-            }
-
-            .login-section {
+            .hero-section {
                 margin-bottom: 3rem;
             }
 
-            .action-btn {
-                width: auto;
-                min-width: 200px;
-                justify-content: center;
+            .logo-img, .logo-fallback {
+                width: 250px;
+                height: 120px;
             }
 
-            .contact-info {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .logo-fallback {
+                font-size: 3.5rem;
+            }
+
+            .academic-info {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .academic-title {
+                font-size: 1.2rem;
+            }
+
+            .academic-desc {
+                font-size: 0.95rem;
+            }
+
+            .quick-access {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .quick-access-title {
+                font-size: 1.3rem;
+            }
+
+            .access-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .access-item {
+                padding: 1rem 0.8rem;
+            }
+
+            .access-icon {
+                font-size: 1.5rem;
+            }
+
+            .access-label {
+                font-size: 0.8rem;
+            }
+
+            .action-btn {
+                padding: 16px 28px;
+                font-size: 1rem;
             }
 
             .contact-section {
-                padding: 1.5rem;
-                margin-top: 1.5rem;
+                padding: 2rem;
+            }
+
+            .contact-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .contact-item {
+                padding: 1.25rem;
+                font-size: 0.9rem;
+                gap: 12px;
+            }
+
+            .contact-item i {
+                font-size: 1.2rem;
+                min-width: 20px;
             }
         }
 
         @media (max-width: 480px) {
+            .main-container {
+                padding: 1.5rem 1rem;
+            }
+
             .navigation {
                 padding: 0.5rem;
             }
 
             .nav-button {
-                padding: 10px 20px;
+                padding: 10px 16px;
                 font-size: 0.85rem;
             }
 
+            .academic-info {
+                padding: 1.25rem;
+            }
+
+            .quick-access {
+                padding: 1.25rem;
+            }
+
+            .access-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-btn {
+                padding: 14px 24px;
+                font-size: 0.95rem;
+            }
+
             .contact-section {
-                padding: 1rem;
+                padding: 1.5rem;
             }
 
-            .tagline {
-                margin-bottom: 2rem;
+            .contact-item {
+                padding: 1rem;
+                font-size: 0.85rem;
+                gap: 10px;
             }
         }
 
-        /* High-resolution displays */
-        @media (min-width: 1400px) {
-            .main-container {
-                padding: 4rem;
-            }
-
-            .hero-section {
-                max-width: 1100px;
-            }
+        /* Animations */
+        .hero-section {
+            animation: fadeInUp 0.8s ease-out;
         }
 
-        /* Landscape mobile orientation */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .main-container {
-                padding: 1rem;
-            }
+        .academic-info {
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
 
-            .logo-wrapper {
-                padding: 0.5rem;
-                margin-bottom: 1rem;
-            }
+        .action-section {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
 
-            .logo-img, .logo-fallback {
-                width: 60px;
-                height: 60px;
-            }
+        .quick-access {
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
 
-            .main-title {
-                margin-bottom: 0.5rem;
-            }
+        .contact-section {
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
 
-            .subtitle {
-                margin-bottom: 1rem;
+        @keyframes  fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-
-            .tagline {
-                margin-bottom: 1.5rem;
-            }
-
-            .login-section {
-                margin-bottom: 2rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Background -->
-    <div class="background-container">
-        <div class="background-image"></div>
-        <div class="background-overlay"></div>
-    </div>
-
-    <!-- Floating shapes - Dibuat lebih subtle -->
-    <div class="floating-shapes" style="opacity: 0.3;">
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
     <!-- Navigation -->
     <?php if(Route::has('login')): ?>
         <div class="navigation">
             <?php if(auth()->guard()->check()): ?>
                 <a href="<?php echo e(url('/home')); ?>" class="nav-button">
                     <i class="fas fa-home"></i>
-                    Home
+                    Dashboard
                 </a>
             <?php else: ?>
                 <a href="<?php echo e(route('login')); ?>" class="nav-button">
                     <i class="fas fa-sign-in-alt"></i>
                     Login
                 </a>
-                <!-- <a href="<?php echo e(route('login')); ?>" class="action-btn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </a> -->
-                
             <?php endif; ?>
         </div>
     <?php endif; ?>
 
     <!-- Main content -->
     <div class="main-container">
+        <!-- Hero section -->
         <div class="hero-section">
-            <!-- Logo -->
-            <!-- <div class="logo-container">
+            <!-- Logo section -->
+            <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img src="<?php echo e(asset('images/Logo Meta.png')); ?>" 
+                    <img src="<?php echo e(asset('images/logo meta full.png')); ?>" 
                          alt="Logo META" 
                          class="logo-img"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -513,48 +518,89 @@
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                 </div>
-            </div> -->
+            </div>
 
-            <!-- Main content - Simplified -->
-            <!-- <h1 class="main-title">eSIAM</h1>
+            <!-- Main content -->
+            <h1 class="main-title">eSIAM</h1>
             <h2 class="subtitle">Politeknik META Industri</h2>
             <p class="tagline">
-                Elektronik Sistem Informasi Akademik Meta
-            </p> -->
+                Elektronik Sistem Informasi Akademik Meta<br>
+                Empowering the Future of Industrial Education
+            </p>
+        </div>
 
-            <!-- Login section - Only essential button -->
-            <!-- <div class="login-section">
-                <?php if(auth()->guard()->check()): ?>
-                    <a href="<?php echo e(url('/home')); ?>" class="action-btn">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                <?php else: ?>
-                    <a href="<?php echo e(route('login')); ?>" class="action-btn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </a>
-                <?php endif; ?>
-            </div> -->
-           
-            <!-- Contact section -->
-            <!-- <div class="contact-section" id="contact">
-                <h3 class="contact-title">Contact Information</h3>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>esiam@politeknikmeta.ac.id</span>
+        <!-- Academic info section -->
+        <div class="academic-info">
+            <h3 class="academic-title">Portal Akademik Terpadu</h3>
+            <p class="academic-desc">
+                Sistem informasi akademik yang dirancang khusus untuk mendukung kegiatan belajar mengajar, 
+                administrasi akademik, dan interaksi antara dosen, mahasiswa, dan tenaga kependidikan.
+            </p>
+        </div>
+
+        <!-- Action section -->
+        <div class="action-section">
+            <?php if(auth()->guard()->check()): ?>
+                <a href="<?php echo e(url('/home')); ?>" class="action-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            <?php else: ?>
+                <a href="<?php echo e(route('login')); ?>" class="action-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Masuk ke Sistem
+                </a>
+            <?php endif; ?>
+        </div>
+
+        <!-- Quick access section -->
+        <div class="quick-access">
+            <h3 class="quick-access-title">Akses Cepat</h3>
+            <div class="access-grid">
+                <div class="access-item">
+                    <div class="access-icon">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>Contact Us</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Cikarang, Indonesia</span>
-                    </div>
+                    <div class="access-label">Portal Mahasiswa</div>
                 </div>
-            </div> -->
+                <div class="access-item">
+                    <div class="access-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="access-label">Portal Dosen</div>
+                </div>
+                <div class="access-item">
+                    <div class="access-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="access-label">Jadwal Kuliah</div>
+                </div>
+                <div class="access-item">
+                    <div class="access-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="access-label">Hasil Studi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact section -->
+        <div class="contact-section">
+            <h3 class="contact-title">Informasi Kontak</h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>esiam@politeknikmeta.ac.id</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>Bantuan Teknis</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Cikarang, Indonesia</span>
+                </div>
+            </div>
         </div>
     </div>
 </body>
