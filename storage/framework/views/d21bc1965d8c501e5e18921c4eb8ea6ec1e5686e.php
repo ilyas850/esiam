@@ -510,7 +510,11 @@
             <!-- Logo section -->
             <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img src="<?php echo e(asset('images/logo meta full.png')); ?>" 
+                    <!-- <img src="<?php echo e(asset('images/Logo Poltek Jernih.png')); ?>" 
+                         alt="Logo META" 
+                         class="logo-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> -->
+                    <img src="<?php echo e(asset('images/Logo Poltek Atas Bawah 1png.png')); ?>" 
                          alt="Logo META" 
                          class="logo-img"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

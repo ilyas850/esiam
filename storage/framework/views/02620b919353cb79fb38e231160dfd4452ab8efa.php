@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Consistent with List Page Styles */
         .detail-grid {
@@ -36,7 +34,7 @@
             animation: rotate 20s linear infinite;
         }
         
-        @keyframes rotate {
+        @keyframes  rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
@@ -112,7 +110,7 @@
             background: linear-gradient(90deg, #667eea, #764ba2, #3c8dbc);
         }
         
-        @keyframes fadeInUp {
+        @keyframes  fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -438,7 +436,7 @@
         }
         
         /* Print Styles */
-        @media print {
+        @media  print {
             .breadcrumb-simple,
             .action-section,
             .page-header-custom {
@@ -461,7 +459,7 @@
             animation: fadeIn 0.6s ease;
         }
         
-        @keyframes fadeIn {
+        @keyframes  fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
@@ -492,20 +490,22 @@
                     <div class="date-section">
                         <div class="date-item">
                             <i class="fa fa-calendar"></i>
-                            {{ date('d M Y', strtotime($info->created_at)) }}
+                            <?php echo e(date('d M Y', strtotime($info->created_at))); ?>
+
                         </div>
                         <div class="date-item">
                             <i class="fa fa-clock-o"></i>
-                            {{ date('H:i', strtotime($info->created_at)) }} WIB
+                            <?php echo e(date('H:i', strtotime($info->created_at))); ?> WIB
                         </div>
                         <div class="date-item">
                             <i class="fa fa-history"></i>
-                            {{ $info->created_at->diffForHumans() }}
+                            <?php echo e($info->created_at->diffForHumans()); ?>
+
                         </div>
                     </div>
                     
                     <!-- Title -->
-                    <h1 class="detail-title">{{ $info->judul }}</h1>
+                    <h1 class="detail-title"><?php echo e($info->judul); ?></h1>
                 </div>
                 
                 <!-- Content -->
@@ -516,69 +516,70 @@
                             <i class="fa fa-paperclip"></i>
                             Lampiran File
                         </div>
-                        @if ($info->file != null)
-                            <a href="{{ asset('/data_file/' . $info->file) }}" target="_blank" class="file-badge">
+                        <?php if($info->file != null): ?>
+                            <a href="<?php echo e(asset('/data_file/' . $info->file)); ?>" target="_blank" class="file-badge">
                                 <i class="fa fa-file-pdf-o"></i>
-                                <span>{{ Str::limit($info->file, 40) }}</span>
+                                <span><?php echo e(Str::limit($info->file, 40)); ?></span>
                             </a>
-                        @else
+                        <?php else: ?>
                             <div class="no-file-placeholder">
                                 <i class="fa fa-info-circle"></i>
                                 <span>Tidak ada lampiran</span>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Description -->
                     <div class="description-section">
                         <h3 class="section-title">Deskripsi</h3>
                         <div class="description-content">
-                            {!! nl2br(e($info->deskripsi)) !!}
+                            <?php echo nl2br(e($info->deskripsi)); ?>
+
                         </div>
                     </div>
                     
                     <!-- Info Stats -->
-                    @if(isset($info->kategori) || isset($info->status) || isset($info->updated_at))
+                    <?php if(isset($info->kategori) || isset($info->status) || isset($info->updated_at)): ?>
                     <div class="info-stats">
-                        @if(isset($info->kategori))
+                        <?php if(isset($info->kategori)): ?>
                         <div class="stat-item">
                             <div class="stat-icon">
                                 <i class="fa fa-bookmark"></i>
                             </div>
-                            <div class="stat-value">{{ $info->kategori }}</div>
+                            <div class="stat-value"><?php echo e($info->kategori); ?></div>
                             <div class="stat-label">Kategori</div>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         
-                        @if(isset($info->status))
+                        <?php if(isset($info->status)): ?>
                         <div class="stat-item">
                             <div class="stat-icon">
                                 <i class="fa fa-check-circle"></i>
                             </div>
-                            <div class="stat-value">{{ $info->status }}</div>
+                            <div class="stat-value"><?php echo e($info->status); ?></div>
                             <div class="stat-label">Status</div>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         
                         <div class="stat-item">
                             <div class="stat-icon">
                                 <i class="fa fa-calendar-check-o"></i>
                             </div>
-                            <div class="stat-value">{{ $info->created_at->format('d M Y') }}</div>
+                            <div class="stat-value"><?php echo e($info->created_at->format('d M Y')); ?></div>
                             <div class="stat-label">Dipublikasikan</div>
                         </div>
                         
-                        @if(isset($info->updated_at) && $info->updated_at != $info->created_at)
+                        <?php if(isset($info->updated_at) && $info->updated_at != $info->created_at): ?>
                         <div class="stat-item">
                             <div class="stat-icon">
                                 <i class="fa fa-refresh"></i>
                             </div>
-                            <div class="stat-value">{{ $info->updated_at->format('d M Y') }}</div>
+                            <div class="stat-value"><?php echo e($info->updated_at->format('d M Y')); ?></div>
                             <div class="stat-label">Update Terakhir</div>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Action Buttons -->
@@ -605,4 +606,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/lihatinfo.blade.php ENDPATH**/ ?>

@@ -34,7 +34,7 @@
         animation: rotate 20s linear infinite;
     }
 
-    @keyframes rotate {
+    @keyframes  rotate {
         from {
             transform: rotate(0deg);
         }
@@ -170,7 +170,7 @@
         animation: shimmer 2s ease-in-out infinite;
     }
 
-    @keyframes shimmer {
+    @keyframes  shimmer {
         0% {
             transform: translateX(-100%);
         }
@@ -240,7 +240,7 @@
         animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
+    @keyframes  pulse {
         0% {
             transform: scale(1);
         }
@@ -297,7 +297,7 @@
     }
 
     /* Animations */
-    @keyframes slideInLeft {
+    @keyframes  slideInLeft {
         from {
             opacity: 0;
             transform: translateX(-50px);
@@ -309,7 +309,7 @@
         }
     }
 
-    @keyframes slideInRight {
+    @keyframes  slideInRight {
         from {
             opacity: 0;
             transform: translateX(50px);
@@ -321,7 +321,7 @@
         }
     }
 
-    @keyframes fadeInUp {
+    @keyframes  fadeInUp {
         from {
             opacity: 0;
             transform: translateY(30px);
@@ -371,7 +371,7 @@
     <div class="col-md-6">
         <div class="box box-widget widget-user">
             <div class="widget-user-header bg-aqua-active">
-                <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
+                <h3 class="widget-user-username"><?php echo e(Auth::user()->name); ?></h3>
                 <h5 class="widget-user-desc">Biro Administrasi Keuangan</h5>
             </div>
             <div class="widget-user-image">
@@ -403,7 +403,7 @@
             <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Tahun Akademik</span>
-                <span class="info-box-number">{{ $tahun->periode_tahun }} {{ $tipe->periode_tipe }}</span>
+                <span class="info-box-number"><?php echo e($tahun->periode_tahun); ?> <?php echo e($tipe->periode_tipe); ?></span>
             </div>
         </div>
     </div>
@@ -414,11 +414,12 @@
             <div class="info-box-content">
                 <span class="info-box-text">Jadwal KRS</span>
                 <span class="info-box-number">
-                    @if ($time->status == 0)
+                    <?php if($time->status == 0): ?>
                         Jadwal Belum ada
-                    @elseif ($time->status == 1)
-                        {{ $time->waktu_awal }} s/d {{ $time->waktu_akhir }}
-                    @endif
+                    <?php elseif($time->status == 1): ?>
+                        <?php echo e($time->waktu_awal); ?> s/d <?php echo e($time->waktu_akhir); ?>
+
+                    <?php endif; ?>
                 </span>
             </div>
         </div>
@@ -436,26 +437,29 @@
             </div>
             <div class="box-body">
                 <ul class="products-list product-list-in-box">
-                    @foreach ($info as $item)
+                    <?php $__currentLoopData = $info; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li class="item">
                             <div class="product-img">
-                                @if ($item->file != null)
-                                    <img class="img-circle" src="{{ asset('/data_file/' . $item->file) }}">
-                                @else
-                                @endif
+                                <?php if($item->file != null): ?>
+                                    <img class="img-circle" src="<?php echo e(asset('/data_file/' . $item->file)); ?>">
+                                <?php else: ?>
+                                <?php endif; ?>
                             </div>
                             <div class="product-info">
-                                <a href="/lihat/{{ $item->id_informasi }}" class="product-title">{{ $item->judul }}
+                                <a href="/lihat/<?php echo e($item->id_informasi); ?>" class="product-title"><?php echo e($item->judul); ?>
+
                                     <span class="label label-info pull-right">
-                                        {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                        {{ $item->created_at->diffForHumans() }}
+                                        <?php echo e(date('l, d F Y', strtotime($item->created_at))); ?><br>
+                                        <?php echo e($item->created_at->diffForHumans()); ?>
+
                                     </span></a>
                                 <span class="product-description">
-                                    {{ $item->deskripsi }}
+                                    <?php echo e($item->deskripsi); ?>
+
                                 </span>
                             </div>
                         </li>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
             <div class="box-footer text-center">
@@ -463,4 +467,4 @@
             </div>
         </div>
     </div>
-</div>
+</div><?php /**PATH /var/www/html/resources/views/layouts/bauk_home.blade.php ENDPATH**/ ?>

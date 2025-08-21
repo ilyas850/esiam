@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Enhanced Card Styles */
         .info-grid {
@@ -255,7 +253,7 @@
             z-index: 10;
         }
         
-        @keyframes badge-pulse {
+        @keyframes  badge-pulse {
             0%, 100% {
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
@@ -289,7 +287,7 @@
             animation: rotate 20s linear infinite;
         }
         
-        @keyframes rotate {
+        @keyframes  rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
@@ -318,7 +316,7 @@
             animation: fadeInUp 0.6s ease forwards;
         }
         
-        @keyframes fadeInUp {
+        @keyframes  fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -354,7 +352,7 @@
             animation: loading 1.5s infinite;
         }
         
-        @keyframes loading {
+        @keyframes  loading {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
@@ -368,69 +366,71 @@
         </div>
         
         <div class="row">
-            @foreach ($info as $item)
+            <?php $__currentLoopData = $info; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-sm-6 col-md-4">
                     <div class="info-card fade-in-up">
                         <!-- Check if posted within 7 days -->
-                        @if(\Carbon\Carbon::parse($item->created_at)->diffInDays(\Carbon\Carbon::now()) <= 7)
+                        <?php if(\Carbon\Carbon::parse($item->created_at)->diffInDays(\Carbon\Carbon::now()) <= 7): ?>
                             <span class="new-badge">Baru</span>
-                        @endif
+                        <?php endif; ?>
                         
                         <!-- Card Header -->
                         <div class="card-header-section">
                             <div class="file-section">
-                                @if ($item->file != null)
-                                    <a href="{{ asset('/data_file/' . $item->file) }}" target="_blank" class="file-badge">
+                                <?php if($item->file != null): ?>
+                                    <a href="<?php echo e(asset('/data_file/' . $item->file)); ?>" target="_blank" class="file-badge">
                                         <i class="fa fa-file-pdf-o"></i>
-                                        <span class="file-text">{{ Str::limit($item->file, 25) }}</span>
+                                        <span class="file-text"><?php echo e(Str::limit($item->file, 25)); ?></span>
                                     </a>
-                                @else
+                                <?php else: ?>
                                     <div class="no-file-placeholder">
                                         <i class="fa fa-info-circle"></i>
                                         <span>Tidak ada lampiran</span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
                             
                             <div class="date-section">
                                 <div class="date-item">
                                     <i class="fa fa-calendar"></i>
-                                    {{ date('d M Y', strtotime($item->created_at)) }}
+                                    <?php echo e(date('d M Y', strtotime($item->created_at))); ?>
+
                                 </div>
                                 <div class="date-item">
                                     <i class="fa fa-clock-o"></i>
-                                    {{ $item->created_at->diffForHumans() }}
+                                    <?php echo e($item->created_at->diffForHumans()); ?>
+
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Card Body -->
                         <div class="card-body-content">
-                            <h3 class="card-title">{{ $item->judul }}</h3>
+                            <h3 class="card-title"><?php echo e($item->judul); ?></h3>
                             
-                            @if(isset($item->deskripsi))
-                                <p class="card-description">{{ Str::limit($item->deskripsi, 150) }}</p>
-                            @else
+                            <?php if(isset($item->deskripsi)): ?>
+                                <p class="card-description"><?php echo e(Str::limit($item->deskripsi, 150)); ?></p>
+                            <?php else: ?>
                                 <p class="card-description">Klik untuk melihat detail informasi selengkapnya...</p>
-                            @endif
+                            <?php endif; ?>
                             
-                            <a href="/lihat/{{ $item->id_informasi }}" class="btn-read-more">
+                            <a href="/lihat/<?php echo e($item->id_informasi); ?>" class="btn-read-more">
                                 Baca Selengkapnya <i class="fa fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
         
         <!-- Empty State -->
-        @if(count($info) == 0)
+        <?php if(count($info) == 0): ?>
             <div class="text-center" style="padding: 60px 20px;">
                 <i class="fa fa-inbox" style="font-size: 80px; color: #ddd; margin-bottom: 20px;"></i>
                 <h3 style="color: #999;">Belum Ada Informasi</h3>
                 <p style="color: #bbb;">Informasi terbaru akan muncul di sini</p>
             </div>
-        @endif
+        <?php endif; ?>
     </section>
     
     <script>
@@ -473,4 +473,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/all_info.blade.php ENDPATH**/ ?>

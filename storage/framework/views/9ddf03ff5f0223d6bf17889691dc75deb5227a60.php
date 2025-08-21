@@ -509,7 +509,7 @@
         }
 
         /* Animations */
-        @keyframes fadeInUp {
+        @keyframes  fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -520,7 +520,7 @@
             }
         }
 
-        @keyframes slideInLeft {
+        @keyframes  slideInLeft {
             from {
                 opacity: 0;
                 transform: translateX(-50px);
@@ -531,7 +531,7 @@
             }
         }
 
-        @keyframes slideInRight {
+        @keyframes  slideInRight {
             from {
                 opacity: 0;
                 transform: translateX(50px);
@@ -542,17 +542,17 @@
             }
         }
 
-        @keyframes rotate {
+        @keyframes  rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        @keyframes shimmer {
+        @keyframes  shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
 
-        @keyframes pulse {
+        @keyframes  pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
@@ -579,7 +579,6 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">Dashboard</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Data Mahasiswa Mengulang</a></li>
                 <li><a href="#tab_3" data-toggle="tab">Pelaksanaan Akademik</a></li>
             </ul>
             <div class="tab-content">
@@ -588,7 +587,7 @@
                         <div class="col-md-6">
                             <div class="box box-widget widget-user">
                                 <div class="widget-user-header bg-aqua-active">
-                                    <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
+                                    <h3 class="widget-user-username"><?php echo e(Auth::user()->name); ?></h3>
                                     <h5 class="widget-user-desc">Dosen</h5>
                                 </div>
                                 <div class="widget-user-image">
@@ -618,12 +617,12 @@
                                         <tr>
                                             <th style="width:30%">Nama</th>
                                             <td style="width:5%">:</td>
-                                            <td>{{ $dsn->nama }}, {{ $dsn->akademik }} </td>
+                                            <td><?php echo e($dsn->nama); ?>, <?php echo e($dsn->akademik); ?> </td>
                                         </tr>
                                         <tr>
                                             <th>NIK</th>
                                             <td>:</td>
-                                            <td>{{ Auth::user()->username }}</td>
+                                            <td><?php echo e(Auth::user()->username); ?></td>
                                         </tr>
                                         <tr>
                                             <th>Tempat, tanggal lahir</th>
@@ -643,12 +642,12 @@
                                         <tr>
                                             <th>No HP</th>
                                             <td>:</td>
-                                            <td>{{ $dsn->hp }}</td>
+                                            <td><?php echo e($dsn->hp); ?></td>
                                         </tr>
                                         <tr>
                                             <th>E-Mail</th>
                                             <td>:</td>
-                                            <td>{{ $dsn->email }}</td>
+                                            <td><?php echo e($dsn->email); ?></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -661,13 +660,11 @@
                                         <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text">Tahun Akademik</span>
-                                            <span class="info-box-number">
-                                                {{ $tahun->periode_tahun }} {{ $tipe->periode_tipe }}</span>
-                                            <a href="{{ asset('/Kalender Akademik/' . $tahun->file) }}" target="_blank"
+                                            <span class="info-box-number"><?php echo e($tahun->periode_tahun); ?><?php echo e($tipe->periode_tipe); ?></span>
+                                            <a href="<?php echo e(asset('/Kalender Akademik/' . $tahun->file)); ?>" target="_blank"
                                                 class="small-box-footer">Unduh Kalender Akademik <i
                                                     class="fa fa-arrow-circle-right"></i></a>
                                         </div>
-                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -677,12 +674,13 @@
                                         <div class="info-box-content">
                                             <span class="info-box-text">Jadwal KRS</span>
                                             <span class="info-box-number">
-                                                @if ($time->status == 0)
+                                                <?php if($time->status == 0): ?>
                                                     Jadwal Belum ada
-                                                @elseif ($time->status == 1)
-                                                    {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
-                                                    {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
-                                                @endif
+                                                <?php elseif($time->status == 1): ?>
+                                                    <?php echo e(date(' d-m-Y', strtotime($time->waktu_awal))); ?> s/d
+                                                    <?php echo e(date(' d-m-Y', strtotime($time->waktu_akhir))); ?>
+
+                                                <?php endif; ?>
                                             </span>
                                         </div>
                                     </div>
@@ -703,68 +701,32 @@
                                         </div>
                                         <div class="box-body">
                                             <ul class="products-list product-list-in-box">
-                                                @foreach ($info as $item)
+                                                <?php $__currentLoopData = $info; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <li class="item">
                                                         <div class="product-img">
                                                             <img class="img-circle" src="/images/bell.jpg"
                                                                 alt="user">
                                                         </div>
                                                         <div class="product-info">
-                                                            <a href="/lihat/{{ $item->id_informasi }}"
-                                                                class="product-title">{{ $item->judul }}
+                                                            <a href="/lihat/<?php echo e($item->id_informasi); ?>"
+                                                                class="product-title"><?php echo e($item->judul); ?>
+
                                                                 <span class="label label-info pull-right">
-                                                                    {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                                                    {{ $item->created_at->diffForHumans() }}
+                                                                    <?php echo e(date('l, d F Y', strtotime($item->created_at))); ?><br>
+                                                                    <?php echo e($item->created_at->diffForHumans()); ?>
+
                                                                 </span></a>
                                                             <span
-                                                                class="product-description">{{ $item->deskripsi }}</span>
+                                                                class="product-description"><?php echo e($item->deskripsi); ?></span>
                                                         </div>
                                                     </li>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </ul>
                                         </div>
                                         <div class="box-footer text-center">
                                             <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tab_2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-info">
-                                <div class="box-header">
-                                    <h3 class="box-title">Data Mahasiswa Mengulang</h3>
-                                </div>
-                                <div class="box-body">
-                                    <table id="example1" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Mahasiswa</th>
-                                                <th>Matakuliah</th>
-                                                <th>Nilai</th>
-                                                <th>Tahun Akademik</th>
-                                                <th>Dosen</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no = 1; ?>
-                                            @foreach ($makul_mengulang as $item)
-                                                <tr>
-                                                    <td align="center">{{ $no++ }}</td>
-                                                    <td>{{ $item->mhs }}</td>
-                                                    <td>{{ $item->makul }}</td>
-                                                    <td align="center">{{ $item->nilai_AKHIR }}</td>
-                                                    <td>{{ $item->periode_tahun }}-{{ $item->periode_tipe }}</td>
-                                                    <td>{{ $item->nama }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -805,32 +767,32 @@
                                     </thead>
                                     <tbody>
                                         <?php $no = 1; ?>
-                                        @foreach ($data_akademik as $item)
+                                        <?php $__currentLoopData = $data_akademik; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $no++ }}</td>
-                                                <td>{{ $item->makul }}</td>
-                                                <td>{{ $item->sks }}</td>
-                                                <td>{{ $item->prodi }}</td>
-                                                <td>{{ $item->kelas }}</td>
-                                                <td align="center">{{ $item->jml_per }} / 16</td>
+                                                <td><?php echo e($no++); ?></td>
+                                                <td><?php echo e($item->makul); ?></td>
+                                                <td><?php echo e($item->sks); ?></td>
+                                                <td><?php echo e($item->prodi); ?></td>
+                                                <td><?php echo e($item->kelas); ?></td>
+                                                <td align="center"><?php echo e($item->jml_per); ?> / 16</td>
                                                 <td align="center">
-                                                    @if ($item->jml_per <= 7)
+                                                    <?php if($item->jml_per <= 7): ?>
                                                         <span class="label label-danger">
-                                                            {{ $item->persentase }} %</span>
-                                                    @elseif($item->jml_per < 16)
+                                                            <?php echo e($item->persentase); ?> %</span>
+                                                    <?php elseif($item->jml_per < 16): ?>
                                                         <span class="label label-warning">
-                                                            {{ $item->persentase }} %</span>
-                                                    @elseif($item->jml_per = 16)
+                                                            <?php echo e($item->persentase); ?> %</span>
+                                                    <?php elseif($item->jml_per = 16): ?>
                                                         <span class="label label-success">
-                                                            {{ $item->persentase }} %</span>
-                                                    @endif
+                                                            <?php echo e($item->persentase); ?> %</span>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td align="center">
-                                                    <a href="/persentase_absensi_mhs/{{ Crypt::encryptString($item->id_kurperiode) }}"
+                                                    <a href="/persentase_absensi_mhs_dsnlr/<?php echo e(Crypt::encryptString($item->id_kurperiode)); ?>"
                                                         class="btn btn-info btn-xs">Cek Absensi</a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -841,3 +803,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH /var/www/html/resources/views/layouts/dosenluar_home.blade.php ENDPATH**/ ?>

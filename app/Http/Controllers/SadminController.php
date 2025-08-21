@@ -268,60 +268,139 @@ class SadminController extends Controller
         return view('sadmin/data_user', ['users' => $data]);
     }
 
+    // public function saveuser_mhs(Request $request)
+    // {
+    //     $users = new User();
+    //     $users->id_user = $request->student;
+    //     $users->name = $request->name;
+    //     $users->password = bcrypt($request->username);
+    //     $users->role = $request->role;
+    //     $users->username = $request->username;
+    //     $users->save();
+
+    //     $sadmin = new Password();
+    //     $sadmin->id_user = $request->student;
+    //     $sadmin->user = $request->username;
+    //     $sadmin->pwd = $request->username;
+    //     $sadmin->save();
+
+    //     Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
+    //     return redirect('show_user');
+    // }
+
     public function saveuser_mhs(Request $request)
     {
-        $users = new User();
-        $users->id_user = $request->student;
-        $users->name = $request->name;
-        $users->password = bcrypt($request->username);
-        $users->role = $request->role;
-        $users->username = $request->username;
-        $users->save();
+        try {
+            $studentId = $request->input('student');
+            $username = $request->input('username');
+            $name = $request->input('name');
+            $role = $request->input('role', 4);
 
-        $sadmin = new Password();
-        $sadmin->id_user = $request->student;
-        $sadmin->user = $request->username;
-        $sadmin->pwd = $request->username;
-        $sadmin->save();
+            // Validasi input
+            if (!$studentId || !$username || !$name) {
+                Alert::error('', 'Data mahasiswa tidak lengkap')->autoclose(3500);
+                return redirect()->back();
+            }
 
-        Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
-        return redirect('show_user');
+            // Cek apakah user sudah ada
+            $existingUser = User::where('id_user', $studentId)->first();
+
+            if ($existingUser) {
+                // Update user yang sudah ada
+                $existingUser->update([
+                    'role' => $role,
+                    'password' => bcrypt($username),
+                ]);
+                $message = 'User mahasiswa berhasil diperbarui';
+            } else {
+                // Buat user baru
+                User::create([
+                    'id_user' => $studentId,
+                    'name' => $name,
+                    'username' => $username,
+                    'password' => bcrypt($username),
+                    'role' => $role,
+                ]);
+                $message = 'User mahasiswa berhasil dibuat';
+            }
+
+            Alert::success('', $message)->autoclose(3500);
+            return redirect('show_user');
+
+        } catch (Exception $e) {
+            Alert::error('', 'Terjadi kesalahan saat membuat user')->autoclose(3500);
+            return redirect()->back();
+        }
     }
 
     public function save_generate_user(Request $request)
     {
-        // dd($request);
-        $student = $request->student;
-        $jml_student = count($student);
+        try {
+            $students = $request->input('student', []);
 
-        for ($i = 0; $i < $jml_student; $i++) {
-            $id_stud = $student[$i];
-
-            $cek_user = User::where('id_user', $id_stud)->get();
-
-            if (count($cek_user) == 0) {
-                $dt = Student::where('idstudent', $id_stud)->first();
-
-                $users = new User();
-                $users->id_user = $id_stud;
-                $users->name = $dt->nama;
-                $users->password = bcrypt($dt->nim);
-                $users->role = 4;
-                $users->username = $dt->nim;
-                $users->save();
-            } elseif (count($cek_user) > 0) {
-                $mhs = User::where('id_user', $id_stud)->first();
-
-                $id = $mhs->id;
-                $user = User::find($id);
-                $user->role = 4;
-                $user->password = bcrypt($mhs->username);
-                $user->save();
+            // Jika tidak ada mahasiswa yang dipilih, return dengan pesan error
+            if (empty($students)) {
+                Alert::error('', 'Pilih minimal satu mahasiswa untuk di-generate')->autoclose(3500);
+                return redirect()->back();
             }
-        }
 
-        Alert::success('', 'User berhasil didaftarkan')->autoclose(3500);
-        return redirect('show_user');
+            $successCount = 0;
+            $errorCount = 0;
+
+            foreach ($students as $studentId) {
+                try {
+                    // Cari data mahasiswa
+                    $student = Student::where('idstudent', $studentId)->first();
+
+                    if (!$student) {
+                        $errorCount++;
+                        continue;
+                    }
+
+                    // Cek apakah user sudah ada
+                    $existingUser = User::where('id_user', $studentId)->first();
+
+                    if ($existingUser) {
+                        // Update user yang sudah ada
+                        $existingUser->update([
+                            'role' => 4,
+                            'password' => bcrypt($existingUser->username ?: $student->nim),
+                        ]);
+                    } else {
+                        // Buat user baru
+                        User::create([
+                            'id_user' => $studentId,
+                            'name' => $student->nama,
+                            'username' => $student->nim,
+                            'password' => bcrypt($student->nim),
+                            'role' => 4,
+                        ]);
+                    }
+
+                    $successCount++;
+
+                } catch (\Exception $e) {
+                    $errorCount++;
+                    // Log error jika diperlukan
+                    \Log::error('Error generating user for student ID ' . $studentId . ': ' . $e->getMessage());
+                }
+            }
+
+            // Tampilkan pesan berdasarkan hasil
+            if ($successCount > 0 && $errorCount == 0) {
+                Alert::success('', "Berhasil generate {$successCount} user mahasiswa")->autoclose(3500);
+            } elseif ($successCount > 0 && $errorCount > 0) {
+                Alert::warning('', "Berhasil generate {$successCount} user, {$errorCount} user gagal")->autoclose(3500);
+            } else {
+                Alert::error('', 'Gagal generate user mahasiswa')->autoclose(3500);
+            }
+
+            return redirect('show_user');
+
+        } catch (\Exception $e) {
+            Alert::error('', 'Terjadi kesalahan sistem')->autoclose(3500);
+            return redirect()->back();
+        }
     }
 
     public function resetuser(Request $request)
