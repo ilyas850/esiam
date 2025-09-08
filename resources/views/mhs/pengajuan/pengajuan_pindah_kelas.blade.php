@@ -193,9 +193,9 @@
                                     @else
                                         <span class="badge bg-green">{{ $item->val_baak }}</span>
                                     @endif
+                                    
                                 </td>
                                 <td align="center">
-                                    @if ($item->val_bauk == 'BELUM')
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
                                             data-target="#modalUpdateKelas{{ $item->id_trans_pengajuan }}"
                                             title="klik untuk edit"><i class="fa fa-edit"></i></button>
@@ -203,7 +203,7 @@
                                             href="/batal_pengajuan_pindah_kelas/{{ $item->id_trans_pengajuan }}"
                                             onclick="return confirm('anda yakin akan mebatalkan ini ?')"><i
                                                 class="fa fa-trash"></i></a>
-                                    @endif
+                                    
                                 </td>
                             </tr>
                             <div class="modal fade" id="modalUpdateKelas{{ $item->id_trans_pengajuan }}" tabindex="-1"

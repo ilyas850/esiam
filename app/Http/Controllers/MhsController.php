@@ -7181,7 +7181,7 @@ class MhsController extends Controller
             )
             ->count();
 
-        if ($data_pindah == 0) {
+        // if ($data_pindah == 0) {
             $new = new Pengajuan_trans;
             $new->id_periodetahun = $request->id_periodetahun;
             $new->id_periodetipe = $request->id_periodetipe;
@@ -7195,10 +7195,10 @@ class MhsController extends Controller
 
             Alert::success('', 'Pengajuan Pindah Kelas berhasil ditambahkan')->autoclose(3500);
             return redirect('perpindahan_kelas_mhs');
-        } elseif ($data_pindah > 0) {
-            Alert::warning('', 'Maaf anda telah mengajukan Pindah Kelas sebelumnya')->autoclose(3500);
-            return redirect('perpindahan_kelas_mhs');
-        }
+        // } elseif ($data_pindah > 0) {
+        //     Alert::warning('', 'Maaf anda telah mengajukan Pindah Kelas sebelumnya')->autoclose(3500);
+        //     return redirect('perpindahan_kelas_mhs');
+        // }
     }
 
     public function put_pengajuan_pindah_kelas(Request $request, $id)
