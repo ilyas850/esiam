@@ -292,28 +292,29 @@ class SadminController extends Controller
     {
         try {
             $studentId = $request->input('student');
-            $username = $request->input('username');
+            $username = $request->input('username'); // Ini adalah NIM
             $name = $request->input('name');
-            $role = $request->input('role', 4);
+            $role = $request->input('role', 4); // Default role 4 (Belum Aktif)
 
-            // Validasi input
+            // Validasi input dasar
             if (!$studentId || !$username || !$name) {
                 Alert::error('', 'Data mahasiswa tidak lengkap')->autoclose(3500);
                 return redirect()->back();
             }
 
-            // Cek apakah user sudah ada
-            $existingUser = User::where('id_user', $studentId)->first();
+            // Cek apakah user sudah ada BERDASARKAN USERNAME (NIM)
+            $existingUser = User::where('username', $username)->first();
 
             if ($existingUser) {
-                // Update user yang sudah ada
+                // Jika user sudah ada, UPDATE data rolenya dan reset passwordnya
                 $existingUser->update([
                     'role' => $role,
-                    'password' => bcrypt($username),
+                    'id_user' => $studentId,
+                    'password' => bcrypt($username), // Password direset kembali ke NIM
                 ]);
-                $message = 'User mahasiswa berhasil diperbarui';
+                $message = 'User mahasiswa berhasil diperbarui (password direset)';
             } else {
-                // Buat user baru
+                // Jika user belum ada, BUAT user baru
                 User::create([
                     'id_user' => $studentId,
                     'name' => $name,
@@ -327,8 +328,12 @@ class SadminController extends Controller
             Alert::success('', $message)->autoclose(3500);
             return redirect('show_user');
 
-        } catch (Exception $e) {
-            Alert::error('', 'Terjadi kesalahan saat membuat user')->autoclose(3500);
+        } catch (\Exception $e) {
+            // Sebaiknya log error untuk membantu debugging jika terjadi masalah lain
+            // \Log::error('Generate User Error: ' . $e->getMessage());
+
+            // Tampilkan pesan error yang lebih umum ke user
+            Alert::error('', 'Terjadi kesalahan pada server saat memproses data.')->autoclose(3500);
             return redirect()->back();
         }
     }
@@ -351,19 +356,22 @@ class SadminController extends Controller
                 try {
                     // Cari data mahasiswa
                     $student = Student::where('idstudent', $studentId)->first();
-
+// dd($student->toArray());
                     if (!$student) {
                         $errorCount++;
                         continue;
                     }
 
                     // Cek apakah user sudah ada
-                    $existingUser = User::where('id_user', $studentId)->first();
+                    // $existingUser = User::where('id_user', $studentId)->first();
+                    $existingUser = User::where('username', $student->nim)->first();
 
                     if ($existingUser) {
                         // Update user yang sudah ada
                         $existingUser->update([
                             'role' => 4,
+                            'id_user' => $studentId,
+
                             'password' => bcrypt($existingUser->username ?: $student->nim),
                         ]);
                     } else {
