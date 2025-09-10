@@ -492,11 +492,11 @@ class KrsController extends Controller
 
           if (count($cekkrs) == 0) {
             $krs = new Student_record;
-            $krs->tanggal_krs   = date("Y-m-d");
-            $krs->id_student    = $id;
-            $krs->data_origin   = 'eSIAM';
+            $krs->tanggal_krs = date("Y-m-d");
+            $krs->id_student = $id;
+            $krs->data_origin = 'eSIAM';
             $krs->id_kurperiode = $tra;
-            $krs->id_kurtrans   = $trs;
+            $krs->id_kurtrans = $trs;
             $krs->save();
           }
         }
@@ -521,11 +521,11 @@ class KrsController extends Controller
 
           if (count($cekkrs) == 0) {
             $krs = new Student_record;
-            $krs->tanggal_krs   = date("Y-m-d");
-            $krs->id_student    = $id;
-            $krs->data_origin   = 'eSIAM';
+            $krs->tanggal_krs = date("Y-m-d");
+            $krs->id_student = $id;
+            $krs->data_origin = 'eSIAM';
             $krs->id_kurperiode = $tra;
-            $krs->id_kurtrans   = $trs;
+            $krs->id_kurtrans = $trs;
             $krs->save();
           }
         }
@@ -633,55 +633,81 @@ class KrsController extends Controller
   public function krs_manual()
   {
     $data = Student::with([
+      // Kita tidak lagi memuat prodi di sini karena sudah di-join
       'student_records' => function ($q) {
+        // ... (logika ini tidak perlu diubah)
         $q->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
           ->where('status', 'TAKEN')
-          ->with(['kurperiode' => function ($q) {
+          ->with([
+            'kurperiode' => function ($q) {
             $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
               ->with([
                 'tahun' => function ($q) {
-                  $q->select('id_periodetahun', 'periode_tahun', 'status')
-                    ->where('status', 'ACTIVE');
+                  $q->select('id_periodetahun', 'periode_tahun', 'status')->where('status', 'ACTIVE');
                 },
                 'tipe' => function ($q) {
-                  $q->select('id_periodetipe', 'periode_tipe', 'status')
-                    ->where('status', 'ACTIVE');
+                  $q->select('id_periodetipe', 'periode_tipe', 'status')->where('status', 'ACTIVE');
                 },
                 'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
               ])
               ->where('status', 'ACTIVE');
-          }]);
-      },
-      'prodi' => function ($q) {
-        $q->select('id_prodi', 'prodi', 'kodeprodi', 'konsentrasi', 'kodekonsentrasi');
+          }
+          ]);
       },
       'kelas:idkelas,kelas',
       'angkatan:idangkatan,angkatan',
       'dosenPembimbing' => function ($q) {
+        // ... (logika ini tidak perlu diubah)
         $q->select('id', 'id_dosen', 'id_student', 'status')
-          ->with(['dosen' => function ($q) {
+          ->with([
+            'dosen' => function ($q) {
             $q->select('iddosen', 'nama', 'akademik');
-          }]);
+          }
+          ]);
       }
     ])
-      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'kodeprodi', 'kodekonsentrasi', 'intake')
-      ->whereIn('active', [1, 5])
-      ->orderBy('kodeprodi', 'DESC')
-      ->orderBy('nim', 'DESC')
+      // GABUNGKAN TABEL PRODI SECARA LANGSUNG
+      ->join('prodi', function ($join) {
+        $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
+          ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
+      })
+      // PERJELAS KOLOM DARI SETIAP TABEL UNTUK MENGHINDARI AMBIGUITAS
+      ->select(
+        'student.idstudent',
+        'student.idangkatan',
+        'student.idstatus',
+        'student.nim',
+        'student.nama',
+        'student.kodeprodi',
+        'student.kodekonsentrasi',
+        'student.intake',
+        'prodi.prodi', // Ambil nama prodi dari tabel prodi
+        'prodi.konsentrasi' // Ambil nama konsentrasi dari tabel prodi
+      )
+      ->whereIn('student.active', [1, 5])
+      ->orderBy('student.kodeprodi', 'DESC')
+      ->orderBy('student.nim', 'DESC')
       ->get();
 
+    // Strukturnya akan sedikit berbeda karena prodi sekarang jadi satu level
+    // dengan data student, bukan sebagai relasi.
     // dd($data->toArray());
+
     return view('sadmin.krs.krs-manual', compact('data'));
   }
 
   public function createKrsManual($id)
   {
     $dataMhs = Student::with(([
-      'prodi:id_prodi,prodi,kodeprodi,konsentrasi,kodekonsentrasi',
+      // 'prodi:id_prodi,prodi,kodeprodi,konsentrasi,kodekonsentrasi',
       'angkatan:idangkatan,angkatan',
       'kelas:idkelas,kelas'
     ]))
-      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'kodeprodi', 'kodekonsentrasi', 'intake')
+      ->join('prodi', function ($join) {
+        $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
+          ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
+      })
+      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'student.kodeprodi', 'student.kodekonsentrasi', 'intake', 'prodi.id_prodi', 'prodi.prodi', 'prodi.konsentrasi')
       ->where('idstudent', $id)
       ->first();
 
@@ -693,23 +719,25 @@ class KrsController extends Controller
       $q->where('id_periodetahun', $tahunActive->id_periodetahun)
         ->where('id_periodetipe', $tipeActive->id_periodetipe);
     })
-      ->with(['kurperiode' => function ($q) use ($tahunActive, $tipeActive) {
-        $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul', 'id_dosen')
-          ->with([
-            'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
-            'tahun' => function ($q) {
-              $q->select('id_periodetahun', 'periode_tahun', 'status');
-            },
-            'tipe' => function ($q) {
-              $q->select('id_periodetipe', 'periode_tipe', 'status');
-            },
-            'dosen' => function ($q) {
-              $q->select('iddosen', 'nama', 'akademik');
-            }
-          ])
-          ->where('id_periodetahun', $tahunActive->id_periodetahun)
-          ->where('id_periodetipe', $tipeActive->id_periodetipe);
-      }])
+      ->with([
+        'kurperiode' => function ($q) use ($tahunActive, $tipeActive) {
+          $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul', 'id_dosen')
+            ->with([
+              'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+              'tahun' => function ($q) {
+                $q->select('id_periodetahun', 'periode_tahun', 'status');
+              },
+              'tipe' => function ($q) {
+                $q->select('id_periodetipe', 'periode_tipe', 'status');
+              },
+              'dosen' => function ($q) {
+                $q->select('iddosen', 'nama', 'akademik');
+              }
+            ])
+            ->where('id_periodetahun', $tahunActive->id_periodetahun)
+            ->where('id_periodetipe', $tipeActive->id_periodetipe);
+        }
+      ])
       ->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
       ->where('id_student', $id)
       ->where('status', 'TAKEN')
@@ -717,7 +745,7 @@ class KrsController extends Controller
 
     $dataKrs = Kurikulum_periode::whereHas('kurtrans', function ($q) use ($kurikulumMhs, $dataMhs) {
       $q->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
-        ->where('id_prodi', $dataMhs->prodi->id_prodi)
+        ->where('id_prodi', $dataMhs->id_prodi)
         ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
         ->where('status', 'ACTIVE');
     })
@@ -732,7 +760,7 @@ class KrsController extends Controller
         'kurtrans' => function ($q) use ($kurikulumMhs, $dataMhs) {
           $q->select('idkurtrans', 'id_kurikulum', 'id_prodi', 'id_semester', 'id_angkatan', 'id_makul', 'status')
             ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
-            ->where('id_prodi', $dataMhs->prodi->id_prodi)
+            ->where('id_prodi', $dataMhs->id_prodi)
             ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
             ->where('status', 'ACTIVE');
         },
@@ -740,7 +768,7 @@ class KrsController extends Controller
       ])
       ->where('id_periodetahun', $tahunActive->id_periodetahun)
       ->where('id_periodetipe', $tipeActive->id_periodetipe)
-      ->where('id_prodi', $dataMhs->prodi->id_prodi)
+      ->where('id_prodi', $dataMhs->id_prodi)
       ->where('id_kelas', $dataMhs->kelas->idkelas)
       ->where('status', 'ACTIVE')
       ->orderBy('id_semester', 'ASC')

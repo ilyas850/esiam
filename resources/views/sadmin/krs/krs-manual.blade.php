@@ -56,7 +56,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->nim }} - {{ $item->nama }}</td>
-                                <td>{{ $item->prodi->prodi }}</td>
+                                <td>{{ $item->prodi }}</td>
                                 <td>{{ $item->kelas->kelas }}</td>
                                 <td>{{ $item->angkatan->angkatan }} -
                                     {{ $item->intake == '1' ? 'Ganjil' : 'Genap' }}

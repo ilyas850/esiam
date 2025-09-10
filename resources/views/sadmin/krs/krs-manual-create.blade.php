@@ -19,7 +19,7 @@
                         <td>Program Studi</td>
                         <td>:</td>
                         <td>
-                            {{ $dataMhs->prodi->prodi }}
+                            {{ $dataMhs->prodi }}
                         </td>
                     </tr>
                     <tr>
