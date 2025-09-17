@@ -289,43 +289,43 @@ class MhsController extends Controller
             'angkatan:idangkatan,angkatan',
             'matakuliah:idmakul,kode,makul'
         ])
-        ->active() // Sekarang scope sudah didefinisikan dengan benar
-        ->byProdi($id_prodi)
-        ->byAngkatan($idangkatan)
-        ->select([
-            'kurikulum_transaction.idkurtrans', 
-            'kurikulum_transaction.id_kurikulum', 
-            'kurikulum_transaction.id_prodi', 
-            'kurikulum_transaction.id_semester', 
-            'kurikulum_transaction.id_angkatan', 
-            'kurikulum_transaction.id_makul'
-        ])
-        ->orderBy('kurikulum_transaction.id_semester')
-        ->orderBy(function($query) {
-            $query->select('kode')
-                  ->from('matakuliah')
-                  ->whereColumn('matakuliah.idmakul', 'kurikulum_transaction.id_makul');
-        })
-        ->get()
-        ->map(function($item) use ($id_student) {
-            // Get student record for this kurikulum transaction
-            $studentRecord = Student_record::where('id_kurtrans', $item->idkurtrans)
-                ->where('id_student', $id_student)
-                ->where('status', 'TAKEN')
-                ->first();
-            
-            return [
-                'idkurtrans' => $item->idkurtrans,
-                'nama_kurikulum' => $item->kurikulumMaster->nama_kurikulum ?? null,
-                'prodi' => $item->prodi->prodi ?? null,
-                'semester' => $item->semester->semester ?? null,
-                'angkatan' => $item->angkatan->angkatan ?? null,
-                'kode' => $item->matakuliah->kode ?? null,
-                'makul' => $item->matakuliah->makul ?? null,
-                'id_studentrecord' => $studentRecord->id_studentrecord ?? null,
-                'nilai_AKHIR' => $studentRecord->nilai_AKHIR ?? null,
-            ];
-        });
+            ->active() // Sekarang scope sudah didefinisikan dengan benar
+            ->byProdi($id_prodi)
+            ->byAngkatan($idangkatan)
+            ->select([
+                'kurikulum_transaction.idkurtrans',
+                'kurikulum_transaction.id_kurikulum',
+                'kurikulum_transaction.id_prodi',
+                'kurikulum_transaction.id_semester',
+                'kurikulum_transaction.id_angkatan',
+                'kurikulum_transaction.id_makul'
+            ])
+            ->orderBy('kurikulum_transaction.id_semester')
+            ->orderBy(function ($query) {
+                $query->select('kode')
+                    ->from('matakuliah')
+                    ->whereColumn('matakuliah.idmakul', 'kurikulum_transaction.id_makul');
+            })
+            ->get()
+            ->map(function ($item) use ($id_student) {
+                // Get student record for this kurikulum transaction
+                $studentRecord = Student_record::where('id_kurtrans', $item->idkurtrans)
+                    ->where('id_student', $id_student)
+                    ->where('status', 'TAKEN')
+                    ->first();
+
+                return [
+                    'idkurtrans' => $item->idkurtrans,
+                    'nama_kurikulum' => $item->kurikulumMaster->nama_kurikulum ?? null,
+                    'prodi' => $item->prodi->prodi ?? null,
+                    'semester' => $item->semester->semester ?? null,
+                    'angkatan' => $item->angkatan->angkatan ?? null,
+                    'kode' => $item->matakuliah->kode ?? null,
+                    'makul' => $item->matakuliah->makul ?? null,
+                    'id_studentrecord' => $studentRecord->id_studentrecord ?? null,
+                    'nilai_AKHIR' => $studentRecord->nilai_AKHIR ?? null,
+                ];
+            });
     }
 
     public function change($id)
@@ -536,7 +536,75 @@ class MhsController extends Controller
     {
         $id = Auth::user()->id_user;
 
-        $jadwal = DB::select('CALL persentase_absen_per_mhs(?)', [$id]);
+        // $jadwal = DB::select('CALL persentase_absen_per_mhs(?)', [$id]);
+
+        // 1. Ambil ID mahasiswa yang sedang login
+        $id_student = Auth::user()->id_user;
+
+        // 2. Buat subquery untuk menghitung total pertemuan (alias 'aa' di SQL asli)
+        $subQueryTotalPertemuan = DB::table('bap')
+            ->select('id_kurperiode', DB::raw('COUNT(id_kurperiode) as total'))
+            ->where('status', 'ACTIVE')
+            ->groupBy('id_kurperiode');
+
+        // 3. Buat subquery untuk menghitung jumlah kehadiran mhs (alias 'bb' di SQL asli)
+        $subQueryJumlahHadir = DB::table('student_record as sr_sub')
+            ->join('bap as bp', 'sr_sub.id_kurperiode', '=', 'bp.id_kurperiode')
+            ->join('absensi_mahasiswa as am', function ($join) {
+                $join->on('bp.id_bap', '=', 'am.id_bap')
+                    ->on('sr_sub.id_studentrecord', '=', 'am.id_studentrecord');
+            })
+            ->select('am.id_studentrecord', DB::raw('COUNT(am.id_studentrecord) as jml'))
+            ->where('sr_sub.id_student', $id_student)
+            ->groupBy('am.id_studentrecord');
+
+        // 4. Bangun query utama menggunakan Query Builder
+        $jadwal = DB::table('student_record as sr')
+            ->join('kurikulum_periode as kp', 'sr.id_kurperiode', '=', 'kp.id_kurperiode')
+            ->join('periode_tahun as thn', 'kp.id_periodetahun', '=', 'thn.id_periodetahun')
+            ->join('periode_tipe as tp', 'kp.id_periodetipe', '=', 'tp.id_periodetipe')
+            ->join('matakuliah as mk', 'kp.id_makul', '=', 'mk.idmakul')
+            ->leftJoin('kurikulum_hari as hari', 'kp.id_hari', '=', 'hari.id_hari')
+            ->leftJoin('kurikulum_jam as jam', 'kp.id_jam', '=', 'jam.id_jam')
+            ->leftJoin('ruangan as rgn', 'kp.id_ruangan', '=', 'rgn.id_ruangan')
+            ->leftJoin('dosen as dsn', 'kp.id_dosen', '=', 'dsn.iddosen')
+
+            // Gabungkan dengan subquery yang sudah dibuat
+            ->leftJoinSub($subQueryTotalPertemuan, 'aa', function ($join) {
+                $join->on('aa.id_kurperiode', '=', 'sr.id_kurperiode');
+            })
+            ->leftJoinSub($subQueryJumlahHadir, 'bb', function ($join) {
+                $join->on('bb.id_studentrecord', '=', 'sr.id_studentrecord');
+            })
+
+            // Pilih kolom yang dibutuhkan
+            ->select(
+                'sr.id_studentrecord',
+                'sr.id_kurperiode',
+                'hari.hari',
+                'jam.jam',
+                DB::raw("CONCAT(mk.kode, ' - ', mk.makul) AS makul"),
+                'rgn.nama_ruangan',
+                'dsn.nama',
+                DB::raw('IFNULL(aa.total, 0) AS total'),
+                DB::raw('IFNULL(bb.jml, 0) AS jml'),
+                // Kalkulasi persentase dengan pengaman pembagian dengan nol
+                DB::raw('CASE WHEN IFNULL(aa.total, 0) > 0 THEN ROUND((IFNULL(bb.jml, 0) / aa.total) * 100, 2) ELSE 0 END AS persentase')
+            )
+
+            // Terapkan filter
+            ->where('sr.id_student', $id_student)
+            ->where('sr.status', 'TAKEN')
+            ->where('kp.status', 'ACTIVE')
+            ->where('thn.status', 'ACTIVE')
+            ->where('tp.status', 'ACTIVE')
+
+            // Urutkan hasil
+            ->orderBy('hari.id_hari', 'asc')
+            ->orderBy('jam.jam', 'asc')
+
+            // Eksekusi query
+            ->get();
 
         return view('mhs/jadwal', ['jadwal' => $jadwal]);
     }
@@ -7182,19 +7250,19 @@ class MhsController extends Controller
             ->count();
 
         // if ($data_pindah == 0) {
-            $new = new Pengajuan_trans;
-            $new->id_periodetahun = $request->id_periodetahun;
-            $new->id_periodetipe = $request->id_periodetipe;
-            $new->id_student = $id;
-            $new->id_kategori_pengajuan = 3;
-            $new->alasan = $request->alasan;
-            $new->no_hp = $request->no_hp;
-            $new->kelas_sebelum = $request->kelas_sebelum;
-            $new->kelas_tujuan = $request->kelas_tujuan;
-            $new->save();
+        $new = new Pengajuan_trans;
+        $new->id_periodetahun = $request->id_periodetahun;
+        $new->id_periodetipe = $request->id_periodetipe;
+        $new->id_student = $id;
+        $new->id_kategori_pengajuan = 3;
+        $new->alasan = $request->alasan;
+        $new->no_hp = $request->no_hp;
+        $new->kelas_sebelum = $request->kelas_sebelum;
+        $new->kelas_tujuan = $request->kelas_tujuan;
+        $new->save();
 
-            Alert::success('', 'Pengajuan Pindah Kelas berhasil ditambahkan')->autoclose(3500);
-            return redirect('perpindahan_kelas_mhs');
+        Alert::success('', 'Pengajuan Pindah Kelas berhasil ditambahkan')->autoclose(3500);
+        return redirect('perpindahan_kelas_mhs');
         // } elseif ($data_pindah > 0) {
         //     Alert::warning('', 'Maaf anda telah mengajukan Pindah Kelas sebelumnya')->autoclose(3500);
         //     return redirect('perpindahan_kelas_mhs');

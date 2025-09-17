@@ -92,14 +92,14 @@ class KrsController extends Controller
       $biaya = Helper::cekBiayaKuliah($idangkatan, $idstatus, $kodeprodi);
 
       $cb = Beasiswa::where('idstudent', $id)->first();
-
+// dd($cb->toArray());
       //list biaya kuliah mahasiswa
       if (($cb) != null) {
 
         $daftar = $biaya->daftar - (($biaya->daftar * ($cb->daftar)) / 100);
         $awal = $biaya->awal - (($biaya->awal * ($cb->awal)) / 100);
         $dsp = $biaya->dsp - (($biaya->dsp * ($cb->dsp)) / 100);
-        $spp1 = $biaya->spp1 - (($biaya->spp1 * ($cb->spp1)) / 100);
+        $spp1 = trim($biaya->spp1) - ((trim($biaya->spp1) * ($cb->spp1)) / 100);
         $spp2 = $biaya->spp2 - (($biaya->spp2 * ($cb->spp2)) / 100);
         $spp3 = $biaya->spp3 - (($biaya->spp3 * ($cb->spp3)) / 100);
         $spp4 = $biaya->spp4 - (($biaya->spp4 * ($cb->spp4)) / 100);
