@@ -91,36 +91,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dataKrs as $key => $item)
-                                    <tr>
-                                        <td>{{ $item->makul->kode }} - {{ $item->makul->makul }}</td>
-                                        <td>{{ $item->makul->akt_sks_teori + $item->makul->akt_sks_praktek }}</td>
-                                        <td>{{ $item->semester->semester }}</td>
-                                        <td>{{ $item->dosen->nama ?? '' }}</td>
-                                        {{-- <td>
-                                            <form action="{{ url('save-krs-manual') }}" method="post">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="id_student" value="{{ $dataMhs->idstudent }}">
-                                                <input type="hidden" name="id_kurperiode"
-                                                    value="{{ $item->id_kurperiode }}">
-                                                <input type="hidden" name="id_kurtrans"
-                                                    value="{{ $item->kurtrans->idkurtrans }}">
-                                                <button type="submit" class="btn btn-success btn-xs">Tambah</button>
-                                            </form>
-                                        </td> --}}
+    @foreach ($dataKrs as $key => $item)
+        <tr>
+            <td>{{ optional($item->makul)->kode }} - {{ optional($item->makul)->makul }}</td>
+            <td>{{ (optional($item->makul)->akt_sks_teori ?? 0) + (optional($item->makul)->akt_sks_praktek ?? 0) }}</td>
+            <td>{{ optional($item->semester)->semester }}</td>
+            <td>{{ optional($item->dosen)->nama }}</td>
 
-                                        <td>
-                                            <button type="button" class="btn btn-success btn-xs btn-save-krs"
-                                                data-id-student="{{ $dataMhs->idstudent }}"
-                                                data-id-kurperiode="{{ $item->id_kurperiode }}"
-                                                data-id-kurtrans="{{ $item->kurtrans->idkurtrans }}">
-                                                Tambah
-                                            </button>
-                                        </td>
+            <td>
+                {{-- Tombol hanya akan aktif jika kurtrans-nya ditemukan --}}
+                @if ($item->kurtrans)
+                    <button type="button" class="btn btn-success btn-xs btn-save-krs"
+                        data-id-student="{{ $dataMhs->idstudent }}"
+                        data-id-kurperiode="{{ $item->id_kurperiode }}"
+                        data-id-kurtrans="{{ optional($item->kurtrans)->idkurtrans }}">
+                        Tambah
+                    </button>
+                @else
+                    {{-- Jika tidak ada, tampilkan pesan atau tombol non-aktif --}}
+                    <button type="button" class="btn btn-default btn-xs" disabled>
+                        Tidak Tersedia
+                    </button>
+                @endif
+            </td>
 
-                                    </tr>
-                                @endforeach
-                            </tbody>
+        </tr>
+    @endforeach
+</tbody>
                         </table>
                     </div>
                 </div>

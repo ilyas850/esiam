@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Matakuliah_bom;
 use PDF;
 use Alert;
 use App\Models\Mhs;
@@ -92,7 +93,7 @@ class KrsController extends Controller
       $biaya = Helper::cekBiayaKuliah($idangkatan, $idstatus, $kodeprodi);
 
       $cb = Beasiswa::where('idstudent', $id)->first();
-// dd($cb->toArray());
+      // dd($cb->toArray());
       //list biaya kuliah mahasiswa
       if (($cb) != null) {
 
@@ -710,7 +711,7 @@ class KrsController extends Controller
       ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'student.kodeprodi', 'student.kodekonsentrasi', 'intake', 'prodi.id_prodi', 'prodi.prodi', 'prodi.konsentrasi')
       ->where('idstudent', $id)
       ->first();
-
+    // dd($dataMhs->toArray());
     $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
     $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
     $kurikulumMhs = Kurikulum_master::where('remark', $dataMhs->intake)->first();
@@ -743,29 +744,27 @@ class KrsController extends Controller
       ->where('status', 'TAKEN')
       ->get();
 
-    $dataKrs = Kurikulum_periode::whereHas('kurtrans', function ($q) use ($kurikulumMhs, $dataMhs) {
-      $q->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
-        ->where('id_prodi', $dataMhs->id_prodi)
-        ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
-        ->where('status', 'ACTIVE');
-    })
-      ->with([
-        'tahun:id_periodetahun,periode_tahun',
-        'tipe:id_periodetipe,periode_tipe',
-        'makul' => function ($q) {
-          $q->select('idmakul', 'kode', 'makul', 'akt_sks_teori', 'akt_sks_praktek', 'active')
-            ->where('active', 1);
-        },
-        'dosen:iddosen,nama',
-        'kurtrans' => function ($q) use ($kurikulumMhs, $dataMhs) {
-          $q->select('idkurtrans', 'id_kurikulum', 'id_prodi', 'id_semester', 'id_angkatan', 'id_makul', 'status')
-            ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
-            ->where('id_prodi', $dataMhs->id_prodi)
-            ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
-            ->where('status', 'ACTIVE');
-        },
-        'semester:idsemester,semester',
-      ])
+    // $dataKrs = Kurikulum_periode::whereHas('kurtrans', function ($q) use ($kurikulumMhs, $dataMhs) {
+    // $q->where('id_kurikulum', $kurikulumMhs->id_kurikulum);
+    // ->where('id_prodi', $dataMhs->id_prodi);
+    // ->where('id_angkatan', $dataMhs->angkatan->idangkatan);
+    // ->where('status', 'ACTIVE');
+    // })
+    // Variabel-variabel yang sudah Anda miliki
+// $kurikulumMhs, $dataMhs, $tahunActive, $tipeActive
+
+    // === LANGKAH 1: Ambil data dasar Kurikulum Periode ===
+    // Variabel-variabel yang sudah Anda miliki
+// $kurikulumMhs, $dataMhs, $tahunActive, $tipeActive
+
+    // === LANGKAH 1: Ambil data dasar Kurikulum Periode (Tidak ada perubahan) ===
+    $dataKrs = Kurikulum_periode::with([
+      'tahun:id_periodetahun,periode_tahun',
+      'tipe:id_periodetipe,periode_tipe',
+      'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek,active',
+      'dosen:iddosen,nama',
+      'semester:idsemester,semester',
+    ])
       ->where('id_periodetahun', $tahunActive->id_periodetahun)
       ->where('id_periodetipe', $tipeActive->id_periodetipe)
       ->where('id_prodi', $dataMhs->id_prodi)
@@ -775,6 +774,55 @@ class KrsController extends Controller
       ->orderBy('id_makul', 'ASC')
       ->get();
 
+    if ($dataKrs->isEmpty()) {
+      // return view atau response kosong di sini
+    }
+
+
+    // === LANGKAH 2: Kumpulkan ID dan ambil semua data relasi (Ada sedikit perubahan) ===
+
+    // a, b, c (Tidak ada perubahan)
+    $periodeMakulIds = $dataKrs->pluck('id_makul');
+    $bomMap = Matakuliah_bom::whereIn('slave_idmakul', $periodeMakulIds)
+      ->get()
+      ->keyBy('slave_idmakul');
+    $masterIds = $bomMap->pluck('master_idmakul');
+    $allPossibleMakulIds = $periodeMakulIds->merge($masterIds)->unique();
+
+    // --- PERUBAHAN DI SINI ---
+// d. Ambil semua kurikulum_transaction yang relevan TANPA filter angkatan
+    $kurtransactions = Kurikulum_transaction::whereIn('id_makul', $allPossibleMakulIds)
+      ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
+      ->where('id_prodi', $dataMhs->id_prodi) // Filter prodi tetap penting
+      // ->where(function ($query) use ($dataMhs) { ... }) // Filter angkatan kita HAPUS
+      ->where('status', 'ACTIVE')
+      ->get()
+      ->keyBy('id_makul');
+
+
+    // === LANGKAH 3: Pasangkan data kurtrans (Tidak ada perubahan) ===
+    $dataKrs->each(function ($item) use ($kurtransactions, $bomMap) {
+      $item->kurtrans = null;
+      if (isset($kurtransactions[$item->id_makul])) {
+        $item->kurtrans = $kurtransactions[$item->id_makul];
+      } else if (isset($bomMap[$item->id_makul])) {
+        $masterId = $bomMap[$item->id_makul]->master_idmakul;
+        if (isset($kurtransactions[$masterId])) {
+          $item->kurtrans = $kurtransactions[$masterId];
+        }
+      }
+    });
+
+
+    // Sekarang $dataKrs sudah final dan benar
+// dd($dataKrs->toArray());
+
+
+    // Sekarang $dataKrs sudah siap dan berisi relasi kurtrans yang benar
+// dd($dataKrs->toArray());
+    // dd($dataKrs->toArray());
+    // dd($tahunActive->id_periodetahun, $tipeActive->id_periodetipe, $dataMhs->id_prodi, $dataMhs->kelas->idkelas);
+    // dd($kurikulumMhs->toArray(), $dataKrsMhs->toArray(), $dataKrs->toArray());
     return view('sadmin.krs.krs-manual-create', compact('id', 'dataMhs', 'dataKrsMhs', 'dataKrs', 'tahunActive', 'tipeActive'));
   }
 
