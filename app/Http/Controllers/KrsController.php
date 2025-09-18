@@ -33,6 +33,7 @@ use App\Models\Kuitansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class KrsController extends Controller
 {
@@ -758,12 +759,13 @@ class KrsController extends Controller
 // $kurikulumMhs, $dataMhs, $tahunActive, $tipeActive
 
     // === LANGKAH 1: Ambil data dasar Kurikulum Periode (Tidak ada perubahan) ===
-    $dataKrs = Kurikulum_periode::with([
+    $dataKrsCollection = Kurikulum_periode::with([
       'tahun:id_periodetahun,periode_tahun',
       'tipe:id_periodetipe,periode_tipe',
       'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek,active',
       'dosen:iddosen,nama',
       'semester:idsemester,semester',
+      'kelas:idkelas,kelas'
     ])
       ->where('id_periodetahun', $tahunActive->id_periodetahun)
       ->where('id_periodetipe', $tipeActive->id_periodetipe)
@@ -774,55 +776,56 @@ class KrsController extends Controller
       ->orderBy('id_makul', 'ASC')
       ->get();
 
-    if ($dataKrs->isEmpty()) {
-      // return view atau response kosong di sini
+    if ($dataKrsCollection->isNotEmpty()) {
+
+      // --- LANGKAH 2: Kumpulkan ID dan ambil semua data relasi ---
+      $periodeMakulIds = $dataKrsCollection->pluck('id_makul');
+
+      $bomMap = Matakuliah_bom::whereIn('slave_idmakul', $periodeMakulIds)
+        ->get()
+        ->keyBy('slave_idmakul');
+
+      $masterIds = $bomMap->pluck('master_idmakul');
+      $allPossibleMakulIds = $periodeMakulIds->merge($masterIds)->unique();
+
+      $kurtransactions = Kurikulum_transaction::whereIn('id_makul', $allPossibleMakulIds)
+        ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
+        ->where('id_prodi', $dataMhs->id_prodi)
+        ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
+        ->where('status', 'ACTIVE')
+        ->where('pelaksanaan_paket', 'OPEN')
+        ->get()
+        ->keyBy('id_makul');
+
+      // --- LANGKAH 3: Pasangkan data kurtrans ke setiap item KRS secara manual ---
+      $dataKrsCollection->each(function ($item) use ($kurtransactions, $bomMap) {
+        $item->kurtrans = null; // Set default
+        // Cari direct match
+        if (isset($kurtransactions[$item->id_makul])) {
+          $item->kurtrans = $kurtransactions[$item->id_makul];
+          // Jika tidak ada, cari via BOM
+        } else if (isset($bomMap[$item->id_makul])) {
+          $masterId = $bomMap[$item->id_makul]->master_idmakul;
+          if (isset($kurtransactions[$masterId])) {
+            $item->kurtrans = $kurtransactions[$masterId];
+          }
+        }
+      });
     }
 
+    // --- LANGKAH 4: BUAT PAGINATOR SECARA MANUAL DARI KOLEKSI YANG SUDAH JADI ---
+    $perPage = 25; // Tentukan jumlah item per halaman
+    $currentPage = request()->get('page', 1);
+    $currentPageItems = $dataKrsCollection->slice(($currentPage - 1) * $perPage, $perPage);
 
-    // === LANGKAH 2: Kumpulkan ID dan ambil semua data relasi (Ada sedikit perubahan) ===
+    $dataKrs = new LengthAwarePaginator(
+      $currentPageItems,
+      $dataKrsCollection->count(),
+      $perPage,
+      $currentPage,
+      ['path' => request()->url(), 'query' => request()->query()]
+    );
 
-    // a, b, c (Tidak ada perubahan)
-    $periodeMakulIds = $dataKrs->pluck('id_makul');
-    $bomMap = Matakuliah_bom::whereIn('slave_idmakul', $periodeMakulIds)
-      ->get()
-      ->keyBy('slave_idmakul');
-    $masterIds = $bomMap->pluck('master_idmakul');
-    $allPossibleMakulIds = $periodeMakulIds->merge($masterIds)->unique();
-
-    // --- PERUBAHAN DI SINI ---
-// d. Ambil semua kurikulum_transaction yang relevan TANPA filter angkatan
-    $kurtransactions = Kurikulum_transaction::whereIn('id_makul', $allPossibleMakulIds)
-      ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
-      ->where('id_prodi', $dataMhs->id_prodi) // Filter prodi tetap penting
-      // ->where(function ($query) use ($dataMhs) { ... }) // Filter angkatan kita HAPUS
-      ->where('status', 'ACTIVE')
-      ->get()
-      ->keyBy('id_makul');
-
-
-    // === LANGKAH 3: Pasangkan data kurtrans (Tidak ada perubahan) ===
-    $dataKrs->each(function ($item) use ($kurtransactions, $bomMap) {
-      $item->kurtrans = null;
-      if (isset($kurtransactions[$item->id_makul])) {
-        $item->kurtrans = $kurtransactions[$item->id_makul];
-      } else if (isset($bomMap[$item->id_makul])) {
-        $masterId = $bomMap[$item->id_makul]->master_idmakul;
-        if (isset($kurtransactions[$masterId])) {
-          $item->kurtrans = $kurtransactions[$masterId];
-        }
-      }
-    });
-
-
-    // Sekarang $dataKrs sudah final dan benar
-// dd($dataKrs->toArray());
-
-
-    // Sekarang $dataKrs sudah siap dan berisi relasi kurtrans yang benar
-// dd($dataKrs->toArray());
-    // dd($dataKrs->toArray());
-    // dd($tahunActive->id_periodetahun, $tipeActive->id_periodetipe, $dataMhs->id_prodi, $dataMhs->kelas->idkelas);
-    // dd($kurikulumMhs->toArray(), $dataKrsMhs->toArray(), $dataKrs->toArray());
     return view('sadmin.krs.krs-manual-create', compact('id', 'dataMhs', 'dataKrsMhs', 'dataKrs', 'tahunActive', 'tipeActive'));
   }
 
