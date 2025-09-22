@@ -826,7 +826,14 @@ class KrsController extends Controller
       ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    return view('sadmin.krs.krs-manual-create', compact('id', 'dataMhs', 'dataKrsMhs', 'dataKrs', 'tahunActive', 'tipeActive'));
+    return view('sadmin.krs.krs-manual-create', compact(
+      'id',
+      'dataMhs',
+      'dataKrsMhs',
+      'dataKrs',
+      'tahunActive',
+      'tipeActive'
+    ));
   }
 
   public function saveKrsManual(Request $request)

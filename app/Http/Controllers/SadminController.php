@@ -356,7 +356,7 @@ class SadminController extends Controller
                 try {
                     // Cari data mahasiswa
                     $student = Student::where('idstudent', $studentId)->first();
-// dd($student->toArray());
+                    // dd($student->toArray());
                     if (!$student) {
                         $errorCount++;
                         continue;
@@ -5452,37 +5452,213 @@ class SadminController extends Controller
             ->orderBy('student.nim', 'ASC')
             ->get();
 
-        $data = DB::select('CALL data_pembayaran_mhs()');
+        // $data2 = DB::select('CALL data_pembayaran_mhs()');
+
+        $data = DB::table('student as a')
+            ->leftJoin('prodi as b', function ($join) {
+                $join->on('b.kodeprodi', '=', 'a.kodeprodi')
+                    ->on('b.kodekonsentrasi', '=', 'a.kodekonsentrasi');
+            })
+            ->join('angkatan as c', 'c.idangkatan', '=', 'a.idangkatan')
+            ->join('kelas as d', 'd.idkelas', '=', 'a.idstatus')
+            ->leftJoin('beasiswa as e', 'e.idstudent', '=', 'a.idstudent')
+            ->leftJoin('biaya as f', function ($join) {
+                $join->on('f.idangkatan', '=', 'a.idangkatan')
+                    ->on('f.idstatus', '=', 'a.idstatus')
+                    ->on('f.kodeprodi', '=', 'a.kodeprodi');
+            })
+            ->leftJoin('kuitansi as g', 'g.idstudent', '=', 'a.idstudent')
+            ->leftJoin('bayar as h', 'h.idkuit', '=', 'g.idkuit')
+            ->select(
+                'a.idstudent',
+                'a.nim',
+                'a.nama',
+                'b.prodi',
+                'd.kelas',
+                'c.angkatan',
+                'e.idbeasiswa',
+                DB::raw('COALESCE((f.daftar - (f.daftar * e.daftar)/100), f.daftar, 0) AS daftar'),
+                DB::raw('COALESCE((f.awal - (f.awal * e.awal)/100), f.awal, 0) AS awal'),
+                DB::raw('COALESCE((f.dsp - (f.dsp * e.dsp)/100), f.dsp, 0) AS dsp'),
+                DB::raw('ROUND(COALESCE((f.spp1 - (f.spp1 * e.spp1)/100), f.spp1, 0)) AS spp1'),
+                DB::raw('ROUND(COALESCE((f.spp2 - (f.spp2 * e.spp2)/100), f.spp2, 0)) AS spp2'),
+                DB::raw('ROUND(COALESCE((f.spp3 - (f.spp3 * e.spp3)/100), f.spp3, 0)) AS spp3'),
+                DB::raw('ROUND(COALESCE((f.spp4 - (f.spp4 * e.spp4)/100), f.spp4, 0)) AS spp4'),
+                DB::raw('ROUND(COALESCE((f.spp5 - (f.spp5 * e.spp5)/100), f.spp5, 0)) AS spp5'),
+                DB::raw('ROUND(COALESCE((f.spp6 - (f.spp6 * e.spp6)/100), f.spp6, 0)) AS spp6'),
+                DB::raw('ROUND(COALESCE((f.spp7 - (f.spp7 * e.spp7)/100), f.spp7, 0)) AS spp7'),
+                DB::raw('ROUND(COALESCE((f.spp8 - (f.spp8 * e.spp8)/100), f.spp8, 0)) AS spp8'),
+                DB::raw('ROUND(COALESCE((f.spp9 - (f.spp9 * e.spp9)/100), f.spp9, 0)) AS spp9'),
+                DB::raw('ROUND(COALESCE((f.spp10 - (f.spp10 * e.spp10)/100), f.spp10, 0)) AS spp10'),
+                DB::raw('ROUND(COALESCE((f.spp11 - (f.spp11 * e.spp11)/100), f.spp11, 0)) AS spp11'),
+                DB::raw('ROUND(COALESCE((f.spp12 - (f.spp12 * e.spp12)/100), f.spp12, 0)) AS spp12'),
+                DB::raw('ROUND(COALESCE((f.spp13 - (f.spp13 * e.spp13)/100), f.spp13, 0)) AS spp13'),
+                DB::raw('ROUND(COALESCE((f.spp14 - (f.spp14 * e.spp14)/100), f.spp14, 0)) AS spp14'),
+                DB::raw('ROUND(COALESCE((f.prakerin - (f.prakerin * e.prakerin)/100), f.prakerin, 0)) AS prakerin'),
+                DB::raw('ROUND(COALESCE((f.seminar - (f.seminar * e.seminar)/100), f.seminar, 0)) AS seminar'),
+                DB::raw('ROUND(COALESCE((f.wisuda - (f.wisuda * e.wisuda)/100), f.wisuda, 0)) AS wisuda'),
+                DB::raw('COALESCE(SUM(h.bayar), 0) AS total_sudah_bayar')
+            )
+            ->selectRaw('
+            (COALESCE((f.daftar - (f.daftar * e.daftar)/100), f.daftar, 0) +
+             COALESCE((f.awal - (f.awal * e.awal)/100), f.awal, 0) +
+             COALESCE((f.dsp - (f.dsp * e.dsp)/100), f.dsp, 0) +
+             ROUND(COALESCE((f.spp1 - (f.spp1 * e.spp1)/100), f.spp1, 0)) +
+             ROUND(COALESCE((f.spp2 - (f.spp2 * e.spp2)/100), f.spp2, 0)) +
+             ROUND(COALESCE((f.spp3 - (f.spp3 * e.spp3)/100), f.spp3, 0)) +
+             ROUND(COALESCE((f.spp4 - (f.spp4 * e.spp4)/100), f.spp4, 0)) +
+             ROUND(COALESCE((f.spp5 - (f.spp5 * e.spp5)/100), f.spp5, 0)) +
+             ROUND(COALESCE((f.spp6 - (f.spp6 * e.spp6)/100), f.spp6, 0)) +
+             ROUND(COALESCE((f.spp7 - (f.spp7 * e.spp7)/100), f.spp7, 0)) +
+             ROUND(COALESCE((f.spp8 - (f.spp8 * e.spp8)/100), f.spp8, 0)) +
+             ROUND(COALESCE((f.spp9 - (f.spp9 * e.spp9)/100), f.spp9, 0)) +
+             ROUND(COALESCE((f.spp10 - (f.spp10 * e.spp10)/100), f.spp10, 0)) +
+             ROUND(COALESCE((f.spp11 - (f.spp11 * e.spp11)/100), f.spp11, 0)) +
+             ROUND(COALESCE((f.spp12 - (f.spp12 * e.spp12)/100), f.spp12, 0)) +
+             ROUND(COALESCE((f.spp13 - (f.spp13 * e.spp13)/100), f.spp13, 0)) +
+             ROUND(COALESCE((f.spp14 - (f.spp14 * e.spp14)/100), f.spp14, 0)) +
+             ROUND(COALESCE((f.prakerin - (f.prakerin * e.prakerin)/100), f.prakerin, 0)) +
+             ROUND(COALESCE((f.seminar - (f.seminar * e.seminar)/100), f.seminar, 0)) +
+             ROUND(COALESCE((f.wisuda - (f.wisuda * e.wisuda)/100), f.wisuda, 0))
+            ) AS total_harus_bayar
+        ')
+            ->whereIn('a.active', [1, 5])
+            ->groupBy(
+                'a.idstudent',
+                'a.nim',
+                'a.nama',
+                'b.prodi',
+                'd.kelas',
+                'c.angkatan',
+                'e.idbeasiswa',
+                'f.daftar',
+                'f.awal',
+                'f.dsp',
+                'f.spp1',
+                'f.spp2',
+                'f.spp3',
+                'f.spp4',
+                'f.spp5',
+                'f.spp6',
+                'f.spp7',
+                'f.spp8',
+                'f.spp9',
+                'f.spp10',
+                'f.spp11',
+                'f.spp12',
+                'f.spp13',
+                'f.spp14',
+                'f.prakerin',
+                'f.seminar',
+                'f.wisuda',
+                'e.daftar',
+                'e.awal',
+                'e.dsp',
+                'e.spp1',
+                'e.spp2',
+                'e.spp3',
+                'e.spp4',
+                'e.spp5',
+                'e.spp6',
+                'e.spp7',
+                'e.spp8',
+                'e.spp9',
+                'e.spp10',
+                'e.spp11',
+                'e.spp12',
+                'e.spp13',
+                'e.spp14',
+                'e.prakerin',
+                'e.seminar',
+                'e.wisuda'
+            )
+            ->orderBy('a.nim', 'ASC')
+            ->get();
 
         return view('sadmin/pembayaran/data_pembayaran', compact('data'));
     }
 
     public function detail_pembayaran_mhs_admin($id)
     {
-        $mhs = Student::join('prodi', function ($join) {
+        $mhs = Student::leftjoin('prodi', function ($join) {
             $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
         })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+            ->leftjoin('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+            ->leftjoin('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
             ->where('student.idstudent', $id)
             ->select('student.idstudent', 'student.nama', 'student.nim', 'angkatan.angkatan', 'kelas.kelas', 'prodi.prodi')
             ->first();
 
-        $data = DB::select('CALL detail_pembayaran_mhs(?)', [$id]);
+        // dd($mhs);
+        // $data = DB::select('CALL detail_pembayaran_mhs(?)', [$id]);
 
-        $detail_beasiswa = DB::select('CALL detail_beasiswa_mhs(?)', [$id]);
+        $paymentsSubquery = DB::table('bayar as f')
+            ->join('kuitansi as e', 'f.idkuit', '=', 'e.idkuit')
+            ->select('f.iditem', DB::raw('SUM(f.bayar) as telah_dibayar'))
+            ->where('e.idstudent', $id)
+            ->groupBy('f.iditem');
 
-        foreach ($detail_beasiswa as $key_beasiswa) {
-            # code...
-        }
+        $data = DB::table('itembayar as a')
+            ->join('prodi as b', 'a.study_year', '=', 'b.study_year')
+            ->join('student as c', function ($join) {
+                $join->on('c.kodeprodi', '=', 'b.kodeprodi')
+                    ->on('c.kodekonsentrasi', '=', 'b.kodekonsentrasi');
+            })
+            ->leftJoinSub($paymentsSubquery, 'bb', function ($join) {
+                $join->on('a.iditem', '=', 'bb.iditem');
+            })
+            ->where('c.idstudent', $id)
+            ->select(
+                'a.iditem',
+                'a.study_year',
+                'a.item',
+                DB::raw('COALESCE(bb.telah_dibayar, 0) as telah_dibayar')
+            )
+            ->groupBy('a.iditem', 'a.study_year', 'a.item', 'bb.telah_dibayar')
+            ->get();
 
-        $total_byr_mhs = DB::select('CALL detail_totalbayar_mhs(?)', [$id]);
+        // $detail_beasiswa = DB::select('CALL detail_beasiswa_mhs(?)', [$id]);
 
-        foreach ($total_byr_mhs as $key_total) {
-            # code...
-        }
+        // foreach ($detail_beasiswa as $key_beasiswa) {
 
-        return view('sadmin/pembayaran/detail_pembayaran', compact('data', 'mhs', 'key_beasiswa', 'key_total'));
+        // }
+
+        // $total_byr_mhs = DB::select('CALL detail_totalbayar_mhs(?)', [$id]);
+
+        // foreach ($total_byr_mhs as $key_total) {
+
+        // }
+
+        // REVISI QUERY BEASISWA
+        $detail_beasiswa = DB::table('student as a')
+            ->leftJoin('beasiswa as b', 'a.idstudent', '=', 'b.idstudent')
+            ->where('a.idstudent', $id)
+            ->select('a.idstudent', 'a.nim', 'a.nama', 'b.*')
+            ->first();
+
+        // REVISI QUERY TOTAL BIAYA
+        $total_byr_mhs = DB::table('biaya as a')
+            ->join('student as b', function ($join) {
+                $join->on('b.idangkatan', '=', 'a.idangkatan')
+                    ->on('b.idstatus', '=', 'a.idstatus')
+                    ->on('b.kodeprodi', '=', 'a.kodeprodi');
+            })
+            ->where('b.idstudent', $id)
+            ->select('a.*')
+            ->first();
+
+        // dd(
+        //     $data->toArray(),
+        //     $detail_beasiswa,
+        //     $total_byr_mhs,
+        // );
+
+        return view('sadmin/pembayaran/detail_pembayaran', compact(
+            'data',
+            'mhs',
+            'detail_beasiswa',
+            'total_byr_mhs'
+        ));
     }
 
     public function record_sertifikat_mahasiswa()
@@ -7174,26 +7350,60 @@ class SadminController extends Controller
             ->select('kodeprodi', 'prodi')
             ->get();
 
-        $data1 = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->Join('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('periode_tahun.status', 'ACTIVE')
-            ->where('periode_tipe.status', 'ACTIVE')
-            ->where('student_record.status', 'TAKEN')
-            ->where('student.active', 1)
-            ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'student.intake')
-            ->orderBy('student.nim', 'ASC')
-            ->orderBy('student.idangkatan', 'ASC')
-            ->get();
+        // $data1 = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+        //     ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+        //     ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+        //     ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+        //     ->Join('prodi', (function ($join) {
+        //         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+        //             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+        //     }))
+        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
+        //     ->where('periode_tahun.status', 'ACTIVE')
+        //     ->where('periode_tipe.status', 'ACTIVE')
+        //     ->where('student_record.status', 'TAKEN')
+        //     ->where('student.active', 1)
+        //     ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'student.intake')
+        //     ->orderBy('student.nim', 'ASC')
+        //     ->orderBy('student.idangkatan', 'ASC')
+        //     ->get();
 
-        $data = DB::select('CALL data_mhs_aktif');
+        // $data = DB::select('CALL data_mhs_aktif');
+
+        $data = DB::table('student_record as sr')
+            ->join('student as mhs', 'mhs.idstudent', '=', 'sr.id_student')
+            ->join('kurikulum_periode as kp', 'kp.id_kurperiode', '=', 'sr.id_kurperiode')
+            ->join('periode_tahun as pthn', 'pthn.id_periodetahun', '=', 'kp.id_periodetahun')
+            ->join('periode_tipe as ptp', 'ptp.id_periodetipe', '=', 'kp.id_periodetipe')
+            ->join('prodi as prd', function ($join) {
+                $join->on('prd.kodeprodi', '=', 'mhs.kodeprodi')
+                    ->on('prd.kodekonsentrasi', '=', 'mhs.kodekonsentrasi');
+            })
+            ->join('kelas as kls', 'kls.idkelas', '=', 'mhs.idstatus')
+            ->join('angkatan as ang', 'ang.idangkatan', '=', 'mhs.idangkatan')
+            ->selectRaw("
+            mhs.idstudent, 
+            mhs.nim, 
+            mhs.nama, 
+            CONCAT(prd.prodi, ' - ', prd.konsentrasi) AS prodi, 
+            kls.kelas, 
+            ang.angkatan, 
+            mhs.hp,
+            CASE 
+                WHEN mhs.intake = 1 THEN 'GANJIL' 
+                WHEN mhs.intake = 2 THEN 'GENAP' 
+            END AS intake
+        ")
+            ->where('sr.status', 'TAKEN')
+            ->where('mhs.active', 1)
+            ->where('pthn.status', 'ACTIVE')
+            ->where('ptp.status', 'ACTIVE')
+            ->where('kp.status', 'ACTIVE')
+            ->groupBy('sr.id_student', 'mhs.idstudent', 'mhs.nim', 'mhs.nama', 'prodi', 'kls.kelas', 'ang.angkatan', 'mhs.hp', 'intake')
+            ->orderBy('prd.kodeprodi')
+            ->orderBy('mhs.nim', 'ASC')
+            ->get();
 
         return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'data', 'prodi'));
     }

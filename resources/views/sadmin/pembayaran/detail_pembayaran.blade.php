@@ -4,265 +4,151 @@
     @include('layouts.side')
 @endsection
 @section('content')
+    
+    @php
+        // Inisialisasi variabel untuk kalkulasi total di footer
+        $grand_total_tagihan = 0;
+        $grand_total_dibayar = 0;
+        $grand_total_tunggakan = 0;
+
+        // INI ADALAH KUNCI PERBAIKAN UTAMA!
+        // Kamus untuk menerjemahkan nama item ke nama kolom di objek data Anda.
+        // Data ini disesuaikan dengan hasil dd() Anda.
+        $item_key_map = [
+            'Pendaftaran' => 'daftar',
+            'Perlengkapan Awal' => 'awal',
+            'Dana Pengembangan' => 'dsp',
+            'Biaya SPP 1' => 'spp1', 'Biaya SPP 2' => 'spp2',
+            'Biaya SPP 3' => 'spp3', 'Biaya SPP 4' => 'spp4',
+            'Biaya SPP 5' => 'spp5', 'Biaya SPP 6' => 'spp6',
+            'Biaya SPP 7' => 'spp7', 'Biaya SPP 8' => 'spp8',
+            'Biaya SPP 9' => 'spp9', 'Biaya SPP 10' => 'spp10',
+            'Biaya SPP 11' => 'spp11', 'Biaya SPP 12' => 'spp12',
+            'Biaya SPP 13' => 'spp13', 'Biaya SPP 14' => 'spp14',
+            'Prakerin' => 'prakerin', // Asumsi nama kolomnya 'prakerin'
+            'Magang 1' => 'magang1', // Menambahkan item baru dari dd()
+            'Magang 2' => 'magang2', // Menambahkan item baru dari dd()
+            'Seminar' => 'seminar',
+            'Sidang' => 'sidang',
+            'Wisuda' => 'wisuda',
+        ];
+    @endphp
+
     <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Detail Pembayaran Mahasiswa Politeknik META Industri</h3>
-                <table width="100%">
-                    <tr>
-                        <td width="10%">Nama</td>
-                        <td width="1%">:</td>
-                        <td>{{ $mhs->nama }}</td>
-
-                    </tr>
-                    <tr>
-                        <td>NIM</td>
-                        <td>:</td>
-                        <td>{{ $mhs->nim }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Program Studi</td>
-                        <td> : </td>
-                        <td>{{ $mhs->prodi }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Kelas</td>
-                        <td>:</td>
-                        <td>{{ $mhs->kelas }}
-                        </td>
-                    </tr>
-                </table>
+        {{-- Box untuk Informasi Mahasiswa --}}
+        <div class="box box-solid box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-user"></i> Detail Mahasiswa</h3>
             </div>
-
             <div class="box-body">
-                <table class="table table-bordered ">
-                    <thead>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="dl-horizontal">
+                            <dt>Nama</dt>
+                            <dd>{{ $mhs->nama }}</dd>
+                            <dt>NIM</dt>
+                            <dd>{{ $mhs->nim }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="dl-horizontal">
+                            <dt>Program Studi</dt>
+                            <dd>{{ $mhs->prodi }}</dd>
+                            <dt>Kelas</dt>
+                            <dd>{{ $mhs->kelas }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Box untuk Rincian Pembayaran --}}
+        <div class="box box-solid box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-money"></i> Rincian Pembayaran</h3>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead style="background-color: #f7f7f7;">
                         <tr>
-                            <th style="width: 10px">
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>Item Pembayaran</center>
-                            </th>
-                            <th>
-                                <center>Nominal Pembayaran</center>
-                            </th>
-                            <th>
-                                <center>Beasiswa</center>
-                            </th>
-                            <th>
-                                <center>Nominal harus dibayar</center>
-                            </th>
-                            <th>
-                                <center>Nominal telah dibayar</center>
-                            </th>
-                            <th>
-                                <center>Tunggakan</center>
-                            </th>
+                            <th class="text-center" style="width: 10px;">No</th>
+                            <th>Item Pembayaran</th>
+                            <th class="text-right">Nominal Awal</th>
+                            <th class="text-center">Beasiswa (%)</th>
+                            <th class="text-right">Total Tagihan</th>
+                            <th class="text-right">Telah Dibayar</th>
+                            <th class="text-right">Tunggakan</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $item)
-                            <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>
-                                    {{ $item->item }}
-                                </td>
-                                <td align="right">
-                                    @if ($item->item == 'Pendaftaran')
-                                        @currency($key_total->daftar)
-                                    @elseif($item->item == 'Perlengkapan Awal')
-                                        @currency($key_total->awal)
-                                    @elseif($item->item == 'Dana Pengembangan')
-                                        @currency($key_total->dsp)
-                                    @elseif($item->item == 'Biaya SPP 1')
-                                        @currency($key_total->spp1)
-                                    @elseif($item->item == 'Biaya SPP 2')
-                                        @currency($key_total->spp2)
-                                    @elseif($item->item == 'Biaya SPP 3')
-                                        @currency($key_total->spp3)
-                                    @elseif($item->item == 'Biaya SPP 4')
-                                        @currency($key_total->spp4)
-                                    @elseif($item->item == 'Biaya SPP 5')
-                                        @currency($key_total->spp5)
-                                    @elseif($item->item == 'Biaya SPP 6')
-                                        @currency($key_total->spp6)
-                                    @elseif($item->item == 'Biaya SPP 7')
-                                        @currency($key_total->spp7)
-                                    @elseif($item->item == 'Biaya SPP 8')
-                                        @currency($key_total->spp8)
-                                    @elseif($item->item == 'Biaya SPP 9')
-                                        @currency($key_total->spp9)
-                                    @elseif($item->item == 'Biaya SPP 10')
-                                        @currency($key_total->spp10)
-                                    @elseif($item->item == 'Biaya SPP 11')
-                                        @currency($key_total->spp11)
-                                    @elseif($item->item == 'Biaya SPP 12')
-                                        @currency($key_total->spp12)
-                                    @elseif($item->item == 'Biaya SPP 13')
-                                        @currency($key_total->spp13)
-                                    @elseif($item->item == 'Biaya SPP 14')
-                                        @currency($key_total->spp14)
-                                    @elseif($item->item == 'Prakerin')
-                                        @currency($key_total->prakerin)
-                                    @elseif($item->item == 'Seminar')
-                                        @currency($key_total->seminar)
-                                    @elseif($item->item == 'Sidang')
-                                        @currency($key_total->sidang)
-                                    @elseif($item->item == 'Wisuda')
-                                        @currency($key_total->wisuda)
-                                    @endif
+                        @foreach ($data as $index => $item)
+                            @php
+                                // Ambil key kolom dari map, contoh: 'Biaya SPP 1' -> 'spp1'
+                                $key = $item_key_map[$item->item] ?? null;
 
-                                </td>
-                                <td align="center">
-                                    @if ($key_beasiswa->idbeasiswa == null)
-                                        0%
+                                // Siapkan variabel default untuk keamanan
+                                $nominal_awal = 0;
+                                $persen_beasiswa = 0;
+                                $harus_dibayar = 0;
+                                $telah_dibayar = $item->telah_dibayar;
+                                $tunggakan = 0;
+
+                                // Lakukan kalkulasi hanya jika key ditemukan di map dan datanya ada
+                                if ($key && isset($total_byr_mhs->$key)) {
+                                    $nominal_awal = (float) $total_byr_mhs->$key;
+                                    
+                                    // Cek jika ada beasiswa dan propertinya ada
+                                    $persen_beasiswa = ($detail_beasiswa && isset($detail_beasiswa->$key)) ? (float) $detail_beasiswa->$key : 0;
+                                    
+                                    $potongan = ($nominal_awal * $persen_beasiswa) / 100;
+                                    $harus_dibayar = $nominal_awal - $potongan;
+                                    $tunggakan = $harus_dibayar - $telah_dibayar;
+
+                                    // Akumulasi untuk grand total
+                                    $grand_total_tagihan += $harus_dibayar;
+                                    $grand_total_dibayar += $telah_dibayar;
+                                } else {
+                                    // Jika item tidak terdaftar di map, tagihan dianggap 0
+                                    // tapi pembayaran yang ada tetap dihitung
+                                    $grand_total_dibayar += $telah_dibayar;
+                                }
+                            @endphp
+                            <tr>
+                                <td class="text-center">{{ $index + 1 }}</td>
+                                <td>{{ $item->item }}</td>
+                                <td class="text-right">@currency($nominal_awal)</td>
+                                <td class="text-center">{{ $persen_beasiswa }}%</td>
+                                <td class="text-right"><strong>@currency($harus_dibayar)</strong></td>
+                                <td class="text-right text-green">@currency($telah_dibayar)</td>
+                                <td class="text-right">
+                                    @if ($tunggakan <= 0 && $harus_dibayar > 0)
+                                        <span class="badge bg-green">Lunas</span>
+                                    @elseif ($harus_dibayar == 0)
+                                        <span class="badge bg-gray">-</span>
                                     @else
-                                        @if ($item->item == 'Pendaftaran')
-                                            {{ $key_beasiswa->daftar }}
-                                        @elseif($item->item == 'Perlengkapan Awal')
-                                            {{ $key_beasiswa->awal }}
-                                        @elseif($item->item == 'Dana Pengembangan')
-                                            {{ $key_beasiswa->dsp }}
-                                        @elseif($item->item == 'Biaya SPP 1')
-                                            {{ $key_beasiswa->spp1 }}
-                                        @elseif($item->item == 'Biaya SPP 2')
-                                            {{ $key_beasiswa->spp2 }}
-                                        @elseif($item->item == 'Biaya SPP 3')
-                                            {{ $key_beasiswa->spp3 }}
-                                        @elseif($item->item == 'Biaya SPP 4')
-                                            {{ $key_beasiswa->spp4 }}
-                                        @elseif($item->item == 'Biaya SPP 5')
-                                            {{ $key_beasiswa->spp5 }}
-                                        @elseif($item->item == 'Biaya SPP 6')
-                                            {{ $key_beasiswa->spp6 }}
-                                        @elseif($item->item == 'Biaya SPP 7')
-                                            {{ $key_beasiswa->spp7 }}
-                                        @elseif($item->item == 'Biaya SPP 8')
-                                            {{ $key_beasiswa->spp8 }}
-                                        @elseif($item->item == 'Biaya SPP 9')
-                                            {{ $key_beasiswa->spp9 }}
-                                        @elseif($item->item == 'Biaya SPP 10')
-                                            {{ $key_beasiswa->spp10 }}
-                                        @elseif($item->item == 'Biaya SPP 11')
-                                            {{ $key_beasiswa->spp11 }}
-                                        @elseif($item->item == 'Biaya SPP 12')
-                                            {{ $key_beasiswa->spp12 }}
-                                        @elseif($item->item == 'Biaya SPP 13')
-                                            {{ $key_beasiswa->spp13 }}
-                                        @elseif($item->item == 'Biaya SPP 14')
-                                            {{ $key_beasiswa->spp14 }}
-                                        @elseif($item->item == 'Prakerin')
-                                            {{ $key_beasiswa->prakerin }}
-                                        @elseif($item->item == 'Seminar')
-                                            {{ $key_beasiswa->seminar }}
-                                        @elseif($item->item == 'Sidang')
-                                            {{ $key_beasiswa->sidang }}
-                                        @elseif($item->item == 'Wisuda')
-                                            {{ $key_beasiswa->wisuda }}
-                                        @endif
-                                        %
-                                    @endif
-                                </td>
-                                <td align="right">
-                                    @if ($item->item == 'Pendaftaran')
-                                        @currency($key_total->daftar - ($key_beasiswa->daftar * $key_total->daftar) / 100)
-                                    @elseif($item->item == 'Perlengkapan Awal')
-                                        @currency($key_total->awal - ($key_beasiswa->awal * $key_total->awal) / 100)
-                                    @elseif($item->item == 'Dana Pengembangan')
-                                        @currency($key_total->dsp - ($key_beasiswa->dsp * $key_total->dsp) / 100)
-                                    @elseif($item->item == 'Biaya SPP 1')
-                                        @currency($key_total->spp1 - ($key_beasiswa->spp1 * $key_total->spp1) / 100)
-                                    @elseif($item->item == 'Biaya SPP 2')
-                                        @currency($key_total->spp2 - ($key_beasiswa->spp2 * $key_total->spp2) / 100)
-                                    @elseif($item->item == 'Biaya SPP 3')
-                                        @currency($key_total->spp3 - ($key_beasiswa->spp3 * $key_total->spp3) / 100)
-                                    @elseif($item->item == 'Biaya SPP 4')
-                                        @currency($key_total->spp4 - ($key_beasiswa->spp4 * $key_total->spp4) / 100)
-                                    @elseif($item->item == 'Biaya SPP 5')
-                                        @currency($key_total->spp5 - ($key_beasiswa->spp5 * $key_total->spp5) / 100)
-                                    @elseif($item->item == 'Biaya SPP 6')
-                                        @currency($key_total->spp6 - ($key_beasiswa->spp6 * $key_total->spp6) / 100)
-                                    @elseif($item->item == 'Biaya SPP 7')
-                                        @currency($key_total->spp7 - ($key_beasiswa->spp7 * $key_total->spp7) / 100)
-                                    @elseif($item->item == 'Biaya SPP 8')
-                                        @currency($key_total->spp8 - ($key_beasiswa->spp8 * $key_total->spp8) / 100)
-                                    @elseif($item->item == 'Biaya SPP 9')
-                                        @currency($key_total->spp9 - ($key_beasiswa->spp9 * $key_total->spp9) / 100)
-                                    @elseif($item->item == 'Biaya SPP 10')
-                                        @currency($key_total->spp10 - ($key_beasiswa->spp10 * $key_total->spp10) / 100)
-                                    @elseif($item->item == 'Biaya SPP 11')
-                                        @currency($key_total->spp11 - ($key_beasiswa->spp11 * $key_total->spp11) / 100)
-                                    @elseif($item->item == 'Biaya SPP 12')
-                                        @currency($key_total->spp12 - ($key_beasiswa->spp12 * $key_total->spp12) / 100)
-                                    @elseif($item->item == 'Biaya SPP 13')
-                                        @currency($key_total->spp13 - ($key_beasiswa->spp13 * $key_total->spp13) / 100)
-                                    @elseif($item->item == 'Biaya SPP 14')
-                                        @currency($key_total->spp14 - ($key_beasiswa->spp14 * $key_total->spp14) / 100)
-                                    @elseif($item->item == 'Prakerin')
-                                        @currency($key_total->prakerin - ($key_beasiswa->prakerin * $key_total->prakerin) / 100)
-                                    @elseif($item->item == 'Seminar')
-                                        @currency($key_total->seminar - ($key_beasiswa->seminar * $key_total->seminar) / 100)
-                                    @elseif($item->item == 'Sidang')
-                                        @currency($key_total->sidang - ($key_beasiswa->sidang * $key_total->sidang) / 100)
-                                    @elseif($item->item == 'Wisuda')
-                                        @currency($key_total->wisuda - ($key_beasiswa->wisuda * $key_total->wisuda) / 100)
-                                    @endif
-                                </td>
-                                <td align="right">
-                                    @currency($item->telah_dibayar)
-                                </td>
-                                <td align="right">
-                                    @if ($item->item == 'Pendaftaran')
-                                        @currency($key_total->daftar - ($key_beasiswa->daftar * $key_total->daftar) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Perlengkapan Awal')
-                                        @currency($key_total->awal - ($key_beasiswa->awal * $key_total->awal) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Dana Pengembangan')
-                                        @currency($key_total->dsp - ($key_beasiswa->dsp * $key_total->dsp) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 1')
-                                        @currency($key_total->spp1 - ($key_beasiswa->spp1 * $key_total->spp1) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 2')
-                                        @currency($key_total->spp2 - ($key_beasiswa->spp2 * $key_total->spp2) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 3')
-                                        @currency($key_total->spp3 - ($key_beasiswa->spp3 * $key_total->spp3) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 4')
-                                        @currency($key_total->spp4 - ($key_beasiswa->spp4 * $key_total->spp4) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 5')
-                                        @currency($key_total->spp5 - ($key_beasiswa->spp5 * $key_total->spp5) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 6')
-                                        @currency($key_total->spp6 - ($key_beasiswa->spp6 * $key_total->spp6) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 7')
-                                        @currency($key_total->spp7 - ($key_beasiswa->spp7 * $key_total->spp7) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 8')
-                                        @currency($key_total->spp8 - ($key_beasiswa->spp8 * $key_total->spp8) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 9')
-                                        @currency($key_total->spp9 - ($key_beasiswa->spp9 * $key_total->spp9) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 10')
-                                        @currency($key_total->spp10 - ($key_beasiswa->spp10 * $key_total->spp10) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 11')
-                                        @currency($key_total->spp11 - ($key_beasiswa->spp11 * $key_total->spp11) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 12')
-                                        @currency($key_total->spp12 - ($key_beasiswa->spp12 * $key_total->spp12) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 13')
-                                        @currency($key_total->spp13 - ($key_beasiswa->spp13 * $key_total->spp13) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Biaya SPP 14')
-                                        @currency($key_total->spp14 - ($key_beasiswa->spp14 * $key_total->spp14) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Prakerin')
-                                        @currency($key_total->prakerin - ($key_beasiswa->prakerin * $key_total->prakerin) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Seminar')
-                                        @currency($key_total->seminar - ($key_beasiswa->seminar * $key_total->seminar) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Sidang')
-                                        @currency($key_total->sidang - ($key_beasiswa->sidang * $key_total->sidang) / 100 - $item->telah_dibayar)
-                                    @elseif($item->item == 'Wisuda')
-                                        @currency($key_total->wisuda - ($key_beasiswa->wisuda * $key_total->wisuda) / 100 - $item->telah_dibayar)
+                                        <span class="badge bg-red">@currency($tunggakan)</span>
                                     @endif
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f0f0f0; font-weight: bold; font-size: 1.2em;">
+                            <td colspan="4" class="text-right">TOTAL KESELURUHAN</td>
+                            <td class="text-right">@currency($grand_total_tagihan)</td>
+                            <td class="text-right text-green">@currency($grand_total_dibayar)</td>
+                            <td class="text-right">
+                                @php
+                                    $grand_total_tunggakan = $grand_total_tagihan - $grand_total_dibayar;
+                                @endphp
+                                @if ($grand_total_tunggakan <= 0)
+                                    <span class="badge bg-green" style="font-size: 1em;">LUNAS</span>
+                                @else
+                                    <span class="badge bg-red" style="font-size: 1em;">@currency($grand_total_tunggakan)</span>
+                                @endif
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
