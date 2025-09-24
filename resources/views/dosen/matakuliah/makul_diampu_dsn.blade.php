@@ -58,8 +58,18 @@
                                 </td>
                                 <td>{{ $item->kode }} - {{ $item->makul }}</td>
                                 <td>
-                                    {{ $item->prodi }}
+                                    {{-- INI BAGIAN YANG DIUBAH --}}
+                                    <b>{{ $item->prodi }}</b>
+                                    {{-- Tampilkan daftar konsentrasi menggunakan list --}}
+                                    <ul>
+                                        @foreach ($item->details as $detail)
+                                            <li>{{ $detail['konsentrasi'] }}</li>
+                                        @endforeach
+                                    </ul>
                                 </td>
+                                <!-- <td>
+                                    {{ $item->prodi }}
+                                </td> -->
                                 <td>
                                     {{ $item->kelas }}
                                 </td>
@@ -173,8 +183,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>File Soal UTS</label>
-                                                    <input type="file" class="form-control" name="soal_uts">
-                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                    <input type="file" class="form-control" name="soal_uts" accept="application/pdf">
+                                                    <span>Max. size 4 mb dengan format (.pdf)</span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Cetak Soal</label>
@@ -217,8 +227,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>File Soal UAS</label>
-                                                    <input type="file" class="form-control" name="soal_uas">
-                                                    <span>Max. size 4 mb dengan format (.pdf) atau (.doc)</span>
+                                                    <input type="file" class="form-control" name="soal_uas" accept="application/pdf">
+                                                    <span>Max. size 4 mb dengan format (.pdf)</span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Cetak Soal</label>

@@ -4,200 +4,188 @@
     @include('layouts.side')
 @endsection
 
-@section('content')
-    <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Data Absensi Mahasiswa</h3>
-            </div>
-            <form action="{{ url('save_edit_absensi') }}" method="post">
-                {{ csrf_field() }}
-                <input type="hidden" name="id_bap" value="{{ $id }}">
-                <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
-                <div class="box-body">
-                    <div class="form-group">
-                        <div class="callout callout-warning">
-                            <p>Remark : Centang untuk mahasiswa yang hadir</p>
-                        </div>
-                    </div>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <center>No</center>
-                                </th>
-                                <th>
-                                    <center>NIM </center>
-                                </th>
-                                <th>
-                                    <center>Nama</center>
-                                </th>
-                                <th>
-                                    <center>Program Studi</center>
-                                </th>
-                                <th>
-                                    <center>Kelas</center>
-                                </th>
-                                <th>
-                                    <center>Angkatan</center>
-                                </th>
-                                {{-- <th>
-                                    <center>Pilih</center>
-                                </th> --}}
-                                <th>
-                                    <center>Hadir</center>
-                                </th>
-                                <th>
-                                    <center>Alpa</center>
-                                </th>
-                                <th>
-                                    <center>Izin</center>
-                                </th>
-                                <th>
-                                    <center>Sakit</center>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no = 1; ?>
-                            @foreach ($abs as $item)
-                                <tr>
-                                    <td>
-                                        <center>{{ $no++ }}</center>
-                                    </td>
-                                    <td>
-                                        <center>{{ $item->nim }}</center>
-                                    </td>
-                                    <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->prodi }}</td>
-                                    <td>
-                                        <center>{{ $item->kelas }}</center>
-                                    </td>
-                                    <td>
-                                        <center>{{ $item->angkatan }}</center>
-                                    </td>
-                                    {{-- <td>
-                                        <center>
+<style>
+    /* 1. Sembunyikan titik radio button asli (tetap sama) */
+    #tabel-absensi .btn-group label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    }
 
-                                            <select name="absensi[]" class="form-control" required>
-                                                @if ($item->absensi == 'ABSEN')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Hadir</option>
-                                                @elseif($item->absensi == 'IZIN')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Izin</option>
-                                                @elseif($item->absensi == 'SAKIT')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Sakit</option>
-                                                @elseif($item->absensi == 'ALFA')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                        Alfa</option>
-                                                @elseif($item->absensi == null)
-                                                    <option></option>
-                                                @elseif($item->absensi == 'HADIR')
-                                                    <option
-                                                        value="{{ $item->id_studentrecord }},HADIR,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    </option>
-                                                @endif
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},ABSEN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Hadir</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},IZIN,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Izin</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},SAKIT,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Sakit</option>
-                                                <option
-                                                    value="{{ $item->id_studentrecord }},ALFA,{{ $item->id_absensi }},{{ $item->id_bap }}">
-                                                    Alfa</option>
-                                            </select>
-                                        </center>
-                                    </td> --}}
-                                    <td align="center">
-                                        <div class="radio">
-                                            <label>
-                                                @if ($item->absensi == 'ABSEN')
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},ABSEN" checked>
-                                                @else
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},ABSEN">
-                                                @endif
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td align="center">
-                                        <div class="radio">
-                                            <label>
-                                                @if ($item->absensi == 'ALFA')
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},ALFA" checked>
-                                                @else
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},ALFA">
-                                                @endif
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td align="center">
-                                        <div class="radio">
-                                            <label>
-                                                @if ($item->absensi == 'IZIN')
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},IZIN" checked>
-                                                @else
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},IZIN">
-                                                @endif
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td align="center">
-                                        <div class="radio">
-                                            <label>
-                                                @if ($item->absensi == 'SAKIT')
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},SAKIT" checked>
-                                                @else
-                                                    <input type="radio"
-                                                        name="absensi_radio[{{ $item->id_studentrecord }}]"
-                                                        value="{{ $item->id_studentrecord }},SAKIT">
-                                                @endif
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <br>
-                    <button id="simpan" class="btn btn-success btn-block" type="submit">Simpan</button>
+    /* 2. Style dasar untuk SEMUA tombol (mode "outline") */
+    #tabel-absensi .btn-group label.btn {
+    background-color: #fff; /* Latar belakang putih */
+    border: 1px solid; /* Garis pinggir solid */
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+    }
 
+    /* 3. Atur warna TULISAN dan GARIS PINGGIR untuk setiap status */
+    #tabel-absensi .btn-group label.btn-success { color: #00a65a; }
+    #tabel-absensi .btn-group label.btn-warning { color: #f39c12; }
+    #tabel-absensi .btn-group label.btn-info { color: #00c0ef; }
+    #tabel-absensi .btn-group label.btn-danger { color: #dd4b39; }
+
+    /* 4. Style untuk tombol yang AKTIF atau di-hover (mode "fill") */
+    #tabel-absensi .btn-group label.btn.active,
+    #tabel-absensi .btn-group label.btn:hover {
+    color: #fff !important; /* Tulisan menjadi putih */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    }
+
+    /* 5. Atur warna LATAR BELAKANG untuk tombol yang AKTIF atau di-hover */
+    #tabel-absensi .btn-group label.btn-success.active,
+    #tabel-absensi .btn-group label.btn-success:hover {
+    background-color: #00a65a;
+    }
+    #tabel-absensi .btn-group label.btn-warning.active,
+    #tabel-absensi .btn-group label.btn-warning:hover {
+    background-color: #f39c12;
+    }
+    #tabel-absensi .btn-group label.btn-info.active,
+    #tabel-absensi .btn-group label.btn-info:hover {
+    background-color: #00c0ef;
+    }
+    #tabel-absensi .btn-group label.btn-danger.active,
+    #tabel-absensi .btn-group label.btn-danger:hover {
+    background-color: #dd4b39;
+    }
+    </style>
+
+
+    @section('content')
+        <section class="content">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-edit"></i> Edit Absensi Mahasiswa</h3>
                 </div>
-            </form>
-        </div>
-    </section>
-    {{-- <script>
-        $(document).ready(function() {
-            $('#simpan').click(function() {
-                // Menonaktifkan tombol setelah diklik
-                $(this).prop('disabled', true);
+                <form action="{{ url('save_edit_absensi') }}" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id_bap" value="{{ $id }}">
+                    <input type="hidden" name="id_kurperiode" value="{{ $idk }}">
 
-                // Mencegah pengguna mengklik tombol lagi
-                $(this).unbind('click');
+                    <div class="box-body">
+                        <div class="callout callout-info">
+                            <h4><i class="fa fa-info-circle"></i> Petunjuk</h4>
+                            <p>Ubah status kehadiran mahasiswa sesuai dengan data yang benar.</p>
+                        </div>
+
+                        <table class="table table-bordered table-hover" id="tabel-absensi">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th>Mahasiswa (Nama & NIM)</th>
+                                    <th class="text-center" width="15%">Program Studi</th>
+                                    <th class="text-center" width="10%">Kelas</th>
+                                    <th class="text-center" width="35%">
+                                        Status Kehadiran
+                                        <div class="btn-group btn-group-xs pull-right">
+                                            <button type="button" class="btn btn-default" id="tandaiHadirSemua">Hadir
+                                                Semua</button>
+                                            <button type="button" class="btn btn-default" id="tandaiAlpaSemua">Alpa
+                                                Semua</button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- Gunakan variabel $abs sesuai dengan controller Anda --}}
+                                @forelse ($abs as $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>
+                                            <strong>{{ $item->nama }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $item->nim }}</small>
+                                        </td>
+                                        <td>{{ $item->prodi }}</td>
+                                        <td class="text-center">{{ $item->kelas }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-sm">
+                                                {{-- Logika @if ditambahkan untuk menentukan status 'active' dan 'checked' dari
+                                                database --}}
+
+                                                {{-- Tombol Hadir --}}
+                                                <label
+                                                    class="btn btn-success {{ ($item->absensi ?? '') == 'ABSEN' ? 'active' : '' }}">
+                                                    <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ABSEN" {{ ($item->absensi ?? '') == 'ABSEN' ? 'checked' : '' }}> Hadir
+                                                </label>
+
+                                                {{-- Tombol Izin --}}
+                                                <label
+                                                    class="btn btn-warning {{ ($item->absensi ?? '') == 'IZIN' ? 'active' : '' }}">
+                                                    <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},IZIN" {{ ($item->absensi ?? '') == 'IZIN' ? 'checked' : '' }}> Izin
+                                                </label>
+
+                                                {{-- Tombol Sakit --}}
+                                                <label
+                                                    class="btn btn-info {{ ($item->absensi ?? '') == 'SAKIT' ? 'active' : '' }}">
+                                                    <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},SAKIT" {{ ($item->absensi ?? '') == 'SAKIT' ? 'checked' : '' }}> Sakit
+                                                </label>
+
+                                                {{-- Tombol Alpa --}}
+                                                <label
+                                                    class="btn btn-danger {{ ($item->absensi ?? '') == 'ALFA' ? 'active' : '' }}">
+                                                    <input type="radio" name="absensi_radio[{{ $item->id_studentrecord }}]"
+                                                        value="{{ $item->id_studentrecord }},ALFA" {{ ($item->absensi ?? '') == 'ALFA' ? 'checked' : '' }}> Alpa
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <p class="text-muted">Tidak ada data absensi yang dapat diedit.</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="box-footer">
+                        <button id="simpan" class="btn btn-primary btn-lg pull-right" type="submit"><i
+                                class="fa fa-save"></i> Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    @endsection
+
+    @section('script')
+        <script>
+            $(document).ready(function () {
+                // =================================================================
+                // LOGIKA UNTUK MEMBUAT TOMBOL BERFUNGSI SECARA MANUAL
+                // =================================================================
+                $('#tabel-absensi .btn-group label').on('click', function () {
+                    var label = $(this);
+                    var radio = label.find('input[type=radio]');
+                    radio.prop('checked', true);
+                    label.siblings().removeClass('active');
+                    label.addClass('active');
+                });
+
+                // =================================================================
+                // FUNGSI "TANDAI SEMUA"
+                // =================================================================
+                $('#tandaiHadirSemua').click(function () {
+                    $('#tabel-absensi .btn-group label.btn-success').click();
+                });
+
+                $('#tandaiAlpaSemua').click(function () {
+                    $('#tabel-absensi .btn-group label.btn-danger').click();
+                });
+
+                // =================================================================
+                // FUNGSI UNTUK MENCEGAH DOUBLE SUBMIT
+                // =================================================================
+                $('form').submit(function () {
+                    $('#simpan').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+                });
             });
-        });
-    </script> --}}
-@endsection
+        </script>
+    @endsection
