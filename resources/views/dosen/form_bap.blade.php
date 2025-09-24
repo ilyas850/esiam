@@ -71,15 +71,15 @@
                                 <label>
                                     <font color="red-text">*</font>Kemampuan Akhir Direncanakan
                                 </label>
-                                <textarea id="kemampuanAkhir" class="form-control pull-right" name="kemampuan_akhir_direncanakan" rows="3"
-                                    readonly required></textarea>
+                                <textarea id="kemampuanAkhir" class="form-control pull-right"
+                                    name="kemampuan_akhir_direncanakan" rows="3" readonly required></textarea>
                             </div>
                             <div class="col-md-5">
                                 <label>
                                     <font color="red-text">*</font>Materi Pembelajaran
                                 </label>
-                                <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran" rows="3" readonly
-                                    required></textarea>
+                                <textarea id="materiPembelajaran" class="form-control pull-right" name="materi_pembelajaran"
+                                    rows="3" readonly required></textarea>
                             </div>
                         </div>
 
@@ -203,7 +203,8 @@
                                 <label>
                                     <font color="red-text">*</font>Alasan Pembaharuan Materi
                                 </label>
-                                <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi" required></textarea>
+                                <textarea class="form-control" rows="5" name="alasan_pembaharuan_materi"
+                                    required></textarea>
                             </div>
                             <div class="col-md-3">
                                 @if ($cek_mk->akt_sks_praktek > 0)
@@ -259,11 +260,13 @@
             </form>
         </div>
     </section>
+@endsection
 
+@section('script')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Menangkap perubahan pada elemen radio button di modal
-            $('input[name="id_rps"]').change(function() {
+            $('input[name="id_rps"]').change(function () {
                 // Memperbarui nilai textarea di form dengan data yang dipilih
                 var selectedRps = $('input[name="id_rps"]:checked');
                 $('#kemampuanAkhir').val(selectedRps.closest('tr').find('td:nth-child(3)').text());
