@@ -246,13 +246,14 @@
                 </div>
             </form>
         </div>
-
     </section>
+@endsection
 
+@section('script')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Menangkap perubahan pada elemen radio button di modal
-            $('input[name="id_rps"]').change(function() {
+            $('input[name="id_rps"]').change(function () {
                 // Memperbarui nilai textarea di form dengan data yang dipilih
                 var selectedRps = $('input[name="id_rps"]:checked');
                 $('#kemampuanAkhir').val(selectedRps.closest('tr').find('td:nth-child(3)').text());
@@ -261,7 +262,4 @@
             });
         });
     </script>
-
-
-
 @endsection
