@@ -1063,7 +1063,7 @@ Route::group(['middleware' => 'mhs'], function () {
     Route::get('magang_mhs', 'MagangSkripsiController@magang_mhs');
     Route::get('input_data_magang/{id}', 'MagangSkripsiController@input_data_magang');
     Route::post('simpan_data_magang', 'MagangSkripsiController@simpan_data_magang');
-    Route::put('put_data_magang/{id}', 'MagangskripsiController@put_data_magang');
+    Route::put('put_data_magang/{id}', 'MagangSkripsiController@put_data_magang');
     Route::post('simpan_bimbingan_magang', 'MagangSkripsiController@simpan_bimbingan_magang');
     Route::put('edit_bimbingan_magang/{id}', 'MagangSkripsiController@edit_bimbingan_magang');
     Route::get('download_bimbingan_magang_mhs/{id}', 'MagangSkripsiController@download_bimbingan_magang_mhs');
