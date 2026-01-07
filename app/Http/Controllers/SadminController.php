@@ -6880,6 +6880,7 @@ class SadminController extends Controller
                         ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
                 })
                 ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->leftJoin('kelas as kelas_tujuan_table', 'pengajuan_trans.kelas_tujuan', '=', 'kelas_tujuan_table.idkelas')
                 ->where('pengajuan_trans.status', 'ACTIVE')
                 ->where('pengajuan_trans.id_kategori_pengajuan', $id)
                 ->select([
@@ -6889,6 +6890,7 @@ class SadminController extends Controller
                     'student.nim',
                     'student.nama',
                     'kelas.kelas',
+                    'kelas_tujuan_table.kelas as kelas_tujuan',
                     'prodi.prodi',
                     'pengajuan_trans.sks_ditempuh',
                     'pengajuan_trans.alasan',
@@ -6984,11 +6986,11 @@ class SadminController extends Controller
         if ($id == '1') {
             return view('sadmin/pengajuan/hasil_transaction_pengajuan_cuti', compact('data', 'kategori', 'tahun_akademik', 'periode_tipe'));
         } elseif ($id == '2') {
-            return view('sadmin/pengajuan/hasil_transaction_pengajuan_undurdiri', compact('data', 'kategori'));
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_undurdiri', compact('data', 'kategori', 'tahun_akademik', 'periode_tipe'));
         } elseif ($id == '3') {
-            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori'));
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas', compact('data', 'kategori', 'tahun_akademik', 'periode_tipe'));
         } elseif ($id == '4') {
-            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahprodi', compact('data', 'kategori'));
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_pindahprodi', compact('data', 'kategori', 'tahun_akademik', 'periode_tipe'));
         }
     }
 

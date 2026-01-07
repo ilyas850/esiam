@@ -13,30 +13,30 @@
         }
 
         /* Table must be wider than wrapper to enable scroll */
-        #table-cuti {
+        #table-pindahkelas {
             min-width: 1800px;
             border-collapse: collapse;
             margin-bottom: 0 !important;
         }
 
         /* Sticky Columns Base - CRITICAL: z-index and background */
-        #table-cuti th.sticky,
-        #table-cuti td.sticky {
+        #table-pindahkelas th.sticky,
+        #table-pindahkelas td.sticky {
             position: sticky !important;
             background-color: #ffffff !important;
             z-index: 100 !important;
         }
 
         /* Header sticky cells - Higher z-index than body */
-        #table-cuti thead th.sticky {
-            background-color: #3c8dbc !important;
+        #table-pindahkelas thead th.sticky {
+            background-color: #00c0ef !important;
             color: #fff !important;
             z-index: 200 !important;
-            border-bottom: 2px solid #367fa9 !important;
+            border-bottom: 2px solid #00a7d0 !important;
         }
 
         /* Column 1: No */
-        #table-cuti .sticky-col-1 {
+        #table-pindahkelas .sticky-col-1 {
             left: 0px;
             width: 50px;
             min-width: 50px;
@@ -45,7 +45,7 @@
         }
 
         /* Column 2: Tanggal Dibuat */
-        #table-cuti .sticky-col-2 {
+        #table-pindahkelas .sticky-col-2 {
             left: 50px;
             width: 130px;
             min-width: 130px;
@@ -54,7 +54,7 @@
         }
 
         /* Column 3: Tahun Akademik */
-        #table-cuti .sticky-col-3 {
+        #table-pindahkelas .sticky-col-3 {
             left: 180px;
             width: 150px;
             min-width: 150px;
@@ -63,26 +63,26 @@
         }
 
         /* Column 4: Mahasiswa - Last sticky column, stronger border */
-        #table-cuti .sticky-col-4 {
+        #table-pindahkelas .sticky-col-4 {
             left: 330px;
             width: 250px;
             min-width: 250px;
             max-width: 250px;
-            border-right: 3px solid #3c8dbc !important;
+            border-right: 3px solid #00c0ef !important;
             box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.2);
         }
 
         /* Striped rows - MUST use !important to override base sticky background */
-        #table-cuti.table-striped>tbody>tr:nth-of-type(odd)>td.sticky {
+        #table-pindahkelas.table-striped>tbody>tr:nth-of-type(odd)>td.sticky {
             background-color: #f9f9f9 !important;
         }
 
-        #table-cuti.table-striped>tbody>tr:nth-of-type(even)>td.sticky {
+        #table-pindahkelas.table-striped>tbody>tr:nth-of-type(even)>td.sticky {
             background-color: #ffffff !important;
         }
 
         /* Hover state - Also must use !important */
-        #table-cuti.table-hover>tbody>tr:hover>td.sticky {
+        #table-pindahkelas.table-hover>tbody>tr:hover>td.sticky {
             background-color: #e8e8e8 !important;
         }
 
@@ -95,9 +95,9 @@
     </style>
 
     <section class="content">
-        <div class="box box-primary">
+        <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-list"></i> Data Pengajuan Cuti Mahasiswa</h3>
+                <h3 class="box-title"><i class="fa fa-list"></i> Data Pengajuan Pindah Kelas Mahasiswa</h3>
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <div class="input-group input-group-sm" style="width: 220px; display: inline-table; margin-right: 10px;">
@@ -122,7 +122,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table id="table-cuti" class="table table-bordered table-striped table-hover">
+                <table id="table-pindahkelas" class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th class="text-center sticky sticky-col-1">No</th>
@@ -130,9 +130,9 @@
                             <th class="text-center sticky sticky-col-3">Tahun Akademik</th>
                             <th class="text-center sticky sticky-col-4">Mahasiswa</th>
                             <th class="text-center" style="min-width: 150px;">Prodi</th>
-                            <th class="text-center" style="min-width: 100px;">Kelas</th>
+                            <th class="text-center" style="min-width: 100px;">Kelas Asal</th>
+                            <th class="text-center" style="min-width: 100px;">Kelas Tujuan</th>
                             <th class="text-center" style="min-width: 100px;">SKS Tempuh</th>
-                            <th class="text-center" style="min-width: 100px;">Cuti Sebelumnya</th>
                             <th class="text-center" style="min-width: 250px;">Alasan</th>
                             <th class="text-center" style="min-width: 120px;">No. HP</th>
                             <th class="text-center" style="min-width: 200px;">Alamat</th>
@@ -153,11 +153,11 @@
 <?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
-            var table = $('#table-cuti').DataTable({
+            var table = $('#table-pindahkelas').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "<?php echo e(url('cek_trans_pengajuan/1')); ?>",
+                    url: "<?php echo e(url('cek_trans_pengajuan/3')); ?>",
                     data: function (d) {
                         d.tahun_akademik = $('#filter-tahun').val();
                         d.periode_tipe = $('#filter-tipe').val();
@@ -211,6 +211,7 @@
                     },
                     { data: 'prodi', name: 'prodi.prodi' },
                     { data: 'kelas', name: 'kelas.kelas', className: "text-center" },
+                    { data: 'kelas_tujuan', name: 'kelas_tujuan.kelas', className: "text-center" },
                     {
                         data: 'sks_ditempuh',
                         name: 'pengajuan_trans.sks_ditempuh',
@@ -219,7 +220,6 @@
                             return data + ' SKS';
                         }
                     },
-                    { data: 'cuti_sebelumnya', className: "text-center" },
                     { data: 'alasan', name: 'pengajuan_trans.alasan' },
                     { data: 'no_hp', className: "text-center" },
                     { data: 'alamat' },
@@ -299,4 +299,5 @@
         });
     </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/pengajuan/hasil_transaction_pengajuan_cuti.blade.php ENDPATH**/ ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/pengajuan/hasil_transaction_pengajuan_pindahkelas.blade.php ENDPATH**/ ?>
