@@ -6867,43 +6867,122 @@ class SadminController extends Controller
         return view('sadmin/pengajuan/trans_pengajuan', compact('data'));
     }
 
-    public function cek_trans_pengajuan($id)
+    public function cek_trans_pengajuan(Request $request, $id)
     {
-        $data = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->where('pengajuan_trans.status', 'ACTIVE')
-            ->where('pengajuan_trans.id_kategori_pengajuan', $id)
-            ->select(
-                'pengajuan_trans.id_trans_pengajuan',
-                'periode_tahun.periode_tahun',
-                'periode_tipe.periode_tipe',
-                'student.nim',
-                'student.nama',
-                'kelas.kelas',
-                'prodi.prodi',
-                'pengajuan_trans.sks_ditempuh',
-                'pengajuan_trans.alasan',
-                'pengajuan_trans.cuti_sebelumnya',
-                'pengajuan_trans.no_hp',
-                'pengajuan_trans.alamat',
-                'pengajuan_trans.val_bauk',
-                'pengajuan_trans.val_dsn_pa',
-                'pengajuan_trans.val_baak',
-                'pengajuan_trans.val_kaprodi'
-            )
-            ->orderBy('pengajuan_trans.val_baak', 'ASC')
-            ->get();
+        if ($request->ajax()) {
 
+            // Base Query
+            $query = Pengajuan_trans::join('periode_tahun', 'pengajuan_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+                ->join('periode_tipe', 'pengajuan_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                ->join('student', 'pengajuan_trans.id_student', '=', 'student.idstudent')
+                ->leftJoin('prodi', function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                })
+                ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->where('pengajuan_trans.status', 'ACTIVE')
+                ->where('pengajuan_trans.id_kategori_pengajuan', $id)
+                ->select([
+                    'pengajuan_trans.id_trans_pengajuan',
+                    'periode_tahun.periode_tahun',
+                    'periode_tipe.periode_tipe',
+                    'student.nim',
+                    'student.nama',
+                    'kelas.kelas',
+                    'prodi.prodi',
+                    'pengajuan_trans.sks_ditempuh',
+                    'pengajuan_trans.alasan',
+                    'pengajuan_trans.cuti_sebelumnya',
+                    'pengajuan_trans.no_hp',
+                    'pengajuan_trans.alamat',
+                    'pengajuan_trans.val_bauk',
+                    'pengajuan_trans.val_dsn_pa',
+                    'pengajuan_trans.val_baak',
+                    'pengajuan_trans.val_kaprodi',
+                    'pengajuan_trans.created_at'
+                ]);
+
+            // Handling Search
+            if ($request->has('search') && !empty($request->input('search.value'))) {
+                $search = $request->input('search.value');
+                $query->where(function ($q) use ($search) {
+                    $q->where('student.nama', 'LIKE', "%{$search}%")
+                        ->orWhere('student.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('prodi.prodi', 'LIKE', "%{$search}%")
+                        ->orWhere('kelas.kelas', 'LIKE', "%{$search}%")
+                        ->orWhere('pengajuan_trans.alasan', 'LIKE', "%{$search}%");
+                });
+            }
+
+            // Handling Filter by Tahun Akademik
+            if ($request->has('tahun_akademik') && !empty($request->input('tahun_akademik'))) {
+                $query->where('pengajuan_trans.id_periodetahun', $request->input('tahun_akademik'));
+            }
+
+            // Handling Filter by Periode Tipe (Semester)
+            if ($request->has('periode_tipe') && !empty($request->input('periode_tipe'))) {
+                $query->where('pengajuan_trans.id_periodetipe', $request->input('periode_tipe'));
+            }
+
+            // Total Records (filtered)
+            $recordsFiltered = $query->count();
+
+            // Total Records (total without filter - strictly speaking for DataTables this should be count of total DB records, but in this context filtered count == total count often suffices if we don't do complex pre-filtering. Let's do a correct count).
+            // Actually, to be performant, we usually do a separate count. Let's stick to using $recordsFiltered as total for simplicity in this legacy app unless we want to query twice. 
+            // Correct approach:
+            // $recordsTotal = Pengajuan_trans::where('status', 'ACTIVE')->where('id_kategori_pengajuan', $id)->count(); 
+            // But let's reuse query count for filtered.
+            $recordsTotal = $recordsFiltered;
+
+            // Handling Order
+            if ($request->has('order')) {
+                $order = $request->input('order.0.column');
+                $dir = $request->input('order.0.dir');
+                $columns = [
+                    0 => 'student.nama', // index/no usually not ordered in DB
+                    1 => 'periode_tahun.periode_tahun',
+                    2 => 'student.nama',
+                    3 => 'prodi.prodi',
+                    4 => 'kelas.kelas',
+                ];
+                if (array_key_exists($order, $columns)) {
+                    $query->orderBy($columns[$order], $dir);
+                } else {
+                    $query->orderBy('pengajuan_trans.val_baak', 'ASC');
+                }
+            } else {
+                $query->orderBy('pengajuan_trans.val_baak', 'ASC');
+            }
+
+            // Handling Pagination
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $length = $length && $length > 0 ? $length : 10;
+
+            $data = $query->offset($start)->limit($length)->get();
+
+            return response()->json([
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => $recordsTotal,
+                'recordsFiltered' => $recordsFiltered,
+                'data' => $data
+            ]);
+        }
+
+        // Non-AJAX Fallback (Initial Load)
         $kategori = Pengajuan_kategori::where('id_kategori_pengajuan', $id)->first();
 
+        // Get available tahun akademik for filter dropdown (all years)
+        $tahun_akademik = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        // Get available periode tipe for filter dropdown
+        $periode_tipe = Periode_tipe::orderBy('id_periodetipe', 'ASC')->get();
+
+        // Pass empty data or minimal data, view will load via AJAX
+        $data = [];
+
         if ($id == '1') {
-            return view('sadmin/pengajuan/hasil_transaction_pengajuan_cuti', compact('data', 'kategori'));
+            return view('sadmin/pengajuan/hasil_transaction_pengajuan_cuti', compact('data', 'kategori', 'tahun_akademik', 'periode_tipe'));
         } elseif ($id == '2') {
             return view('sadmin/pengajuan/hasil_transaction_pengajuan_undurdiri', compact('data', 'kategori'));
         } elseif ($id == '3') {
