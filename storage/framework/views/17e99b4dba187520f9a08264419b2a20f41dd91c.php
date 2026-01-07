@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Politeknik META Industri Cikarang</title>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -14,7 +14,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
 
     <link rel="icon" type="image/png" href="<?php echo e(asset('images/Logo Meta.png')); ?>">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -92,8 +92,7 @@
                                     <img src="<?php echo e(asset('/foto_mhs/' . Auth::user()->username . '.jpg')); ?>"
                                         class="user-image" alt="User Image">
                                 <?php else: ?>
-                                    <img src="<?php echo e(asset('adminlte/img/default.jpg')); ?>" class="user-image"
-                                        alt="User Image">
+                                    <img src="<?php echo e(asset('adminlte/img/default.jpg')); ?>" class="user-image" alt="User Image">
                                 <?php endif; ?>
                                 <span class="hidden-xs"><?php echo e(Auth::user()->name); ?></span>
                             </a>
@@ -132,73 +131,69 @@
                                     </p>
                                 </li>
                                 <?php if(Auth::user()->role == 4): ?>
-                                    <li class="user-footer">
-                                        <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                             document.getElementById('logout-form').submit();"
-                                                class="btn btn-default btn-flat">Keluar</a>
-                                            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
-                                                style="display: none;">
-                                                <?php echo e(csrf_field()); ?>
+                                        <li class="user-footer">
+                                            <div class="pull-right">
+                                                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                     document.getElementById('logout-form').submit();"
+                                                    class="btn btn-default btn-flat">Keluar</a>
+                                                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
+                                                    style="display: none;">
+                                                    <?php echo e(csrf_field()); ?>
 
-                                            </form>
-                                        </div>
-                                    </li>
+                                                </form>
+                                            </div>
+                                        </li>
                                 <?php elseif(Auth::user()->role == 3): ?>
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="/change_pwd/<?php echo e(Auth::user()->id); ?>"
-                                                class="btn btn-default btn-flat">Ubah Password</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                               document.getElementById('logout-form').submit();"
-                                                class="btn btn-default btn-flat">Keluar</a>
-                                            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
-                                                style="display: none;">
-                                                <?php echo e(csrf_field()); ?>
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="/change_pwd/<?php echo e(Auth::user()->id); ?>"
+                                                    class="btn btn-default btn-flat">Ubah Password</a>
+                                            </div>
+                                            <div class="pull-right">
+                                                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                       document.getElementById('logout-form').submit();"
+                                                    class="btn btn-default btn-flat">Keluar</a>
+                                                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
+                                                    style="display: none;">
+                                                    <?php echo e(csrf_field()); ?>
 
-                                            </form>
-                                        </div>
-                                    </li>
+                                                </form>
+                                            </div>
+                                        </li>
                                 <?php elseif(Auth::user()->role == 2): ?>
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="/change_pwd_dsn/<?php echo e(Auth::user()->id); ?>"
-                                                class="btn btn-default btn-flat">Ubah Password</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                               document.getElementById('logout-form').submit();"
-                                                class="btn btn-default btn-flat">Keluar</a>
-                                            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
-                                                style="display: none;">
-                                                <?php echo e(csrf_field()); ?>
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="/change_pwd_dsn/<?php echo e(Auth::user()->id); ?>"
+                                                    class="btn btn-default btn-flat">Ubah Password</a>
+                                            </div>
+                                            <div class="pull-right">
+                                                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                       document.getElementById('logout-form').submit();"
+                                                    class="btn btn-default btn-flat">Keluar</a>
+                                                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
+                                                    style="display: none;">
+                                                    <?php echo e(csrf_field()); ?>
 
-                                            </form>
-                                        </div>
-                                    </li>
+                                                </form>
+                                            </div>
+                                        </li>
                                 <?php elseif(Auth::user()->role == 1): ?>
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="/change_pass/<?php echo e(Auth::user()->id); ?>"
-                                                class="btn btn-default btn-flat">Ubah Password</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                               document.getElementById('logout-form').submit();"
-                                                class="btn btn-default btn-flat">Keluar</a>
-                                            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
-                                                style="display: none;">
-                                                <?php echo e(csrf_field()); ?>
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="/change_pass/<?php echo e(Auth::user()->id); ?>"
+                                                    class="btn btn-default btn-flat">Ubah Password</a>
+                                            </div>
+                                            <div class="pull-right">
+                                                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                       document.getElementById('logout-form').submit();"
+                                                    class="btn btn-default btn-flat">Keluar</a>
+                                                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
+                                                    style="display: none;">
+                                                    <?php echo e(csrf_field()); ?>
 
-                                            </form>
-                                        </div>
-                                    </li>
+                                                </form>
+                                            </div>
+                                        </li>
                                 <?php elseif(Auth::user()->role == 5): ?>
                                     <li class="user-footer">
                                         <div class="pull-left">
@@ -206,9 +201,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -224,9 +218,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -242,9 +235,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -260,9 +252,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -278,9 +269,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -296,9 +286,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -314,9 +303,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -332,9 +320,8 @@
                                                 class="btn btn-default btn-flat">Ubah Password</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo e(route('logout')); ?>"
-                                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();"
+                                            <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();"
                                                 class="btn btn-default btn-flat">Keluar</a>
                                             <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                                 style="display: none;">
@@ -432,13 +419,13 @@
     <!-- jQuery Knob -->
     <script src="<?php echo e(asset('adminlte/bower_components/jquery-knob/js/jquery.knob.js')); ?>"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.sidebar-menu').tree()
         })
     </script>
 
     <script>
-        $(function() {
+        $(function () {
             $('#example1').DataTable()
             $('#example3').DataTable()
             $('#example2').DataTable({
@@ -481,7 +468,7 @@
             })
         })
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#example41').DataTable({
                 // 'paging': true,
                 // 'lengthChange': true,
@@ -494,7 +481,7 @@
             });
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#example4').DataTable({
                 // scrollY: "465px",
                 scrollX: true,
@@ -502,7 +489,7 @@
 
             });
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#example42').DataTable({
                 scrollX: true,
                 // scrollY: "465px",
@@ -515,7 +502,7 @@
             });
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#example6').DataTable({
                 // scrollY: "465px",
                 scrollX: true,
@@ -530,7 +517,7 @@
             });
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#example9').DataTable({
                 // scrollY: "465px",
                 scrollX: true,
@@ -545,7 +532,7 @@
             });
         });
 
-        $(function() {
+        $(function () {
             //Initialize Select2 Elements
             $('.select2').select2()
 
@@ -572,19 +559,19 @@
             })
             //Date range as a button
             $('#daterange-btn').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')]
-                    },
-                    startDate: moment().subtract(29, 'days'),
-                    endDate: moment()
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')]
                 },
-                function(start, end) {
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment()
+            },
+                function (start, end) {
                     $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
                         'MMMM D, YYYY'))
                 }
@@ -622,8 +609,7 @@
             })
         })
     </script>
-
+    <?php echo $__env->yieldContent('script'); ?>
 </body>
 
-</html>
-<?php /**PATH /var/www/html/resources/views/layouts/master.blade.php ENDPATH**/ ?>
+</html><?php /**PATH /var/www/html/resources/views/layouts/master.blade.php ENDPATH**/ ?>
