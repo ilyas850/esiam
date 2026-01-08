@@ -4,7 +4,7 @@ use App\Http\Controllers\GugusMutuController;
 // use Illuminate\Routing\Route;
 
 Route::get('/', function () {
-    
+
     return view('welcome');
 });
 
@@ -2108,6 +2108,7 @@ Route::group(['middleware' => 'bauk'], function () {
 
 Route::group(['middleware' => 'gugusmutu'], function () {
     Route::get('/data_bap_gugusmutu', 'GugusMutuController@data_bap_gugusmutu');
+    Route::post('/filter_bap_gugusmutu', 'GugusMutuController@filter_bap_gugusmutu');
     Route::get('/cek_bap_gugusmutu/{id}', 'GugusMutuController@cek_bap_gugusmutu');
     Route::get('/validasi_sesuai/{id}', 'GugusMutuController@validasi_sesuai');
     Route::get('/validasi_tidak_sesuai/{id}', 'GugusMutuController@validasi_tidak_sesuai');

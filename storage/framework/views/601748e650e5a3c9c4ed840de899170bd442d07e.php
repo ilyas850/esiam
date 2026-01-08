@@ -1,18 +1,17 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
         <!-- Filter Section -->
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-filter"></i> Filter Periode Tahun Akademik - Semester</h3>
             </div>
-            <form class="form" role="form" action="{{ url('filter_bap_gugusmutu') }}" method="POST">
-                {{ csrf_field() }}
+            <form class="form" role="form" action="<?php echo e(url('filter_rekap_perkuliahan')); ?>" method="POST">
+                <?php echo e(csrf_field()); ?>
+
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-4">
@@ -20,9 +19,9 @@
                                 <label>Periode Tahun</label>
                                 <select class="form-control" name="id_periodetahun" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    @foreach ($tahun as $thn)
-                                        <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $tahun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $thn): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($thn->id_periodetahun); ?>"><?php echo e($thn->periode_tahun); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -31,9 +30,9 @@
                                 <label>Semester</label>
                                 <select class="form-control" name="id_periodetipe" required>
                                     <option value="">-- Pilih Semester --</option>
-                                    @foreach ($tipe as $tipee)
-                                        <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tipee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($tipee->id_periodetipe); ?>"><?php echo e($tipee->periode_tipe); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -50,11 +49,12 @@
             </form>
         </div>
 
+
+
         <!-- Data Table Section -->
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-table"></i> Rekap Perkuliahan <b>{{ $namaperiodetahun }} -
-                        {{ $namaperiodetipe }}</b></h3>
+                <h3 class="box-title"><i class="fa fa-table"></i> Rekap Perkuliahan <b><?php echo e($namaperiodetahun); ?> - <?php echo e($namaperiodetipe); ?></b></h3>
             </div>
             <div class="box-body">
                 <table id="example8" class="table table-bordered table-striped table-hover">
@@ -69,19 +69,20 @@
                             <th class="text-center" style="width: 120px;">Jumlah Pertemuan</th>
                             <th class="text-center" style="width: 130px;">Online / Offline</th>
                             <th class="text-center" style="width: 100px;">Status</th>
-                            <th class="text-center" style="width: 80px;">BAP</th>
+                            <th class="text-center" style="width: 60px;">BAP</th>
+                            <th class="text-center" style="width: 140px;">Download</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($data as $key)
-                            @php
+                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $jmlPer = $key->jml_per ?? 0;
                                 $jmlOnline = $key->jml_online ?? 0;
                                 $jmlOffline = $key->jml_offline ?? 0;
                                 $percentage = min(($jmlPer / 16) * 100, 100);
                                 $tercapai = $jmlPer >= 16;
-
+                                
                                 // Progress bar color based on AdminLTE
                                 if ($percentage >= 100) {
                                     $progressColor = 'progress-bar-success';
@@ -92,50 +93,61 @@
                                 } else {
                                     $progressColor = 'progress-bar-danger';
                                 }
-                            @endphp
+                            ?>
                             <tr>
-                                <td class="text-center">{{ $no++ }}</td>
-                                <td>{{ $key->makul }}</td>
-                                <td class="text-center">{{ $key->sks }}</td>
-                                <td>{{ $key->prodi }}</td>
-                                <td class="text-center">{{ $key->kelas }}</td>
-                                <td>{{ $key->nama ?? '-' }}</td>
+                                <td class="text-center"><?php echo e($no++); ?></td>
+                                <td><?php echo e($key->makul); ?></td>
+                                <td class="text-center"><?php echo e($key->sks); ?></td>
+                                <td><?php echo e($key->prodi); ?></td>
+                                <td class="text-center"><?php echo e($key->kelas); ?></td>
+                                <td><?php echo e($key->nama ?? '-'); ?></td>
                                 <td>
                                     <div class="progress progress-xs progress-striped active" style="margin-bottom: 0;">
-                                        <div class="progress-bar {{ $progressColor }}" style="width: {{ $percentage }}%"></div>
+                                        <div class="progress-bar <?php echo e($progressColor); ?>" style="width: <?php echo e($percentage); ?>%"></div>
                                     </div>
-                                    <small class="text-muted">{{ $jmlPer }} dari 16 pertemuan</small>
+                                    <small class="text-muted"><?php echo e($jmlPer); ?> dari 16 pertemuan</small>
                                 </td>
                                 <td class="text-center">
                                     <span class="label label-info" title="Online">
-                                        <i class="fa fa-wifi"></i> {{ $jmlOnline }}
+                                        <i class="fa fa-wifi"></i> <?php echo e($jmlOnline); ?>
+
                                     </span>
                                     <span class="label label-success" title="Offline">
-                                        <i class="fa fa-users"></i> {{ $jmlOffline }}
+                                        <i class="fa fa-users"></i> <?php echo e($jmlOffline); ?>
+
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    @if($tercapai)
+                                    <?php if($tercapai): ?>
                                         <span class="label label-success">
                                             <i class="fa fa-check"></i> Tercapai
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="label label-danger">
                                             <i class="fa fa-times"></i> Belum
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-                                    <a href="cek_bap_gugusmutu/{{ $key->id_kurperiode }}" class="btn btn-info btn-xs"
-                                        title="Lihat Detail BAP">
+                                    <a href="cek_rekapan/<?php echo e($key->id_kurperiode); ?>" class="btn btn-info btn-xs" title="Lihat Detail BAP">
                                         <i class="fa fa-eye"></i> Cek
                                     </a>
                                 </td>
+                                <td class="text-center">
+                                    <a href="/download_bap_dosen/<?php echo e($key->id_kurperiode); ?>" class="btn btn-danger btn-xs" title="Download BAP">
+                                        <i class="fa fa-download"></i> BAP
+                                    </a>
+                                    <a href="/download_absensi_mhs/<?php echo e($key->id_kurperiode); ?>" class="btn btn-warning btn-xs" title="Download Absensi">
+                                        <i class="fa fa-download"></i> Absen
+                                    </a>
+                                </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/perkuliahan/rekap_perkuliahan.blade.php ENDPATH**/ ?>

@@ -2286,56 +2286,47 @@ class SadminController extends Controller
 
     public function rekapPerkuliahan($idPeriodeTahun, $idPeriodeTipe)
     {
-        // Subquery untuk menghitung jml_per - PERBAIKAN: spesifikasi tabel untuk id_kurperiode
-        $bapCount = Bap::select('bap.id_kurperiode')  // ← Ubah ini, tambah prefix 'bap.'
-            ->selectRaw('COUNT(bap.id_kurperiode) as jml_per')
-            ->join('kurikulum_periode as kp2', 'kp2.id_kurperiode', '=', 'bap.id_kurperiode')
-            ->join('prodi as prd2', 'prd2.id_prodi', '=', 'kp2.id_prodi')
-            ->where('bap.status', 'ACTIVE')
-            ->where('kp2.status', 'ACTIVE')
-            ->where('kp2.id_periodetahun', $idPeriodeTahun)
-            ->where('kp2.id_periodetipe', $idPeriodeTipe)
-            ->groupBy('bap.id_kurperiode', 'prd2.kodeprodi', 'kp2.id_kelas', 'kp2.id_makul', 'kp2.id_hari', 'kp2.id_dosen');
+        // Subquery untuk menghitung jml_per, jml_online, jml_offline per id_kurperiode
+        $bapCountSql = "
+            SELECT 
+                bp.id_kurperiode,
+                COUNT(bp.id_kurperiode) AS jml_per,
+                SUM(CASE WHEN bp.metode_kuliah = 'Online' THEN 1 ELSE 0 END) as jml_online,
+                SUM(CASE WHEN bp.metode_kuliah = 'Offline' THEN 1 ELSE 0 END) as jml_offline
+            FROM bap bp
+            JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
+            JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+            WHERE bp.status = 'ACTIVE' 
+                AND kp.status = 'ACTIVE' 
+                AND kp.id_periodetahun = ?
+                AND kp.id_periodetipe = ?
+            GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+        ";
 
-        return Kurikulum_periode::select([
-            'kurikulum_periode.id_kurperiode',
-            DB::raw("CONCAT(matakuliah.kode, '-', matakuliah.makul) as makul"),
-            DB::raw("CONCAT(matakuliah.set_sks_teori, '/', matakuliah.set_sks_praktek) as sks"),
-            'prodi.prodi',
-            'kelas.kelas',
-            'dosen.nama',
-            'bap_counts.jml_per'
-        ])
-            ->join('matakuliah', 'matakuliah.idmakul', '=', 'kurikulum_periode.id_makul')
-            ->join('prodi', 'prodi.id_prodi', '=', 'kurikulum_periode.id_prodi')
-            ->join('kelas', 'kelas.idkelas', '=', 'kurikulum_periode.id_kelas')
-            ->leftJoin('dosen', 'dosen.iddosen', '=', 'kurikulum_periode.id_dosen')
-            ->leftJoinSub($bapCount, 'bap_counts', function ($join) {
-                $join->on('bap_counts.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode');
-            })
-            ->where('kurikulum_periode.id_periodetahun', $idPeriodeTahun)
-            ->where('kurikulum_periode.id_periodetipe', $idPeriodeTipe)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->where('matakuliah.active', 1)
-            ->groupBy([
-                'kurikulum_periode.id_kurperiode',
-                'matakuliah.kode',
-                'matakuliah.makul',
-                'matakuliah.set_sks_teori',
-                'matakuliah.set_sks_praktek',
-                'prodi.prodi',
-                'prodi.kodeprodi',
-                'kelas.kelas',
-                'kurikulum_periode.id_kelas',
-                'kurikulum_periode.id_makul',
-                'kurikulum_periode.id_hari',
-                'kurikulum_periode.id_dosen',
-                'dosen.nama',
-                'bap_counts.jml_per'
-            ])
-            ->orderBy('matakuliah.kode')
-            ->orderBy('kelas.kelas')
-            ->get();
+        return DB::select("
+            SELECT 
+                MIN(kp.id_kurperiode) as id_kurperiode, 
+                CONCAT(MIN(mk.kode),'-',MIN(mk.makul)) AS makul, 
+                CONCAT(MIN(mk.set_sks_teori), '/', MIN(mk.set_sks_praktek)) AS sks, 
+                MIN(prd.prodi) as prodi, 
+                MIN(kls.kelas) as kelas, 
+                MIN(dsn.nama) as nama, 
+                MIN(aa.jml_per) as jml_per,
+                MIN(aa.jml_online) as jml_online,
+                MIN(aa.jml_offline) as jml_offline
+            FROM kurikulum_periode kp
+            JOIN matakuliah mk ON mk.idmakul = kp.id_makul
+            JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+            JOIN kelas kls ON kls.idkelas = kp.id_kelas
+            LEFT JOIN dosen dsn ON dsn.iddosen = kp.id_dosen
+            LEFT JOIN ({$bapCountSql}) aa ON aa.id_kurperiode = kp.id_kurperiode
+            WHERE kp.id_periodetahun = ? 
+                AND kp.id_periodetipe = ? 
+                AND kp.status = 'ACTIVE' 
+                AND mk.active = 1
+            GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+            ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
+        ", [$idPeriodeTahun, $idPeriodeTipe, $idPeriodeTahun, $idPeriodeTipe]);
     }
 
     public function filter_rekap_perkuliahan(Request $request)
@@ -2351,7 +2342,7 @@ class SadminController extends Controller
         $idtahun = $thn->id_periodetahun;
         $namaperiodetahun = $thn->periode_tahun;
 
-        $data = DB::select('CALL rekap_perkuliahan(?,?)', [$idtahun, $idtipe]);
+        $data = $this->rekapPerkuliahan($idtahun, $idtipe);
 
         return view('sadmin/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
     }

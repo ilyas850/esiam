@@ -31,7 +31,70 @@ class GugusMutuController extends Controller
         $idtahun = $thn->id_periodetahun;
         $namaperiodetahun = $thn->periode_tahun;
 
-        $data = DB::select('CALL rekap_perkuliahan_new(?,?)', [$idtahun, $idtipe]);
+        $data = $this->rekapPerkuliahanGugusmutu($idtahun, $idtipe);
+
+        return view('gugusmutu/perkuliahan/bap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    }
+
+    public function rekapPerkuliahanGugusmutu($idPeriodeTahun, $idPeriodeTipe)
+    {
+        // Subquery untuk menghitung jml_per, jml_online, jml_offline per id_kurperiode
+        $bapCountSql = "
+            SELECT 
+                bp.id_kurperiode,
+                COUNT(bp.id_kurperiode) AS jml_per,
+                SUM(CASE WHEN bp.metode_kuliah = 'Online' THEN 1 ELSE 0 END) as jml_online,
+                SUM(CASE WHEN bp.metode_kuliah = 'Offline' THEN 1 ELSE 0 END) as jml_offline
+            FROM bap bp
+            JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
+            JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+            WHERE bp.status = 'ACTIVE' 
+                AND kp.status = 'ACTIVE' 
+                AND kp.id_periodetahun = ?
+                AND kp.id_periodetipe = ?
+            GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+        ";
+
+        return DB::select("
+            SELECT 
+                MIN(kp.id_kurperiode) as id_kurperiode, 
+                CONCAT(MIN(mk.kode),'-',MIN(mk.makul)) AS makul, 
+                CONCAT(MIN(mk.set_sks_teori), '/', MIN(mk.set_sks_praktek)) AS sks, 
+                MIN(prd.prodi) as prodi, 
+                MIN(kls.kelas) as kelas, 
+                MIN(dsn.nama) as nama, 
+                MIN(aa.jml_per) as jml_per,
+                MIN(aa.jml_online) as jml_online,
+                MIN(aa.jml_offline) as jml_offline
+            FROM kurikulum_periode kp
+            JOIN matakuliah mk ON mk.idmakul = kp.id_makul
+            JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+            JOIN kelas kls ON kls.idkelas = kp.id_kelas
+            LEFT JOIN dosen dsn ON dsn.iddosen = kp.id_dosen
+            LEFT JOIN ({$bapCountSql}) aa ON aa.id_kurperiode = kp.id_kurperiode
+            WHERE kp.id_periodetahun = ? 
+                AND kp.id_periodetipe = ? 
+                AND kp.status = 'ACTIVE' 
+                AND mk.active = 1
+            GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+            ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
+        ", [$idPeriodeTahun, $idPeriodeTipe, $idPeriodeTahun, $idPeriodeTipe]);
+    }
+
+    function filter_bap_gugusmutu(Request $request)
+    {
+        $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tipe = Periode_tipe::all();
+
+        $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+        $idtipe = $tp->id_periodetipe;
+        $namaperiodetipe = $tp->periode_tipe;
+
+        $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+        $idtahun = $thn->id_periodetahun;
+        $namaperiodetahun = $thn->periode_tahun;
+
+        $data = $this->rekapPerkuliahanGugusmutu($idtahun, $idtipe);
 
         return view('gugusmutu/perkuliahan/bap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
     }
