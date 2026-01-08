@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Scroll wrapper */
         .datatable-scroll-wrap {
@@ -107,18 +105,18 @@
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <select id="filter-tahun" class="form-control">
                                 <option value="">-- Semua Tahun --</option>
-                                @foreach($tahun_akademik as $thn)
-                                    <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $tahun_akademik; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $thn): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($thn->id_periodetahun); ?>"><?php echo e($thn->periode_tahun); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="input-group input-group-sm" style="width: 180px; display: inline-table;">
                             <span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
                             <select id="filter-tipe" class="form-control">
                                 <option value="">-- Semua Semester --</option>
-                                @foreach($periode_tipe as $tipe)
-                                    <option value="{{ $tipe->id_periodetipe }}">{{ $tipe->periode_tipe }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $periode_tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tipe): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($tipe->id_periodetipe); ?>"><?php echo e($tipe->periode_tipe); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                     </div>
@@ -150,16 +148,16 @@
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
             var table = $('#table-penangguhan').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ url('master_trans_penangguhan') }}",
+                    url: "<?php echo e(url('master_trans_penangguhan')); ?>",
                     data: function (d) {
                         d.tahun_akademik = $('#filter-tahun').val();
                         d.periode_tipe = $('#filter-tipe').val();
@@ -300,4 +298,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/penangguhan/data_penangguhan.blade.php ENDPATH**/ ?>

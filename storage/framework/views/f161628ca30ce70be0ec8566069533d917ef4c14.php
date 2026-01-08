@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Scroll wrapper */
         .datatable-scroll-wrap {
@@ -99,8 +97,9 @@
     <section class="content">
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-list"></i> Data Penangguhan {{ $kategori->kategori ?? '' }}
-                    <b>{{ $thn_aktif->periode_tahun ?? '' }} - {{ $tp_aktif->periode_tipe ?? '' }}</b>
+                <h3 class="box-title"><i class="fa fa-list"></i> Data Penangguhan <?php echo e($kategori->kategori ?? ''); ?>
+
+                    <b><?php echo e($thn_aktif->periode_tahun ?? ''); ?> - <?php echo e($tp_aktif->periode_tipe ?? ''); ?></b>
                 </h3>
             </div>
             <div class="box-body">
@@ -143,16 +142,16 @@
                 </div>
                 <div class="modal-body">
                     <form id="formTunggakan" action="" method="post" enctype="multipart/form-data">
-                        @csrf
-                        @method('put')
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('put'); ?>
                         <div class="form-group">
                             <label>Nominal Tunggakan</label>
                             <input type="number" class="form-control" name="total_tunggakan" id="input_tunggakan" required>
                         </div>
                         <input type="hidden" name="id_penangguhan_kategori"
-                            value="{{ $kategori->id_penangguhan_kategori ?? '' }}">
-                        <input type="hidden" name="id_periodetahun" value="{{ $thn_aktif->id_periodetahun ?? '' }}">
-                        <input type="hidden" name="id_periodetipe" value="{{ $tp_aktif->id_periodetipe ?? '' }}">
+                            value="<?php echo e($kategori->id_penangguhan_kategori ?? ''); ?>">
+                        <input type="hidden" name="id_periodetahun" value="<?php echo e($thn_aktif->id_periodetahun ?? ''); ?>">
+                        <input type="hidden" name="id_periodetipe" value="<?php echo e($tp_aktif->id_periodetipe ?? ''); ?>">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
@@ -160,22 +159,22 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
             var table = $('#table-penangguhan-bauk').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ url('data_penangguhan_bauk') }}",
+                    url: "<?php echo e(url('data_penangguhan_bauk')); ?>",
                     type: 'POST',
                     data: function (d) {
-                        d._token = '{{ csrf_token() }}';
-                        d.id_periodetahun = '{{ $thn_aktif->id_periodetahun ?? '' }}';
-                        d.id_periodetipe = '{{ $tp_aktif->id_periodetipe ?? '' }}';
-                        d.id_penangguhan_kategori = '{{ $kategori->id_penangguhan_kategori ?? '' }}';
+                        d._token = '<?php echo e(csrf_token()); ?>';
+                        d.id_periodetahun = '<?php echo e($thn_aktif->id_periodetahun ?? ''); ?>';
+                        d.id_periodetipe = '<?php echo e($tp_aktif->id_periodetipe ?? ''); ?>';
+                        d.id_penangguhan_kategori = '<?php echo e($kategori->id_penangguhan_kategori ?? ''); ?>';
                     }
                 },
                 autoWidth: false,
@@ -333,4 +332,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/bauk/penangguhan/data_penangguhan.blade.php ENDPATH**/ ?>
