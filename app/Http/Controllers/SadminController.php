@@ -5976,43 +5976,113 @@ class SadminController extends Controller
         return redirect('master_kategori_penangguhan');
     }
 
-    public function master_trans_penangguhan()
+    public function master_trans_penangguhan(Request $request)
     {
-        $data = Penangguhan_trans::join('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
-            ->join('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('student', 'penangguhan_master_trans.id_student', '=', 'student.idstudent')
-            ->join('prodi', (function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-                    ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            }))
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->where('penangguhan_master_trans.status', 'ACTIVE')
-            ->select(
-                'student.nama',
-                'student.nim',
-                'prodi.prodi',
-                'kelas.kelas',
-                'periode_tahun.periode_tahun',
-                'periode_tipe.periode_tipe',
-                'penangguhan_master_trans.id_periodetahun',
-                'penangguhan_master_trans.id_periodetipe',
-                'penangguhan_master_trans.id_student',
-                'penangguhan_master_trans.id_penangguhan_kategori',
-                'penangguhan_master_kategori.kategori',
-                'penangguhan_master_trans.total_tunggakan',
-                'penangguhan_master_trans.rencana_bayar',
-                'penangguhan_master_trans.alasan',
-                'penangguhan_master_trans.validasi_kaprodi',
-                'penangguhan_master_trans.validasi_dsn_pa',
-                'penangguhan_master_trans.validasi_bauk',
-                'penangguhan_master_trans.validasi_baak',
-                'penangguhan_master_trans.id_penangguhan_trans'
-            )
+        if ($request->ajax()) {
+            // Base Query - using leftJoin for all tables to handle missing related data
+            $query = Penangguhan_trans::leftJoin('penangguhan_master_kategori', 'penangguhan_master_trans.id_penangguhan_kategori', '=', 'penangguhan_master_kategori.id_penangguhan_kategori')
+                ->leftJoin('periode_tahun', 'penangguhan_master_trans.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+                ->leftJoin('periode_tipe', 'penangguhan_master_trans.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+                ->leftJoin('student', 'penangguhan_master_trans.id_student', '=', 'student.idstudent')
+                ->leftJoin('prodi', function ($join) {
+                    $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
+                        ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+                })
+                ->leftJoin('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+                ->where('penangguhan_master_trans.status', 'ACTIVE')
+                ->select([
+                    'penangguhan_master_trans.id_penangguhan_trans',
+                    'periode_tahun.periode_tahun',
+                    'periode_tipe.periode_tipe',
+                    'student.nim',
+                    'student.nama',
+                    'kelas.kelas',
+                    'prodi.prodi',
+                    'penangguhan_master_kategori.kategori',
+                    'penangguhan_master_trans.total_tunggakan',
+                    'penangguhan_master_trans.rencana_bayar',
+                    'penangguhan_master_trans.alasan',
+                    'penangguhan_master_trans.validasi_bauk',
+                    'penangguhan_master_trans.validasi_dsn_pa',
+                    'penangguhan_master_trans.validasi_baak',
+                    'penangguhan_master_trans.validasi_kaprodi',
+                    'penangguhan_master_trans.created_at'
+                ]);
 
-            ->get();
+            // Handling Search
+            if ($request->has('search') && !empty($request->input('search.value'))) {
+                $search = $request->input('search.value');
+                $query->where(function ($q) use ($search) {
+                    $q->where('student.nama', 'LIKE', "%{$search}%")
+                        ->orWhere('student.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('prodi.prodi', 'LIKE', "%{$search}%")
+                        ->orWhere('kelas.kelas', 'LIKE', "%{$search}%")
+                        ->orWhere('penangguhan_master_kategori.kategori', 'LIKE', "%{$search}%")
+                        ->orWhere('penangguhan_master_trans.alasan', 'LIKE', "%{$search}%");
+                });
+            }
 
-        return view('sadmin/penangguhan/data_penangguhan', compact('data'));
+            // Handling Filter by Tahun Akademik
+            if ($request->has('tahun_akademik') && !empty($request->input('tahun_akademik'))) {
+                $query->where('penangguhan_master_trans.id_periodetahun', $request->input('tahun_akademik'));
+            }
+
+            // Handling Filter by Periode Tipe (Semester)
+            if ($request->has('periode_tipe') && !empty($request->input('periode_tipe'))) {
+                $query->where('penangguhan_master_trans.id_periodetipe', $request->input('periode_tipe'));
+            }
+
+            // Total Records (filtered)
+            $recordsFiltered = $query->count();
+            $recordsTotal = $recordsFiltered;
+
+            // Handling Order
+            if ($request->has('order')) {
+                $order = $request->input('order.0.column');
+                $dir = $request->input('order.0.dir');
+                $columns = [
+                    0 => 'student.nama',
+                    1 => 'penangguhan_master_trans.created_at',
+                    2 => 'periode_tahun.periode_tahun',
+                    3 => 'student.nama',
+                    4 => 'prodi.prodi',
+                    5 => 'kelas.kelas',
+                ];
+                if (array_key_exists($order, $columns)) {
+                    $query->orderBy($columns[$order], $dir);
+                } else {
+                    $query->orderBy('penangguhan_master_trans.validasi_baak', 'ASC');
+                }
+            } else {
+                $query->orderBy('penangguhan_master_trans.validasi_baak', 'ASC');
+            }
+
+            // Handling Pagination
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $length = $length && $length > 0 ? $length : 10;
+
+            $data = $query->offset($start)->limit($length)->get();
+
+            return response()->json([
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => $recordsTotal,
+                'recordsFiltered' => $recordsFiltered,
+                'data' => $data
+            ]);
+        }
+
+        // Non-AJAX Fallback (Initial Load)
+        // Get available tahun akademik for filter dropdown
+        $tahun_akademik = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+
+        // Get available periode tipe for filter dropdown
+        $periode_tipe = Periode_tipe::orderBy('id_periodetipe', 'ASC')->get();
+
+        // Pass empty data, view will load via AJAX
+        $data = [];
+
+        return view('sadmin/penangguhan/data_penangguhan', compact('data', 'tahun_akademik', 'periode_tipe'));
     }
 
     public function val_penangguhan_baak($id)
