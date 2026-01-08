@@ -34,7 +34,8 @@ use App\Models\Kurikulum_master;
 use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Kuliah_transaction;
-use App\Models\Absensi_mahasiswa;;
+use App\Models\Absensi_mahasiswa;
+;
 
 use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_trans_bimbingan;
@@ -307,7 +308,7 @@ class KaprodiController extends Controller
 
     $p = DB::select('CALL mhs_bim(?)', [$id]);
 
-    $k =  DB::table('student_record')
+    $k = DB::table('student_record')
       ->join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->join('dosen_pembimbing', 'student.idstudent', '=', 'dosen_pembimbing.id_student')
       ->leftJoin('prodi', (function ($join) {
@@ -964,10 +965,10 @@ class KaprodiController extends Controller
       return redirect()->back();
     } elseif (count($cekkrs) == 0) {
       $krs = new Student_record;
-      $krs->tanggal_krs   = date("Y-m-d");
-      $krs->id_student    = $request->id_student;
+      $krs->tanggal_krs = date("Y-m-d");
+      $krs->id_student = $request->id_student;
       $krs->id_kurperiode = $tra;
-      $krs->id_kurtrans   = $trs;
+      $krs->id_kurtrans = $trs;
       $krs->save();
 
       Alert::success('', 'Matakuliah berhasil ditambahkan')->autoclose(3500);
@@ -1311,25 +1312,25 @@ class KaprodiController extends Controller
   public function save_bap(Request $request)
   {
     $message = [
-      'max'       => ':attribute harus diisi maksimal :max KB',
-      'required'  => ':attribute wajib diisi',
-      'unique'    => ':attribute sudah terdaftar',
+      'max' => ':attribute harus diisi maksimal :max KB',
+      'required' => ':attribute wajib diisi',
+      'unique' => ':attribute sudah terdaftar',
     ];
     $this->validate($request, [
-      'pertemuan'               => 'required',
-      'tanggal'                 => 'required',
-      'jam_mulai'               => 'required',
-      'jam_selsai'              => 'required',
-      'jenis_kuliah'            => 'required',
-      'id_tipekuliah'           => 'required',
-      'metode_kuliah'           => 'required',
-      'materi_kuliah'           => 'required',
-      'link_materi'             => 'required',
-      'id_rps'                  => 'required',
-      'alasan_pembaharuan_materi'                  => 'required',
-      'file_kuliah_tatapmuka'   => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
-      'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-      'file_materi_tugas'       => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
+      'pertemuan' => 'required',
+      'tanggal' => 'required',
+      'jam_mulai' => 'required',
+      'jam_selsai' => 'required',
+      'jenis_kuliah' => 'required',
+      'id_tipekuliah' => 'required',
+      'metode_kuliah' => 'required',
+      'materi_kuliah' => 'required',
+      'link_materi' => 'required',
+      'id_rps' => 'required',
+      'alasan_pembaharuan_materi' => 'required',
+      'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
+      'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+      'file_materi_tugas' => 'image|mimes:jpg,jpeg,JPG,JPEG|max:2048',
     ], $message);
 
     $id_dosen = Auth::user()->id_user;
@@ -1385,8 +1386,8 @@ class KaprodiController extends Controller
         $bap->praktikum = $request->praktikum;
         $bap->media_pembelajaran = $request->media_pembelajaran;
         $bap->link_materi = $request->link_materi;
-        $bap->id_rps                = $request->id_rps;
-        $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
+        $bap->id_rps = $request->id_rps;
+        $bap->alasan_pembaharuan_materi = $request->alasan_pembaharuan_materi;
 
         if ($i == 0) {
           if ($request->hasFile('file_kuliah_tatapmuka')) {
@@ -1763,94 +1764,94 @@ class KaprodiController extends Controller
   public function simpanedit_bap(Request $request, $id)
   {
     $this->validate($request, [
-      'pertemuan'               => 'required',
-      'tanggal'                 => 'required',
-      'jam_mulai'               => 'required',
-      'jam_selsai'              => 'required',
-      'jenis_kuliah'            => 'required',
-      'id_tipekuliah'           => 'required',
-      'metode_kuliah'           => 'required',
-      'materi_kuliah'           => 'required',
-      'link_materi'             => 'required',
-      'id_rps'                  => 'required',
-      'alasan_pembaharuan_materi'                  => 'required',
-      'file_kuliah_tatapmuka'   => 'mimes:jpg,jpeg|max:2000',
-      'file_materi_kuliah'      => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-      'file_materi_tugas'       => 'mimes:jpg,jpeg|max:2000',
+      'pertemuan' => 'required',
+      'tanggal' => 'required',
+      'jam_mulai' => 'required',
+      'jam_selsai' => 'required',
+      'jenis_kuliah' => 'required',
+      'id_tipekuliah' => 'required',
+      'metode_kuliah' => 'required',
+      'materi_kuliah' => 'required',
+      'link_materi' => 'required',
+      'id_rps' => 'required',
+      'alasan_pembaharuan_materi' => 'required',
+      'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg|max:2000',
+      'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+      'file_materi_tugas' => 'mimes:jpg,jpeg|max:2000',
 
     ]);
 
-    $bap                        = Bap::find($id);
-    $bap->id_kurperiode         = $request->id_kurperiode;
-    $bap->pertemuan             = $request->pertemuan;
-    $bap->tanggal               = $request->tanggal;
-    $bap->jam_mulai             = $request->jam_mulai;
-    $bap->jam_selsai            = $request->jam_selsai;
-    $bap->jenis_kuliah          = $request->jenis_kuliah;
-    $bap->id_tipekuliah         = $request->id_tipekuliah;
-    $bap->metode_kuliah         = $request->metode_kuliah;
-    $bap->materi_kuliah         = $request->materi_kuliah;
-    $bap->praktikum             = $request->praktikum;
-    $bap->media_pembelajaran    = $request->media_pembelajaran;
-    $bap->link_materi           = $request->link_materi;
-    $bap->id_rps                = $request->id_rps;
-    $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
-    $bap->updated_by            = Auth::user()->name;
+    $bap = Bap::find($id);
+    $bap->id_kurperiode = $request->id_kurperiode;
+    $bap->pertemuan = $request->pertemuan;
+    $bap->tanggal = $request->tanggal;
+    $bap->jam_mulai = $request->jam_mulai;
+    $bap->jam_selsai = $request->jam_selsai;
+    $bap->jenis_kuliah = $request->jenis_kuliah;
+    $bap->id_tipekuliah = $request->id_tipekuliah;
+    $bap->metode_kuliah = $request->metode_kuliah;
+    $bap->materi_kuliah = $request->materi_kuliah;
+    $bap->praktikum = $request->praktikum;
+    $bap->media_pembelajaran = $request->media_pembelajaran;
+    $bap->link_materi = $request->link_materi;
+    $bap->id_rps = $request->id_rps;
+    $bap->alasan_pembaharuan_materi = $request->alasan_pembaharuan_materi;
+    $bap->updated_by = Auth::user()->name;
 
     if ($bap->file_kuliah_tatapmuka) {
       if ($request->hasFile('file_kuliah_tatapmuka')) {
         File::delete('File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Kuliah Tatap Muka/' . $bap->file_kuliah_tatapmuka);
-        $file                               = $request->file('file_kuliah_tatapmuka');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Kuliah Tatap Muka';
+        $file = $request->file('file_kuliah_tatapmuka');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Kuliah Tatap Muka';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_kuliah_tatapmuka        = $nama_file;
+        $bap->file_kuliah_tatapmuka = $nama_file;
       }
     } else {
       if ($request->hasFile('file_kuliah_tatapmuka')) {
-        $file                               = $request->file('file_kuliah_tatapmuka');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Kuliah Tatap Muka';
+        $file = $request->file('file_kuliah_tatapmuka');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Kuliah Tatap Muka';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_kuliah_tatapmuka         = $nama_file;
+        $bap->file_kuliah_tatapmuka = $nama_file;
       }
     }
 
     if ($bap->file_materi_kuliah) {
       if ($request->hasFile('file_materi_kuliah')) {
         File::delete('File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Materi Kuliah/' . $bap->file_materi_kuliah);
-        $file                               = $request->file('file_materi_kuliah');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Materi Kuliah';
+        $file = $request->file('file_materi_kuliah');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Materi Kuliah';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_materi_kuliah        = $nama_file;
+        $bap->file_materi_kuliah = $nama_file;
       }
     } else {
       if ($request->hasFile('file_materi_kuliah')) {
-        $file                               = $request->file('file_materi_kuliah');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Materi Kuliah';
+        $file = $request->file('file_materi_kuliah');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Materi Kuliah';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_materi_kuliah            = $nama_file;
+        $bap->file_materi_kuliah = $nama_file;
       }
     }
 
     if ($bap->file_materi_tugas) {
       if ($request->hasFile('file_materi_tugas')) {
         File::delete('File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Tugas Kuliah/' . $bap->file_materi_tugas);
-        $file                               = $request->file('file_materi_tugas');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Tugas Kuliah';
+        $file = $request->file('file_materi_tugas');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Tugas Kuliah';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_materi_tugas        = $nama_file;
+        $bap->file_materi_tugas = $nama_file;
       }
     } else {
       if ($request->hasFile('file_materi_tugas')) {
-        $file                               = $request->file('file_materi_tugas');
-        $nama_file                          = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
-        $tujuan_upload                      = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Tugas Kuliah';
+        $file = $request->file('file_materi_tugas');
+        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . "_" . $file->getClientOriginalName();
+        $tujuan_upload = 'File_BAP/' . Auth::user()->id_user . '/' . $request->id_kurperiode . '/' . 'Tugas Kuliah';
         $file->move($tujuan_upload, $nama_file);
-        $bap->file_materi_tugas            = $nama_file;
+        $bap->file_materi_tugas = $nama_file;
       }
     }
 
@@ -2780,14 +2781,14 @@ class KaprodiController extends Controller
       if ($banyak == 1) {
 
         if ($ceknl == null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_KAT   = 0;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_KAT = 0;
           $entry->save();
         } elseif ($ceknl != null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_KAT   = $nilai;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_KAT = $nilai;
           $entry->save();
         }
       } elseif ($banyak > 1) {
@@ -2865,15 +2866,15 @@ class KaprodiController extends Controller
       if ($banyak == 1) {
 
         if ($ceknl == null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_UTS   = 0;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_UTS = 0;
           $entry->data_origin = 'eSIAM';
           $entry->save();
         } elseif ($ceknl != null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_UTS   = $nilai;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_UTS = $nilai;
           $entry->data_origin = 'eSIAM';
           $entry->save();
         }
@@ -2970,15 +2971,15 @@ class KaprodiController extends Controller
       if ($banyak == 1) {
 
         if ($ceknl == null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_UAS   = 0;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_UAS = 0;
           $entry->data_origin = 'eSIAM';
           $entry->save();
         } elseif ($ceknl != null) {
-          $id                 = $id_kur;
-          $entry              = Student_record::find($id);
-          $entry->nilai_UAS   = $nilai;
+          $id = $id_kur;
+          $entry = Student_record::find($id);
+          $entry->nilai_UAS = $nilai;
           $entry->data_origin = 'eSIAM';
           $entry->save();
         }
@@ -3269,10 +3270,10 @@ class KaprodiController extends Controller
 
     $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
       ->where('id_dosen', $iduser)
-      ->select('prodi.kodeprodi')
+      ->select('prodi.kodeprodi', 'prodi.id_prodi')
       ->first();
 
-    $idprodi = $prodi->kodeprodi;
+    $kodeprodi = $prodi->kodeprodi;
 
     $tp = Periode_tipe::where('status', 'ACTIVE')->first();
     $tipe = $tp->id_periodetipe;
@@ -3280,7 +3281,48 @@ class KaprodiController extends Controller
     $thn = Periode_tahun::where('status', 'ACTIVE')->first();
     $tahun = $thn->id_periodetahun;
 
-    $data = DB::select('CALL rekap_perkuliahan_prodi(?,?,?)', [$idprodi, $tahun, $tipe]);
+    // Subquery untuk menghitung jml_per, jml_online, jml_offline per id_kurperiode
+    $bapCountSql = "
+        SELECT 
+            bp.id_kurperiode,
+            COUNT(bp.id_kurperiode) AS jml_per,
+            SUM(CASE WHEN bp.metode_kuliah = 'Online' THEN 1 ELSE 0 END) as jml_online,
+            SUM(CASE WHEN bp.metode_kuliah = 'Offline' THEN 1 ELSE 0 END) as jml_offline
+        FROM bap bp
+        JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
+        JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+        WHERE bp.status = 'ACTIVE' 
+            AND kp.status = 'ACTIVE' 
+            AND kp.id_periodetahun = ?
+            AND kp.id_periodetipe = ?
+        GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+    ";
+
+    $data = DB::select("
+        SELECT 
+            MIN(kp.id_kurperiode) as id_kurperiode, 
+            CONCAT(MIN(mk.kode),'-',MIN(mk.makul)) AS makul, 
+            CONCAT(MIN(mk.set_sks_teori), '/', MIN(mk.set_sks_praktek)) AS sks, 
+            MIN(prd.prodi) as prodi, 
+            MIN(kls.kelas) as kelas, 
+            MIN(dsn.nama) as nama, 
+            MIN(aa.jml_per) as jml_per,
+            MIN(aa.jml_online) as jml_online,
+            MIN(aa.jml_offline) as jml_offline
+        FROM kurikulum_periode kp
+        JOIN matakuliah mk ON mk.idmakul = kp.id_makul
+        JOIN prodi prd ON prd.id_prodi = kp.id_prodi
+        JOIN kelas kls ON kls.idkelas = kp.id_kelas
+        LEFT JOIN dosen dsn ON dsn.iddosen = kp.id_dosen
+        LEFT JOIN ({$bapCountSql}) aa ON aa.id_kurperiode = kp.id_kurperiode
+        WHERE kp.id_periodetahun = ? 
+            AND kp.id_periodetipe = ? 
+            AND kp.status = 'ACTIVE' 
+            AND mk.active = 1
+            AND prd.kodeprodi = ?
+        GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+        ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
+    ", [$tahun, $tipe, $tahun, $tipe, $kodeprodi]);
 
     return view('kaprodi/perkuliahan/rekap_perkuliahan', compact('data'));
   }
@@ -4354,7 +4396,7 @@ class KaprodiController extends Controller
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
 
-      ->where(function ($query)  use ($id) {
+      ->where(function ($query) use ($id) {
         $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
           ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
           ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
@@ -5094,7 +5136,7 @@ class KaprodiController extends Controller
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
 
-      ->where(function ($query)  use ($id) {
+      ->where(function ($query) use ($id) {
         $query->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
           ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
           ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
@@ -5724,7 +5766,7 @@ class KaprodiController extends Controller
     $prodi = Prodi::where('kodeprodi', $kode)->first();
     $nama_prd = $prodi->prodi;
 
-    $nama_file = 'Data Bimbingan Prakerin' . ' ' . $nama_prd  . '.xlsx';
+    $nama_file = 'Data Bimbingan Prakerin' . ' ' . $nama_prd . '.xlsx';
     return Excel::download(new DataBimbinganPrakerinExport($kode), $nama_file);
   }
 
@@ -5734,7 +5776,7 @@ class KaprodiController extends Controller
     $prodi = Prodi::where('kodeprodi', $kode)->first();
     $nama_prd = $prodi->prodi;
 
-    $nama_file = 'Data Bimbingan Sempro' . ' ' . $nama_prd  . '.xlsx';
+    $nama_file = 'Data Bimbingan Sempro' . ' ' . $nama_prd . '.xlsx';
     return Excel::download(new DataBimbinganSemproExport($kode), $nama_file);
   }
 
@@ -5744,7 +5786,7 @@ class KaprodiController extends Controller
     $prodi = Prodi::where('kodeprodi', $kode)->first();
     $nama_prd = $prodi->prodi;
 
-    $nama_file = 'Data Bimbingan TA' . ' ' . $nama_prd  . '.xlsx';
+    $nama_file = 'Data Bimbingan TA' . ' ' . $nama_prd . '.xlsx';
     return Excel::download(new DataBimbinganTaExport($kode), $nama_file);
   }
 
@@ -7794,7 +7836,7 @@ class KaprodiController extends Controller
       }
 
       $bulan = array(
-        1 =>   'Januari',
+        1 => 'Januari',
         'Februari',
         'Maret',
         'April',
@@ -7810,7 +7852,7 @@ class KaprodiController extends Controller
 
       $pecahkan = explode('-', $data->tanggal_selesai);
 
-      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
       $pdf = PDF::loadView('prausta/prakerin/unduh_bap_prakerin', compact('data', 'hari', 'tglhasil', 'nama_kaprodi', 'nik_kaprodi', 'akademik_kaprodi'))->setPaper('a4');
       return $pdf->download('BAP Prakerin' . ' ' . $nama . ' ' . $nim . ' ' . $kelas . '.pdf');
@@ -7894,7 +7936,7 @@ class KaprodiController extends Controller
       }
 
       $bulan = array(
-        1 =>   'Januari',
+        1 => 'Januari',
         'Februari',
         'Maret',
         'April',
@@ -7910,7 +7952,7 @@ class KaprodiController extends Controller
 
       $pecahkan = explode('-', $data->tanggal_selesai);
 
-      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
       $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
 
@@ -8000,7 +8042,7 @@ class KaprodiController extends Controller
       }
 
       $bulan = array(
-        1 =>   'Januari',
+        1 => 'Januari',
         'Februari',
         'Maret',
         'April',
@@ -8016,7 +8058,7 @@ class KaprodiController extends Controller
 
       $pecahkan = explode('-', $data->tanggal_selesai);
 
-      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+      $tglhasil = $pecahkan[2] . ' ' . $bulan[(int) $pecahkan[1]] . ' ' . $pecahkan[0];
 
       $dospem = Dosen::where('iddosen', $data->id_dosen_pembimbing)->first();
 
@@ -8397,7 +8439,7 @@ class KaprodiController extends Controller
         ->whereIn('student.kodeprodi', [25, 22])
         ->where('student.active', 1)
         ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
-        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan',)
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', )
         ->get();
     } else {
       $data = Sertifikat::join('student', 'sertifikat.id_student', '=', 'student.idstudent')
@@ -8410,7 +8452,7 @@ class KaprodiController extends Controller
         ->whereIn('prodi.kodeprodi', [$prodi->kodeprodi])
         ->where('student.active', 1)
         ->select('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', DB::raw('COUNT(sertifikat.id_student) as jml_sertifikat'))
-        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan',)
+        ->groupBy('student.idstudent', 'student.nama', 'student.nim', 'kelas.kelas', 'prodi.prodi', 'angkatan.angkatan', )
         ->get();
     }
 
@@ -8767,7 +8809,7 @@ class KaprodiController extends Controller
       ->select('prodi.kodeprodi')
       ->first();
 
-    $thn_aktif = Periode_tahun::where('status',  'ACTIVE')->first();
+    $thn_aktif = Periode_tahun::where('status', 'ACTIVE')->first();
     $tp_aktif = Periode_tipe::where('status', 'ACTIVE')->first();
 
     $data = DB::select('CALL jml_mhs_permatkul(?,?,?)', [$prodi->kodeprodi, $thn_aktif->id_periodetahun, $tp_aktif->id_periodetipe]);
@@ -10514,30 +10556,30 @@ class KaprodiController extends Controller
     $id = Auth::user()->id_user;
 
     $data = Prausta_setting_relasi::join('prausta_master_kode', 'prausta_setting_relasi.id_masterkode_prausta', '=', 'prausta_master_kode.id_masterkode_prausta')
-            ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
-            ->leftJoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
+      ->join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
+      ->leftJoin('prodi', function ($join) {
+        $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
+      })
+      ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
+      ->leftjoin('prausta_trans_hasil', 'prausta_setting_relasi.id_settingrelasi_prausta', '=', 'prausta_trans_hasil.id_settingrelasi_prausta')
 
-            ->where(function ($query) use ($id) {
-                $query
-                    ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
-                    ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
-            })
-            ->where('student.active', 1)
-            ->where('prausta_setting_relasi.status', 'ACTIVE')
-            //->where('prausta_trans_hasil.status', 'ACTIVE')
-            ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
-            ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.id_student', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_pembimbing', 'prausta_setting_relasi.validasi_penguji_1', 'prausta_setting_relasi.validasi_penguji_2', 'prausta_trans_hasil.validasi')
-            ->get();
+      ->where(function ($query) use ($id) {
+        $query
+          ->where('prausta_setting_relasi.id_dosen_penguji_1', $id)
+          ->orWhere('prausta_setting_relasi.id_dosen_pembimbing', $id)
+          ->orWhere('prausta_setting_relasi.id_dosen_penguji_2', $id);
+      })
+      ->where('student.active', 1)
+      ->where('prausta_setting_relasi.status', 'ACTIVE')
+      //->where('prausta_trans_hasil.status', 'ACTIVE')
+      ->whereIn('prausta_setting_relasi.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22, 25, 28, 31])
+      ->select('prausta_setting_relasi.id_dosen_penguji_1', 'prausta_setting_relasi.id_dosen_penguji_2', 'prausta_setting_relasi.id_dosen_pembimbing', 'prausta_trans_hasil.nilai_1', 'prausta_trans_hasil.nilai_2', 'prausta_trans_hasil.nilai_3', 'prausta_trans_hasil.nilai_huruf', 'student.nim', 'student.nama', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta', 'prodi.prodi', 'kelas.kelas', 'prausta_setting_relasi.id_settingrelasi_prausta', 'prausta_setting_relasi.id_student', 'prausta_setting_relasi.judul_prausta', 'prausta_setting_relasi.tempat_prausta', 'prausta_setting_relasi.acc_seminar_sidang', 'prausta_setting_relasi.file_draft_laporan', 'prausta_setting_relasi.file_laporan_revisi', 'prausta_setting_relasi.validasi_pembimbing', 'prausta_setting_relasi.validasi_penguji_1', 'prausta_setting_relasi.validasi_penguji_2', 'prausta_trans_hasil.validasi')
+      ->get();
 
-            return view('kaprodi/magang_skripsi/penguji_sempro', compact('data', 'id'));
+    return view('kaprodi/magang_skripsi/penguji_sempro', compact('data', 'id'));
   }
 
-  
+
 
   public function penguji_skripsi()
   {
