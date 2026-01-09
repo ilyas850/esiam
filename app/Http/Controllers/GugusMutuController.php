@@ -143,6 +143,47 @@ class GugusMutuController extends Controller
         return view('gugusmutu/perkuliahan/cek_bap', compact('bap', 'data'));
     }
 
+    function view_bap_gugusmutu($id)
+    {
+        $dtbp = Bap::where('id_bap', $id)->first();
+
+        $data = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
+            ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->select(
+                'dosen.iddosen',
+                'semester.semester',
+                'kelas.kelas',
+                'prodi.prodi',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'matakuliah.makul',
+                'dosen.nama'
+            )
+            ->first();
+
+        $prd = $data->prodi;
+        $tipe = $data->periode_tipe;
+        $tahun = $data->periode_tahun;
+
+        return view(
+            'gugusmutu/perkuliahan/view_bap',
+            [
+                'prd' => $prd,
+                'tipe' => $tipe,
+                'tahun' => $tahun,
+                'data' => $data,
+                'dtbp' => $dtbp
+            ]
+        );
+    }
+
     function validasi_sesuai($id)
     {
         Bap::where('id_bap', $id)->update(['kesesuaian_rps' => 'SESUAI']);

@@ -11,8 +11,8 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ url('home') }}"><i class="fa fa-home"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('rekap_perkuliahan') }}">Rekap Perkuliahan</a></li>
-            <li><a href="/cek_rekapan/{{$dtbp->id_kurperiode}}">Cek BAP</a></li>
+            <li><a href="{{ url('data_bap_gugusmutu') }}">BAP Perkuliahan</a></li>
+            <li><a href="/cek_bap_gugusmutu/{{$dtbp->id_kurperiode}}">Cek BAP</a></li>
             <li class="active">View BAP</li>
         </ol>
     </section>
@@ -20,11 +20,8 @@
     <section class="content">
         <!-- Action Buttons -->
         <div class="margin-bottom">
-            <a class="btn btn-default" href="/cek_rekapan/{{$dtbp->id_kurperiode}}">
+            <a class="btn btn-default" href="/cek_bap_gugusmutu/{{$dtbp->id_kurperiode}}">
                 <i class="fa fa-arrow-left"></i> Kembali
-            </a>
-            <a class="btn btn-warning" href="/cek_print_bap/{{$dtbp->id_bap}}" target="_blank">
-                <i class="fa fa-print"></i> CETAK BAP
             </a>
         </div>
 
@@ -291,13 +288,16 @@
         .margin-bottom {
             margin-bottom: 20px;
         }
+
         .description-header {
             font-size: 28px;
             font-weight: bold;
         }
+
         .description-text {
             text-transform: uppercase;
         }
+
         .small-box h4 {
             font-size: 16px;
             font-weight: bold;
@@ -306,6 +306,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .small-box .icon {
             font-size: 60px;
         }
