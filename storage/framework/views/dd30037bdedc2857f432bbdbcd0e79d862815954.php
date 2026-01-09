@@ -1,18 +1,16 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content-header">
         <h1>
             <i class="fa fa-file-alt"></i> View Berita Acara Perkuliahan
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-home"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('rekap_perkuliahan') }}">Rekap Perkuliahan</a></li>
-            <li><a href="/cek_rekapan/{{$dtbp->id_kurperiode}}">Cek BAP</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-home"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('rekap_perkuliahan')); ?>">Rekap Perkuliahan</a></li>
+            <li><a href="/cek_rekapan/<?php echo e($dtbp->id_kurperiode); ?>">Cek BAP</a></li>
             <li class="active">View BAP</li>
         </ol>
     </section>
@@ -20,10 +18,10 @@
     <section class="content">
         <!-- Action Buttons -->
         <div class="margin-bottom">
-            <a class="btn btn-default" href="/cek_rekapan/{{$dtbp->id_kurperiode}}">
+            <a class="btn btn-default" href="/cek_rekapan/<?php echo e($dtbp->id_kurperiode); ?>">
                 <i class="fa fa-arrow-left"></i> Kembali
             </a>
-            <a class="btn btn-warning" href="/cek_print_bap/{{$dtbp->id_bap}}" target="_blank">
+            <a class="btn btn-warning" href="/cek_print_bap/<?php echo e($dtbp->id_bap); ?>" target="_blank">
                 <i class="fa fa-print"></i> CETAK BAP
             </a>
         </div>
@@ -37,7 +35,7 @@
                 </h3>
             </div>
             <div class="box-body text-center">
-                <h4><strong>Prodi {{$prd}} | Semester {{$tipe}} – {{$tahun}}</strong></h4>
+                <h4><strong>Prodi <?php echo e($prd); ?> | Semester <?php echo e($tipe); ?> – <?php echo e($tahun); ?></strong></h4>
             </div>
         </div>
 
@@ -56,27 +54,27 @@
                             <tbody>
                                 <tr>
                                     <th style="width: 30%;"><i class="fa fa-book text-success"></i> Mata Kuliah</th>
-                                    <td>{{$data->makul}}</td>
+                                    <td><?php echo e($data->makul); ?></td>
                                 </tr>
                                 <tr>
                                     <th><i class="fa fa-user text-info"></i> Nama Dosen</th>
-                                    <td>{{$data->nama}}</td>
+                                    <td><?php echo e($data->nama); ?></td>
                                 </tr>
                                 <tr>
                                     <th><i class="fa fa-users text-warning"></i> Kelas / Semester</th>
-                                    <td>{{$data->kelas}} / {{$data->semester}}</td>
+                                    <td><?php echo e($data->kelas); ?> / <?php echo e($data->semester); ?></td>
                                 </tr>
                                 <tr>
                                     <th><i class="fa fa-desktop text-purple"></i> Media Pembelajaran</th>
-                                    <td>{{$dtbp->media_pembelajaran}}</td>
+                                    <td><?php echo e($dtbp->media_pembelajaran); ?></td>
                                 </tr>
                                 <tr>
                                     <th><i class="fa fa-clock-o text-primary"></i> Waktu Pelaksanaan</th>
-                                    <td>{{$dtbp->jam_mulai}} - {{$dtbp->jam_selsai}}</td>
+                                    <td><?php echo e($dtbp->jam_mulai); ?> - <?php echo e($dtbp->jam_selsai); ?></td>
                                 </tr>
                                 <tr>
                                     <th><i class="fa fa-calendar text-danger"></i> Tanggal Perkuliahan</th>
-                                    <td>{{$dtbp->tanggal}}</td>
+                                    <td><?php echo e($dtbp->tanggal); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -99,7 +97,7 @@
                             <span class="info-box-icon"><i class="fa fa-hashtag"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Pertemuan</span>
-                                <span class="info-box-number">Ke-{{$dtbp->pertemuan}}</span>
+                                <span class="info-box-number">Ke-<?php echo e($dtbp->pertemuan); ?></span>
                             </div>
                         </div>
 
@@ -117,7 +115,7 @@
                                             <span class="description-percentage text-green">
                                                 <i class="fa fa-check"></i>
                                             </span>
-                                            <h5 class="description-header">{{$dtbp->hadir}}</h5>
+                                            <h5 class="description-header"><?php echo e($dtbp->hadir); ?></h5>
                                             <span class="description-text">HADIR</span>
                                         </div>
                                     </div>
@@ -126,14 +124,14 @@
                                             <span class="description-percentage text-red">
                                                 <i class="fa fa-times"></i>
                                             </span>
-                                            <h5 class="description-header">{{$dtbp->tidak_hadir}}</h5>
+                                            <h5 class="description-header"><?php echo e($dtbp->tidak_hadir); ?></h5>
                                             <span class="description-text">TIDAK HADIR</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="text-center" style="margin-top: 15px;">
                                     <span class="label label-primary" style="font-size: 14px;">
-                                        <i class="fa fa-users"></i> Total: {{$dtbp->hadir + $dtbp->tidak_hadir}} Mahasiswa
+                                        <i class="fa fa-users"></i> Total: <?php echo e($dtbp->hadir + $dtbp->tidak_hadir); ?> Mahasiswa
                                     </span>
                                 </div>
                             </div>
@@ -153,7 +151,7 @@
             </div>
             <div class="box-body">
                 <div class="callout callout-info">
-                    <p>{{$dtbp->materi_kuliah}}</p>
+                    <p><?php echo e($dtbp->materi_kuliah); ?></p>
                 </div>
             </div>
         </div>
@@ -174,26 +172,26 @@
                             <div class="inner">
                                 <h4>Kuliah Tatap Muka</h4>
                                 <p>
-                                    @if (($dtbp->file_kuliah_tatapmuka) != null)
+                                    <?php if(($dtbp->file_kuliah_tatapmuka) != null): ?>
                                         <i class="fa fa-check-circle"></i> Tersedia
-                                    @else
+                                    <?php else: ?>
                                         <i class="fa fa-times-circle"></i> Tidak tersedia
-                                    @endif
+                                    <?php endif; ?>
                                 </p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-chalkboard-teacher"></i>
                             </div>
-                            @if (($dtbp->file_kuliah_tatapmuka) != null)
-                                <a href="/File_BAP/{{$data->iddosen}}/{{$dtbp->id_kurperiode}}/Kuliah Tatap Muka/{{$dtbp->file_kuliah_tatapmuka}}"
+                            <?php if(($dtbp->file_kuliah_tatapmuka) != null): ?>
+                                <a href="/File_BAP/<?php echo e($data->iddosen); ?>/<?php echo e($dtbp->id_kurperiode); ?>/Kuliah Tatap Muka/<?php echo e($dtbp->file_kuliah_tatapmuka); ?>"
                                     target="_blank" class="small-box-footer">
                                     <i class="fa fa-download"></i> Download
                                 </a>
-                            @else
+                            <?php else: ?>
                                 <span class="small-box-footer" style="cursor: default;">
                                     <i class="fa fa-ban"></i> Tidak tersedia
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -203,26 +201,26 @@
                             <div class="inner">
                                 <h4>Materi Perkuliahan</h4>
                                 <p>
-                                    @if (($dtbp->file_materi_kuliah) != null)
+                                    <?php if(($dtbp->file_materi_kuliah) != null): ?>
                                         <i class="fa fa-check-circle"></i> Tersedia
-                                    @else
+                                    <?php else: ?>
                                         <i class="fa fa-times-circle"></i> Tidak tersedia
-                                    @endif
+                                    <?php endif; ?>
                                 </p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-file-powerpoint-o"></i>
                             </div>
-                            @if (($dtbp->file_materi_kuliah) != null)
-                                <a href="/File_BAP/{{$data->iddosen}}/{{$dtbp->id_kurperiode}}/Materi Kuliah/{{$dtbp->file_materi_kuliah}}"
+                            <?php if(($dtbp->file_materi_kuliah) != null): ?>
+                                <a href="/File_BAP/<?php echo e($data->iddosen); ?>/<?php echo e($dtbp->id_kurperiode); ?>/Materi Kuliah/<?php echo e($dtbp->file_materi_kuliah); ?>"
                                     target="_blank" class="small-box-footer">
                                     <i class="fa fa-download"></i> Download
                                 </a>
-                            @else
+                            <?php else: ?>
                                 <span class="small-box-footer" style="cursor: default;">
                                     <i class="fa fa-ban"></i> Tidak tersedia
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -232,26 +230,26 @@
                             <div class="inner">
                                 <h4>Materi Tugas</h4>
                                 <p>
-                                    @if (($dtbp->file_materi_tugas) != null)
+                                    <?php if(($dtbp->file_materi_tugas) != null): ?>
                                         <i class="fa fa-check-circle"></i> Tersedia
-                                    @else
+                                    <?php else: ?>
                                         <i class="fa fa-times-circle"></i> Tidak tersedia
-                                    @endif
+                                    <?php endif; ?>
                                 </p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-tasks"></i>
                             </div>
-                            @if (($dtbp->file_materi_tugas) != null)
-                                <a href="/File_BAP/{{$data->iddosen}}/{{$dtbp->id_kurperiode}}/Tugas Kuliah/{{$dtbp->file_materi_tugas}}"
+                            <?php if(($dtbp->file_materi_tugas) != null): ?>
+                                <a href="/File_BAP/<?php echo e($data->iddosen); ?>/<?php echo e($dtbp->id_kurperiode); ?>/Tugas Kuliah/<?php echo e($dtbp->file_materi_tugas); ?>"
                                     target="_blank" class="small-box-footer">
                                     <i class="fa fa-download"></i> Download
                                 </a>
-                            @else
+                            <?php else: ?>
                                 <span class="small-box-footer" style="cursor: default;">
                                     <i class="fa fa-ban"></i> Tidak tersedia
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -261,25 +259,25 @@
                             <div class="inner">
                                 <h4>Link Materi</h4>
                                 <p>
-                                    @if (($dtbp->link_materi) != null)
+                                    <?php if(($dtbp->link_materi) != null): ?>
                                         <i class="fa fa-check-circle"></i> Tersedia
-                                    @else
+                                    <?php else: ?>
                                         <i class="fa fa-times-circle"></i> Tidak tersedia
-                                    @endif
+                                    <?php endif; ?>
                                 </p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-link"></i>
                             </div>
-                            @if (($dtbp->link_materi) != null)
-                                <a href="{{$dtbp->link_materi}}" target="_blank" class="small-box-footer">
+                            <?php if(($dtbp->link_materi) != null): ?>
+                                <a href="<?php echo e($dtbp->link_materi); ?>" target="_blank" class="small-box-footer">
                                     <i class="fa fa-external-link"></i> Buka Link
                                 </a>
-                            @else
+                            <?php else: ?>
                                 <span class="small-box-footer" style="cursor: default;">
                                     <i class="fa fa-ban"></i> Tidak tersedia
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -310,4 +308,5 @@
             font-size: 60px;
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/perkuliahan/view_bap.blade.php ENDPATH**/ ?>

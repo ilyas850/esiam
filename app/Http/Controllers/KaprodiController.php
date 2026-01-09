@@ -35,8 +35,6 @@ use App\Models\Kurikulum_periode;
 use App\Models\Kurikulum_transaction;
 use App\Models\Kuliah_transaction;
 use App\Models\Absensi_mahasiswa;
-;
-
 use App\Models\Prausta_setting_relasi;
 use App\Models\Prausta_trans_bimbingan;
 use App\Models\Prausta_trans_hasil;

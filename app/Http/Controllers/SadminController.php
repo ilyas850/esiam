@@ -2390,8 +2390,6 @@ class SadminController extends Controller
     {
         $data = DB::select('CALL cek_absen(?)', [$id]);
 
-
-
         return view('sadmin/perkuliahan/edit_asben_perkuliahan', compact('data', 'id'));
     }
 
@@ -2712,9 +2710,6 @@ class SadminController extends Controller
     public function cek_view_bap($id)
     {
         $dtbp = Bap::where('id_bap', $id)->first();
-        // foreach ($bp as $dtbp) {
-        //     # code...
-        // }
 
         $data = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
@@ -2736,9 +2731,7 @@ class SadminController extends Controller
                 'dosen.nama'
             )
             ->first();
-        // foreach ($bap as $data) {
-        //     # code...
-        // }
+
         $prd = $data->prodi;
         $tipe = $data->periode_tipe;
         $tahun = $data->periode_tahun;
