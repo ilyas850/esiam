@@ -88,6 +88,15 @@ class HomeController extends Controller
 
     $time = Waktu_krs::first();
 
+    // Auto-Close KRS if time has passed
+    if ($time && $time->status == 1) {
+      $deadline = \Carbon\Carbon::parse($time->waktu_akhir);
+      if (\Carbon\Carbon::now()->greaterThan($deadline)) {
+        $time->status = 0;
+        $time->save();
+      }
+    }
+
     $edom = Waktu_edom::all();
     foreach ($edom as $keyedom) {
       // code...
@@ -107,7 +116,11 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      $mhs_tk = Student::whereIn('kodeprodi', [22, 25])
+      $mhs_trpl = Student::where('kodeprodi', 25)
+        ->where('active', 1)
+        ->count('idstudent');
+
+      $mhs_logs = Student::where('kodeprodi', 26)
         ->where('active', 1)
         ->count('idstudent');
 
@@ -115,7 +128,7 @@ class HomeController extends Controller
         ->where('active', 1)
         ->count('idstudent');
 
-      return view('home', ['fa' => $mhs_fa, 'tk' => $mhs_tk, 'ti' => $mhs_ti, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
+      return view('home', ['trpl' => $mhs_trpl, 'ti' => $mhs_ti, 'logs' => $mhs_logs, 'fa' => $mhs_fa, 'now' => $ldate, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $thn, 'tipe' => $tp]);
     } elseif ($akses == 2) {
 
       return redirect('dosen_home');
