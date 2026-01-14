@@ -4155,7 +4155,7 @@ class MhsController extends Controller
         //list biaya kuliah mahasiswa
         if (($cb) != null) {
 
-            $biayawisuda = $biaya->wisuda - (($biaya->wisuda * ((float) $cb->wisuda)) / 100);
+            $biayawisuda = (float) $biaya->wisuda - (((float) $biaya->wisuda * ((float) $cb->wisuda)) / 100);
         } elseif (($cb) == null) {
 
             $biayawisuda = $biaya->wisuda;
@@ -4522,26 +4522,26 @@ class MhsController extends Controller
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
 
         if ($cek_bea != null) {
-            $daftar = $biaya->daftar - ($biaya->daftar * (float) $cek_bea->daftar) / 100;
-            $awal = $biaya->awal - ($biaya->awal * (float) $cek_bea->awal) / 100;
-            $dsp = $biaya->dsp - ($biaya->dsp * (float) $cek_bea->dsp) / 100;
-            $spp1 = $biaya->spp1 - ($biaya->spp1 * (float) $cek_bea->spp1) / 100;
-            $spp2 = $biaya->spp2 - ($biaya->spp2 * (float) $cek_bea->spp2) / 100;
-            $spp3 = $biaya->spp3 - ($biaya->spp3 * (float) $cek_bea->spp3) / 100;
-            $spp4 = $biaya->spp4 - ($biaya->spp4 * (float) $cek_bea->spp4) / 100;
-            $spp5 = $biaya->spp5 - ($biaya->spp5 * (float) $cek_bea->spp5) / 100;
-            $spp6 = $biaya->spp6 - ($biaya->spp6 * (float) $cek_bea->spp6) / 100;
-            $spp7 = $biaya->spp7 - ($biaya->spp7 * (float) $cek_bea->spp7) / 100;
-            $spp8 = $biaya->spp8 - ($biaya->spp8 * (float) $cek_bea->spp8) / 100;
-            $spp9 = $biaya->spp9 - ($biaya->spp9 * (float) $cek_bea->spp9) / 100;
-            $spp10 = $biaya->spp10 - ($biaya->spp10 * (float) $cek_bea->spp10) / 100;
-            $spp11 = $biaya->spp11 - ($biaya->spp11 * (float) $cek_bea->spp11) / 100;
-            $spp12 = $biaya->spp12 - ($biaya->spp12 * (float) $cek_bea->spp12) / 100;
-            $spp13 = $biaya->spp13 - ($biaya->spp13 * (float) $cek_bea->spp13) / 100;
-            $spp14 = $biaya->spp14 - ($biaya->spp14 * (float) $cek_bea->spp14) / 100;
-            $prakerin = $biaya->prakerin - (($biaya->prakerin * ((float) $cek_bea->prakerin)) / 100);
-            $seminar = $biaya->seminar - (($biaya->seminar * ((float) $cek_bea->seminar)) / 100);
-            $sidang = $biaya->sidang - (($biaya->sidang * ((float) $cek_bea->sidang)) / 100);
+            $daftar = (float) $biaya->daftar - ((float) $biaya->daftar * (float) $cek_bea->daftar) / 100;
+            $awal = (float) $biaya->awal - ((float) $biaya->awal * (float) $cek_bea->awal) / 100;
+            $dsp = (float) $biaya->dsp - ((float) $biaya->dsp * (float) $cek_bea->dsp) / 100;
+            $spp1 = (float) $biaya->spp1 - ((float) $biaya->spp1 * (float) $cek_bea->spp1) / 100;
+            $spp2 = (float) $biaya->spp2 - ((float) $biaya->spp2 * (float) $cek_bea->spp2) / 100;
+            $spp3 = (float) $biaya->spp3 - ((float) $biaya->spp3 * (float) $cek_bea->spp3) / 100;
+            $spp4 = (float) $biaya->spp4 - ((float) $biaya->spp4 * (float) $cek_bea->spp4) / 100;
+            $spp5 = (float) $biaya->spp5 - ((float) $biaya->spp5 * (float) $cek_bea->spp5) / 100;
+            $spp6 = (float) $biaya->spp6 - ((float) $biaya->spp6 * (float) $cek_bea->spp6) / 100;
+            $spp7 = (float) $biaya->spp7 - ((float) $biaya->spp7 * (float) $cek_bea->spp7) / 100;
+            $spp8 = (float) $biaya->spp8 - ((float) $biaya->spp8 * (float) $cek_bea->spp8) / 100;
+            $spp9 = (float) $biaya->spp9 - ((float) $biaya->spp9 * (float) $cek_bea->spp9) / 100;
+            $spp10 = (float) $biaya->spp10 - ((float) $biaya->spp10 * (float) $cek_bea->spp10) / 100;
+            $spp11 = (float) $biaya->spp11 - ((float) $biaya->spp11 * (float) $cek_bea->spp11) / 100;
+            $spp12 = (float) $biaya->spp12 - ((float) $biaya->spp12 * (float) $cek_bea->spp12) / 100;
+            $spp13 = (float) $biaya->spp13 - ((float) $biaya->spp13 * (float) $cek_bea->spp13) / 100;
+            $spp14 = (float) $biaya->spp14 - ((float) $biaya->spp14 * (float) $cek_bea->spp14) / 100;
+            $prakerin = (float) $biaya->prakerin - (((float) $biaya->prakerin * ((float) $cek_bea->prakerin)) / 100);
+            $seminar = (float) $biaya->seminar - (((float) $biaya->seminar * ((float) $cek_bea->seminar)) / 100);
+            $sidang = (float) $biaya->sidang - (((float) $biaya->sidang * ((float) $cek_bea->sidang)) / 100);
         } elseif ($cek_bea == null) {
             $daftar = $biaya->daftar;
             $awal = $biaya->awal;
