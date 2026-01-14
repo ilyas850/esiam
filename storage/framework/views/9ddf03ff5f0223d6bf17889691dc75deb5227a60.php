@@ -3,81 +3,12 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">Dashboard</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Data Mahasiswa Mengulang</a></li>
                 <li><a href="#tab_3" data-toggle="tab">Pelaksanaan Akademik</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
                     <div class="row">
-                        <div class="col-md-12">
-                            <?php
-                                $alertClasses = [
-                                    22 => 'alert-info',
-                                    25 => 'alert-info',
-                                    23 => 'alert-danger',
-                                    24 => 'alert-success',
-                                ];
-                            ?>
-                            <div class="alert <?php echo e($alertClasses[$prd->kodeprodi] ?? ''); ?> alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert"
-                                    aria-hidden="true">&times;</button>
-                                <h4><i class="icon fa fa-smile-o"></i> Selamat Datang</h4>
-                                <h3><b>KAPRODI <?php echo e($prd->prodi); ?> (<?php echo e($prd->nama); ?>)</b></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Student Stats Widgets (From Admin Home) -->
-                    <div class="row fade-in">
-                        <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-red">
-                                <div class="inner">
-                                    <h3><?php echo e($ti); ?></h3>
-                                    <p>Mahasiswa Teknik Industri</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-ios-gear"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-aqua">
-                                <div class="inner">
-                                    <h3><?php echo e($tk); ?></h3> <!-- Using $tk instead of $trpl as per KaprodiController -->
-                                    <p>Mahasiswa TRPL</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-code"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-green">
-                                <div class="inner">
-                                    <h3><?php echo e($logs); ?></h3>
-                                    <p>Mahasiswa Terapan Rekayasa Logistik</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-cube"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-yellow">
-                                <div class="inner">
-                                    <h3><?php echo e($fa); ?></h3>
-                                    <p>Mahasiswa Farmasi</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-medkit"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Student Stats Widgets -->
-
-                    <div class="row">
                         <div class="col-md-6">
-                            <!-- Widget User 2 (From Dosen Home) -->
                             <div class="box box-widget widget-user-2">
                                 <div class="widget-user-header bg-aqua-active">
                                     <div class="widget-user-image">
@@ -100,21 +31,6 @@
                                                 <td><?php echo e(Auth::user()->username); ?></td>
                                             </tr>
                                             <tr>
-                                                <th>Tempat, tanggal lahir</th>
-                                                <td>:</td>
-                                                <td><?php echo e($dsn->tmptlahir); ?>, <?php echo e($dsn->tgllahir); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Agama</th>
-                                                <td>:</td>
-                                                <td><?php echo e($dsn->agama); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Jenis kelamin</th>
-                                                <td>:</td>
-                                                <td><?php echo e($dsn->kelamin); ?></td>
-                                            </tr>
-                                            <tr>
                                                 <th>No HP</th>
                                                 <td>:</td>
                                                 <td><?php echo e($dsn->hp); ?></td>
@@ -129,7 +45,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 ">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="small-box bg-aqua">
@@ -189,7 +105,7 @@
                                                             <img class="img-circle" src="/images/bell.jpg" alt="user">
                                                         </div>
                                                         <div class="product-info">
-                                                            <a href="/lihat_kprd/<?php echo e($item->id_informasi); ?>"
+                                                            <a href="/lihat/<?php echo e($item->id_informasi); ?>"
                                                                 class="product-title"><?php echo e($item->judul); ?>
 
                                                                 <span class="label label-info pull-right">
@@ -204,7 +120,7 @@
                                             </ul>
                                         </div>
                                         <div class="box-footer text-center">
-                                            <a href="/lihat_semua_kprd" class="uppercase">Lihat Semua Informasi</a>
+                                            <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
                                         </div>
                                     </div>
                                 </div>
@@ -212,46 +128,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Tab 2: Mahasiswa Mengulang -->
-                <div class="tab-pane" id="tab_2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-info">
-                                <div class="box-header">
-                                    <h3 class="box-title">Data Mahasiswa Mengulang</h3>
-                                </div>
-                                <div class="box-body">
-                                    <table id="example1" class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Mahasiswa</th>
-                                                <th>Matakuliah</th>
-                                                <th>Nilai</th>
-                                                <th>Tahun Akademik</th>
-                                                <th>Dosen</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no = 1; ?>
-                                            <?php $__currentLoopData = $makul_mengulang; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <tr>
-                                                    <td align="center"><?php echo e($no++); ?></td>
-                                                    <td><?php echo e($item->mhs); ?></td>
-                                                    <td><?php echo e($item->makul); ?></td>
-                                                    <td align="center"><?php echo e($item->nilai_AKHIR); ?></td>
-                                                    <td><?php echo e($item->periode_tahun); ?>-<?php echo e($item->periode_tipe); ?></td>
-                                                    <td><?php echo e($item->nama); ?></td>
-                                                </tr>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Tab 3: Pelaksanaan Akademik -->
                 <div class="tab-pane" id="tab_3">
                     <div class="box box-info">
                         <div class="box-header with-border">
@@ -317,7 +193,7 @@
                                                         <?php echo e($item->jml_online); ?> Online</span>
                                                 </td>
                                                 <td align="center">
-                                                    <a href="/persentase_absensi_mhs_kprd/<?php echo e(Crypt::encryptString($item->id_kurperiode)); ?>"
+                                                    <a href="/persentase_absensi_mhs_dsnlr/<?php echo e(Crypt::encryptString($item->id_kurperiode)); ?>"
                                                         class="btn btn-info btn-xs">Cek Absensi</a>
                                                 </td>
                                             </tr>
@@ -331,4 +207,4 @@
             </div>
         </div>
     </div>
-</div><?php /**PATH /var/www/html/resources/views/layouts/kaprodi_home.blade.php ENDPATH**/ ?>
+</div><?php /**PATH /var/www/html/resources/views/layouts/dosenluar_home.blade.php ENDPATH**/ ?>

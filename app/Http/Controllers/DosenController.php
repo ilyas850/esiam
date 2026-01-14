@@ -84,7 +84,58 @@ class DosenController extends Controller
 
         $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
-        $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
+        // $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
+
+        $data_akademik_collection = Kurikulum_periode::with(['makul', 'prodi', 'kelas', 'dosen'])
+            ->withCount([
+                'baps as jml_per' => function ($query) {
+                    $query->where('status', 'ACTIVE');
+                }
+            ])
+            ->withCount([
+                'baps as jml_online' => function ($query) {
+                    $query->where('status', 'ACTIVE')->where('metode_kuliah', 'Online');
+                }
+            ])
+            ->withCount([
+                'baps as jml_offline' => function ($query) {
+                    $query->where('status', 'ACTIVE')->where('metode_kuliah', 'Offline');
+                }
+            ])
+            ->where('id_periodetahun', $tahun->id_periodetahun)
+            ->where('id_periodetipe', $tipe->id_periodetipe)
+            ->where('status', 'ACTIVE')
+            ->whereHas('makul', function ($q) {
+                $q->where('active', 1);
+            })
+            ->where(function ($q) use ($id) {
+                $q->where('id_dosen', $id)->orWhere('id_dosen_2', $id);
+            })
+            ->get();
+
+        // Transform collection to match the structure expected by the view
+        $data_akademik = $data_akademik_collection->map(function ($item) {
+            $mk = $item->makul;
+            $obj = new \stdClass();
+            $obj->id_kurperiode = $item->id_kurperiode;
+            $obj->makul = $mk ? ($mk->kode . '-' . $mk->makul) : '-';
+            $obj->sks = $mk ? ($mk->set_sks_teori . '/' . $mk->set_sks_praktek) : '-';
+            $obj->prodi = $item->prodi ? $item->prodi->prodi : '-';
+            $obj->kelas = $item->kelas ? $item->kelas->kelas : '-';
+            $obj->nama = $item->dosen ? $item->dosen->nama : '-';
+            $obj->jml_per = $item->jml_per;
+            $obj->jml_online = $item->jml_online;
+            $obj->jml_offline = $item->jml_offline;
+
+            $percentage = ($item->jml_per / 16) * 100;
+            $obj->persentase = round($percentage, 2);
+
+            return $obj;
+        })->unique(function ($item) {
+            return $item->makul . $item->prodi . $item->kelas;
+        })->sortBy('makul')->sortBy(function ($item) {
+            return $item->kelas;
+        });
 
         return view('home', compact('dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
     }
@@ -718,7 +769,7 @@ class DosenController extends Controller
         foreach ($makul as $item) {
             // Buat kunci unik berdasarkan kolom yang harus sama
             $key = $item->kode . '_' . $item->prodi . '_' . $item->kelas . '_' . $item->nama_ruangan . '_' . $item->hari . '_' . $item->jam;
-    
+
             // Jika kunci ini belum ada di array baru, buat entri baru
             if (!isset($groupedMakul[$key])) {
                 // Salin semua properti umum dari item pertama yang ditemukan
@@ -728,7 +779,7 @@ class DosenController extends Controller
                 // [BARU] Buat array helper untuk melacak konsentrasi yang sudah ditambahkan
                 $groupedMakul[$key]->added_konsentrasi = [];
             }
-    
+
             // [DIUBAH] Cek apakah konsentrasi untuk grup ini sudah pernah ditambahkan
             if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
                 // Jika belum ada, tambahkan detailnya
@@ -736,7 +787,7 @@ class DosenController extends Controller
                     'konsentrasi' => $item->konsentrasi,
                     'id_kurperiode' => $item->id_kurperiode,
                 ];
-    
+
                 // [BARU] Catat bahwa konsentrasi ini sudah ditambahkan ke dalam tracker
                 $groupedMakul[$key]->added_konsentrasi[] = $item->konsentrasi;
             }
