@@ -94,17 +94,70 @@ class KaprodiController extends Controller
 
     $makul_mengulang = DB::select('CALL makul_mengulang(?)', [$id]);
 
-    $data_akademik = DB::select('CALL pelaksanaan_akademik(?,?,?)', [$tahun->id_periodetahun, $tipe->id_periodetipe, $id]);
+    $data_akademik_collection = Kurikulum_periode::with(['makul', 'prodi', 'kelas', 'dosen'])
+      ->withCount([
+        'baps as jml_per' => function ($query) {
+          $query->where('status', 'ACTIVE');
+        }
+      ])
+      ->withCount([
+        'baps as jml_online' => function ($query) {
+          $query->where('status', 'ACTIVE')->where('metode_kuliah', 'Online');
+        }
+      ])
+      ->withCount([
+        'baps as jml_offline' => function ($query) {
+          $query->where('status', 'ACTIVE')->where('metode_kuliah', 'Offline');
+        }
+      ])
+      ->where('id_periodetahun', $tahun->id_periodetahun)
+      ->where('id_periodetipe', $tipe->id_periodetipe)
+      ->where('status', 'ACTIVE')
+      ->whereHas('makul', function ($q) {
+        $q->where('active', 1);
+      })
+      ->where(function ($q) use ($id) {
+        $q->where('id_dosen', $id)->orWhere('id_dosen_2', $id);
+      })
+      ->get();
+
+    $data_akademik = $data_akademik_collection->map(function ($item) {
+      $obj = new \stdClass();
+      $obj->id_kurperiode = $item->id_kurperiode;
+      $obj->makul = $item->makul->makul;
+      $obj->sks = $item->makul->akt_sks_teori + $item->makul->akt_sks_praktek;
+      $obj->prodi = $item->prodi->prodi;
+      $obj->kelas = $item->kelas->kelas;
+      $obj->jml_per = $item->jml_per;
+      $obj->jml_online = $item->jml_online;
+      $obj->jml_offline = $item->jml_offline;
+
+      if ($item->jml_per == 0) {
+        $obj->persentase = 0;
+      } else {
+        $obj->persentase = number_format(($item->jml_per / 16) * 100);
+      }
+
+      return $obj;
+    })->unique(function ($item) {
+      return $item->makul . $item->prodi . $item->kelas;
+    })->sortBy('makul')->sortBy(function ($item) {
+      return $item->kelas;
+    });
 
     $ti = Student::where('kodeprodi', 23)
       ->where('active', 1)
       ->count('idstudent');
 
-    $tk = Student::whereIn('kodeprodi', [22, 25])
+    $tk = Student::whereIn('kodeprodi', [25])
       ->where('active', 1)
       ->count('idstudent');
 
     $fa = Student::where('kodeprodi', 24)
+      ->where('active', 1)
+      ->count('idstudent');
+
+    $logs = Student::where('kodeprodi', 26)
       ->where('active', 1)
       ->count('idstudent');
 
@@ -114,7 +167,7 @@ class KaprodiController extends Controller
       ->select('prodi.id_prodi', 'prodi.prodi', 'dosen.nama', 'prodi.kodeprodi')
       ->first();
 
-    return view('home', compact('prd', 'ti', 'fa', 'tk', 'dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
+    return view('home', compact('prd', 'ti', 'fa', 'tk', 'logs', 'dsn', 'tahun', 'tipe', 'time', 'info', 'makul_mengulang', 'data_akademik'));
   }
   public function change_pass_kaprodi($id)
   {
