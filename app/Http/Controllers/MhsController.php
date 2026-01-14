@@ -1558,6 +1558,32 @@ class MhsController extends Controller
             ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14', 'prakerin', 'magang1', 'magang2', 'seminar', 'sidang', 'wisuda')
             ->first();
 
+        if ($biaya) {
+            $biaya->daftar = (float)$biaya->daftar;
+            $biaya->awal = (float)$biaya->awal;
+            $biaya->dsp = (float)$biaya->dsp;
+            $biaya->spp1 = (float)$biaya->spp1;
+            $biaya->spp2 = (float)$biaya->spp2;
+            $biaya->spp3 = (float)$biaya->spp3;
+            $biaya->spp4 = (float)$biaya->spp4;
+            $biaya->spp5 = (float)$biaya->spp5;
+            $biaya->spp6 = (float)$biaya->spp6;
+            $biaya->spp7 = (float)$biaya->spp7;
+            $biaya->spp8 = (float)$biaya->spp8;
+            $biaya->spp9 = (float)$biaya->spp9;
+            $biaya->spp10 = (float)$biaya->spp10;
+            $biaya->spp11 = (float)$biaya->spp11;
+            $biaya->spp12 = (float)$biaya->spp12;
+            $biaya->spp13 = (float)$biaya->spp13;
+            $biaya->spp14 = (float)$biaya->spp14;
+            $biaya->prakerin = (float)$biaya->prakerin;
+            $biaya->magang1 = (float)$biaya->magang1;
+            $biaya->magang2 = (float)$biaya->magang2;
+            $biaya->seminar = (float)$biaya->seminar;
+            $biaya->sidang = (float)$biaya->sidang;
+            $biaya->wisuda = (float)$biaya->wisuda;
+        }
+
         if ($cek_study->study_year == '3') {
             $itembayar = Itembayar::where('study_year', '3')
                 ->orderBy('iditem', 'ASC')
