@@ -1,26 +1,25 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
-        @if (count($errors) > 0)
+        <?php if(count($errors) > 0): ?>
             <div class="alert alert-dangeralert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <h4><i class="icon fa fa-ban"></i> Validasi Upload Error</h4>
                         <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
-        @endif
+        <?php endif; ?>
 
-            <form method="POST" action="{{ url('save_bap') }}" enctype="multipart/form-data">
-                {{ csrf_field() }}
-                <input type="hidden" name="id_kurperiode" value="{{ $id }}">
+            <form method="POST" action="<?php echo e(url('save_bap')); ?>" enctype="multipart/form-data">
+                <?php echo e(csrf_field()); ?>
+
+                <input type="hidden" name="id_kurperiode" value="<?php echo e($id); ?>">
 
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -72,21 +71,21 @@
 
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="form-group {{ $errors->has('pertemuan') ? 'has-error' : '' }}">
+                                <div class="form-group <?php echo e($errors->has('pertemuan') ? 'has-error' : ''); ?>">
                                     <label><span class="text-red">*</span> Pertemuan Ke-</label>
                                     <select class="form-control" name="pertemuan" required>
                                         <option value="">-- Pilih --</option>
-                                        @foreach ($nilai_pertemuan as $item)
-                                            <option value="{{ $item->id_pertemuan }}">Pertemuan Ke-{{ $item->id_pertemuan }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $nilai_pertemuan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($item->id_pertemuan); ?>">Pertemuan Ke-<?php echo e($item->id_pertemuan); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
-                                    @if ($errors->has('pertemuan'))
-                                        <span class="help-block">{{ $errors->first('pertemuan') }}</span>
-                                    @endif
+                                    <?php if($errors->has('pertemuan')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('pertemuan')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group {{ $errors->has('tanggal') ? 'has-error' : '' }}">
+                                <div class="form-group <?php echo e($errors->has('tanggal') ? 'has-error' : ''); ?>">
                                     <label><span class="text-red">*</span> Tanggal</label>
                                     <div class="input-group date">
                                         <div class="input-group-addon">
@@ -94,37 +93,37 @@
                                         </div>
                                         <input type="date" class="form-control pull-right" name="tanggal" required>
                                     </div>
-                                    @if ($errors->has('tanggal'))
-                                        <span class="help-block">{{ $errors->first('tanggal') }}</span>
-                                    @endif
+                                    <?php if($errors->has('tanggal')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('tanggal')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group {{ $errors->has('jam_mulai') ? 'has-error' : '' }}">
+                                <div class="form-group <?php echo e($errors->has('jam_mulai') ? 'has-error' : ''); ?>">
                                     <label><span class="text-red">*</span> Jam Mulai</label>
                                     <select class="form-control" name="jam_mulai" required>
                                         <option value="">-- Pilih --</option>
-                                        @foreach ($jam as $key)
-                                            <option value="{{ $key->jam }}">{{ $key->jam }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $jam; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key->jam); ?>"><?php echo e($key->jam); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
-                                    @if ($errors->has('jam_mulai'))
-                                        <span class="help-block">{{ $errors->first('jam_mulai') }}</span>
-                                    @endif
+                                    <?php if($errors->has('jam_mulai')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('jam_mulai')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group {{ $errors->has('jam_selsai') ? 'has-error' : '' }}">
+                                <div class="form-group <?php echo e($errors->has('jam_selsai') ? 'has-error' : ''); ?>">
                                     <label><span class="text-red">*</span> Jam Selesai</label>
                                     <select class="form-control" name="jam_selsai" required>
                                         <option value="">-- Pilih --</option>
-                                        @foreach ($jam as $key)
-                                            <option value="{{ $key->jam }}">{{ $key->jam }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $jam; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key->jam); ?>"><?php echo e($key->jam); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
-                                    @if ($errors->has('jam_selsai'))
-                                        <span class="help-block">{{ $errors->first('jam_selsai') }}</span>
-                                    @endif
+                                    <?php if($errors->has('jam_selsai')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('jam_selsai')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -148,17 +147,17 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label><span class="text-red">*</span> Tipe Kuliah</label>
-                                    @if ($cek_mk->akt_sks_praktek == 0)
+                                    <?php if($cek_mk->akt_sks_praktek == 0): ?>
                                         <select class="form-control" name="id_tipekuliah" required>
                                             <option value="1">Teori</option>
                                         </select>
-                                    @elseif($cek_mk->akt_sks_praktek > 0)
+                                    <?php elseif($cek_mk->akt_sks_praktek > 0): ?>
                                         <select class="form-control" name="id_tipekuliah" required>
                                             <option value="1">Teori</option>
                                             <option value="2">Praktikum</option>
                                             <option value="3">Teori + Praktikum</option>
                                         </select>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -201,10 +200,10 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
-                                        @if ($cek_mk->akt_sks_praktek > 0) <span class="text-red">*</span> @endif 
+                                        <?php if($cek_mk->akt_sks_praktek > 0): ?> <span class="text-red">*</span> <?php endif; ?> 
                                         Aktual Materi Praktikum
                                     </label>
-                                    <textarea class="form-control" rows="4" name="praktikum" @if($cek_mk->akt_sks_praktek > 0) required @endif></textarea>
+                                    <textarea class="form-control" rows="4" name="praktikum" <?php if($cek_mk->akt_sks_praktek > 0): ?> required <?php endif; ?>></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -222,23 +221,23 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                 <div class="form-group {{ $errors->has('file_kuliah_tatapmuka') ? 'has-error' : '' }}">
+                                 <div class="form-group <?php echo e($errors->has('file_kuliah_tatapmuka') ? 'has-error' : ''); ?>">
                                     <label>Upload File Kuliah Tatap Muka</label>
                                     <input type="file" class="form-control" name="file_kuliah_tatapmuka">
                                     <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</span>
-                                    @if ($errors->has('file_kuliah_tatapmuka'))
-                                        <span class="help-block">{{ $errors->first('file_kuliah_tatapmuka') }}</span>
-                                    @endif
+                                    <?php if($errors->has('file_kuliah_tatapmuka')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('file_kuliah_tatapmuka')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group {{ $errors->has('file_materi_tugas') ? 'has-error' : '' }}">
+                                <div class="form-group <?php echo e($errors->has('file_materi_tugas') ? 'has-error' : ''); ?>">
                                     <label>Upload File Materi Tugas</label>
                                     <input type="file" class="form-control" name="file_materi_tugas">
                                     <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png</span>
-                                    @if ($errors->has('file_materi_tugas'))
-                                        <span class="help-block">{{ $errors->first('file_materi_tugas') }}</span>
-                                    @endif
+                                    <?php if($errors->has('file_materi_tugas')): ?>
+                                        <span class="help-block"><?php echo e($errors->first('file_materi_tugas')); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -246,7 +245,7 @@
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-save"></i> Simpan BAP</button>
-                        <a href="{{ url()->previous() }}" class="btn btn-default btn-flat pull-right">Batal</a>
+                        <a href="<?php echo e(url()->previous()); ?>" class="btn btn-default btn-flat pull-right">Batal</a>
                     </div>
                 </div>
             </form>
@@ -271,16 +270,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($rps as $item)
+                                        <?php $__currentLoopData = $rps; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="text-center">
-                                                    <input type="radio" name="radio_rps" value="{{ $item->id_rps }}" class="rps-radio">
+                                                    <input type="radio" name="radio_rps" value="<?php echo e($item->id_rps); ?>" class="rps-radio">
                                                 </td>
-                                                <td>Ke-{{ $item->pertemuan }}</td>
-                                                <td>{{ $item->kemampuan_akhir_direncanakan }}</td>
-                                                <td>{{ $item->materi_pembelajaran }}</td>
+                                                <td>Ke-<?php echo e($item->pertemuan); ?></td>
+                                                <td><?php echo e($item->kemampuan_akhir_direncanakan); ?></td>
+                                                <td><?php echo e($item->materi_pembelajaran); ?></td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -293,9 +292,9 @@
                 </div>
             </div>
         </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
             // Ketika tombol "Gunakan Terpilih" di modal diklik
@@ -320,4 +319,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosen/form_bap.blade.php ENDPATH**/ ?>

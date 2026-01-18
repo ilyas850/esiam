@@ -1,24 +1,22 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content_header')
+<?php $__env->startSection('content_header'); ?>
     <section class="content-header">
         <h1>
             <i class="fa fa-braille"></i> Absensi Perkuliahan
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('makul_diampu_dsn') }}"> Data Matakuliah</a></li>
-            <li><a href="/entri_bap/{{ $bap->id_kurperiode }}"> BAP</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('makul_diampu_dsn')); ?>"> Data Matakuliah</a></li>
+            <li><a href="/entri_bap/<?php echo e($bap->id_kurperiode); ?>"> BAP</a></li>
             <li class="active">Absensi Perkuliahan </li>
         </ol>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
         <div class="box box-info">
             <div class="box-header with-border">
@@ -30,24 +28,24 @@
                     <div class="col-md-6">
                         <dl class="dl-horizontal" style="margin-bottom: 0;">
                             <dt>Matakuliah</dt>
-                            <dd>{{ $bap->makul }} ({{ $bap->akt_sks }} SKS)</dd>
+                            <dd><?php echo e($bap->makul); ?> (<?php echo e($bap->akt_sks); ?> SKS)</dd>
                             <dt>Program Studi</dt>
-                            <dd>{{ $bap->prodi }}</dd>
+                            <dd><?php echo e($bap->prodi); ?></dd>
                             <dt>Semester/TA</dt>
-                            <dd>{{ $bap->periode_tipe }} {{ $bap->periode_tahun }}</dd>
+                            <dd><?php echo e($bap->periode_tipe); ?> <?php echo e($bap->periode_tahun); ?></dd>
                         </dl>
                     </div>
                     <div class="col-md-6">
                         <dl class="dl-horizontal" style="margin-bottom: 0;">
                             <dt>Dosen</dt>
-                            <dd>{{ $bap->nama }} @if($nama_dosen_2)/ {{ $nama_dosen_2 }}@endif</dd>
+                            <dd><?php echo e($bap->nama); ?> <?php if($nama_dosen_2): ?>/ <?php echo e($nama_dosen_2); ?><?php endif; ?></dd>
                             <dt>Kelas / Ruang</dt>
-                            <dd>{{ $bap->kelas }} / {{ $bap->nama_ruangan }}</dd>
+                            <dd><?php echo e($bap->kelas); ?> / <?php echo e($bap->nama_ruangan); ?></dd>
                             <dt>Waktu</dt>
                             <dd>
-                                {{ $bap->hari }}, {{ $bap->jam }}
-                                {{-- Simple calc display logic kept/removed depending on request, sticking to basic display
-                                to be safe --}}
+                                <?php echo e($bap->hari); ?>, <?php echo e($bap->jam); ?>
+
+                                
                             </dd>
                         </dl>
                     </div>
@@ -56,10 +54,10 @@
 
             <div class="box-body">
                 <div style="margin-bottom: 15px;">
-                    <a href="/print_absensi/{{ $bap->id_kurperiode }}" class="btn btn-warning btn-flat" target="_blank">
+                    <a href="/print_absensi/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-warning btn-flat" target="_blank">
                         <i class="fa fa-print"></i> Print Absensi
                     </a>
-                    <a href="/download_absensi/{{ $bap->id_kurperiode }}" class="btn btn-success btn-flat">
+                    <a href="/download_absensi/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-success btn-flat">
                         <i class="fa fa-file-excel-o"></i> Download Excel
                     </a>
                 </div>
@@ -71,43 +69,44 @@
                                 <th class="text-center" width="5%" style="vertical-align: middle;">No</th>
                                 <th class="text-center" width="10%" style="vertical-align: middle;">NIM</th>
                                 <th class="text-center" style="vertical-align: middle;">Nama Mahasiswa</th>
-                                @for ($i = 1; $i <= 16; $i++)
-                                    <th class="text-center" width="3%" style="vertical-align: middle; font-size: 12px;">{{ $i }}
+                                <?php for($i = 1; $i <= 16; $i++): ?>
+                                    <th class="text-center" width="3%" style="vertical-align: middle; font-size: 12px;"><?php echo e($i); ?>
+
                                     </th>
-                                @endfor
+                                <?php endfor; ?>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data_mahasiswa as $index => $mhs)
+                            <?php $__currentLoopData = $data_mahasiswa; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $mhs): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
-                                    <td class="text-center">{{ $mhs->nim }}</td>
-                                    <td>{{ $mhs->nama }}</td>
+                                    <td class="text-center"><?php echo e($index + 1); ?></td>
+                                    <td class="text-center"><?php echo e($mhs->nim); ?></td>
+                                    <td><?php echo e($mhs->nama); ?></td>
 
-                                    {{-- Loop Attendance Columns --}}
-                                    @for ($p = 1; $p <= 16; $p++)
+                                    
+                                    <?php for($p = 1; $p <= 16; $p++): ?>
                                         <td class="text-center" style="padding: 5px;">
-                                            @php
+                                            <?php
                                                 $status = $mhs->attendance[$p];
-                                            @endphp
+                                            ?>
 
-                                            @if ($status == 'ABSEN')
+                                            <?php if($status == 'ABSEN'): ?>
                                                 <span class="text-green" title="Hadir" style="font-weight: bold;">&#10003;</span>
-                                            @elseif ($status == 'HADIR')
+                                            <?php elseif($status == 'HADIR'): ?>
                                                 <span class="text-red" title="Absen/Tidak Hadir" style="font-weight: bold;">x</span>
-                                            @elseif ($status == 'SAKIT')
+                                            <?php elseif($status == 'SAKIT'): ?>
                                                 <span class="badge bg-yellow" title="Sakit">S</span>
-                                            @elseif ($status == 'IZIN')
+                                            <?php elseif($status == 'IZIN'): ?>
                                                 <span class="badge bg-blue" title="Izin">I</span>
-                                            @elseif ($status == 'ALFA')
+                                            <?php elseif($status == 'ALFA'): ?>
                                                 <span class="badge bg-red" title="Alfa">A</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="text-muted">-</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
-                                    @endfor
+                                    <?php endfor; ?>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
@@ -125,4 +124,5 @@
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosen/absensi_perkuliahan.blade.php ENDPATH**/ ?>
