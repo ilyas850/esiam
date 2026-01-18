@@ -3055,153 +3055,68 @@ class DosenController extends Controller
             # code...
         }
 
-        $dosen2 = Dosen::where('iddosen', $key->id_dosen_2)->get();
-        foreach ($dosen2 as $keydsn) {
-            // code...
-        }
-        if (count($dosen2) > 0) {
-            $nama_dsn2 = $keydsn->nama . ', ' . $keydsn->akademik;
-        } else {
-            $nama_dsn2 = '';
-        }
+        $dosen2 = Dosen::where('iddosen', $key->id_dosen_2)->first();
+        $nama_dsn2 = $dosen2 ? ($dosen2->nama . ', ' . $dosen2->akademik) : '';
 
-        $abs = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
+        // 1. Get all students enrolled (Distinct)
+        $students = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
             ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
             ->join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->select(DB::raw('DISTINCT(student_record.id_studentrecord)'), 'student.nama', 'student.nim')
+            ->select('student_record.id_studentrecord', 'student.nama', 'student.nim')
+            ->distinct()
+            ->orderBy('student.nim')
             ->get();
 
-        $abs2 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
+        // 2. Get ALL attendance records for this period in ONE query
+        $all_attendance = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 2)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
+            ->select('absensi_mahasiswa.id_studentrecord', 'absensi_mahasiswa.absensi', 'bap.pertemuan')
             ->get();
 
-        $abs1 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 1)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
+        // 3. Map attendance to a structured array: [student_id][pertemuan] = status
+        $attendance_map = [];
+        foreach ($all_attendance as $rec) {
+            $attendance_map[$rec->id_studentrecord][$rec->pertemuan] = $rec->absensi;
+        }
 
-        $abs3 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 3)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
+        // 4. Attach attendance to student objects for easy view iteration
+        // 4. Attach attendance to student objects for easy view iteration
+        foreach ($students as $student) {
+            $temp_attendance = [];
+            for ($i = 1; $i <= 16; $i++) {
+                $temp_attendance[$i] = isset($attendance_map[$student->id_studentrecord][$i])
+                    ? $attendance_map[$student->id_studentrecord][$i]
+                    : '-';
+            }
+            $student->attendance = $temp_attendance;
+        }
 
-        $abs4 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 4)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
 
-        $abs5 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 5)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs6 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 6)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs7 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 7)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs8 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 8)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs9 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 9)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs10 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 10)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs11 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 11)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs12 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 12)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs13 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 13)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs14 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 14)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs15 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 15)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        $abs16 = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
-            ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
-            ->where('bap.id_kurperiode', $id)
-            ->where('bap.status', 'ACTIVE')
-            ->where('bap.pertemuan', 16)
-            ->select('absensi_mahasiswa.absensi', 'absensi_mahasiswa.id_studentrecord', 'bap.pertemuan')
-            ->get();
-
-        return view('dosen/absensi_perkuliahan', ['nama_dosen_2' => $nama_dsn2, 'abs16' => $abs16, 'abs15' => $abs15, 'abs14' => $abs14, 'abs13' => $abs13, 'abs12' => $abs12, 'abs11' => $abs11, 'abs10' => $abs10, 'abs9' => $abs9, 'abs8' => $abs8, 'abs7' => $abs7, 'abs6' => $abs6, 'abs5' => $abs5, 'abs4' => $abs4, 'abs' => $abs, 'abs1' => $abs1, 'abs2' => $abs2, 'abs3' => $abs3, 'bap' => $key]);
+        return view('dosen/absensi_perkuliahan', [
+            'bap' => $key,
+            'nama_dosen_2' => $nama_dsn2,
+            'data_mahasiswa' => $students,
+            'abs' => $students,
+            'abs1' => [],
+            'abs2' => [],
+            'abs3' => [],
+            'abs4' => [],
+            'abs5' => [],
+            'abs6' => [],
+            'abs7' => [],
+            'abs8' => [],
+            'abs9' => [],
+            'abs10' => [],
+            'abs11' => [],
+            'abs12' => [],
+            'abs13' => [],
+            'abs14' => [],
+            'abs15' => [],
+            'abs16' => []
+        ]);
     }
 
     public function print_absensi($id)

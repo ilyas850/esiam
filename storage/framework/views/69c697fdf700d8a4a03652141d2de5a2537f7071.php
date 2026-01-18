@@ -1,27 +1,26 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
-        @if (count($errors) > 0)
+        <?php if(count($errors) > 0): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                 <h4><i class="icon fa fa-ban"></i> Validasi Update Error</h4>
                 <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form method="POST" action="/simpanedit_bap/{{ $id }}" enctype="multipart/form-data">
+        <form method="POST" action="/simpanedit_bap/<?php echo e($id); ?>" enctype="multipart/form-data">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="id_kurperiode" value="{{ $bap->id_kurperiode }}">
-            {{ csrf_field() }}
+            <input type="hidden" name="id_kurperiode" value="<?php echo e($bap->id_kurperiode); ?>">
+            <?php echo e(csrf_field()); ?>
+
 
             <div class="box box-warning"> <!-- Changed to warning to signify Edit mode -->
                 <div class="box-header with-border">
@@ -48,7 +47,7 @@
                                     <input type="text" class="form-control" placeholder="Klik tombol untuk mengganti RPS"
                                         disabled>
                                 </div>
-                                <input type="hidden" id="selectedRpsId" name="id_rps" value="{{ $bap->id_rps }}">
+                                <input type="hidden" id="selectedRpsId" name="id_rps" value="<?php echo e($bap->id_rps); ?>">
                             </div>
                         </div>
                     </div>
@@ -59,7 +58,7 @@
                                 <label>Kemampuan Akhir yang Direncanakan</label>
                                 <textarea id="kemampuanAkhir" class="form-control" name="kemampuan_akhir_direncanakan"
                                     rows="4" readonly required
-                                    style="background-color: #f4f4f4;">{{ $bap->kemampuan_akhir_direncanakan }}</textarea>
+                                    style="background-color: #f4f4f4;"><?php echo e($bap->kemampuan_akhir_direncanakan); ?></textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -67,7 +66,7 @@
                                 <label>Materi Pembelajaran (Sesuai RPS)</label>
                                 <textarea id="materiPembelajaran" class="form-control" name="materi_pembelajaran" rows="4"
                                     readonly required
-                                    style="background-color: #f4f4f4;">{{ $bap->materi_pembelajaran }}</textarea>
+                                    style="background-color: #f4f4f4;"><?php echo e($bap->materi_pembelajaran); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -80,48 +79,48 @@
 
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="form-group {{ $errors->has('pertemuan') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('pertemuan') ? 'has-error' : ''); ?>">
                                 <label><span class="text-red">*</span> Pertemuan Ke-</label>
                                 <select class="form-control" name="pertemuan" required>
-                                    <option value="{{ $bap->pertemuan }}">Pertemuan Ke-{{ $bap->pertemuan }} (Saat Ini)
+                                    <option value="<?php echo e($bap->pertemuan); ?>">Pertemuan Ke-<?php echo e($bap->pertemuan); ?> (Saat Ini)
                                     </option>
-                                    @for ($i = 1; $i <= 16; $i++)
-                                        <option value="{{ $i }}">Pertemuan Ke-{{ $i }}</option>
-                                    @endfor
+                                    <?php for($i = 1; $i <= 16; $i++): ?>
+                                        <option value="<?php echo e($i); ?>">Pertemuan Ke-<?php echo e($i); ?></option>
+                                    <?php endfor; ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group {{ $errors->has('tanggal') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('tanggal') ? 'has-error' : ''); ?>">
                                 <label><span class="text-red">*</span> Tanggal</label>
                                 <div class="input-group date">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
                                     <input type="date" class="form-control pull-right" name="tanggal"
-                                        value="{{ $bap->tanggal }}" required>
+                                        value="<?php echo e($bap->tanggal); ?>" required>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group {{ $errors->has('jam_mulai') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('jam_mulai') ? 'has-error' : ''); ?>">
                                 <label><span class="text-red">*</span> Jam Mulai</label>
                                 <select class="form-control" name="jam_mulai" required>
-                                    <option value="{{ $bap->jam_mulai }}">{{ $bap->jam_mulai }}</option>
-                                    @foreach ($jam as $key)
-                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
-                                    @endforeach
+                                    <option value="<?php echo e($bap->jam_mulai); ?>"><?php echo e($bap->jam_mulai); ?></option>
+                                    <?php $__currentLoopData = $jam; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key->jam); ?>"><?php echo e($key->jam); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group {{ $errors->has('jam_selsai') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('jam_selsai') ? 'has-error' : ''); ?>">
                                 <label><span class="text-red">*</span> Jam Selesai</label>
                                 <select class="form-control" name="jam_selsai" required>
-                                    <option value="{{ $bap->jam_selsai }}">{{ $bap->jam_selsai }}</option>
-                                    @foreach ($jam as $key)
-                                        <option value="{{ $key->jam }}">{{ $key->jam }}</option>
-                                    @endforeach
+                                    <option value="<?php echo e($bap->jam_selsai); ?>"><?php echo e($bap->jam_selsai); ?></option>
+                                    <?php $__currentLoopData = $jam; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key->jam); ?>"><?php echo e($key->jam); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -138,7 +137,7 @@
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Jenis Kuliah</label>
                                 <select class="form-control" name="jenis_kuliah" required>
-                                    <option value="{{ $bap->jenis_kuliah }}">{{ $bap->jenis_kuliah }}</option>
+                                    <option value="<?php echo e($bap->jenis_kuliah); ?>"><?php echo e($bap->jenis_kuliah); ?></option>
                                     <option value="Kuliah">Kuliah</option>
                                     <option value="UTS">UTS</option>
                                     <option value="UAS">UAS</option>
@@ -148,30 +147,30 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Tipe Kuliah</label>
-                                @if ($cek_mk->akt_sks_praktek == 0)
+                                <?php if($cek_mk->akt_sks_praktek == 0): ?>
                                     <select class="form-control" name="id_tipekuliah" required>
                                         <option value="1">Teori</option>
                                     </select>
-                                @elseif($cek_mk->akt_sks_praktek > 0)
+                                <?php elseif($cek_mk->akt_sks_praktek > 0): ?>
                                     <select class="form-control" name="id_tipekuliah" required>
-                                        <option value="{{ $bap->id_tipekuliah }}">
-                                            @if ($bap->id_tipekuliah == 1) Teori
-                                            @elseif($bap->id_tipekuliah == 2) Praktikum
-                                            @elseif($bap->id_tipekuliah == 3) Teori + Praktikum
-                                            @endif
+                                        <option value="<?php echo e($bap->id_tipekuliah); ?>">
+                                            <?php if($bap->id_tipekuliah == 1): ?> Teori
+                                            <?php elseif($bap->id_tipekuliah == 2): ?> Praktikum
+                                            <?php elseif($bap->id_tipekuliah == 3): ?> Teori + Praktikum
+                                            <?php endif; ?>
                                         </option>
                                         <option value="1">Teori</option>
                                         <option value="2">Praktikum</option>
                                         <option value="3">Teori + Praktikum</option>
                                     </select>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Metode</label>
                                 <select class="form-control" name="metode_kuliah" required>
-                                    <option value="{{ $bap->metode_kuliah }}">{{ $bap->metode_kuliah }}</option>
+                                    <option value="<?php echo e($bap->metode_kuliah); ?>"><?php echo e($bap->metode_kuliah); ?></option>
                                     <option value="Offline">Offline</option>
                                     <option value="Online">Online</option>
                                 </select>
@@ -180,7 +179,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Link Materi</label>
-                                <input type="text" class="form-control" name="link_materi" value="{{ $bap->link_materi }}"
+                                <input type="text" class="form-control" name="link_materi" value="<?php echo e($bap->link_materi); ?>"
                                     required>
                             </div>
                         </div>
@@ -197,14 +196,14 @@
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Aktual Materi Pembelajaran</label>
                                 <textarea class="form-control" rows="4" name="materi_kuliah"
-                                    required>{{ $bap->materi_kuliah }}</textarea>
+                                    required><?php echo e($bap->materi_kuliah); ?></textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Alasan Pembaharuan Materi</label>
                                 <textarea class="form-control" rows="4" name="alasan_pembaharuan_materi"
-                                    required>{{ $bap->alasan_pembaharuan_materi }}</textarea>
+                                    required><?php echo e($bap->alasan_pembaharuan_materi); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -212,18 +211,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>
-                                    @if ($cek_mk->akt_sks_praktek > 0) <span class="text-red">*</span> @endif
+                                    <?php if($cek_mk->akt_sks_praktek > 0): ?> <span class="text-red">*</span> <?php endif; ?>
                                     Aktual Materi Praktikum
                                 </label>
-                                <textarea class="form-control" rows="4" name="praktikum" @if($cek_mk->akt_sks_praktek > 0)
-                                required @endif>{{ $bap->praktikum }}</textarea>
+                                <textarea class="form-control" rows="4" name="praktikum" <?php if($cek_mk->akt_sks_praktek > 0): ?>
+                                required <?php endif; ?>><?php echo e($bap->praktikum); ?></textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><span class="text-red">*</span> Media Pembelajaran</label>
                                 <textarea class="form-control" rows="4" name="media_pembelajaran"
-                                    required>{{ $bap->media_pembelajaran }}</textarea>
+                                    required><?php echo e($bap->media_pembelajaran); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -236,25 +235,25 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group {{ $errors->has('file_kuliah_tatapmuka') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('file_kuliah_tatapmuka') ? 'has-error' : ''); ?>">
                                 <label>Upload File Kuliah Tatap Muka</label>
                                 <input type="file" class="form-control" name="file_kuliah_tatapmuka">
-                                @if($bap->file_kuliah_tatapmuka)
+                                <?php if($bap->file_kuliah_tatapmuka): ?>
                                     <p class="help-block"><i class="fa fa-file"></i> File saat ini:
-                                        {{ $bap->file_kuliah_tatapmuka }}</p>
-                                @endif
+                                        <?php echo e($bap->file_kuliah_tatapmuka); ?></p>
+                                <?php endif; ?>
                                 <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg (Biarkan kosong jika tidak
                                     diubah)</span>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group {{ $errors->has('file_materi_tugas') ? 'has-error' : '' }}">
+                            <div class="form-group <?php echo e($errors->has('file_materi_tugas') ? 'has-error' : ''); ?>">
                                 <label>Upload File Materi Tugas</label>
                                 <input type="file" class="form-control" name="file_materi_tugas">
-                                @if($bap->file_materi_tugas)
+                                <?php if($bap->file_materi_tugas): ?>
                                     <p class="help-block"><i class="fa fa-file"></i> File saat ini:
-                                        {{ $bap->file_materi_tugas }}</p>
-                                @endif
+                                        <?php echo e($bap->file_materi_tugas); ?></p>
+                                <?php endif; ?>
                                 <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg (Biarkan kosong jika tidak
                                     diubah)</span>
                             </div>
@@ -265,7 +264,7 @@
                 <div class="box-footer">
                     <button type="submit" class="btn btn-warning btn-flat"><i class="fa fa-save"></i> Simpan
                         Perubahan</button>
-                    <a href="{{ url()->previous() }}" class="btn btn-default btn-flat pull-right">Batal</a>
+                    <a href="<?php echo e(url()->previous()); ?>" class="btn btn-default btn-flat pull-right">Batal</a>
                 </div>
             </div>
         </form>
@@ -291,17 +290,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($rps as $item)
+                                    <?php $__currentLoopData = $rps; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td class="text-center">
-                                                <input type="radio" name="radio_rps" value="{{ $item->id_rps }}"
-                                                    class="rps-radio" {{ $bap->id_rps == $item->id_rps ? 'checked' : '' }}>
+                                                <input type="radio" name="radio_rps" value="<?php echo e($item->id_rps); ?>"
+                                                    class="rps-radio" <?php echo e($bap->id_rps == $item->id_rps ? 'checked' : ''); ?>>
                                             </td>
-                                            <td>Ke-{{ $item->pertemuan }}</td>
-                                            <td>{{ $item->kemampuan_akhir_direncanakan }}</td>
-                                            <td>{{ $item->materi_pembelajaran }}</td>
+                                            <td>Ke-<?php echo e($item->pertemuan); ?></td>
+                                            <td><?php echo e($item->kemampuan_akhir_direncanakan); ?></td>
+                                            <td><?php echo e($item->materi_pembelajaran); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
@@ -314,9 +313,9 @@
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
             // Ketika tombol "Gunakan Terpilih" di modal diklik
@@ -341,4 +340,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosen/edit_bap.blade.php ENDPATH**/ ?>
