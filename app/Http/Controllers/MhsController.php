@@ -1559,29 +1559,29 @@ class MhsController extends Controller
             ->first();
 
         if ($biaya) {
-            $biaya->daftar = (float)$biaya->daftar;
-            $biaya->awal = (float)$biaya->awal;
-            $biaya->dsp = (float)$biaya->dsp;
-            $biaya->spp1 = (float)$biaya->spp1;
-            $biaya->spp2 = (float)$biaya->spp2;
-            $biaya->spp3 = (float)$biaya->spp3;
-            $biaya->spp4 = (float)$biaya->spp4;
-            $biaya->spp5 = (float)$biaya->spp5;
-            $biaya->spp6 = (float)$biaya->spp6;
-            $biaya->spp7 = (float)$biaya->spp7;
-            $biaya->spp8 = (float)$biaya->spp8;
-            $biaya->spp9 = (float)$biaya->spp9;
-            $biaya->spp10 = (float)$biaya->spp10;
-            $biaya->spp11 = (float)$biaya->spp11;
-            $biaya->spp12 = (float)$biaya->spp12;
-            $biaya->spp13 = (float)$biaya->spp13;
-            $biaya->spp14 = (float)$biaya->spp14;
-            $biaya->prakerin = (float)$biaya->prakerin;
-            $biaya->magang1 = (float)$biaya->magang1;
-            $biaya->magang2 = (float)$biaya->magang2;
-            $biaya->seminar = (float)$biaya->seminar;
-            $biaya->sidang = (float)$biaya->sidang;
-            $biaya->wisuda = (float)$biaya->wisuda;
+            $biaya->daftar = (float) $biaya->daftar;
+            $biaya->awal = (float) $biaya->awal;
+            $biaya->dsp = (float) $biaya->dsp;
+            $biaya->spp1 = (float) $biaya->spp1;
+            $biaya->spp2 = (float) $biaya->spp2;
+            $biaya->spp3 = (float) $biaya->spp3;
+            $biaya->spp4 = (float) $biaya->spp4;
+            $biaya->spp5 = (float) $biaya->spp5;
+            $biaya->spp6 = (float) $biaya->spp6;
+            $biaya->spp7 = (float) $biaya->spp7;
+            $biaya->spp8 = (float) $biaya->spp8;
+            $biaya->spp9 = (float) $biaya->spp9;
+            $biaya->spp10 = (float) $biaya->spp10;
+            $biaya->spp11 = (float) $biaya->spp11;
+            $biaya->spp12 = (float) $biaya->spp12;
+            $biaya->spp13 = (float) $biaya->spp13;
+            $biaya->spp14 = (float) $biaya->spp14;
+            $biaya->prakerin = (float) $biaya->prakerin;
+            $biaya->magang1 = (float) $biaya->magang1;
+            $biaya->magang2 = (float) $biaya->magang2;
+            $biaya->seminar = (float) $biaya->seminar;
+            $biaya->sidang = (float) $biaya->sidang;
+            $biaya->wisuda = (float) $biaya->wisuda;
         }
 
         if ($cek_study->study_year == '3') {
@@ -3204,7 +3204,47 @@ class MhsController extends Controller
             ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14')
             ->first();
 
+        if ($biaya) {
+            $biaya->daftar = (float) $biaya->daftar;
+            $biaya->awal = (float) $biaya->awal;
+            $biaya->dsp = (float) $biaya->dsp;
+            $biaya->spp1 = (float) $biaya->spp1;
+            $biaya->spp2 = (float) $biaya->spp2;
+            $biaya->spp3 = (float) $biaya->spp3;
+            $biaya->spp4 = (float) $biaya->spp4;
+            $biaya->spp5 = (float) $biaya->spp5;
+            $biaya->spp6 = (float) $biaya->spp6;
+            $biaya->spp7 = (float) $biaya->spp7;
+            $biaya->spp8 = (float) $biaya->spp8;
+            $biaya->spp9 = (float) $biaya->spp9;
+            $biaya->spp10 = (float) $biaya->spp10;
+            $biaya->spp11 = (float) $biaya->spp11;
+            $biaya->spp12 = (float) $biaya->spp12;
+            $biaya->spp13 = (float) $biaya->spp13;
+            $biaya->spp14 = (float) $biaya->spp14;
+        }
+
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
+
+        if ($cek_bea) {
+            $cek_bea->daftar = (float) $cek_bea->daftar;
+            $cek_bea->awal = (float) $cek_bea->awal;
+            $cek_bea->dsp = (float) $cek_bea->dsp;
+            $cek_bea->spp1 = (float) $cek_bea->spp1;
+            $cek_bea->spp2 = (float) $cek_bea->spp2;
+            $cek_bea->spp3 = (float) $cek_bea->spp3;
+            $cek_bea->spp4 = (float) $cek_bea->spp4;
+            $cek_bea->spp5 = (float) $cek_bea->spp5;
+            $cek_bea->spp6 = (float) $cek_bea->spp6;
+            $cek_bea->spp7 = (float) $cek_bea->spp7;
+            $cek_bea->spp8 = (float) $cek_bea->spp8;
+            $cek_bea->spp9 = (float) $cek_bea->spp9;
+            $cek_bea->spp10 = (float) $cek_bea->spp10;
+            $cek_bea->spp11 = (float) $cek_bea->spp11;
+            $cek_bea->spp12 = (float) $cek_bea->spp12;
+            $cek_bea->spp13 = (float) $cek_bea->spp13;
+            $cek_bea->spp14 = (float) $cek_bea->spp14;
+        }
 
         if ($cek_bea != null) {
             $daftar = $biaya->daftar - ($biaya->daftar * $cek_bea->daftar) / 100;
@@ -3361,7 +3401,49 @@ class MhsController extends Controller
             ->select('daftar', 'awal', 'dsp', 'spp1', 'spp2', 'spp3', 'spp4', 'spp5', 'spp6', 'spp7', 'spp8', 'spp9', 'spp10', 'spp11', 'spp12', 'spp13', 'spp14', 'prakerin')
             ->first();
 
+        if ($biaya) {
+            $biaya->daftar = (float) $biaya->daftar;
+            $biaya->awal = (float) $biaya->awal;
+            $biaya->dsp = (float) $biaya->dsp;
+            $biaya->spp1 = (float) $biaya->spp1;
+            $biaya->spp2 = (float) $biaya->spp2;
+            $biaya->spp3 = (float) $biaya->spp3;
+            $biaya->spp4 = (float) $biaya->spp4;
+            $biaya->spp5 = (float) $biaya->spp5;
+            $biaya->spp6 = (float) $biaya->spp6;
+            $biaya->spp7 = (float) $biaya->spp7;
+            $biaya->spp8 = (float) $biaya->spp8;
+            $biaya->spp9 = (float) $biaya->spp9;
+            $biaya->spp10 = (float) $biaya->spp10;
+            $biaya->spp11 = (float) $biaya->spp11;
+            $biaya->spp12 = (float) $biaya->spp12;
+            $biaya->spp13 = (float) $biaya->spp13;
+            $biaya->spp14 = (float) $biaya->spp14;
+            $biaya->prakerin = (float) $biaya->prakerin;
+        }
+
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
+
+        if ($cek_bea) {
+            $cek_bea->daftar = (float) $cek_bea->daftar;
+            $cek_bea->awal = (float) $cek_bea->awal;
+            $cek_bea->dsp = (float) $cek_bea->dsp;
+            $cek_bea->spp1 = (float) $cek_bea->spp1;
+            $cek_bea->spp2 = (float) $cek_bea->spp2;
+            $cek_bea->spp3 = (float) $cek_bea->spp3;
+            $cek_bea->spp4 = (float) $cek_bea->spp4;
+            $cek_bea->spp5 = (float) $cek_bea->spp5;
+            $cek_bea->spp6 = (float) $cek_bea->spp6;
+            $cek_bea->spp7 = (float) $cek_bea->spp7;
+            $cek_bea->spp8 = (float) $cek_bea->spp8;
+            $cek_bea->spp9 = (float) $cek_bea->spp9;
+            $cek_bea->spp10 = (float) $cek_bea->spp10;
+            $cek_bea->spp11 = (float) $cek_bea->spp11;
+            $cek_bea->spp12 = (float) $cek_bea->spp12;
+            $cek_bea->spp13 = (float) $cek_bea->spp13;
+            $cek_bea->spp14 = (float) $cek_bea->spp14;
+            $cek_bea->prakerin = (float) $cek_bea->prakerin;
+        }
 
         if ($cek_bea != null) {
             $daftar = $biaya->daftar - ($biaya->daftar * $cek_bea->daftar) / 100;
@@ -5382,7 +5464,53 @@ class MhsController extends Controller
             )
             ->first();
 
+        if ($biaya) {
+            $biaya->daftar = (float) $biaya->daftar;
+            $biaya->awal = (float) $biaya->awal;
+            $biaya->dsp = (float) $biaya->dsp;
+            $biaya->spp1 = (float) $biaya->spp1;
+            $biaya->spp2 = (float) $biaya->spp2;
+            $biaya->spp3 = (float) $biaya->spp3;
+            $biaya->spp4 = (float) $biaya->spp4;
+            $biaya->spp5 = (float) $biaya->spp5;
+            $biaya->spp6 = (float) $biaya->spp6;
+            $biaya->spp7 = (float) $biaya->spp7;
+            $biaya->spp8 = (float) $biaya->spp8;
+            $biaya->spp9 = (float) $biaya->spp9;
+            $biaya->spp10 = (float) $biaya->spp10;
+            $biaya->spp11 = (float) $biaya->spp11;
+            $biaya->spp12 = (float) $biaya->spp12;
+            $biaya->spp13 = (float) $biaya->spp13;
+            $biaya->spp14 = (float) $biaya->spp14;
+            $biaya->prakerin = (float) $biaya->prakerin;
+            $biaya->seminar = (float) $biaya->seminar;
+            $biaya->sidang = (float) $biaya->sidang;
+        }
+
         $cek_bea = Beasiswa::where('idstudent', $id)->first();
+
+        if ($cek_bea) {
+            $cek_bea->daftar = (float) $cek_bea->daftar;
+            $cek_bea->awal = (float) $cek_bea->awal;
+            $cek_bea->dsp = (float) $cek_bea->dsp;
+            $cek_bea->spp1 = (float) $cek_bea->spp1;
+            $cek_bea->spp2 = (float) $cek_bea->spp2;
+            $cek_bea->spp3 = (float) $cek_bea->spp3;
+            $cek_bea->spp4 = (float) $cek_bea->spp4;
+            $cek_bea->spp5 = (float) $cek_bea->spp5;
+            $cek_bea->spp6 = (float) $cek_bea->spp6;
+            $cek_bea->spp7 = (float) $cek_bea->spp7;
+            $cek_bea->spp8 = (float) $cek_bea->spp8;
+            $cek_bea->spp9 = (float) $cek_bea->spp9;
+            $cek_bea->spp10 = (float) $cek_bea->spp10;
+            $cek_bea->spp11 = (float) $cek_bea->spp11;
+            $cek_bea->spp12 = (float) $cek_bea->spp12;
+            $cek_bea->spp13 = (float) $cek_bea->spp13;
+            $cek_bea->spp14 = (float) $cek_bea->spp14;
+            $cek_bea->prakerin = (float) $cek_bea->prakerin;
+            $cek_bea->seminar = (float) $cek_bea->seminar;
+            $cek_bea->sidang = (float) $cek_bea->sidang;
+        }
 
         if ($cek_bea != null) {
             $daftar = $biaya->daftar - ($biaya->daftar * $cek_bea->daftar) / 100;
