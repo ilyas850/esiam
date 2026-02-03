@@ -59,7 +59,7 @@ class NilaiController extends Controller
 
     $hitung = count($record);
 
-    return view('mhs/nilai/cek', ['tpe' => $tpee, 'add' => $record,  'idmhs' => $maha]);
+    return view('mhs/nilai/cek', ['tpe' => $tpee, 'add' => $record, 'idmhs' => $maha]);
   }
 
   public function view_nilai(Request $request)
@@ -113,23 +113,23 @@ class NilaiController extends Controller
         ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
         ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
         ->where('student_record.id_student', $iduser)
-        ->where('kurikulum_periode.id_periodetipe',  $request->id_periodetipe)
+        ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
         ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
         ->where('student_record.status', 'TAKEN')
-        ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA',  'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
-        ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA',  'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+        ->select('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
+        ->groupBy('student_record.id_kurtrans', 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', 'matakuliah.makul', 'matakuliah.kode', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek')
         ->get();
 
       //jumlah sks
       $sks = 0;
       foreach ($record as $keysks) {
-        $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+        $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
       }
 
       //cek nilai x sks
       $nxsks = 0;
       foreach ($record as $totsks) {
-        $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
+        $nxsks += ((float) $totsks->akt_sks_teori + (float) $totsks->akt_sks_praktek) * (float) $totsks->nilai_ANGKA;
       }
 
       return view('mhs/nilai/nilai_khs', ['periodetahun' => $periodetahun, 'periodetipe' => $periodetipe, 'idperiodetipe' => $idperiodetipe, 'idperiodetahun' => $idperiodetahun, 'nxsks' => $nxsks, 'sks' => $sks, 'mhs' => $mhs, 'data' => $record, 'iduser' => $iduser]);
@@ -183,13 +183,13 @@ class NilaiController extends Controller
     //jumlah sks
     $sks = 0;
     foreach ($data as $keysks) {
-      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+      $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
     }
 
     //cek nilai x sks
     $nxsks = 0;
     foreach ($data as $totsks) {
-      $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
+      $nxsks += ((float) $totsks->akt_sks_teori + (float) $totsks->akt_sks_praktek) * (float) $totsks->nilai_ANGKA;
     }
 
     $pdf = PDF::loadView('mhs/nilai/khs_nilai_pdf', compact('periodetahun', 'periodetipe', 'nxsks', 'sks', 'mhs', 'data', 'iduser'));
@@ -303,6 +303,47 @@ class NilaiController extends Controller
 
     $cb = Beasiswa::where('idstudent', $id)->first();
 
+    // Cast properties to float to prevent non well formed numeric value error
+    if ($biaya) {
+      $biaya->daftar = (float) $biaya->daftar;
+      $biaya->awal = (float) $biaya->awal;
+      $biaya->dsp = (float) $biaya->dsp;
+      $biaya->spp1 = (float) $biaya->spp1;
+      $biaya->spp2 = (float) $biaya->spp2;
+      $biaya->spp3 = (float) $biaya->spp3;
+      $biaya->spp4 = (float) $biaya->spp4;
+      $biaya->spp5 = (float) $biaya->spp5;
+      $biaya->spp6 = (float) $biaya->spp6;
+      $biaya->spp7 = (float) $biaya->spp7;
+      $biaya->spp8 = (float) $biaya->spp8;
+      $biaya->spp9 = (float) $biaya->spp9;
+      $biaya->spp10 = (float) $biaya->spp10;
+      $biaya->spp11 = (float) $biaya->spp11;
+      $biaya->spp12 = (float) $biaya->spp12;
+      $biaya->spp13 = (float) $biaya->spp13;
+      $biaya->spp14 = (float) $biaya->spp14;
+    }
+
+    if ($cb) {
+      $cb->daftar = (float) $cb->daftar;
+      $cb->awal = (float) $cb->awal;
+      $cb->dsp = (float) $cb->dsp;
+      $cb->spp1 = (float) $cb->spp1;
+      $cb->spp2 = (float) $cb->spp2;
+      $cb->spp3 = (float) $cb->spp3;
+      $cb->spp4 = (float) $cb->spp4;
+      $cb->spp5 = (float) $cb->spp5;
+      $cb->spp6 = (float) $cb->spp6;
+      $cb->spp7 = (float) $cb->spp7;
+      $cb->spp8 = (float) $cb->spp8;
+      $cb->spp9 = (float) $cb->spp9;
+      $cb->spp10 = (float) $cb->spp10;
+      $cb->spp11 = (float) $cb->spp11;
+      $cb->spp12 = (float) $cb->spp12;
+      $cb->spp13 = (float) $cb->spp13;
+      $cb->spp14 = (float) $cb->spp14;
+    }
+
     if ($cb != null) {
       $daftar = $biaya->daftar - ($biaya->daftar * $cb->daftar) / 100;
       $awal = $biaya->awal - ($biaya->awal * $cb->awal) / 100;
@@ -404,7 +445,7 @@ class NilaiController extends Controller
 
         $sks = 0;
         foreach ($record as $keysks) {
-          $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+          $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
         }
 
         return view('mhs/khs/filter_khs_mid', compact('nama_periodetahun', 'nama_periodetipe', 'sks', 'mhs', 'record', 'idthn', 'idtp', 'id'));
@@ -470,13 +511,13 @@ class NilaiController extends Controller
         //jumlah SKS
         $sks = 0;
         foreach ($recordas as $keysks) {
-          $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+          $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
         }
 
         //cek nilai x sks
         $nxsks = 0;
         foreach ($recordas as $totsks) {
-          $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
+          $nxsks += ((float) $totsks->akt_sks_teori + (float) $totsks->akt_sks_praktek) * (float) $totsks->nilai_ANGKA;
         }
 
         return view('mhs/khs/filter_khs_final', compact('nama_periodetahun', 'nama_periodetipe', 'sks', 'mhs', 'recordas', 'idthn', 'idtp', 'id', 'nxsks'));
@@ -522,7 +563,7 @@ class NilaiController extends Controller
 
     $sks = 0;
     foreach ($record as $keysks) {
-      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+      $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
     }
 
     $bulan = [
@@ -586,13 +627,13 @@ class NilaiController extends Controller
     //jumlah sks
     $sks = 0;
     foreach ($data as $keysks) {
-      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+      $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
     }
 
     //cek nilai x sks
     $nxsks = 0;
     foreach ($data as $totsks) {
-      $nxsks += ($totsks->akt_sks_teori + $totsks->akt_sks_praktek) * $totsks->nilai_ANGKA;
+      $nxsks += ((float) $totsks->akt_sks_teori + (float) $totsks->akt_sks_praktek) * (float) $totsks->nilai_ANGKA;
     }
 
     $bulan = [
