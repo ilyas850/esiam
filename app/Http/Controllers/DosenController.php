@@ -249,6 +249,47 @@ class DosenController extends Controller
 
         $cb = Beasiswa::where('idstudent', $id)->first();
 
+        // Cast properties to float
+        if ($biaya) {
+            $biaya->daftar = (float) $biaya->daftar;
+            $biaya->awal = (float) $biaya->awal;
+            $biaya->dsp = (float) $biaya->dsp;
+            $biaya->spp1 = (float) $biaya->spp1;
+            $biaya->spp2 = (float) $biaya->spp2;
+            $biaya->spp3 = (float) $biaya->spp3;
+            $biaya->spp4 = (float) $biaya->spp4;
+            $biaya->spp5 = (float) $biaya->spp5;
+            $biaya->spp6 = (float) $biaya->spp6;
+            $biaya->spp7 = (float) $biaya->spp7;
+            $biaya->spp8 = (float) $biaya->spp8;
+            $biaya->spp9 = (float) $biaya->spp9;
+            $biaya->spp10 = (float) $biaya->spp10;
+            $biaya->spp11 = (float) $biaya->spp11;
+            $biaya->spp12 = (float) $biaya->spp12;
+            $biaya->spp13 = (float) $biaya->spp13;
+            $biaya->spp14 = (float) $biaya->spp14;
+        }
+
+        if ($cb) {
+            $cb->daftar = (float) $cb->daftar;
+            $cb->awal = (float) $cb->awal;
+            $cb->dsp = (float) $cb->dsp;
+            $cb->spp1 = (float) $cb->spp1;
+            $cb->spp2 = (float) $cb->spp2;
+            $cb->spp3 = (float) $cb->spp3;
+            $cb->spp4 = (float) $cb->spp4;
+            $cb->spp5 = (float) $cb->spp5;
+            $cb->spp6 = (float) $cb->spp6;
+            $cb->spp7 = (float) $cb->spp7;
+            $cb->spp8 = (float) $cb->spp8;
+            $cb->spp9 = (float) $cb->spp9;
+            $cb->spp10 = (float) $cb->spp10;
+            $cb->spp11 = (float) $cb->spp11;
+            $cb->spp12 = (float) $cb->spp12;
+            $cb->spp13 = (float) $cb->spp13;
+            $cb->spp14 = (float) $cb->spp14;
+        }
+
         //list biaya kuliah mahasiswa
         if ($cb != null) {
             $daftar = $biaya->daftar - ($biaya->daftar * $cb->daftar) / 100;
@@ -560,8 +601,8 @@ class DosenController extends Controller
         $jumlah = 0;
         for ($i = 0; $i < $t; $i++) {
             $satu = $krs[$i];
-            $skst[] = $satu['akt_sks_teori'];
-            $sksp[] = $satu['akt_sks_praktek'];
+            $skst[] = (float) $satu['akt_sks_teori'];
+            $sksp[] = (float) $satu['akt_sks_praktek'];
         }
 
         $jumlahskst = array_sum($skst);
