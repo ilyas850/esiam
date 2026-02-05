@@ -57,7 +57,11 @@ class Student extends Model
   // Relasi ke Prodi (dengan 2 kondisi)
   public function prodi()
   {
-    return $this->belongsTo(Prodi::class, ['kodeprodi', 'kodekonsentrasi'], ['kodeprodi', 'kodekonsentrasi']);
+    // Note: Standard Eloquent belongsTo does not support array/composite keys.
+    // To use composite keys properly, use manual queries or a library like awobaz/compoships.
+    // For now, we rely on kodeprodi only for the relationship definition to prevent crashes,
+    // though specific queries should handle the composite nature manually.
+    return $this->belongsTo(Prodi::class, 'kodeprodi', 'kodeprodi');
   }
 
   // Alternatif untuk prodi jika belongsTo dengan multiple key tidak support
@@ -71,7 +75,7 @@ class Student extends Model
   // Scope untuk active students
   public function scopeActive($query)
   {
-      return $query->where('active', 1);
+    return $query->where('active', 1);
   }
 
 }

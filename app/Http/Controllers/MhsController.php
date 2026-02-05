@@ -2044,9 +2044,14 @@ class MhsController extends Controller
 
         $id = Auth::user()->id_user;
 
-        $student = Student::with(['prodi'])
-            ->where('idstudent', $id)
-            ->first();
+        $student = Student::where('idstudent', $id)->first();
+
+        if ($student) {
+            $prodi = Prodi::where('kodeprodi', $student->kodeprodi)
+                ->where('kodekonsentrasi', $student->kodekonsentrasi)
+                ->first();
+            $student->setRelation('prodi', $prodi);
+        }
 
         $dosen_pa = DosenPembimbing::join('dosen', 'dosen_pembimbing.id_dosen', '=', 'dosen.iddosen')
             ->where('id_student', $id)
@@ -5348,6 +5353,7 @@ class MhsController extends Controller
 
     public function absen_ujian_mhs()
     {
+
         $id = Auth::user()->id_user;
 
         $datamhs = Student::leftJoin('prodi', (function ($join) {
@@ -5611,7 +5617,89 @@ class MhsController extends Controller
 
             if ($cekbyr == 0 or $cekbyr < 1000) {
 
-                $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
+                // Replaced Stored Procedure 'absensi_ujian' with Eloquent Query Builder to fix GROUP BY issue
+                DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
+                $data_ujian = DB::table('student_record as a')
+                    ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                    ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                    ->leftJoinSub(function ($query) use ($id_tahun, $id_tipe) {
+                        $query->select('d.id_ujiantrans', 'd.id_makul', 'd.id_prodi', 'd.jenis_ujian', 'd.id_kelas', 'd.tanggal_ujian as tgl_uts')
+                            ->from('ujian_transaction as d')
+                            ->join('kurikulum_jam as e', 'd.id_jam', '=', 'e.id_jam')
+                            ->where('d.status', 'ACTIVE')
+                            ->where('d.jenis_ujian', 'UTS')
+                            ->where('d.id_periodetahun', $id_tahun)
+                            ->where('d.id_periodetipe', $id_tipe);
+                    }, 'aa', function ($join) {
+                        $join->on('c.idmakul', '=', 'aa.id_makul')
+                            ->on('b.id_prodi', '=', 'aa.id_prodi')
+                            ->on('b.id_kelas', '=', 'aa.id_kelas');
+                    })
+                    ->leftJoinSub(function ($query) use ($id_tahun, $id_tipe) {
+                        $query->select('d.id_ujiantrans', 'd.id_makul', 'd.id_prodi', 'd.jenis_ujian', 'd.id_kelas', 'd.tanggal_ujian as tgl_uas')
+                            ->from('ujian_transaction as d')
+                            ->join('kurikulum_jam as e', 'd.id_jam', '=', 'e.id_jam')
+                            ->where('d.status', 'ACTIVE')
+                            ->where('d.jenis_ujian', 'UAS')
+                            ->where('d.id_periodetahun', $id_tahun)
+                            ->where('d.id_periodetipe', $id_tipe);
+                    }, 'bb', function ($join) {
+                        $join->on('c.idmakul', '=', 'bb.id_makul')
+                            ->on('b.id_prodi', '=', 'bb.id_prodi')
+                            ->on('b.id_kelas', '=', 'bb.id_kelas');
+                    })
+                    ->leftJoinSub(function ($query) {
+                        $query->select('f.id_kurperiode', DB::raw('COUNT(f.id_kurperiode) as jml_per'))
+                            ->from('bap as f')
+                            ->where('f.status', 'ACTIVE')
+                            ->groupBy('f.id_kurperiode');
+                    }, 'cc', 'a.id_kurperiode', '=', 'cc.id_kurperiode')
+                    ->leftJoinSub(function ($query) {
+                        $query->select('g.id_studentrecord', DB::raw('COUNT(DISTINCT(f.pertemuan)) as jml_tdk_hdr'))
+                            ->from('absensi_mahasiswa as g')
+                            ->join('bap as f', 'f.id_bap', '=', 'g.id_bap')
+                            ->whereIn('g.absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
+                            ->groupBy('g.id_studentrecord');
+                    }, 'dd', 'a.id_studentrecord', '=', 'dd.id_studentrecord')
+                    ->leftJoinSub(function ($query) {
+                        $query->select('h.id_absenujian', 'h.id_studentrecord', 'h.absen_uts', 'h.ket_absensi')
+                            ->from('absen_ujian as h')
+                            ->groupBy('h.id_studentrecord', 'h.absen_uts', 'h.ket_absensi');
+                    }, 'ee', 'a.id_studentrecord', '=', 'ee.id_studentrecord')
+                    ->leftJoinSub(function ($query) {
+                        $query->select('h.id_absenujian', 'h.id_studentrecord', 'h.absen_uas', 'h.ket_absensi')
+                            ->from('absen_ujian as h')
+                            ->groupBy('h.id_studentrecord', 'h.absen_uas', 'h.ket_absensi');
+                    }, 'ff', 'a.id_studentrecord', '=', 'ff.id_studentrecord')
+                    ->leftJoinSub(function ($query) {
+                        $query->select('i.id_permohonanujian', 'i.permohonan', 'i.id_studentrecord')
+                            ->from('permohonan_ujian as i')
+                            ->groupBy('i.id_studentrecord', 'i.id_permohonanujian', 'i.permohonan');
+                    }, 'gg', 'a.id_studentrecord', '=', 'gg.id_studentrecord')
+                    ->select(
+                        'a.id_studentrecord',
+                        'a.id_kurperiode',
+                        'b.id_prodi',
+                        'c.idmakul',
+                        'c.makul',
+                        'aa.tgl_uts',
+                        'ee.absen_uts',
+                        'bb.tgl_uas',
+                        'ff.absen_uas',
+                        'cc.jml_per',
+                        DB::raw('IFNULL(dd.jml_tdk_hdr,0) as jml_tdk_hdr'),
+                        'gg.permohonan',
+                        'b.id_kelas',
+                        'ff.ket_absensi'
+                    )
+                    ->where('a.status', 'TAKEN')
+                    ->where('b.status', 'ACTIVE')
+                    ->where('b.id_periodetahun', $id_tahun)
+                    ->where('b.id_periodetipe', $id_tipe)
+                    ->where('a.id_student', $id)
+                    ->groupBy('a.id_studentrecord')
+                    ->orderBy('aa.tgl_uts', 'ASC')
+                    ->get();
 
                 return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
             } else {
@@ -5664,7 +5752,7 @@ class MhsController extends Controller
             } elseif ($c == 14) {
                 $cekbyr = $daftar + $awal + $dsp + $spp1 + $spp2 + $spp3 + $spp4 + $spp5 + $spp6 + $spp7 + $spp8 + $spp9 + $spp10 + $spp11 + $spp12 + $spp13 + ($spp14 * $persen_uas / 100) - $total_semua_dibayar;
             }
-            //    dd($cekbyr);
+
             if (empty($cekbyr == 0 or $cekbyr < 1000)) {
 
                 Alert::error('Maaf anda tidak dapat mengakses Absen Ujian UAS karena keuangan Anda belum memenuhi syarat')->autoclose(3500);
@@ -5695,7 +5783,7 @@ class MhsController extends Controller
 
             $sekhit = count($cekedom);
 
-            if (empty(($hit - 2) <= $sekhit)) {
+            if (empty(($hit - 3) <= $sekhit)) {
 
                 Alert::error('Maaf anda belum melakukan pengisian edom')->autoclose(3500);
                 return redirect('home');
@@ -5727,7 +5815,8 @@ class MhsController extends Controller
 
                 $sekhit = count($cekedom);
 
-                if (($hit - 2) <= $sekhit) {
+                if (($hit - 3) <= $sekhit) {
+
                     # cek kuisioner Pembimbing Akademik
                     $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                         ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
@@ -5736,8 +5825,10 @@ class MhsController extends Controller
                         ->where('kuisioner_transaction.id_periodetahun', $id_tahun)
                         ->where('kuisioner_transaction.id_periodetipe', $id_tipe)
                         ->get();
+                    // dd(($hit - 3) <= $sekhit);
 
                     if (count($cek_kuis_pa) > 0) {
+
                         #cek kuisioner BAAK
                         $cek_kuis_baak = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
                             ->join('kuisioner_master_kategori', 'kuisioner_master.id_kategori_kuisioner', '=', 'kuisioner_master_kategori.id_kategori_kuisioner')
@@ -5778,7 +5869,90 @@ class MhsController extends Controller
                                         ->get();
 
                                     if (count($cek_kuis_beasiswa) > 0) {
-                                        $data_ujian = DB::select('CALL absensi_ujian(?,?,?)', [$id_tahun, $id_tipe, $id]);
+                                        DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
+                                        $data_ujian = DB::table('student_record as a')
+                                            ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                                            ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                                            ->leftJoinSub(function ($query) use ($id_tahun, $id_tipe) {
+                                                $query->select('d.id_ujiantrans', 'd.id_makul', 'd.id_prodi', 'd.jenis_ujian', 'd.id_kelas', 'd.tanggal_ujian as tgl_uts')
+                                                    ->from('ujian_transaction as d')
+                                                    ->join('kurikulum_jam as e', 'd.id_jam', '=', 'e.id_jam')
+                                                    ->where('d.status', 'ACTIVE')
+                                                    ->where('d.jenis_ujian', 'UTS')
+                                                    ->where('d.id_periodetahun', $id_tahun)
+                                                    ->where('d.id_periodetipe', $id_tipe);
+                                            }, 'aa', function ($join) {
+                                                $join->on('c.idmakul', '=', 'aa.id_makul')
+                                                    ->on('b.id_prodi', '=', 'aa.id_prodi')
+                                                    ->on('b.id_kelas', '=', 'aa.id_kelas');
+                                            })
+                                            ->leftJoinSub(function ($query) use ($id_tahun, $id_tipe) {
+                                                $query->select('d.id_ujiantrans', 'd.id_makul', 'd.id_prodi', 'd.jenis_ujian', 'd.id_kelas', 'd.tanggal_ujian as tgl_uas')
+                                                    ->from('ujian_transaction as d')
+                                                    ->join('kurikulum_jam as e', 'd.id_jam', '=', 'e.id_jam')
+                                                    ->where('d.status', 'ACTIVE')
+                                                    ->where('d.jenis_ujian', 'UAS')
+                                                    ->where('d.id_periodetahun', $id_tahun)
+                                                    ->where('d.id_periodetipe', $id_tipe);
+                                            }, 'bb', function ($join) {
+                                                $join->on('c.idmakul', '=', 'bb.id_makul')
+                                                    ->on('b.id_prodi', '=', 'bb.id_prodi')
+                                                    ->on('b.id_kelas', '=', 'bb.id_kelas');
+                                            })
+                                            ->leftJoinSub(function ($query) {
+                                                $query->select('f.id_kurperiode', DB::raw('COUNT(f.id_kurperiode) as jml_per'))
+                                                    ->from('bap as f')
+                                                    ->where('f.status', 'ACTIVE')
+                                                    ->groupBy('f.id_kurperiode');
+                                            }, 'cc', 'a.id_kurperiode', '=', 'cc.id_kurperiode')
+                                            ->leftJoinSub(function ($query) {
+                                                $query->select('g.id_studentrecord', DB::raw('COUNT(DISTINCT(f.pertemuan)) as jml_tdk_hdr'))
+                                                    ->from('absensi_mahasiswa as g')
+                                                    ->join('bap as f', 'f.id_bap', '=', 'g.id_bap')
+                                                    ->whereIn('g.absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
+                                                    ->groupBy('g.id_studentrecord');
+                                            }, 'dd', 'a.id_studentrecord', '=', 'dd.id_studentrecord')
+                                            ->leftJoinSub(function ($query) {
+                                                $query->select('h.id_absenujian', 'h.id_studentrecord', 'h.absen_uts', 'h.ket_absensi')
+                                                    ->from('absen_ujian as h')
+                                                    ->groupBy('h.id_studentrecord', 'h.absen_uts', 'h.ket_absensi');
+                                            }, 'ee', 'a.id_studentrecord', '=', 'ee.id_studentrecord')
+                                            ->leftJoinSub(function ($query) {
+                                                $query->select('h.id_absenujian', 'h.id_studentrecord', 'h.absen_uas', 'h.ket_absensi')
+                                                    ->from('absen_ujian as h')
+                                                    ->groupBy('h.id_studentrecord', 'h.absen_uas', 'h.ket_absensi');
+                                            }, 'ff', 'a.id_studentrecord', '=', 'ff.id_studentrecord')
+                                            ->leftJoinSub(function ($query) {
+                                                $query->select('i.id_permohonanujian', 'i.permohonan', 'i.id_studentrecord')
+                                                    ->from('permohonan_ujian as i')
+                                                    ->groupBy('i.id_studentrecord', 'i.id_permohonanujian', 'i.permohonan');
+                                            }, 'gg', 'a.id_studentrecord', '=', 'gg.id_studentrecord')
+                                            ->select(
+                                                'a.id_studentrecord',
+                                                'a.id_kurperiode',
+                                                'b.id_prodi',
+                                                'c.idmakul',
+                                                'c.makul',
+                                                'aa.tgl_uts',
+                                                'ee.absen_uts',
+                                                'bb.tgl_uas',
+                                                'ff.absen_uas',
+                                                'cc.jml_per',
+                                                DB::raw('IFNULL(dd.jml_tdk_hdr,0) as jml_tdk_hdr'),
+                                                'gg.permohonan',
+                                                'b.id_kelas',
+                                                'ff.ket_absensi'
+                                            )
+                                            ->where('a.status', 'TAKEN')
+                                            ->where('b.status', 'ACTIVE')
+                                            ->where('b.id_periodetahun', $id_tahun)
+                                            ->where('b.id_periodetipe', $id_tipe)
+                                            ->where('a.id_student', $id)
+                                            ->groupBy(
+                                                'a.id_studentrecord'
+                                            )
+                                            ->orderBy('aa.tgl_uts', 'ASC')
+                                            ->get();
 
                                         return view('mhs/ujian/absensi_ujian', compact('periode_tahun', 'periode_tipe', 'datamhs', 'data_ujian'));
                                     } elseif (count($cek_kuis_beasiswa) == 0) {
@@ -5799,10 +5973,12 @@ class MhsController extends Controller
                             return redirect('home');
                         }
                     } elseif (count($cek_kuis_pa) == 0) {
+
                         Alert::error('Maaf anda belum melakukan pengisian kuisioner Pembimbing Akademik', 'MAAF !!');
                         return redirect('home');
                     }
                 } else {
+
                     Alert::error('Maaf anda belum melakukan pengisian edom', 'MAAF !!');
                     return redirect('home');
                 }
