@@ -98,44 +98,44 @@ class KrsController extends Controller
       //list biaya kuliah mahasiswa
       if (($cb) != null) {
 
-        $daftar = $biaya->daftar - (($biaya->daftar * ($cb->daftar)) / 100);
-        $awal = $biaya->awal - (($biaya->awal * ($cb->awal)) / 100);
-        $dsp = $biaya->dsp - (($biaya->dsp * ($cb->dsp)) / 100);
-        $spp1 = trim($biaya->spp1) - ((trim($biaya->spp1) * ($cb->spp1)) / 100);
-        $spp2 = $biaya->spp2 - (($biaya->spp2 * ($cb->spp2)) / 100);
-        $spp3 = $biaya->spp3 - (($biaya->spp3 * ($cb->spp3)) / 100);
-        $spp4 = $biaya->spp4 - (($biaya->spp4 * ($cb->spp4)) / 100);
-        $spp5 = $biaya->spp5 - (($biaya->spp5 * ($cb->spp5)) / 100);
-        $spp6 = $biaya->spp6 - (($biaya->spp6 * ($cb->spp6)) / 100);
-        $spp7 = $biaya->spp7 - (($biaya->spp7 * ($cb->spp7)) / 100);
-        $spp8 = $biaya->spp8 - (($biaya->spp8 * ($cb->spp8)) / 100);
-        $spp9 = $biaya->spp9 - (($biaya->spp9 * ($cb->spp9)) / 100);
-        $spp10 = $biaya->spp10 - (($biaya->spp10 * ($cb->spp10)) / 100);
-        $spp11 = $biaya->spp11 - (($biaya->spp11 * ($cb->spp11)) / 100);
-        $spp12 = $biaya->spp12 - (($biaya->spp12 * ($cb->spp12)) / 100);
-        $spp13 = $biaya->spp13 - (($biaya->spp13 * ($cb->spp13)) / 100);
-        $spp14 = $biaya->spp14 - (($biaya->spp14 * ($cb->spp14)) / 100);
-        $prakerin = $biaya->prakerin - (($biaya->prakerin * ($cb->prakerin)) / 100);
+        $daftar = (float) $biaya->daftar - (((float) $biaya->daftar * ((float) $cb->daftar)) / 100);
+        $awal = (float) $biaya->awal - (((float) $biaya->awal * ((float) $cb->awal)) / 100);
+        $dsp = (float) $biaya->dsp - (((float) $biaya->dsp * ((float) $cb->dsp)) / 100);
+        $spp1 = (float) trim($biaya->spp1) - (((float) trim($biaya->spp1) * ((float) $cb->spp1)) / 100);
+        $spp2 = (float) $biaya->spp2 - (((float) $biaya->spp2 * ((float) $cb->spp2)) / 100);
+        $spp3 = (float) $biaya->spp3 - (((float) $biaya->spp3 * ((float) $cb->spp3)) / 100);
+        $spp4 = (float) $biaya->spp4 - (((float) $biaya->spp4 * ((float) $cb->spp4)) / 100);
+        $spp5 = (float) $biaya->spp5 - (((float) $biaya->spp5 * ((float) $cb->spp5)) / 100);
+        $spp6 = (float) $biaya->spp6 - (((float) $biaya->spp6 * ((float) $cb->spp6)) / 100);
+        $spp7 = (float) $biaya->spp7 - (((float) $biaya->spp7 * ((float) $cb->spp7)) / 100);
+        $spp8 = (float) $biaya->spp8 - (((float) $biaya->spp8 * ((float) $cb->spp8)) / 100);
+        $spp9 = (float) $biaya->spp9 - (((float) $biaya->spp9 * ((float) $cb->spp9)) / 100);
+        $spp10 = (float) $biaya->spp10 - (((float) $biaya->spp10 * ((float) $cb->spp10)) / 100);
+        $spp11 = (float) $biaya->spp11 - (((float) $biaya->spp11 * ((float) $cb->spp11)) / 100);
+        $spp12 = (float) $biaya->spp12 - (((float) $biaya->spp12 * ((float) $cb->spp12)) / 100);
+        $spp13 = (float) $biaya->spp13 - (((float) $biaya->spp13 * ((float) $cb->spp13)) / 100);
+        $spp14 = (float) $biaya->spp14 - (((float) $biaya->spp14 * ((float) $cb->spp14)) / 100);
+        $prakerin = (float) $biaya->prakerin - (((float) $biaya->prakerin * ((float) $cb->prakerin)) / 100);
       } elseif (($cb) == null) {
 
-        $daftar = $biaya->daftar;
-        $awal = $biaya->awal;
-        $dsp = $biaya->dsp;
-        $spp1 = $biaya->spp1;
-        $spp2 = $biaya->spp2;
-        $spp3 = $biaya->spp3;
-        $spp4 = $biaya->spp4;
-        $spp5 = $biaya->spp5;
-        $spp6 = $biaya->spp6;
-        $spp7 = $biaya->spp7;
-        $spp8 = $biaya->spp8;
-        $spp9 = $biaya->spp9;
-        $spp10 = $biaya->spp10;
-        $spp11 = $biaya->spp11;
-        $spp12 = $biaya->spp12;
-        $spp13 = $biaya->spp13;
-        $spp14 = $biaya->spp14;
-        $prakerin = $biaya->prakerin;
+        $daftar = (float) $biaya->daftar;
+        $awal = (float) $biaya->awal;
+        $dsp = (float) $biaya->dsp;
+        $spp1 = (float) $biaya->spp1;
+        $spp2 = (float) $biaya->spp2;
+        $spp3 = (float) $biaya->spp3;
+        $spp4 = (float) $biaya->spp4;
+        $spp5 = (float) $biaya->spp5;
+        $spp6 = (float) $biaya->spp6;
+        $spp7 = (float) $biaya->spp7;
+        $spp8 = (float) $biaya->spp8;
+        $spp9 = (float) $biaya->spp9;
+        $spp10 = (float) $biaya->spp10;
+        $spp11 = (float) $biaya->spp11;
+        $spp12 = (float) $biaya->spp12;
+        $spp13 = (float) $biaya->spp13;
+        $spp14 = (float) $biaya->spp14;
+        $prakerin = (float) $biaya->prakerin;
       }
 
       //total pembayaran kuliah
@@ -305,7 +305,7 @@ class KrsController extends Controller
     //jumlah SKS
     $sks = 0;
     foreach ($recordas as $keysks) {
-      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+      $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
     }
 
     return view('mhs/krs/filter_krs', compact('idperiodetahun', 'idperiodetipe', 'periodetahun_all', 'periodetipe_all', 'periodetahun', 'periodetipe', 'data_mhs', 'sks', 'record'));
@@ -397,7 +397,7 @@ class KrsController extends Controller
 
     $krlm = Kurikulum_master::where('remark', $intake)->first();
 
-    if ($kodeprodi == 23 or $kodeprodi == 25 or $kodeprodi == 22) {
+    if ($kodeprodi == 23 or $kodeprodi == 25 or $kodeprodi == 22 or $kodeprodi == 26) {
       if ($kodekonsentrasi == null) {
         alert()->warning('Anda tidak dapat melakukan KRS karena Anda belum memiliki konsentrasi', 'Hubungi Prodi masing-masing')->autoclose(5000);
         return redirect()->back();
@@ -443,7 +443,7 @@ class KrsController extends Controller
       $kurp1 = $request->id_kurperiode[$s];
       $idr1 = explode(',', $kurp1, 3);
       $tra1 = $idr1[2];
-      $k += $tra1;
+      $k += (float) $tra1;
     }
 
     #cek sks sama
@@ -458,7 +458,7 @@ class KrsController extends Controller
         $sk = 0;
         for ($z = 0; $z < count($as); $z++) {
           $g = $as[$z];
-          $ks = $g->akt_sks_teori + $g->akt_sks_praktek;
+          $ks = (float) $g->akt_sks_teori + (float) $g->akt_sks_praktek;
           $sk += $ks;
         }
         $hasil_sks_sama = ($sk / count($as));
@@ -466,7 +466,7 @@ class KrsController extends Controller
         $sk = 0;
         for ($z = 0; $z < count($as); $z++) {
           $g = $as[$z];
-          $ks = $g->akt_sks_teori + $g->akt_sks_praktek;
+          $ks = (float) $g->akt_sks_teori + (float) $g->akt_sks_praktek;
           $sk += $ks;
         }
         $hasil_sks_sama = ($sk / count($as));
@@ -607,7 +607,7 @@ class KrsController extends Controller
     //jumlah SKS
     $sks = 0;
     foreach ($recordas as $keysks) {
-      $sks += $keysks->akt_sks_teori + $keysks->akt_sks_praktek;
+      $sks += (float) $keysks->akt_sks_teori + (float) $keysks->akt_sks_praktek;
     }
 
     $bulan = [
