@@ -11,7 +11,7 @@
                 <h3 class="box-title">Data KRS Mahasiswa</h3>
             </div>
             <div class="box-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="krs-table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>
@@ -41,43 +41,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $key => $item)
-                            @php
-                                $totalSKS = 0;
-                                if (isset($item->student_records)) {
-                                    foreach ($item->student_records as $record) {
-                                        if ($record->status == 'TAKEN' && isset($record->kurperiode->makul)) {
-                                            $makul = $record->kurperiode->makul;
-                                            $totalSKS += ($makul->akt_sks_teori ?? 0) + ($makul->akt_sks_praktek ?? 0);
-                                        }
-                                    }
-                                }
-                            @endphp
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>{{ $item->nim }} - {{ $item->nama }}</td>
-                                <td>{{ $item->prodi }}</td>
-                                <td>{{ $item->kelas->kelas }}</td>
-                                <td>{{ $item->angkatan->angkatan }} -
-                                    {{ $item->intake == '1' ? 'Ganjil' : 'Genap' }}
-                                </td>
-                                <td>{{ $item->dosenPembimbing->dosen->nama ?? '-' }}</td>
-                                <td>{{ $totalSKS }} SKS</td>
-
-                                <td align="center">
-                                    <a href="{{ url('/lihat-krs/' . $item->idstudent)}}" class="btn btn-success btn-xs" title="Lihat KRS">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                    <a href="{{ url('/krs-manual/create/' . $item->idstudent) }}" class="btn btn-info btn-xs"
-                                        title="Tambah KRS">
-                                        <i class="fa fa-plus"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
+                        {{-- Data will be populated by DataTables via AJAX --}}
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function () {
+            $('#krs-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ url('krs-manual') }}",
+                    type: 'GET'
+                },
+                columns: [
+                    { data: 'no', name: 'no', orderable: false, searchable: false, className: 'text-center' },
+                    { data: 'nim_nama', name: 'student.nim' }, // search maps to name
+                    { data: 'prodi', name: 'prodi.prodi' },
+                    { data: 'kelas', name: 'kelas.kelas' },
+                    { data: 'angkatan', name: 'angkatan', orderable: false, searchable: false },
+                    { data: 'dosen_pembimbing', name: 'dosen_pembimbing', orderable: false, searchable: false },
+                    { data: 'jml_sks', name: 'jml_sks', orderable: false, searchable: false },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' }
+                ],
+                order: [[1, 'desc']] // Default sort by NIM/Name (which maps to student.kodeprodi in controller default logic effectively)
+            });
+        });
+    </script>
 @endsection
