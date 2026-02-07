@@ -632,70 +632,129 @@ class KrsController extends Controller
     return $pdf->download('KRS' . ' ' . $nama . ' ' . $prodi . ' ' . $kelas . ' ' . '(' . $thn->periode_tahun . ' ' . $tp->periode_tipe . ')' . '.pdf');
   }
 
-  public function krs_manual()
+  public function krs_manual(Request $request)
   {
-    $data = Student::with([
-      // Kita tidak lagi memuat prodi di sini karena sudah di-join
-      'student_records' => function ($q) {
-        // ... (logika ini tidak perlu diubah)
-        $q->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
-          ->where('status', 'TAKEN')
-          ->with([
-            'kurperiode' => function ($q) {
-            $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
-              ->with([
-                'tahun' => function ($q) {
-                  $q->select('id_periodetahun', 'periode_tahun', 'status')->where('status', 'ACTIVE');
-                },
-                'tipe' => function ($q) {
-                  $q->select('id_periodetipe', 'periode_tipe', 'status')->where('status', 'ACTIVE');
-                },
-                'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
-              ])
-              ->where('status', 'ACTIVE');
-          }
-          ]);
-      },
-      'kelas:idkelas,kelas',
-      'angkatan:idangkatan,angkatan',
-      'dosenPembimbing' => function ($q) {
-        // ... (logika ini tidak perlu diubah)
-        $q->select('id', 'id_dosen', 'id_student', 'status')
-          ->with([
-            'dosen' => function ($q) {
-            $q->select('iddosen', 'nama', 'akademik');
-          }
-          ]);
+    if ($request->ajax()) {
+      $query = Student::with([
+        'student_records' => function ($q) {
+          $q->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
+            ->where('status', 'TAKEN')
+            ->with([
+              'kurperiode' => function ($q) {
+                $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
+                  ->with([
+                    'tahun' => function ($q) {
+                      $q->select('id_periodetahun', 'periode_tahun', 'status')->where('status', 'ACTIVE');
+                    },
+                    'tipe' => function ($q) {
+                      $q->select('id_periodetipe', 'periode_tipe', 'status')->where('status', 'ACTIVE');
+                    },
+                    'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+                  ])
+                  ->where('status', 'ACTIVE');
+              }
+            ]);
+        },
+        'kelas:idkelas,kelas',
+        'angkatan:idangkatan,angkatan',
+        'dosenPembimbing' => function ($q) {
+          $q->select('id', 'id_dosen', 'id_student', 'status')
+            ->with([
+              'dosen' => function ($q) {
+                $q->select('iddosen', 'nama', 'akademik');
+              }
+            ]);
+        }
+      ])
+        ->join('prodi', function ($join) {
+          $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
+            ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
+        })
+        ->select(
+          'student.idstudent',
+          'student.idangkatan',
+          'student.idstatus',
+          'student.nim',
+          'student.nama',
+          'student.kodeprodi',
+          'student.kodekonsentrasi',
+          'student.intake',
+          'prodi.prodi',
+          'prodi.konsentrasi'
+        )
+        ->whereIn('student.active', [1, 5]);
+
+      if ($search = $request->input('search.value')) {
+        $query->where(function ($q) use ($search) {
+          $q->where('student.nim', 'like', "%{$search}%")
+            ->orWhere('student.nama', 'like', "%{$search}%")
+            ->orWhere('prodi.prodi', 'like', "%{$search}%")
+            ->orWhereHas('kelas', function ($q2) use ($search) {
+              $q2->where('kelas', 'like', "%{$search}%");
+            });
+        });
       }
-    ])
-      // GABUNGKAN TABEL PRODI SECARA LANGSUNG
-      ->join('prodi', function ($join) {
-        $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
-          ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
-      })
-      // PERJELAS KOLOM DARI SETIAP TABEL UNTUK MENGHINDARI AMBIGUITAS
-      ->select(
-        'student.idstudent',
-        'student.idangkatan',
-        'student.idstatus',
-        'student.nim',
-        'student.nama',
-        'student.kodeprodi',
-        'student.kodekonsentrasi',
-        'student.intake',
-        'prodi.prodi', // Ambil nama prodi dari tabel prodi
-        'prodi.konsentrasi' // Ambil nama konsentrasi dari tabel prodi
-      )
-      ->whereIn('student.active', [1, 5])
-      ->orderBy('student.kodeprodi', 'DESC')
-      ->orderBy('student.nim', 'DESC')
-      ->get();
 
-    // Strukturnya akan sedikit berbeda karena prodi sekarang jadi satu level
-    // dengan data student, bukan sebagai relasi.
-    // dd($data->toArray());
+      $itemPerPage = $request->input('length', 10);
+      $start = $request->input('start', 0);
+      $order = $request->input('order.0.column');
+      $dir = $request->input('order.0.dir');
 
-    return view('sadmin.krs.krs-manual', compact('data'));
+      $columns = [
+        1 => 'student.nim', // Index matches column index in JS
+        2 => 'prodi.prodi',
+        // Add other sortable columns mapping here
+      ];
+
+      if (isset($columns[$order])) {
+        $query->orderBy($columns[$order], $dir);
+      } else {
+        $query->orderBy('student.kodeprodi', 'DESC')
+          ->orderBy('student.nim', 'DESC');
+      }
+
+      $recordsFiltered = $query->count();
+      // Pagination
+      $data = $query->skip($start)->take($itemPerPage)->get();
+      $recordsTotal = Student::whereIn('active', [1, 5])->count();
+
+      $formattedData = [];
+      $no = $start + 1;
+      foreach ($data as $item) {
+        // SKS Calculation
+        $totalSKS = 0;
+        if (isset($item->student_records)) {
+          foreach ($item->student_records as $record) {
+            // Ensure we check if relation is loaded and not null
+            if ($record->status == 'TAKEN' && $record->kurperiode && $record->kurperiode->makul) {
+              $makul = $record->kurperiode->makul;
+              $totalSKS += ($makul->akt_sks_teori ?? 0) + ($makul->akt_sks_praktek ?? 0);
+            }
+          }
+        }
+
+        $formattedData[] = [
+          'no' => $no++,
+          'nim_nama' => $item->nim . ' - ' . $item->nama,
+          'prodi' => $item->prodi,
+          'kelas' => optional($item->kelas)->kelas ?? '-',
+          'angkatan' => (optional($item->angkatan)->angkatan ?? '-') . ' - ' . ($item->intake == '1' ? 'Ganjil' : 'Genap'),
+          'dosen_pembimbing' => optional(optional($item->dosenPembimbing)->dosen)->nama ?? '-',
+          'jml_sks' => $totalSKS . ' SKS',
+          'aksi' => '<a href="' . url('/lihat-krs/' . $item->idstudent) . '" class="btn btn-success btn-xs" title="Lihat KRS"><i class="fa fa-eye"></i></a> ' .
+            '<a href="' . url('/krs-manual/create/' . $item->idstudent) . '" class="btn btn-info btn-xs" title="Tambah KRS"><i class="fa fa-plus"></i></a>'
+        ];
+      }
+
+      return response()->json([
+        'draw' => $request->input('draw'),
+        'recordsTotal' => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data' => $formattedData
+      ]);
+    }
+
+    return view('sadmin.krs.krs-manual');
   }
 
   public function createKrsManual($id)

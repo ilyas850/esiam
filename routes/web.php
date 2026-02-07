@@ -489,6 +489,7 @@ Route::group(['middleware' => 'sadmin'], function () {
     #data mahasiswa aktif
     Route::get('data_mahasiswa_aktif_admin', 'SadminController@data_mahasiswa_aktif_admin');
     Route::post('cari_mhs_aktif_admin', 'SadminController@cari_mhs_aktif_admin');
+    Route::post('data_mahasiswa_aktif_json', 'SadminController@data_mahasiswa_aktif_json'); // Server-side JSON route
     Route::get('export_data_mhs_admin', 'SadminController@export_data_mhs_admin');
     Route::post('export_data_mhs_aktif_filter', 'SadminController@export_data_mhs_aktif_filter');
 
@@ -2193,3 +2194,12 @@ Route::group(['middleware' => 'gugusmutu'], function () {
 });
 
 Route::get('tutup_yudisium/{id}', 'SadminController@tutup_yudisium');
+
+// Yayasan Routes
+Route::group(['middleware' => 'yayasan'], function () {
+    Route::get('yayasan_home', 'YayasanController@yayasan_home');
+    Route::get('yayasan/dosen-tetap', 'YayasanController@data_dosen_tetap');
+    Route::get('yayasan/dosen-tidak-tetap', 'YayasanController@data_dosen_tidak_tetap');
+    Route::get('yayasan/mahasiswa-aktif', 'YayasanController@data_mahasiswa_aktif');
+    Route::get('yayasan/mahasiswa-tidak-aktif', 'YayasanController@data_mahasiswa_tidak_aktif');
+});
