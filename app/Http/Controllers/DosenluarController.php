@@ -1179,6 +1179,8 @@ class DosenluarController extends Controller
             ->where('bap.status', 'ACTIVE')
             // ->where('kuliah_transaction.id_dosen', $id_dosen)
             ->select(
+                'kuliah_transaction.kurang_jam',
+                'kuliah_transaction.tanggal_validasi',
                 'kuliah_transaction.payroll_check',
                 'bap.id_bap',
                 'bap.pertemuan',
@@ -1192,12 +1194,13 @@ class DosenluarController extends Controller
                 'bap.jenis_kuliah',
                 'bap.hadir',
                 'bap.tidak_hadir',
+                'dosen.nama',
                 'bap.kesesuaian_rps',
                 'bap.alasan_pembaharuan_materi',
                 'rps.komentar',
                 'rps.id_rps'
             )
-            ->orderBy('bap.id_bap', 'ASC')
+            ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
         return view('dosenluar/bap', ['bap' => $bap, 'data' => $data]);
