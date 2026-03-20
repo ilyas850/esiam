@@ -2453,9 +2453,10 @@ class DosenController extends Controller
 
     public function view_bap($id)
     {
-        $bp = Bap::where('id_bap', $id)->get();
-        foreach ($bp as $dtbp) {
-            # code...
+        $dtbp = Bap::where('id_bap', $id)->first();
+        if (!$dtbp) {
+            Alert::error('Data BAP tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
 
         $date = $dtbp->tanggal;
@@ -2468,7 +2469,7 @@ class DosenController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
-            ->where('kurikulum_periode.status', 'ACTIVE')
+            // ->where('kurikulum_periode.status', 'ACTIVE')
             ->select(
                 'dosen.iddosen',
                 'semester.semester',
@@ -2479,22 +2480,27 @@ class DosenController extends Controller
                 'matakuliah.makul',
                 'dosen.nama'
             )
-            ->get();
-        foreach ($bap as $data) {
-            # code...
+            ->first();
+
+        if (!$bap) {
+            Alert::error('Data Kurikulum Periode tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
-        $prd = $data->prodi;
-        $tipe = $data->periode_tipe;
-        $tahun = $data->periode_tahun;
+
+        $prd = $bap->prodi;
+        $tipe = $bap->periode_tipe;
+        $tahun = $bap->periode_tahun;
+        $data = $bap;
 
         return view('dosen/view_bap', ['prd' => $prd, 'tipe' => $tipe, 'tahun' => $tahun, 'data' => $data, 'dtbp' => $dtbp]);
     }
 
     public function cetak($id)
     {
-        $bp = Bap::where('id_bap', $id)->get();
-        foreach ($bp as $dtbp) {
-            # code...
+        $dtbp = Bap::where('id_bap', $id)->first();
+        if (!$dtbp) {
+            Alert::error('Data BAP tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
 
         $bap = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -2505,15 +2511,19 @@ class DosenController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
-            ->where('kurikulum_periode.status', 'ACTIVE')
+            // ->where('kurikulum_periode.status', 'ACTIVE') // Allow printing inactive Bap
             ->select('dosen.iddosen', 'semester.semester', 'kelas.kelas', 'prodi.prodi', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'matakuliah.makul', 'dosen.nama')
-            ->get();
-        foreach ($bap as $data) {
-            # code...
+            ->first();
+
+        if (!$bap) {
+            Alert::error('Data Kurikulum Periode tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
-        $prd = $data->prodi;
-        $tipe = $data->periode_tipe;
-        $tahun = $data->periode_tahun;
+
+        $prd = $bap->prodi;
+        $tipe = $bap->periode_tipe;
+        $tahun = $bap->periode_tahun;
+        $data = $bap;
         $bulan = [
             '01' => 'Januari',
             '02' => 'Februari',
