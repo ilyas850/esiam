@@ -1816,9 +1816,9 @@ class DosenController extends Controller
             'link_materi' => 'required',
             'id_rps' => 'required',
             'alasan_pembaharuan_materi' => 'required',
-            'file_kuliah_tatapmuka' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png,pdf|max:2048',
             'file_materi_kuliah' => 'mimes:pdf,docx|max:4000',
-            'file_materi_tugas' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'file_materi_tugas' => 'mimes:jpg,jpeg,png,pdf|max:2048',
         ], $message);
 
         $id_dosen = Auth::user()->id_user;
@@ -1837,13 +1837,32 @@ class DosenController extends Controller
         }
 
         $base_path = 'File_BAP/' . $id_dosen;
-        foreach ($kelas_gabungan as $kurperiode) {
+        $file_tatapmuka = null;
+        $file_materi = null;
+        $file_tugas = null;
+
+        foreach ($kelas_gabungan as $index => $kurperiode) {
             $id_kur = $kurperiode->id_kurperiode;
 
             // Create directories if they don't exist
             $this->createDirectory($base_path . '/' . $id_kur . '/Kuliah Tatap Muka');
             $this->createDirectory($base_path . '/' . $id_kur . '/Materi Kuliah');
             $this->createDirectory($base_path . '/' . $id_kur . '/Tugas Kuliah');
+
+            if ($index == 0) {
+                // Handle file uploads for the first class and copy for others
+                if ($request->hasFile('file_kuliah_tatapmuka')) {
+                    $file_tatapmuka = $this->uploadFile($request, 'file_kuliah_tatapmuka', $base_path, $id_kur, 'Kuliah Tatap Muka', $kelas_gabungan);
+                }
+
+                if ($request->hasFile('file_materi_kuliah')) {
+                    $file_materi = $this->uploadFile($request, 'file_materi_kuliah', $base_path, $id_kur, 'Materi Kuliah', $kelas_gabungan);
+                }
+
+                if ($request->hasFile('file_materi_tugas')) {
+                    $file_tugas = $this->uploadFile($request, 'file_materi_tugas', $base_path, $id_kur, 'Tugas Kuliah', $kelas_gabungan);
+                }
+            }
 
             // Create BAP record
             $bap = new Bap([
@@ -1864,18 +1883,9 @@ class DosenController extends Controller
                 'alasan_pembaharuan_materi' => $request->alasan_pembaharuan_materi,
             ]);
 
-            // Handle file uploads for the first class and copy for others
-            if ($request->hasFile('file_kuliah_tatapmuka')) {
-                $bap->file_kuliah_tatapmuka = $this->uploadFile($request, 'file_kuliah_tatapmuka', $base_path, $id_kur, 'Kuliah Tatap Muka', $kelas_gabungan);
-            }
-
-            if ($request->hasFile('file_materi_kuliah')) {
-                $bap->file_materi_kuliah = $this->uploadFile($request, 'file_materi_kuliah', $base_path, $id_kur, 'Materi Kuliah', $kelas_gabungan);
-            }
-
-            if ($request->hasFile('file_materi_tugas')) {
-                $bap->file_materi_tugas = $this->uploadFile($request, 'file_materi_tugas', $base_path, $id_kur, 'Tugas Kuliah', $kelas_gabungan);
-            }
+            $bap->file_kuliah_tatapmuka = $file_tatapmuka;
+            $bap->file_materi_kuliah = $file_materi;
+            $bap->file_materi_tugas = $file_tugas;
 
             $bap->save();
 
@@ -1889,8 +1899,8 @@ class DosenController extends Controller
     // Create directory helper function
     private function createDirectory($path)
     {
-        if (!File::exists($path)) {
-            File::makeDirectory(public_path() . '/' . $path, 0777, true);
+        if (!File::exists(public_path($path))) {
+            File::makeDirectory(public_path($path), 0777, true, true);
         }
     }
 
@@ -1898,16 +1908,19 @@ class DosenController extends Controller
     private function uploadFile($request, $fileKey, $base_path, $id_kur, $sub_folder, $kelas_gabungan)
     {
         $file = $request->file($fileKey);
-        $file_name = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
+        $hashed_name = hash('sha256', time() . '_' . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+        $file_name = 'Pertemuan Ke-' . $request->pertemuan . '_' . $hashed_name;
         $upload_path = $base_path . '/' . $id_kur . '/' . $sub_folder;
-        $file->move($upload_path, $file_name);
+        $file->move(public_path($upload_path), $file_name);
 
         // Copy file to other class directories
         foreach ($kelas_gabungan as $index => $kurperiode) {
             if ($index == 0)
                 continue; // Skip first class as it already has the file
+            
             $copy_path = $base_path . '/' . $kurperiode->id_kurperiode . '/' . $sub_folder;
-            File::copy($upload_path . '/' . $file_name, $copy_path . '/' . $file_name);
+            $this->createDirectory($copy_path);
+            File::copy(public_path($upload_path . '/' . $file_name), public_path($copy_path . '/' . $file_name));
         }
 
         return $file_name;
@@ -1926,194 +1939,6 @@ class DosenController extends Controller
             'id_bap' => $id_bap,
         ]);
     }
-
-
-    // public function save_bap(Request $request)
-    // {
-    //     $message = [
-    //         'max'       => ':attribute harus diisi maksimal :max KB',
-    //         'required'  => ':attribute wajib diisi',
-    //         'unique'    => ':attribute sudah terdaftar',
-    //     ];
-    //     $this->validate(
-    //         $request,
-    //         [
-    //             'pertemuan'                 => 'required',
-    //             'tanggal'                   => 'required',
-    //             'jam_mulai'                 => 'required',
-    //             'jam_selsai'                => 'required',
-    //             'jenis_kuliah'              => 'required',
-    //             'id_tipekuliah'             => 'required',
-    //             'metode_kuliah'             => 'required',
-    //             'materi_kuliah'             => 'required',
-    //             'link_materi'               => 'required',
-    //             'id_rps'                    => 'required',
-    //             'alasan_pembaharuan_materi' => 'required',
-    //             'file_kuliah_tatapmuka'     => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-    //             'file_materi_kuliah'        => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-    //             'file_materi_tugas'         => 'image|mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-    //         ],
-    //         $message,
-    //     );
-
-    //     $id_dosen = Auth::user()->id_user;
-    //     $id_kurperiode = $request->id_kurperiode;
-
-    //     $kelas_gabungan = DB::select('CALL kelas_gabungan(?)', [$id_kurperiode]);
-
-    //     $cek_bap = Bap::where('id_kurperiode', $request->id_kurperiode)
-    //         ->where('id_dosen', Auth::user()->id_user)
-    //         ->where('pertemuan', $request->pertemuan)
-    //         ->where('status', 'ACTIVE')
-    //         ->count();
-
-    //     if ($cek_bap > 0) {
-    //         Alert::error('Maaf pertemuan yang diinput sudah ada', 'maaf');
-    //         return redirect()->back();
-    //     } elseif ($cek_bap == 0) {
-    //         $jml_idkurperiode = count($kelas_gabungan);
-
-    //         for ($i = 0; $i < $jml_idkurperiode; $i++) {
-    //             $kurperiode = $kelas_gabungan[$i];
-    //             $id_kur = $kurperiode->id_kurperiode;
-
-    //             $path_tatapmuka = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Kuliah Tatap Muka';
-
-    //             if (!File::exists($path_tatapmuka)) {
-    //                 File::makeDirectory(public_path() . '/' . $path_tatapmuka, 0777, true);
-    //             }
-
-    //             $path_materikuliah = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Materi Kuliah';
-
-    //             if (!File::exists($path_materikuliah)) {
-    //                 File::makeDirectory($path_materikuliah);
-    //             }
-
-    //             $path_tugaskuliah = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Tugas Kuliah';
-
-    //             if (!File::exists($path_tugaskuliah)) {
-    //                 File::makeDirectory($path_tugaskuliah);
-    //             }
-
-    //             $bap                        = new Bap();
-    //             $bap->id_kurperiode         = $id_kur;
-    //             $bap->id_dosen              = $id_dosen;
-    //             $bap->pertemuan             = $request->pertemuan;
-    //             $bap->tanggal               = $request->tanggal;
-    //             $bap->jam_mulai             = $request->jam_mulai;
-    //             $bap->jam_selsai            = $request->jam_selsai;
-    //             $bap->jenis_kuliah          = $request->jenis_kuliah;
-    //             $bap->id_tipekuliah         = $request->id_tipekuliah;
-    //             $bap->metode_kuliah         = $request->metode_kuliah;
-    //             $bap->materi_kuliah         = $request->materi_kuliah;
-    //             $bap->praktikum             = $request->praktikum;
-    //             $bap->media_pembelajaran    = $request->media_pembelajaran;
-    //             $bap->link_materi           = $request->link_materi;
-    //             $bap->id_rps                = $request->id_rps;
-    //             $bap->alasan_pembaharuan_materi                = $request->alasan_pembaharuan_materi;
-
-    //             if ($i == 0) {
-    //                 if ($request->hasFile('file_kuliah_tatapmuka')) {
-    //                     $file = $request->file('file_kuliah_tatapmuka');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Kuliah Tatap Muka';
-    //                     $file->move($tujuan_upload, $nama_file);
-    //                     $bap->file_kuliah_tatapmuka = $nama_file;
-    //                 }
-
-    //                 if ($request->hasFile('file_materi_kuliah')) {
-    //                     $file = $request->file('file_materi_kuliah');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Materi Kuliah';
-    //                     $file->move($tujuan_upload, $nama_file);
-    //                     $bap->file_materi_kuliah = $nama_file;
-    //                 }
-
-    //                 if ($request->hasFile('file_materi_tugas')) {
-    //                     $file = $request->file('file_materi_tugas');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Tugas Kuliah';
-    //                     $file->move($tujuan_upload, $nama_file);
-    //                     $bap->file_materi_tugas = $nama_file;
-    //                 }
-    //             } elseif ($i > 0) {
-    //                 if ($request->hasFile('file_kuliah_tatapmuka')) {
-    //                     $tes1 = $kelas_gabungan[0];
-    //                     $d1 = $tes1->id_kurperiode;
-    //                     $file = $request->file('file_kuliah_tatapmuka');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Kuliah Tatap Muka';
-
-    //                     $tes2 = $kelas_gabungan[$i];
-    //                     $d2 = $tes2->id_kurperiode;
-    //                     $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Kuliah Tatap Muka';
-    //                     $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-    //                     File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-    //                     $bap->file_kuliah_tatapmuka = $nama_file1;
-    //                 }
-
-    //                 if ($request->hasFile('file_materi_kuliah')) {
-    //                     $tes1 = $kelas_gabungan[0];
-    //                     $d1 = $tes1->id_kurperiode;
-    //                     $file = $request->file('file_materi_kuliah');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Materi Kuliah';
-
-    //                     $tes2 = $kelas_gabungan[$i];
-    //                     $d2 = $tes2->id_kurperiode;
-
-    //                     $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Materi Kuliah';
-
-    //                     $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-    //                     File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-    //                     $bap->file_materi_kuliah = $nama_file1;
-    //                 }
-
-    //                 if ($request->hasFile('file_materi_tugas')) {
-    //                     $tes1 = $kelas_gabungan[0];
-    //                     $d1 = $tes1->id_kurperiode;
-    //                     $file = $request->file('file_materi_tugas');
-    //                     $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-    //                     $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Tugas Kuliah';
-
-    //                     $tes2 = $kelas_gabungan[$i];
-    //                     $d2 = $tes2->id_kurperiode;
-
-    //                     $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Tugas Kuliah';
-
-    //                     $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-    //                     File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-    //                     $bap->file_materi_tugas = $nama_file1;
-    //                 }
-    //             }
-
-    //             $bap->save();
-
-    //             $users = DB::table('bap')
-    //                 ->limit(1)
-    //                 ->orderByDesc('id_bap')
-    //                 ->first();
-
-    //             $kuliah = new Kuliah_transaction();
-    //             $kuliah->id_kurperiode = $id_kur;
-    //             $kuliah->id_dosen = $id_dosen;
-    //             $kuliah->id_tipekuliah = $request->id_tipekuliah;
-    //             $kuliah->tanggal = $request->tanggal;
-    //             $kuliah->akt_jam_mulai = $request->jam_mulai;
-    //             $kuliah->akt_jam_selesai = $request->jam_selsai;
-    //             $kuliah->id_bap = $users->id_bap;
-    //             $kuliah->save();
-    //         }
-
-    //         return redirect('entri_bap/' . $id_kurperiode)->with('success', 'Data Berhasil diupload');
-    //     }
-    // }
 
     public function entri_absen2($id)
     {
@@ -2628,9 +2453,10 @@ class DosenController extends Controller
 
     public function view_bap($id)
     {
-        $bp = Bap::where('id_bap', $id)->get();
-        foreach ($bp as $dtbp) {
-            # code...
+        $dtbp = Bap::where('id_bap', $id)->first();
+        if (!$dtbp) {
+            Alert::error('Data BAP tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
 
         $date = $dtbp->tanggal;
@@ -2643,7 +2469,7 @@ class DosenController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
-            ->where('kurikulum_periode.status', 'ACTIVE')
+            // ->where('kurikulum_periode.status', 'ACTIVE')
             ->select(
                 'dosen.iddosen',
                 'semester.semester',
@@ -2654,22 +2480,27 @@ class DosenController extends Controller
                 'matakuliah.makul',
                 'dosen.nama'
             )
-            ->get();
-        foreach ($bap as $data) {
-            # code...
+            ->first();
+
+        if (!$bap) {
+            Alert::error('Data Kurikulum Periode tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
-        $prd = $data->prodi;
-        $tipe = $data->periode_tipe;
-        $tahun = $data->periode_tahun;
+
+        $prd = $bap->prodi;
+        $tipe = $bap->periode_tipe;
+        $tahun = $bap->periode_tahun;
+        $data = $bap;
 
         return view('dosen/view_bap', ['prd' => $prd, 'tipe' => $tipe, 'tahun' => $tahun, 'data' => $data, 'dtbp' => $dtbp]);
     }
 
     public function cetak($id)
     {
-        $bp = Bap::where('id_bap', $id)->get();
-        foreach ($bp as $dtbp) {
-            # code...
+        $dtbp = Bap::where('id_bap', $id)->first();
+        if (!$dtbp) {
+            Alert::error('Data BAP tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
 
         $bap = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -2680,15 +2511,19 @@ class DosenController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
-            ->where('kurikulum_periode.status', 'ACTIVE')
+            // ->where('kurikulum_periode.status', 'ACTIVE') // Allow printing inactive Bap
             ->select('dosen.iddosen', 'semester.semester', 'kelas.kelas', 'prodi.prodi', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'matakuliah.makul', 'dosen.nama')
-            ->get();
-        foreach ($bap as $data) {
-            # code...
+            ->first();
+
+        if (!$bap) {
+            Alert::error('Data Kurikulum Periode tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
-        $prd = $data->prodi;
-        $tipe = $data->periode_tipe;
-        $tahun = $data->periode_tahun;
+
+        $prd = $bap->prodi;
+        $tipe = $bap->periode_tipe;
+        $tahun = $bap->periode_tahun;
+        $data = $bap;
         $bulan = [
             '01' => 'Januari',
             '02' => 'Februari',

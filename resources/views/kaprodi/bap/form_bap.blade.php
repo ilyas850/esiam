@@ -214,25 +214,38 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label>Upload File Kuliah Tatap Muka</label>
-                                <input type="file" name="file_kuliah_tatapmuka">
+                                <input type="file" class="form-control" name="file_kuliah_tatapmuka"
+                                    accept=".jpg,.jpeg,.png,.pdf">
                                 @if ($errors->has('file_kuliah_tatapmuka'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('file_kuliah_tatapmuka') }}</strong>
                                     </span>
                                 @endif
-                                <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
+                                <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png .pdf</p>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
+                                <label>Upload File Materi Kuliah</label>
+                                <input type="file" class="form-control" name="file_materi_kuliah"
+                                    accept=".pdf,.docx">
+                                @if ($errors->has('file_materi_kuliah'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('file_materi_kuliah') }}</strong>
+                                    </span>
+                                @endif
+                                <span class="help-block">Max. size 4 mb dengan format .pdf .docx</span>
+                            </div>
+                            <div class="col-md-4">
                                 <label>Upload File Materi Tugas</label>
-                                <input type="file" name="file_materi_tugas">
+                                <input type="file" class="form-control" name="file_materi_tugas"
+                                    accept=".jpg,.jpeg,.png,.pdf">
                                 @if ($errors->has('file_materi_tugas'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('file_materi_tugas') }}</strong>
                                     </span>
                                 @endif
-                                <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg </p>
+                                <p class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png .pdf</p>
                             </div>
                         </div>
                         <div class="form-group">

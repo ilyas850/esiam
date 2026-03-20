@@ -99,7 +99,7 @@
                                         <i class="fa fa-calendar"></i>
                                     </div>
                                     <input type="date" class="form-control pull-right" name="tanggal"
-                                        value="{{ $bap->tanggal }}" required>
+                                        value="{{ \Carbon\Carbon::parse($bap->tanggal)->format('Y-m-d') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -235,27 +235,42 @@
                     </h4>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group {{ $errors->has('file_kuliah_tatapmuka') ? 'has-error' : '' }}">
                                 <label>Upload File Kuliah Tatap Muka</label>
-                                <input type="file" class="form-control" name="file_kuliah_tatapmuka">
+                                <input type="file" class="form-control" name="file_kuliah_tatapmuka"
+                                    accept=".jpg,.jpeg,.png,.pdf">
                                 @if($bap->file_kuliah_tatapmuka)
                                     <p class="help-block"><i class="fa fa-file"></i> File saat ini:
-                                        {{ $bap->file_kuliah_tatapmuka }}</p>
+                                        <a href="/File_BAP/{{ Auth::user()->id_user }}/{{ $bap->id_kurperiode }}/Kuliah Tatap Muka/{{ $bap->file_kuliah_tatapmuka }}" target="_blank">File Kuliah Tatap Muka</a></p>
                                 @endif
-                                <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg (Biarkan kosong jika tidak
+                                <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png .pdf (Biarkan kosong jika tidak
                                     diubah)</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group {{ $errors->has('file_materi_kuliah') ? 'has-error' : '' }}">
+                                <label>Upload File Materi Kuliah</label>
+                                <input type="file" class="form-control" name="file_materi_kuliah"
+                                    accept=".pdf,.docx">
+                                @if($bap->file_materi_kuliah)
+                                    <p class="help-block"><i class="fa fa-file"></i> File saat ini:
+                                        <a href="/File_BAP/{{ Auth::user()->id_user }}/{{ $bap->id_kurperiode }}/Materi Kuliah/{{ $bap->file_materi_kuliah }}" target="_blank">File Materi Kuliah</a></p>
+                                @endif
+                                <span class="help-block">Max. size 4 mb dengan format .pdf .docx (Biarkan kosong jika tidak
+                                    diubah)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group {{ $errors->has('file_materi_tugas') ? 'has-error' : '' }}">
                                 <label>Upload File Materi Tugas</label>
-                                <input type="file" class="form-control" name="file_materi_tugas">
+                                <input type="file" class="form-control" name="file_materi_tugas"
+                                    accept=".jpg,.jpeg,.png,.pdf">
                                 @if($bap->file_materi_tugas)
                                     <p class="help-block"><i class="fa fa-file"></i> File saat ini:
-                                        {{ $bap->file_materi_tugas }}</p>
+                                        <a href="/File_BAP/{{ Auth::user()->id_user }}/{{ $bap->id_kurperiode }}/Tugas Kuliah/{{ $bap->file_materi_tugas }}" target="_blank">File Materi Tugas</a></p>
                                 @endif
-                                <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg (Biarkan kosong jika tidak
+                                <span class="help-block">Max. size 2 mb dengan format .jpg .jpeg .png .pdf (Biarkan kosong jika tidak
                                     diubah)</span>
                             </div>
                         </div>
