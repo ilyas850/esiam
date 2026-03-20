@@ -160,9 +160,111 @@ class DosenluarController extends Controller
         $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
         $tp = Periode_tipe::all();
 
-        $makul = DB::select('CALL matakuliah_diampu_dosen(?,?,?)', [$idperiodetahun, $idperiodetipe, $iddsn]);
+        $rpsSubquery = DB::table('rps')
+            ->select('id_rps', 'id_kurperiode')
+            ->groupBy('id_kurperiode');
 
-        return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+        $makul_raw = DB::table('kurikulum_periode as a')
+            ->join('matakuliah as b', function ($join) use ($idperiodetahun, $idperiodetipe) {
+                $join->on('b.idmakul', '=', 'a.id_makul')
+                    ->where('a.status', '=', 'ACTIVE')
+                    ->where('a.id_periodetahun', '=', $idperiodetahun)
+                    ->where('a.id_periodetipe', '=', $idperiodetipe);
+            })
+            ->join('prodi as c', 'c.id_prodi', '=', 'a.id_prodi')
+            ->join('kelas as d', 'd.idkelas', '=', 'a.id_kelas')
+            ->join('semester as e', 'e.idsemester', '=', 'a.id_semester')
+            ->join('kurikulum_hari as f', 'f.id_hari', '=', 'a.id_hari')
+            ->join('kurikulum_jam as g', 'g.id_jam', '=', 'a.id_jam')
+            ->join('ruangan as i', 'i.id_ruangan', '=', 'a.id_ruangan')
+            ->leftJoin('soal_ujian as h', 'h.id_kurperiode', '=', 'a.id_kurperiode')
+            ->leftJoinSub($rpsSubquery, 'aa', function ($join) {
+                $join->on('a.id_kurperiode', '=', 'aa.id_kurperiode');
+            })
+            ->where(function ($query) use ($iddsn) {
+                $query->where('a.id_dosen', $iddsn)
+                    ->orWhere('a.id_dosen_2', $iddsn);
+            })
+            ->select(
+                'a.id_kurperiode',
+                'b.kode',
+                'b.makul',
+                'c.prodi',
+                'c.konsentrasi',
+                'd.kelas',
+                'e.semester',
+                'f.hari',
+                'g.jam',
+                'i.nama_ruangan',
+                'h.id_soal',
+                'h.soal_uts',
+                'h.soal_uas',
+                'h.tipe_ujian_uts',
+                'h.tipe_ujian_uas',
+                'h.komentar_uts',
+                'h.komentar_uas',
+                'h.validasi_uts',
+                'h.validasi_uas',
+                'h.cetak_soal_uts',
+                'h.cetak_soal_uas',
+                'aa.id_rps'
+            )
+            ->groupBy('c.prodi', 'd.kelas', 'f.hari', 'b.idmakul', 'g.jam')
+            ->groupBy(
+                'a.id_kurperiode',
+                'b.kode',
+                'b.makul',
+                'c.konsentrasi',
+                'e.semester',
+                'f.id_hari',
+                'i.nama_ruangan',
+                'h.id_soal',
+                'h.soal_uts',
+                'h.soal_uas',
+                'h.tipe_ujian_uts',
+                'h.tipe_ujian_uas',
+                'h.komentar_uts',
+                'h.komentar_uas',
+                'h.validasi_uts',
+                'h.validasi_uas',
+                'h.cetak_soal_uts',
+                'h.cetak_soal_uas',
+                'aa.id_rps'
+            )
+            ->orderBy('b.makul')
+            ->orderBy('d.kelas')
+            ->orderBy('c.prodi')
+            ->orderBy('f.id_hari')
+            ->orderBy('g.id_jam', 'ASC')
+            ->get();
+
+        $groupedMakul = [];
+
+        foreach ($makul_raw as $item) {
+            $key = $item->kode . '_' . $item->prodi . '_' . $item->kelas . '_' . $item->nama_ruangan . '_' . $item->hari . '_' . $item->jam;
+
+            if (!isset($groupedMakul[$key])) {
+                $groupedMakul[$key] = $item;
+                $groupedMakul[$key]->details = [];
+                $groupedMakul[$key]->added_konsentrasi = [];
+            }
+
+            if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
+                $groupedMakul[$key]->details[] = [
+                    'konsentrasi' => $item->konsentrasi,
+                    'id_kurperiode' => $item->id_kurperiode,
+                ];
+                $groupedMakul[$key]->added_konsentrasi[] = $item->konsentrasi;
+            }
+        }
+
+        return view('dosenluar/makul_diampu', [
+            'makul' => $groupedMakul,
+            'nama_periodetahun' => $nama_periodetahun,
+            'nama_periodetipe' => $nama_periodetipe,
+            'thn' => $thn,
+            'tp' => $tp,
+        ]);
     }
 
     function entri_rps($id)
@@ -299,23 +401,111 @@ class DosenluarController extends Controller
 
         $id = Auth::user()->id_user;
 
-        $makul = Kurikulum_periode::join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
-            ->join('kurikulum_hari', 'kurikulum_periode.id_hari', '=', 'kurikulum_hari.id_hari')
-            ->join('kurikulum_jam', 'kurikulum_periode.id_jam', '=', 'kurikulum_jam.id_jam')
-            ->leftjoin('soal_ujian', 'kurikulum_periode.id_kurperiode', '=', 'soal_ujian.id_kurperiode')
-            ->where('kurikulum_periode.id_dosen', $id)
-            ->where('periode_tahun.id_periodetahun', $idperiodetahun)
-            ->where('periode_tipe.id_periodetipe', $idperiodetipe)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('kurikulum_hari.hari', 'kurikulum_jam.jam', 'kurikulum_periode.id_kurperiode', 'matakuliah.kode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester', 'soal_ujian.soal_uts', 'soal_ujian.soal_uas')
+        $rpsSubquery = DB::table('rps')
+            ->select('id_rps', 'id_kurperiode')
+            ->groupBy('id_kurperiode');
+
+        $makul_raw = DB::table('kurikulum_periode as a')
+            ->join('matakuliah as b', function ($join) use ($idperiodetahun, $idperiodetipe) {
+                $join->on('b.idmakul', '=', 'a.id_makul')
+                    ->where('a.status', '=', 'ACTIVE')
+                    ->where('a.id_periodetahun', '=', $idperiodetahun)
+                    ->where('a.id_periodetipe', '=', $idperiodetipe);
+            })
+            ->join('prodi as c', 'c.id_prodi', '=', 'a.id_prodi')
+            ->join('kelas as d', 'd.idkelas', '=', 'a.id_kelas')
+            ->join('semester as e', 'e.idsemester', '=', 'a.id_semester')
+            ->join('kurikulum_hari as f', 'f.id_hari', '=', 'a.id_hari')
+            ->join('kurikulum_jam as g', 'g.id_jam', '=', 'a.id_jam')
+            ->join('ruangan as i', 'i.id_ruangan', '=', 'a.id_ruangan')
+            ->leftJoin('soal_ujian as h', 'h.id_kurperiode', '=', 'a.id_kurperiode')
+            ->leftJoinSub($rpsSubquery, 'aa', function ($join) {
+                $join->on('a.id_kurperiode', '=', 'aa.id_kurperiode');
+            })
+            ->where(function ($query) use ($id) {
+                $query->where('a.id_dosen', $id)
+                    ->orWhere('a.id_dosen_2', $id);
+            })
+            ->select(
+                'a.id_kurperiode',
+                'b.kode',
+                'b.makul',
+                'c.prodi',
+                'c.konsentrasi',
+                'd.kelas',
+                'e.semester',
+                'f.hari',
+                'g.jam',
+                'i.nama_ruangan',
+                'h.id_soal',
+                'h.soal_uts',
+                'h.soal_uas',
+                'h.tipe_ujian_uts',
+                'h.tipe_ujian_uas',
+                'h.komentar_uts',
+                'h.komentar_uas',
+                'h.validasi_uts',
+                'h.validasi_uas',
+                'h.cetak_soal_uts',
+                'h.cetak_soal_uas',
+                'aa.id_rps'
+            )
+            ->groupBy('c.prodi', 'd.kelas', 'f.hari', 'b.idmakul', 'g.jam')
+            ->groupBy(
+                'a.id_kurperiode',
+                'b.kode',
+                'b.makul',
+                'c.konsentrasi',
+                'e.semester',
+                'f.id_hari',
+                'i.nama_ruangan',
+                'h.id_soal',
+                'h.soal_uts',
+                'h.soal_uas',
+                'h.tipe_ujian_uts',
+                'h.tipe_ujian_uas',
+                'h.komentar_uts',
+                'h.komentar_uas',
+                'h.validasi_uts',
+                'h.validasi_uas',
+                'h.cetak_soal_uts',
+                'h.cetak_soal_uas',
+                'aa.id_rps'
+            )
+            ->orderBy('b.makul')
+            ->orderBy('d.kelas')
+            ->orderBy('c.prodi')
+            ->orderBy('f.id_hari')
+            ->orderBy('g.id_jam', 'ASC')
             ->get();
 
-        return view('dosenluar/makul_diampu', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+        $groupedMakul = [];
+
+        foreach ($makul_raw as $item) {
+            $key = $item->kode . '_' . $item->prodi . '_' . $item->kelas . '_' . $item->nama_ruangan . '_' . $item->hari . '_' . $item->jam;
+
+            if (!isset($groupedMakul[$key])) {
+                $groupedMakul[$key] = $item;
+                $groupedMakul[$key]->details = [];
+                $groupedMakul[$key]->added_konsentrasi = [];
+            }
+
+            if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
+                $groupedMakul[$key]->details[] = [
+                    'konsentrasi' => $item->konsentrasi,
+                    'id_kurperiode' => $item->id_kurperiode,
+                ];
+                $groupedMakul[$key]->added_konsentrasi[] = $item->konsentrasi;
+            }
+        }
+
+        return view('dosenluar/makul_diampu', [
+            'makul' => $groupedMakul,
+            'nama_periodetahun' => $nama_periodetahun,
+            'nama_periodetipe' => $nama_periodetipe,
+            'thn' => $thn,
+            'tp' => $tp,
+        ]);
     }
 
     public function cekmhs($id)
@@ -1063,8 +1253,9 @@ class DosenluarController extends Controller
                 'link_materi' => 'required',
                 'id_rps' => 'required',
                 'alasan_pembaharuan_materi' => 'required',
-                'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
-                'file_materi_tugas' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG|max:2048',
+                'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG,pdf|max:2048',
+                'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
+                'file_materi_tugas' => 'mimes:jpg,jpeg,JPG,JPEG,png,PNG,pdf|max:2048',
             ],
             $message,
         );
@@ -1083,149 +1274,103 @@ class DosenluarController extends Controller
         if ($cek_bap > 0) {
             Alert::error('Maaf pertemuan yang diinput sudah ada', 'maaf');
             return redirect()->back();
-        } elseif ($cek_bap == 0) {
-            $jml_idkurperiode = count($kelas_gabungan);
+        }
 
-            for ($i = 0; $i < $jml_idkurperiode; $i++) {
-                $kurperiode = $kelas_gabungan[$i];
-                $id_kur = $kurperiode->id_kurperiode;
+        $base_path = 'File_BAP/' . $id_dosen;
+        $file_tatapmuka = null;
+        $file_materi = null;
+        $file_tugas = null;
 
-                $path_tatapmuka = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Kuliah Tatap Muka';
+        foreach ($kelas_gabungan as $index => $kurperiode) {
+            $id_kur = $kurperiode->id_kurperiode;
 
-                if (!File::exists($path_tatapmuka)) {
-                    File::makeDirectory(public_path() . '/' . $path_tatapmuka, 0777, true);
+            // Create directories if they don't exist
+            $this->createDirectory($base_path . '/' . $id_kur . '/Kuliah Tatap Muka');
+            $this->createDirectory($base_path . '/' . $id_kur . '/Materi Kuliah');
+            $this->createDirectory($base_path . '/' . $id_kur . '/Tugas Kuliah');
+
+            if ($index == 0) {
+                // Handle file uploads for the first class and copy for others
+                if ($request->hasFile('file_kuliah_tatapmuka')) {
+                    $file_tatapmuka = $this->uploadFile($request, 'file_kuliah_tatapmuka', $base_path, $id_kur, 'Kuliah Tatap Muka', $kelas_gabungan);
                 }
 
-                $path_materikuliah = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Materi Kuliah';
-
-                if (!File::exists($path_materikuliah)) {
-                    File::makeDirectory($path_materikuliah);
+                if ($request->hasFile('file_materi_kuliah')) {
+                    $file_materi = $this->uploadFile($request, 'file_materi_kuliah', $base_path, $id_kur, 'Materi Kuliah', $kelas_gabungan);
                 }
 
-                $path_tugaskuliah = 'File_BAP' . '/' . $id_dosen . '/' . $id_kur . '/' . 'Tugas Kuliah';
-
-                if (!File::exists($path_tugaskuliah)) {
-                    File::makeDirectory($path_tugaskuliah);
+                if ($request->hasFile('file_materi_tugas')) {
+                    $file_tugas = $this->uploadFile($request, 'file_materi_tugas', $base_path, $id_kur, 'Tugas Kuliah', $kelas_gabungan);
                 }
-
-                $bap = new Bap();
-                $bap->id_kurperiode = $id_kur;
-                $bap->id_dosen = $id_dosen;
-                $bap->pertemuan = $request->pertemuan;
-                $bap->tanggal = $request->tanggal;
-                $bap->jam_mulai = $request->jam_mulai;
-                $bap->jam_selsai = $request->jam_selsai;
-                $bap->jenis_kuliah = $request->jenis_kuliah;
-                $bap->id_tipekuliah = $request->id_tipekuliah;
-                $bap->metode_kuliah = $request->metode_kuliah;
-                $bap->materi_kuliah = $request->materi_kuliah;
-                $bap->praktikum = $request->praktikum;
-                $bap->media_pembelajaran = $request->media_pembelajaran;
-                $bap->link_materi = $request->link_materi;
-                $bap->id_rps = $request->id_rps;
-                $bap->alasan_pembaharuan_materi = $request->alasan_pembaharuan_materi;
-
-                if ($i == 0) {
-                    if ($request->hasFile('file_kuliah_tatapmuka')) {
-                        $file = $request->file('file_kuliah_tatapmuka');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Kuliah Tatap Muka';
-                        $file->move($tujuan_upload, $nama_file);
-                        $bap->file_kuliah_tatapmuka = $nama_file;
-                    }
-
-                    if ($request->hasFile('file_materi_kuliah')) {
-                        $file = $request->file('file_materi_kuliah');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Materi Kuliah';
-                        $file->move($tujuan_upload, $nama_file);
-                        $bap->file_materi_kuliah = $nama_file;
-                    }
-
-                    if ($request->hasFile('file_materi_tugas')) {
-                        $file = $request->file('file_materi_tugas');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $id_kur . '/' . 'Tugas Kuliah';
-                        $file->move($tujuan_upload, $nama_file);
-                        $bap->file_materi_tugas = $nama_file;
-                    }
-                } elseif ($i > 0) {
-                    if ($request->hasFile('file_kuliah_tatapmuka')) {
-                        $tes1 = $kelas_gabungan[0];
-                        $d1 = $tes1->id_kurperiode;
-                        $file = $request->file('file_kuliah_tatapmuka');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Kuliah Tatap Muka';
-
-                        $tes2 = $kelas_gabungan[$i];
-                        $d2 = $tes2->id_kurperiode;
-                        $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Kuliah Tatap Muka';
-                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-                        $bap->file_kuliah_tatapmuka = $nama_file1;
-                    }
-
-                    if ($request->hasFile('file_materi_kuliah')) {
-                        $tes1 = $kelas_gabungan[0];
-                        $d1 = $tes1->id_kurperiode;
-                        $file = $request->file('file_materi_kuliah');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Materi Kuliah';
-
-                        $tes2 = $kelas_gabungan[$i];
-                        $d2 = $tes2->id_kurperiode;
-
-                        $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Materi Kuliah';
-
-                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-                        $bap->file_materi_kuliah = $nama_file1;
-                    }
-
-                    if ($request->hasFile('file_materi_tugas')) {
-                        $tes1 = $kelas_gabungan[0];
-                        $d1 = $tes1->id_kurperiode;
-                        $file = $request->file('file_materi_tugas');
-                        $nama_file = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-                        $tujuan_upload = 'File_BAP/' . $id_dosen . '/' . $d1 . '/' . 'Tugas Kuliah';
-
-                        $tes2 = $kelas_gabungan[$i];
-                        $d2 = $tes2->id_kurperiode;
-
-                        $path = 'File_BAP' . '/' . $id_dosen . '/' . $d2 . '/' . 'Tugas Kuliah';
-
-                        $nama_file1 = 'Pertemuan Ke-' . $request->pertemuan . '_' . $file->getClientOriginalName();
-
-                        File::copy($tujuan_upload . '/' . $nama_file, $path . '/' . $nama_file1);
-
-                        $bap->file_materi_tugas = $nama_file1;
-                    }
-                }
-
-                $bap->save();
-
-                $users = DB::table('bap')
-                    ->limit(1)
-                    ->orderByDesc('id_bap')
-                    ->first();
-
-                $kuliah = new Kuliah_transaction();
-                $kuliah->id_kurperiode = $id_kur;
-                $kuliah->id_dosen = $id_dosen;
-                $kuliah->id_tipekuliah = $request->id_tipekuliah;
-                $kuliah->tanggal = $request->tanggal;
-                $kuliah->akt_jam_mulai = $request->jam_mulai;
-                $kuliah->akt_jam_selesai = $request->jam_selsai;
-                $kuliah->id_bap = $users->id_bap;
-                $kuliah->save();
             }
 
-            return redirect('entri_bap_dsn/' . $id_kur)->with('success', 'Data Berhasil diupload');
+            // Create BAP record
+            $bap = new Bap();
+            $bap->id_kurperiode = $id_kur;
+            $bap->id_dosen = $id_dosen;
+            $bap->pertemuan = $request->pertemuan;
+            $bap->tanggal = $request->tanggal;
+            $bap->jam_mulai = $request->jam_mulai;
+            $bap->jam_selsai = $request->jam_selsai;
+            $bap->jenis_kuliah = $request->jenis_kuliah;
+            $bap->id_tipekuliah = $request->id_tipekuliah;
+            $bap->metode_kuliah = $request->metode_kuliah;
+            $bap->materi_kuliah = $request->materi_kuliah;
+            $bap->praktikum = $request->praktikum;
+            $bap->media_pembelajaran = $request->media_pembelajaran;
+            $bap->link_materi = $request->link_materi;
+            $bap->id_rps = $request->id_rps;
+            $bap->alasan_pembaharuan_materi = $request->alasan_pembaharuan_materi;
+            
+            $bap->file_kuliah_tatapmuka = $file_tatapmuka;
+            $bap->file_materi_kuliah = $file_materi;
+            $bap->file_materi_tugas = $file_tugas;
+
+            $bap->save();
+
+            $kuliah = new Kuliah_transaction();
+            $kuliah->id_kurperiode = $id_kur;
+            $kuliah->id_dosen = $id_dosen;
+            $kuliah->id_tipekuliah = $request->id_tipekuliah;
+            $kuliah->tanggal = $request->tanggal;
+            $kuliah->akt_jam_mulai = $request->jam_mulai;
+            $kuliah->akt_jam_selesai = $request->jam_selsai;
+            $kuliah->id_bap = $bap->id_bap;
+            $kuliah->save();
         }
+
+        return redirect('entri_bap_dsn/' . $id_kurperiode)->with('success', 'Data Berhasil diupload');
+    }
+
+    // Create directory helper function
+    private function createDirectory($path)
+    {
+        if (!File::exists(public_path($path))) {
+            File::makeDirectory(public_path($path), 0777, true, true);
+        }
+    }
+
+    // Handle file upload and copying
+    private function uploadFile($request, $fileKey, $base_path, $id_kur, $sub_folder, $kelas_gabungan)
+    {
+        $file = $request->file($fileKey);
+        $hashed_name = hash('sha256', time() . '_' . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+        $file_name = 'Pertemuan Ke-' . $request->pertemuan . '_' . $hashed_name;
+        $upload_path = $base_path . '/' . $id_kur . '/' . $sub_folder;
+        $file->move(public_path($upload_path), $file_name);
+
+        // Copy file to other class directories
+        foreach ($kelas_gabungan as $index => $kurperiode) {
+            if ($index > 0) {
+                $other_id_kur = $kurperiode->id_kurperiode;
+                $other_path = $base_path . '/' . $other_id_kur . '/' . $sub_folder;
+                
+                $this->createDirectory($other_path);
+                File::copy(public_path($upload_path . '/' . $file_name), public_path($other_path . '/' . $file_name));
+            }
+        }
+
+        return $file_name;
     }
 
     public function entri_absen($id)
