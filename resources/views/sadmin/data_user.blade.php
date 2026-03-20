@@ -55,10 +55,10 @@
                                             <center>{{ $item->prodi }}</center>
                                         </td>
                                         <td>
-                                            <center>{{ $item->kelas->kelas }}</center>
+                                            <center>{{ $item->kelas->kelas ?? '-' }}</center>
                                         </td>
                                         <td>
-                                            <center>{{ $item->angkatan->angkatan }}</center>
+                                            <center>{{ $item->angkatan->angkatan ?? '-' }}</center>
                                         </td>
                                         <td>
                                             <center>
