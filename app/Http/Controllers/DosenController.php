@@ -426,7 +426,7 @@ class DosenController extends Controller
         $tahun = Periode_tahun::where('status', 'ACTIVE')->first();
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $data_mhs = DB::select('CALL validasi_krs(' . $ids . ')');
+        $data_mhs = $this->getValidasiKrsData($ids);
 
         return view('dosen/validasi_krs', ['mhs' => $data_mhs, 'tahun' => $tahun, 'tipe' => $tipe]);
     }
@@ -2379,76 +2379,6 @@ class DosenController extends Controller
 
         Alert::success('', 'Absen berhasil diedit')->autoclose(3500);
         return redirect('entri_bap/' . $request->id_kurperiode);
-    }
-
-    public function save_edit_absensi_old(Request $request)
-    {
-        $absensiMhs = $request->absensi_radio;
-
-        $modifiedArrayAbsensi = array_values($absensiMhs);
-        $jml_absenArray = count($modifiedArrayAbsensi);
-
-        #cek ID BAP
-        $id_bp = $request->id_bap;
-
-        #cek bap yang sama
-        $bap_gabungan = DB::select('CALL bap_gabungan(?)', [$id_bp]);
-        $jml_bap_gabungan = count($bap_gabungan);
-
-        #jumlah yang masuk/absen
-        //$absen = $request->absensi;
-        //$jmlabsen = count($absen);
-
-        #kode baru lagi
-        for ($d = 0; $d < $jml_bap_gabungan; $d++) {
-            $idBapGabungan = $bap_gabungan[$d];
-            $getIdBap = $idBapGabungan->id_bap;
-
-            Absensi_mahasiswa::where('id_bap', $getIdBap)->delete();
-            Bap::where('id_bap', $getIdBap)->update(['hadir' => null]);
-            Bap::where('id_bap', $getIdBap)->update(['tidak_hadir' => null]);
-        }
-
-        for ($a = 0; $a < $jml_bap_gabungan; $a++) {
-            $idBapGabungan = $bap_gabungan[$a];
-            $getIdBap = $idBapGabungan->id_bap;
-
-            #id bap untuk duplikat
-            $idBapAwal = $bap_gabungan[0]->id_bap;
-
-            if ($a == 0) {
-                for ($b = 0; $b < $jml_absenArray; $b++) {
-                    $getDataAbsen = $modifiedArrayAbsensi[$b];
-                    $idForAbsen = explode(',', $getDataAbsen, 2);
-                    $id1 = $idForAbsen[0];
-                    $id2 = $idForAbsen[1];
-
-                    $abs = new Absensi_mahasiswa();
-                    $abs->id_bap = $getIdBap;
-                    $abs->id_studentrecord = $id1;
-                    $abs->absensi = $id2;
-                    $abs->save();
-                }
-            } elseif ($a > 0) {
-                DB::select('CALL duplikat_data_absen(?,?)', [$getIdBap, $idBapAwal]);
-            }
-
-            $jml_hadir = Absensi_mahasiswa::where('id_bap', $getIdBap)
-                ->where('absensi', 'ABSEN')
-                ->count();
-
-            $jml_tdk_hadir = Absensi_mahasiswa::where('id_bap', $getIdBap)
-                ->whereIn('absensi', ['HADIR', 'SAKIT', 'IZIN', 'ALFA'])
-                ->count();
-
-            Bap::where('id_bap', $getIdBap)->update(['hadir' => $jml_hadir]);
-            Bap::where('id_bap', $getIdBap)->update(['tidak_hadir' => $jml_tdk_hadir]);
-        }
-
-        $id_kur = $request->id_kurperiode;
-
-        Alert::success('', 'Absen berhasil diedit')->autoclose(3500);
-        return redirect('entri_bap/' . $id_kur);
     }
 
     public function view_bap($id)
