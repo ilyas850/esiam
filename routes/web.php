@@ -16,7 +16,7 @@ Route::post('/daftar', 'MhsController@daftar');
 
 Route::get('login_adm', 'AdminController@login');
 
-Route::get('forgot_password', function () {
+Route::get('forgot_password', function (){
     return view('auth.lupa');
 });
 

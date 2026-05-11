@@ -1448,19 +1448,19 @@ class SadminController extends Controller
         $kaprodi = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
             ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
             ->where('kaprodi.status', 'ACTIVE')
-            ->select('dosen.nik', 'dosen.nama', 'prodi.prodi', 'kaprodi.id_kaprodi', 'kaprodi.id_dosen', 'kaprodi.id_prodi')
+            ->select('dosen.nik', 'dosen.nama', 'prodi.prodi', 'prodi.kodeprodi', 'kaprodi.id_kaprodi', 'kaprodi.id_dosen', 'kaprodi.id_prodi')
             ->get();
 
         $dosen = Dosen::where('idstatus', 1)
             ->orderBy('nama', 'ASC')
             ->get();
 
-        $prodi = Prodi::select(DB::raw('DISTINCT(prodi)'), 'kodeprodi')
+        $pd = Prodi::selectRaw('MIN(id_prodi) as id_prodi, MIN(prodi) as prodi, kodeprodi')
+            ->groupBy('kodeprodi')
+            ->orderBy('prodi', 'ASC')
             ->get();
 
-        $pd = DB::select('CALL prodi');
-
-        return view('sadmin/datadosen/kaprodi', compact('kaprodi', 'dosen', 'prodi', 'pd'));
+        return view('sadmin/datadosen/kaprodi', compact('kaprodi', 'dosen', 'pd'));
     }
 
     public function post_kaprodi(Request $request)
@@ -7485,28 +7485,14 @@ class SadminController extends Controller
             ->select('kodeprodi', 'prodi')
             ->get();
 
-        // $data1 = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-        //     ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-        //     ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-        //     ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-        //     ->Join('prodi', (function ($join) {
-        //         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
-        //             ->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-        //     }))
-        //     ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-        //     ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-        //     ->where('periode_tahun.status', 'ACTIVE')
-        //     ->where('periode_tipe.status', 'ACTIVE')
-        //     ->where('student_record.status', 'TAKEN')
-        //     ->where('student.active', 1)
-        //     ->select(DB::raw('DISTINCT(student_record.id_student)'), 'kelas.kelas', 'student.nim', 'angkatan.angkatan', 'prodi.prodi', 'student.nama', 'student.intake')
-        //     ->orderBy('student.nim', 'ASC')
-        //     ->orderBy('student.idangkatan', 'ASC')
-        //     ->get();
+        // Data is now fetched via AJAX
+        return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'prodi'));
+    }
 
-        // $data = DB::select('CALL data_mhs_aktif');
-
-        $data = DB::table('student_record as sr')
+    public function data_mahasiswa_aktif_json(Request $request)
+    {
+        // Base Query
+        $query = DB::table('student_record as sr')
             ->join('student as mhs', 'mhs.idstudent', '=', 'sr.id_student')
             ->join('kurikulum_periode as kp', 'kp.id_kurperiode', '=', 'sr.id_kurperiode')
             ->join('periode_tahun as pthn', 'pthn.id_periodetahun', '=', 'kp.id_periodetahun')
@@ -7518,56 +7504,135 @@ class SadminController extends Controller
             ->join('kelas as kls', 'kls.idkelas', '=', 'mhs.idstatus')
             ->join('angkatan as ang', 'ang.idangkatan', '=', 'mhs.idangkatan')
             ->selectRaw("
-            mhs.idstudent, 
-            mhs.nim, 
-            mhs.nama, 
-            CONCAT(prd.prodi, ' - ', prd.konsentrasi) AS prodi, 
-            kls.kelas, 
-            ang.angkatan, 
-            mhs.hp,
-            CASE 
-                WHEN mhs.intake = 1 THEN 'GANJIL' 
-                WHEN mhs.intake = 2 THEN 'GENAP' 
-            END AS intake
-        ")
-            ->where('sr.status', 'TAKEN')
-            ->where('mhs.active', 1)
-            ->where('pthn.status', 'ACTIVE')
-            ->where('ptp.status', 'ACTIVE')
-            ->where('kp.status', 'ACTIVE')
-            ->groupBy('sr.id_student', 'mhs.idstudent', 'mhs.nim', 'mhs.nama', 'prodi', 'kls.kelas', 'ang.angkatan', 'mhs.hp', 'intake')
-            ->orderBy('prd.kodeprodi')
-            ->orderBy('mhs.nim', 'ASC')
-            ->get();
+                sr.id_student, 
+                mhs.idstudent, 
+                mhs.nim, 
+                mhs.nama, 
+                CONCAT(prd.prodi, ' - ', prd.konsentrasi) AS prodi, 
+                kls.kelas, 
+                ang.angkatan, 
+                mhs.hp,
+                mhs.idstudent,
+                mhs.nim,
+                mhs.nama,
+                CONCAT(prd.prodi, ' - ', prd.konsentrasi) AS prodi,
+                kls.kelas,
+                ang.angkatan,
+                mhs.hp,
+                CASE
+                    WHEN mhs.intake = 1 THEN 'GANJIL'
+                    WHEN mhs.intake = 2 THEN 'GENAP'
+                END AS intake
+            ")
+            ->where('sr.status', 'TAKEN');
+        // Removed strict 'mhs.active', 'kp.status' constraints to allow historical data lookup
+        // and to match the legacy SP 'data_mhs_aktif_filter' logic.
 
-        return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'data', 'prodi'));
+        // Apply Filters
+
+        // Filter: Tahun Akademik
+        if ($request->filled('id_periodetahun')) {
+            $query->where('pthn.id_periodetahun', $request->input('id_periodetahun'));
+        } else {
+            // Default to active year if NOT filtering?
+            // If we want to mimic the original 'data_mahasiswa_aktif_admin' which showed CURRENT active students:
+            $query->where('pthn.status', 'ACTIVE');
+
+            // Also enforce strict activity if looking at current default view
+            $query->where('mhs.active', 1);
+            $query->where('kp.status', 'ACTIVE');
+        }
+
+        // Filter: Periode Tipe
+        if ($request->filled('id_periodetipe')) {
+            $query->where('ptp.id_periodetipe', $request->input('id_periodetipe'));
+        } else {
+            // If implicit default year is used, we usually want implicit default Tipe too if it exists?
+            // Original code enforced: ->where('ptp.status', 'ACTIVE')
+            if (!$request->filled('id_periodetahun')) {
+                $query->where('ptp.status', 'ACTIVE');
+            }
+        }
+
+        // Filter: Prodi
+        if ($request->filled('kodeprodi')) {
+            $query->where('mhs.kodeprodi', $request->input('kodeprodi'));
+        }
+
+        // Search (DataTables)
+        if ($request->has('search') && !empty($request->input('search.value'))) {
+            $search = $request->input('search.value');
+            $query->where(function ($q) use ($search) {
+                $q->where('mhs.nama', 'LIKE', "%{$search}%")
+                    ->orWhere('mhs.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('prd.prodi', 'LIKE', "%{$search}%")
+                    ->orWhere('kls.kelas', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Group By safely
+        $query->groupBy(
+            'mhs.idstudent',
+            'mhs.nim',
+            'mhs.nama',
+            'prd.prodi',
+            'prd.konsentrasi',
+            'kls.kelas',
+            'ang.angkatan',
+            'mhs.hp',
+            'mhs.intake'
+        );
+
+        // Optimized Count
+        // To count correctly with groupBy, we count the result details
+        $recordsFiltered = $query->get()->count();
+        $recordsTotal = $recordsFiltered;
+
+        // Sorting
+        if ($request->has('order')) {
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDir = $request->input('order.0.dir');
+            $columns = [
+                0 => null, // No
+                1 => 'mhs.nim',
+                2 => 'mhs.nama',
+                3 => 'prd.prodi',
+                4 => 'kls.kelas',
+                5 => 'ang.angkatan',
+                6 => 'intake'
+            ];
+
+            if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] != null) {
+                $column = $columns[$orderColumnIndex];
+                // Handle aliases in orderBy if needed, but here simple cols work.
+                // 'intake' alias works in MySQL orderBy.
+                $query->orderBy($column, $orderDir);
+            } else {
+                $query->orderBy('mhs.nim', 'ASC');
+            }
+        } else {
+            $query->orderBy('mhs.nim', 'ASC');
+        }
+
+        // Pagination
+        $start = $request->input('start');
+        $length = $request->input('length');
+        $length = ($length && $length > 0) ? $length : 10;
+
+        $data = $query->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data
+        ]);
     }
 
+    // Deprecated / merged functionality
     public function cari_mhs_aktif_admin(Request $request)
     {
-        $idthn = $request->id_periodetahun;
-        $idtp = $request->id_periodetipe;
-        $kd = $request->kodeprodi;
-
-        $data = DB::select('CALL data_mhs_aktif_filter(?,?,?)', [$idthn, $idtp, $kd]);
-
-        $tahun = Periode_tahun::whereNotIn('id_periodetahun', [1, 3, 4])
-            ->orderBy('periode_tahun', 'ASC')
-            ->get();
-        $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
-
-        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
-            ->select('kodeprodi', 'prodi')
-            ->get();
-
-        $thun = Periode_tahun::where('id_periodetahun', $idthn)->first();
-        $ta = $thun->periode_tahun;
-        $tip = Periode_tipe::where('id_periodetipe', $idtp)->first();
-        $tpe = $tip->periode_tipe;
-        $prdi = Prodi::where('kodeprodi', $kd)->first();
-        $prod = $prdi->prodi;
-
-        return view('sadmin/datamahasiswa/data_mhs_aktif_filter', compact('data', 'tahun', 'tipe', 'prodi', 'ta', 'tpe', 'prod', 'idthn', 'idtp', 'kd'));
+        return redirect('data_mahasiswa_aktif_admin');
     }
 
     public function export_data_mhs_admin()

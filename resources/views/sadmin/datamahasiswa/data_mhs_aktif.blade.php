@@ -10,32 +10,33 @@
             <div class="box-header">
                 <h3 class="box-title">Silahkan Filter</h3>
             </div>
-            <form class="form" role="form" action="{{ url('cari_mhs_aktif_admin') }}" method="POST">
-                {{ csrf_field() }}
+            {{-- Form for Filtering --}}
+            <form id="filter-form" class="form" role="form">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-3">
                             <label for="">Periode Tahun</label>
-                            <select class="form-control" name="id_periodetahun">
-                                <option></option>
+                            <select class="form-control" name="id_periodetahun" id="id_periodetahun">
+                                <option value="">-- Pilih Periode Tahun --</option>
                                 @foreach ($tahun as $thn)
-                                    <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
+                                    <option value="{{ $thn->id_periodetahun }}" {{ $thn->status == 'ACTIVE' ? 'selected' : '' }}>
+                                        {{ $thn->periode_tahun }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-xs-3">
                             <label for="">Periode Tipe</label>
-                            <select class="form-control" name="id_periodetipe" required>
-                                <option></option>
+                            <select class="form-control" name="id_periodetipe" id="id_periodetipe">
+                                <option value="">-- Pilih Tipe --</option>
                                 @foreach ($tipe as $tipee)
-                                    <option value="{{ $tipee->id_periodetipe }}">{{ $tipee->periode_tipe }}</option>
+                                    <option value="{{ $tipee->id_periodetipe }}" {{ $tipee->status == 'ACTIVE' ? 'selected' : '' }}>{{ $tipee->periode_tipe }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-xs-3">
                             <label for="">Program Studi</label>
-                            <select class="form-control" name="kodeprodi" required>
-                                <option></option>
+                            <select class="form-control" name="kodeprodi" id="kodeprodi">
+                                <option value="">-- Semua Prodi --</option>
                                 @foreach ($prodi as $prd)
                                     <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}</option>
                                 @endforeach
@@ -44,8 +45,18 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-info">Cari Mahasiswa</button>
+                    <button type="button" id="btn-filter" class="btn btn-info">Cari Mahasiswa</button>
+                    {{-- Export button submits a separate form or handles via JS --}}
+                    <button type="button" id="btn-export" class="btn btn-success pull-right">Export Excel</button>
                 </div>
+            </form>
+
+            {{-- Hidden Form for Export --}}
+            <form id="export-form" action="{{ url('export_data_mhs_aktif_filter') }}" method="POST" style="display:none;">
+                {{ csrf_field() }}
+                <input type="hidden" name="id_periodetahun" id="export_id_periodetahun">
+                <input type="hidden" name="id_periodetipe" id="export_id_periodetipe">
+                <input type="hidden" name="kodeprodi" id="export_kodeprodi">
             </form>
         </div>
 
@@ -55,62 +66,87 @@
             </div>
             <div class="box-body">
 
-                <a href="{{ url('export_data_mhs_admin') }}" class="btn btn-success">Export Excel</a>
-                <br><br>
-                <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>NIM</center>
-                            </th>
-                            <th>
-                                <center>Nama Mahasiswa</center>
-                            </th>
-                            <th>
-                                <center>Program Studi</center>
-                            </th>
-                            <th>
-                                <center>Kelas</center>
-                            </th>
-                            <th>
-                                <center>Angkatan</center>
-                            </th>
-                            <th>
-                                <center>Intake</center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $key)
+                <div class="table-responsive">
+                    <table id="table-mhs" class="table table-bordered table-striped">
+                        <thead>
                             <tr>
-                                <td>
-                                    <center>{{ $no++ }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->nim }}</center>
-                                </td>
-                                <td>{{ $key->nama }}</td>
-                                <td>
-                                    <center>{{ $key->prodi }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->kelas }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->angkatan }}</center>
-                                </td>
-                                <td align="center">
-                                    {{ $key->intake }}
-                                </td>
+                                <th>
+                                    <center>No</center>
+                                </th>
+                                <th>
+                                    <center>NIM</center>
+                                </th>
+                                <th>
+                                    <center>Nama Mahasiswa</center>
+                                </th>
+                                <th>
+                                    <center>Program Studi</center>
+                                </th>
+                                <th>
+                                    <center>Kelas</center>
+                                </th>
+                                <th>
+                                    <center>Angkatan</center>
+                                </th>
+                                <th>
+                                    <center>Intake</center>
+                                </th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {{-- Data via AJAX --}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
+
+    @section('scripts')
+        <script>
+            $(function () {
+                var table = $('#table-mhs').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ url('data_mahasiswa_aktif_json') }}",
+                        type: 'POST',
+                        data: function (d) {
+                            d._token = "{{ csrf_token() }}";
+                            d.id_periodetahun = $('#id_periodetahun').val();
+                            d.id_periodetipe = $('#id_periodetipe').val();
+                            d.kodeprodi = $('#kodeprodi').val();
+                        }
+                    },
+                    columns: [
+                        {
+                            data: null, searchable: false, orderable: false, render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        { data: 'nim', name: 'mhs.nim' },
+                        { data: 'nama', name: 'mhs.nama' },
+                        { data: 'prodi', name: 'prd.prodi' },
+                        { data: 'kelas', name: 'kls.kelas' },
+                        { data: 'angkatan', name: 'ang.angkatan' },
+                        { data: 'intake', name: 'intake', searchable: false }
+                    ],
+                    order: [[1, 'asc']]
+                });
+
+                $('#btn-filter').click(function () {
+                    table.draw();
+                });
+
+                $('#btn-export').click(function () {
+                    // Populate hidden form and submit
+                    $('#export_id_periodetahun').val($('#id_periodetahun').val());
+                    $('#export_id_periodetipe').val($('#id_periodetipe').val());
+                    $('#export_kodeprodi').val($('#kodeprodi').val());
+                    $('#export-form').submit();
+                });
+            });
+        </script>
+    @endsection
+    {{-- End of content section --}}
 @endsection
