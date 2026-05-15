@@ -2854,14 +2854,33 @@ class DosenController extends Controller
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
-            ->select('kurikulum_periode.id_dosen_2', 'matakuliah.akt_sks_praktek', 'matakuliah.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-            ->get();
+            ->select(
+                'kurikulum_periode.id_dosen_2',
+                'matakuliah.akt_sks_praktek',
+                'matakuliah.akt_sks_teori',
+                'kurikulum_periode.id_kelas',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'dosen.akademik',
+                'dosen.nama',
+                'ruangan.nama_ruangan',
+                'kurikulum_jam.jam',
+                'kurikulum_hari.hari',
+                DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+                'kurikulum_periode.id_kurperiode',
+                'matakuliah.makul',
+                'prodi.prodi',
+                'kelas.kelas',
+                'semester.semester'
+            )
+            ->first();
 
-        foreach ($bap as $key) {
-            # code...
+        if (!$bap) {
+            Alert::error('Data absensi perkuliahan tidak ditemukan!', 'Error');
+            return redirect()->back();
         }
 
-        $dosen2 = Dosen::where('iddosen', $key->id_dosen_2)->first();
+        $dosen2 = Dosen::where('iddosen', $bap->id_dosen_2)->first();
         $nama_dsn2 = $dosen2 ? ($dosen2->nama . ', ' . $dosen2->akademik) : '';
 
         // 1. Get all students enrolled (Distinct)
@@ -2900,11 +2919,18 @@ class DosenController extends Controller
             $student->attendance = $temp_attendance;
         }
 
+        $summary = [
+            'total_mahasiswa' => $students->count(),
+            'total_pertemuan_terisi' => $all_attendance->pluck('pertemuan')->unique()->count(),
+            'total_hadir' => $all_attendance->where('absensi', 'ABSEN')->count(),
+            'total_tidak_hadir' => $all_attendance->whereIn('absensi', ['SAKIT', 'IZIN', 'ALFA', 'HADIR'])->count(),
+        ];
 
         return view('dosen/absensi_perkuliahan', [
-            'bap' => $key,
+            'bap' => $bap,
             'nama_dosen_2' => $nama_dsn2,
             'data_mahasiswa' => $students,
+            'summary' => $summary,
             'abs' => $students,
             'abs1' => [],
             'abs2' => [],
