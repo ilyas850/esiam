@@ -93,10 +93,10 @@
     <section class="content-header">
         <h1><i class="fa fa-braille"></i> Absensi Perkuliahan</h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="<?php echo e(url('makul_diampu_dsn')); ?>">Data Matakuliah</a></li>
-            <li><a href="/entri_bap/<?php echo e($bap->id_kurperiode); ?>"> BAP</a></li>
-            <li class="active">Absensi Perkuliahan</li>
+        <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+        <li><a href="<?php echo e(url('makul_diampu_dsn')); ?>">Data Matakuliah yang diampu</a></li>
+        <li><a href="/entri_bap_dsn/<?php echo e($bap->id_kurperiode); ?>"> BAP</a></li>
+        <li class="active">Absensi Perkuliahan</li>
         </ol>
     </section>
 <?php $__env->stopSection(); ?>
@@ -118,10 +118,10 @@
                 <i class="fa fa-info-circle"></i>
                 <h3 class="box-title">Informasi Matakuliah</h3>
                 <div class="box-tools pull-right">
-                    <a href="<?php echo e(url('print_absensi/' . $bap->id_kurperiode)); ?>" class="btn btn-success btn-sm" target="_blank">
+                    <a href="<?php echo e(url('print_absensi_dsn/' . $bap->id_kurperiode)); ?>" class="btn btn-success btn-sm" target="_blank">
                         <i class="fa fa-print"></i> Print
                     </a>
-                    <a href="<?php echo e(url('download_absensi/' . $bap->id_kurperiode)); ?>" class="btn btn-warning btn-sm">
+                    <a href="<?php echo e(url('download_absensi_dsn/' . $bap->id_kurperiode)); ?>" class="btn btn-warning btn-sm">
                         <i class="fa fa-file-excel-o"></i> Download
                     </a>
                 </div>
@@ -142,7 +142,7 @@
                     <div class="col-md-6">
                         <dl class="dl-horizontal" style="margin-bottom: 0;">
                             <dt>Dosen</dt>
-                            <dd><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?><?php if($nama_dosen_2): ?> / <?php echo e($nama_dosen_2); ?><?php endif; ?></dd>
+                            <dd><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></dd>
                             <dt>Kelas / Ruang</dt>
                             <dd><?php echo e($bap->kelas); ?> / <?php echo e($bap->nama_ruangan); ?></dd>
                             <dt>Waktu</dt>
@@ -240,4 +240,4 @@
     </section>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosen/absensi_perkuliahan.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosenluar/absensi_perkuliahan.blade.php ENDPATH**/ ?>
