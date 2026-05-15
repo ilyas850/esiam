@@ -8776,13 +8776,46 @@ class KaprodiController extends Controller
     return redirect('cek_sertifikat_kprd/' . $idmhs->id_student);
   }
 
-  public function pedoman_akademik_dsn_kprd()
+  public function pedoman_akademik_dsn_kprd(Request $request)
   {
-    $pedoman = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-      ->where('pedoman_akademik.status', 'ACTIVE')
-      ->get();
+    $perPage = (int) $request->get('per_page', 10);
 
-    return view('kaprodi/pedoman_akademik', ['pedoman' => $pedoman]);
+    if (!in_array($perPage, [10, 25, 50, 100])) {
+      $perPage = 10;
+    }
+
+    $pedomanQuery = Pedoman_akademik::join('periode_tahun', 'pedoman_akademik.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+      ->where('pedoman_akademik.status', 'ACTIVE')
+      ->when($request->q, function ($query) use ($request) {
+        $query->where(function ($subQuery) use ($request) {
+          $subQuery->where('pedoman_akademik.nama_pedoman', 'like', '%' . $request->q . '%')
+            ->orWhere('periode_tahun.periode_tahun', 'like', '%' . $request->q . '%');
+        });
+      })
+      ->select(
+        'pedoman_akademik.id_pedomanakademik',
+        'pedoman_akademik.nama_pedoman',
+        'pedoman_akademik.file',
+        'pedoman_akademik.updated_at',
+        'periode_tahun.periode_tahun'
+      )
+      ->orderBy('periode_tahun.periode_tahun', 'DESC')
+      ->orderBy('pedoman_akademik.nama_pedoman', 'ASC');
+
+    $pedoman = $pedomanQuery->paginate($perPage)->appends($request->only('q', 'per_page'));
+
+    if ($request->ajax()) {
+      $html = view('kaprodi.partials.pedoman_akademik_list', compact('pedoman'))->render();
+      return response()->json(['html' => $html]);
+    }
+
+    $summary = [
+      'total' => $pedoman->total(),
+      'ditampilkan' => $pedoman->count(),
+      'periode_terbaru' => optional($pedoman->first())->periode_tahun,
+    ];
+
+    return view('kaprodi/pedoman_akademik', compact('pedoman', 'summary'));
   }
 
   public function download_pedoman_dsn_kprd($id)
