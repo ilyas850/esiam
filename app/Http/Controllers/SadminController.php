@@ -7485,8 +7485,11 @@ class SadminController extends Controller
             ->select('kodeprodi', 'prodi')
             ->get();
 
-        // Data is now fetched via AJAX
-        return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'prodi'));
+        // Keep an empty fallback for older compiled Blade caches that still expect $data.
+        $data = collect();
+
+        // Data is now fetched via AJAX.
+        return view('sadmin/datamahasiswa/data_mhs_aktif', compact('tahun', 'tipe', 'prodi', 'data'));
     }
 
     public function data_mahasiswa_aktif_json(Request $request)
