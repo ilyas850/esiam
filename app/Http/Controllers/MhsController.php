@@ -97,6 +97,11 @@ class MhsController extends Controller
             )
             ->first();
 
+        if (!$mhs) {
+            Alert::warning('Data mahasiswa tidak ditemukan', 'MAAF !!');
+            return redirect()->back();
+        }
+
         $tahun = Periode_tahun::leftjoin('kalender_akademik', 'periode_tahun.id_periodetahun', '=', 'kalender_akademik.id_periodetahun')
             ->where('periode_tahun.status', 'ACTIVE')
             ->select('periode_tahun.periode_tahun', 'kalender_akademik.file', 'periode_tahun.status', 'periode_tahun.id_periodetahun')
@@ -104,27 +109,17 @@ class MhsController extends Controller
 
         $tipe = Periode_tipe::where('status', 'ACTIVE')->first();
 
-        $waktu_edom = Waktu_edom::select('status', 'waktu_awal', 'waktu_Akhir')
+        $waktu_edom = Waktu_edom::select('status', 'waktu_awal', 'waktu_akhir')
             ->first();
-
-        $angk = Angkatan::all();
-
-        $edom = Waktu_edom::all();
-        foreach ($edom as $keyedom) {
-            // code...
-        }
 
         $info = Informasi::orderBy('created_at', 'DESC')->paginate(5);
 
         $time = Waktu_krs::first();
 
-        // if ($waktu_edom->status != 1) {
-        $foto = $mhs->foto;
         $idprodi = $mhs->id_prodi;
         $idangkatan = $mhs->idangkatan;
 
-        $data = DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id));
-        // $data = $this->getStandardKurikulum($idprodi, $idangkatan, $id);
+        $data = collect(DB::select('CALL standar_kurikulum(?,?,?)', array($idprodi, $idangkatan, $id)));
 
         $data_mengulang = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->join('prodi', function ($join) {
@@ -145,8 +140,40 @@ class MhsController extends Controller
             ->groupBy('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'matakuliah.kode', 'matakuliah.makul', 'student_record.nilai_AKHIR', 'semester.semester', 'kurikulum_master.nama_kurikulum')
             ->get();
 
-        toast('Selamat Datang di eSIAM!', 'success');
-        return view('home', ['data_mengulang' => $data_mengulang, 'data' => $data, 'angk' => $angk, 'foto' => $foto, 'edom' => $keyedom, 'info' => $info, 'mhs' => $mhs, 'id' => $id, 'time' => $time, 'tahun' => $tahun, 'tipe' => $tipe]);
+        $mhs->display_phone = $mhs->hp_baru ?: $mhs->hp ?: '-';
+        $mhs->display_email = $mhs->email_baru ?: $mhs->email ?: '-';
+        $mhs->display_prodi = $mhs->konsentrasi ? ($mhs->prodi . ' - ' . $mhs->konsentrasi) : $mhs->prodi;
+        $mhs->photo_url = $mhs->foto
+            ? asset('/foto_mhs/' . $mhs->foto)
+            : asset('/adminlte/img/default.jpg');
+
+        $dashboard = [
+            'paket_count' => $data->count(),
+            'mengulang_count' => $data_mengulang->count(),
+            'info_count' => $info->total(),
+            'calendar_url' => $tahun && $tahun->file ? asset('/Kalender Akademik/' . $tahun->file) : null,
+            'krs_status' => $time && (int) $time->status === 1 ? 'Aktif' : 'Belum tersedia',
+            'edom_status' => $waktu_edom && (int) $waktu_edom->status === 1 ? 'Aktif' : 'Belum tersedia',
+            'krs_schedule' => $time && (int) $time->status === 1
+                ? date('d-m-Y', strtotime($time->waktu_awal)) . ' s/d ' . date('d-m-Y', strtotime($time->waktu_akhir))
+                : 'Jadwal belum ada',
+            'edom_schedule' => $waktu_edom && (int) $waktu_edom->status === 1
+                ? date('d-m-Y', strtotime($waktu_edom->waktu_awal)) . ' s/d ' . date('d-m-Y', strtotime($waktu_edom->waktu_akhir))
+                : 'Jadwal belum ada',
+        ];
+
+        return view('home', [
+            'data_mengulang' => $data_mengulang,
+            'data' => $data,
+            'dashboard' => $dashboard,
+            'edom' => $waktu_edom,
+            'info' => $info,
+            'mhs' => $mhs,
+            'id' => $id,
+            'time' => $time,
+            'tahun' => $tahun,
+            'tipe' => $tipe,
+        ]);
         // }
 
         #cek jumlah KRS makul kecuali PKL dan TA / Magang dan Skripsi
