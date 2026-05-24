@@ -102,7 +102,7 @@
         </div>
     </section>
 
-    @section('scripts')
+    @section('script')
         <script>
             $(function () {
                 var table = $('#table-mhs').DataTable({
