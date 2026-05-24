@@ -1,535 +1,1141 @@
 <style>
-    /* Enhancement styles tanpa merubah struktur CSS yang ada */
-    .enhanced-animations {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Profile enhancements */
-    .profile-user-img {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 3px solid #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .profile-user-img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-    
-    /* Box enhancements */
-    .box {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        position: relative;
+    .mhs-home-page .dashboard-hero {
+        background: linear-gradient(135deg, #1f6d8c 0%, #2f9bb5 55%, #d9eef2 100%);
+        border-radius: 14px;
+        color: #fff;
         overflow: hidden;
+        position: relative;
+        margin-bottom: 18px;
+        box-shadow: 0 8px 24px rgba(31, 109, 140, 0.18);
     }
-    
-    .box::before {
+
+    .mhs-home-page .dashboard-hero::after {
         content: '';
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #3c8dbc, transparent);
-        transition: left 0.5s;
-    }
-    
-    .box:hover::before {
-        left: 100%;
-    }
-    
-    .box:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    
-    /* Info box enhancements */
-    .info-box {
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .info-box::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s;
-    }
-    
-    .info-box:hover::after {
-        transform: translateX(100%);
-    }
-    
-    .info-box:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-    
-    .info-box-icon {
-        transition: transform 0.3s ease;
-    }
-    
-    .info-box:hover .info-box-icon {
-        transform: rotate(5deg) scale(1.1);
-    }
-    
-    /* Button enhancements */
-    .btn {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
+        inset: auto -60px -60px auto;
+        width: 220px;
+        height: 220px;
+        background: rgba(255, 255, 255, 0.12);
         border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
     }
-    
-    .btn:hover::before {
-        width: 300px;
-        height: 300px;
-        top: -150px;
-        left: -150px;
-    }
-    
-    /* Tab enhancements */
-    .nav-tabs > li > a {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .dashboard-hero-body {
         position: relative;
+        z-index: 1;
+        padding: 24px 24px 22px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(240px, .9fr);
+        gap: 18px;
+        align-items: stretch;
     }
-    
-    .nav-tabs > li > a::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background: #3c8dbc;
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
+
+    .mhs-home-page .dashboard-hero h2 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        font-weight: 700;
     }
-    
-    .nav-tabs > li.active > a::after,
-    .nav-tabs > li > a:hover::after {
-        width: 100%;
+
+    .mhs-home-page .dashboard-hero p {
+        margin: 0;
+        max-width: 700px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        font-size: 14px;
     }
-    
-    /* Table enhancements */
-    .table tbody tr {
-        transition: all 0.2s ease;
+
+    .mhs-home-page .hero-meta {
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
-    
-    .table tbody tr:hover {
-        background-color: rgba(60, 141, 188, 0.05);
-        transform: translateX(5px);
+
+    .mhs-home-page .hero-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
     }
-    
-    /* Label animations */
-    .label {
-        animation: subtle-pulse 2s infinite;
+
+    .mhs-home-page .hero-eyebrow {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .35px;
+        text-transform: uppercase;
     }
-    
-    @keyframes subtle-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+
+    .mhs-home-page .hero-badge {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 12px;
+        font-weight: 600;
     }
-    
-    /* List group enhancements */
-    .list-group-item {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .hero-spotlight {
+        background: rgba(10, 46, 60, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px;
+        padding: 16px 18px;
+        backdrop-filter: blur(4px);
+        align-self: stretch;
+    }
+
+    .mhs-home-page .hero-spotlight-title {
+        display: block;
+        margin-bottom: 12px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+    }
+
+    .mhs-home-page .hero-spotlight-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .mhs-home-page .hero-spotlight-item + .hero-spotlight-item {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .mhs-home-page .hero-spotlight-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        margin-bottom: 4px;
+    }
+
+    .mhs-home-page .hero-spotlight-value {
+        display: block;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.45;
+    }
+
+    .mhs-home-page .hero-spotlight-note {
+        display: block;
+        margin-top: 2px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .mhs-home-page .profile-card,
+    .mhs-home-page .panel-card,
+    .mhs-home-page .nav-tabs-custom,
+    .mhs-home-page .info-box,
+    .mhs-home-page .small-box,
+    .mhs-home-page .box {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .mhs-home-page .profile-card .box-body,
+    .mhs-home-page .panel-card .box-body {
+        padding: 20px;
+    }
+
+    .mhs-home-page .profile-card .box-body {
+        padding: 0;
+    }
+
+    .mhs-home-page .profile-header {
+        padding: 24px 20px 18px;
+        text-align: center;
+        background: linear-gradient(180deg, #f4fafc 0%, #ffffff 100%);
+        border-bottom: 1px solid #e8eff4;
+    }
+
+    .mhs-home-page .profile-avatar {
+        width: 104px;
+        height: 104px;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        margin: 0 auto 12px;
+    }
+
+    .mhs-home-page .profile-name {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #2c3b41;
+    }
+
+    .mhs-home-page .profile-nim {
+        margin: 6px 0 14px;
+        color: #7b8794;
+        font-size: 14px;
+    }
+
+    .mhs-home-page .profile-subtitle {
+        margin: -4px 0 14px;
+        color: #6d7a86;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .mhs-home-page .profile-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 14px;
+    }
+
+    .mhs-home-page .profile-tag {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #f1f7fb;
+        color: #356d84;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #d7e8f0;
+    }
+
+    .mhs-home-page .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 20px;
+        padding: 16px 0;
+    }
+
+    .mhs-home-page .profile-stat {
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #f8fbfd;
+        border: 1px solid #e3edf3;
+        text-align: left;
+    }
+
+    .mhs-home-page .profile-stat-label {
+        display: block;
+        color: #8b97a3;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        margin-bottom: 4px;
+    }
+
+    .mhs-home-page .profile-stat-value {
+        display: block;
+        color: #2c3b41;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    .mhs-home-page .profile-actions {
+        padding: 0 20px 20px;
+    }
+
+    .mhs-home-page .profile-actions .btn {
+        margin-bottom: 8px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .mhs-home-page .panel-heading-note {
+        display: block;
+        margin-top: 4px;
+        color: #8b97a3;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .mhs-home-page .details-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .mhs-home-page .details-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #eef2f5;
+    }
+
+    .mhs-home-page .details-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .mhs-home-page .details-label {
+        display: block;
+        color: #8b97a3;
+        font-size: 11px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+
+    .mhs-home-page .details-value {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #2c3b41;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    .mhs-home-page .details-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #f4fafc;
+        border: 1px solid #dceaf2;
+        color: #356d84;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .mhs-home-page .summary-card {
+        min-height: 124px;
+        border-radius: 14px;
+        background: #fff;
+        border: 1px solid #e6edf2;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+        padding: 16px 18px;
         position: relative;
         overflow: hidden;
     }
-    
-    .list-group-item::before {
+
+    .mhs-home-page .summary-card::after {
         content: '';
         position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 3px;
-        background: #3c8dbc;
-        transform: translateX(-3px);
-        transition: transform 0.3s ease;
+        right: -24px;
+        bottom: -24px;
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: rgba(47, 137, 165, 0.06);
     }
-    
-    .list-group-item:hover::before {
-        transform: translateX(0);
-    }
-    
-    .list-group-item:hover {
-        background-color: rgba(60, 141, 188, 0.05);
-        padding-left: 20px;
-    }
-    
-    /* Product list enhancements */
-    .products-list .item {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .summary-card-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 8px;
         position: relative;
+        z-index: 1;
     }
-    
-    .products-list .item:hover {
-        background-color: rgba(60, 141, 188, 0.05);
-        transform: translateX(10px);
-        border-left: 3px solid #3c8dbc;
-        padding-left: 10px;
+
+    .mhs-home-page .summary-card-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Countdown enhancement */
-    #waktumundur, #waktumunduredom {
+
+    .mhs-home-page .summary-card-label {
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #7b8794;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .mhs-home-page .summary-card-value {
+        display: block;
+        color: #2c3b41;
+        font-size: 17px;
+        line-height: 1.4;
+        font-weight: 800;
+        word-break: break-word;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mhs-home-page .summary-card-note {
+        display: block;
+        color: #7b8794;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-top: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mhs-home-page .summary-card-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #f5f9fb;
+        color: #5f6c78;
+        font-size: 11px;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mhs-home-page .summary-card-aqua .summary-card-icon {
+        background: linear-gradient(135deg, #17b5df 0%, #1693c8 100%);
+    }
+
+    .mhs-home-page .summary-card-green .summary-card-icon {
+        background: linear-gradient(135deg, #10b15d 0%, #0b8f4b 100%);
+    }
+
+    .mhs-home-page .summary-card-yellow .summary-card-icon {
+        background: linear-gradient(135deg, #fea508 0%, #e18e00 100%);
+    }
+
+    .mhs-home-page .summary-card-red .summary-card-icon {
+        background: linear-gradient(135deg, #e74b37 0%, #cb3f2e 100%);
+    }
+
+    .mhs-home-page .summary-row {
+        margin-bottom: 18px;
+    }
+
+    .mhs-home-page .activity-grid {
+        margin-bottom: 18px;
+    }
+
+    .mhs-home-page .schedule-card {
+        min-height: 234px;
+        border: 1px solid #e6edf2;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .mhs-home-page .schedule-card .box-body {
+        padding: 18px;
+    }
+
+    .mhs-home-page .schedule-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background: #edf7fb;
+        color: #2f89a5;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .mhs-home-page .schedule-note {
+        margin: 0 0 14px;
+        color: #6d7a86;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .mhs-home-page .countdown-box {
         background: linear-gradient(135deg, #31266b 0%, #4a3c8a 100%);
-        box-shadow: 0 4px 15px rgba(49, 38, 107, 0.3);
-        animation: glow 2s ease-in-out infinite alternate;
+        color: #fec503;
+        border-radius: 12px;
+        padding: 20px 18px;
+        font-weight: 700;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 1.75;
+        min-height: 124px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
-    
-    @keyframes glow {
-        from { box-shadow: 0 4px 15px rgba(49, 38, 107, 0.3); }
-        to { box-shadow: 0 6px 20px rgba(49, 38, 107, 0.5), 0 0 30px rgba(254, 197, 3, 0.2); }
+
+    .mhs-home-page .countdown-box .digit,
+    .mhs-home-page .countdown-box .judul {
+        color: #fff;
     }
-    
-    .digit, .judul {
-        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+
+    .mhs-home-page .activity-footer {
+        margin-top: 14px;
+        color: #7b8794;
+        font-size: 12px;
+        line-height: 1.6;
     }
-    
-    /* Modal enhancements */
-    .modal-content {
-        animation: slideDown 0.3s ease;
+
+    .mhs-home-page .announcement-panel .box-body {
+        padding: 18px 18px 10px;
     }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .mhs-home-page .announcement-footer {
+        padding: 12px 18px 16px;
+        border-top: 1px solid #eef2f5;
+        background: #fbfdfe;
+        text-align: right;
     }
-    
-    /* Form control enhancements */
-    .form-control {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .panel-heading-clean {
+        padding: 14px 18px;
+        border-bottom: 1px solid #edf1f4;
+        background: #fafcfd;
     }
-    
-    .form-control:focus {
-        border-color: #3c8dbc;
-        box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.2);
-        transform: translateY(-2px);
+
+    .mhs-home-page .panel-heading-clean .box-title {
+        font-weight: 700;
     }
-    
-    /* Fade in animations */
-    .fade-in {
-        animation: fadeInUp 0.6s ease-out;
+
+    .mhs-home-page .announcement-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .mhs-home-page .announcement-item {
+        display: flex;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid #eef2f5;
     }
-    
-    .slide-in-left {
-        animation: slideInLeft 0.8s ease-out;
+
+    .mhs-home-page .announcement-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
     }
-    
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+
+    .mhs-home-page .announcement-icon {
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #eaf4f8;
+        color: #2f89a5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
     }
-    
-    .slide-in-right {
-        animation: slideInRight 0.8s ease-out;
+
+    .mhs-home-page .announcement-title {
+        display: block;
+        color: #2c3b41;
+        font-weight: 700;
+        line-height: 1.45;
+        margin-bottom: 4px;
     }
-    
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+
+    .mhs-home-page .announcement-meta {
+        display: block;
+        color: #7b8794;
+        font-size: 12px;
+        margin-bottom: 5px;
     }
-    
-    /* Widget user enhancements */
-    .widget-user-header {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+
+    .mhs-home-page .announcement-desc {
+        color: #5f6c78;
+        font-size: 13px;
+        line-height: 1.6;
     }
-    
-    .widget-user-image img {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .table-wrap {
+        border-radius: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border: 1px solid #e6edf2;
+        background: #fff;
+        -webkit-overflow-scrolling: touch;
     }
-    
-    .widget-user-image:hover img {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+
+    .mhs-home-page .table-wrap .table {
+        margin-bottom: 0;
+        min-width: 860px;
     }
-    
-    /* Icon hover effects */
-    .fa, .glyphicon, .ion {
-        transition: transform 0.3s ease;
+
+    .mhs-home-page .table-wrap .table > thead > tr > th {
+        background: #f6fafc;
+        color: #5f6c78;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .35px;
+        border-bottom: 1px solid #e6edf2;
     }
-    
-    .box-header:hover .fa,
-    .box-header:hover .glyphicon {
-        transform: rotate(360deg);
+
+    .mhs-home-page .table-wrap .table > tbody > tr > td,
+    .mhs-home-page .table-wrap .table > thead > tr > th {
+        vertical-align: middle;
     }
-    
-    /* Description block enhancement */
-    .description-block {
-        transition: all 0.3s ease;
+
+    .mhs-home-page .table-wrap .table > tbody > tr:hover {
+        background: #f9fcfe;
     }
-    
-    .description-block:hover {
-        transform: scale(1.05);
+
+    .mhs-home-page .tab-panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 14px;
     }
-    
-    /* Responsive adjustments */
-    @media (max-width: 767px) {
-        .products-list .item:hover {
-            transform: translateX(5px);
-        }
-        
-        .table tbody tr:hover {
-            transform: translateX(2px);
-        }
+
+    .mhs-home-page .tab-panel-title {
+        margin: 0;
+        color: #2c3b41;
+        font-size: 20px;
+        font-weight: 700;
     }
-    
-    /* Loading animation for dynamic content */
-    .loading-pulse {
-        animation: pulse 1.5s ease-in-out infinite;
+
+    .mhs-home-page .tab-panel-subtitle {
+        margin: 5px 0 0;
+        color: #7b8794;
+        font-size: 13px;
+        line-height: 1.6;
     }
-    
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.5;
-        }
-    }
-    
-    /* Smooth scroll behavior */
-    html {
-        scroll-behavior: smooth;
-    }
-    
-    /* Enhanced tooltips */
-    [data-toggle="tooltip"] {
-        position: relative;
-    }
-    
-    /* Camera icon animation */
-    .fa-camera {
+
+    .mhs-home-page .tab-panel-badge {
         display: inline-block;
-        transition: all 0.3s ease;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #eef7fb;
+        border: 1px solid #d7e8f0;
+        color: #356d84;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
     }
-    
-    a:hover .fa-camera {
-        transform: scale(1.2) rotate(-10deg);
-        color: #3c8dbc;
+
+    .mhs-home-page .row-index {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef7fb;
+        color: #2f89a5;
+        font-weight: 700;
     }
-    
-    /* Tab content fade effect */
-    .tab-pane {
-        animation: fadeIn 0.5s ease;
+
+    .mhs-home-page .desktop-course-title {
+        display: block;
+        color: #2c3b41;
+        font-weight: 700;
+        line-height: 1.5;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+
+    .mhs-home-page .desktop-course-meta {
+        display: block;
+        color: #7b8794;
+        font-size: 12px;
+        margin-top: 4px;
     }
-    
-    /* Box tools enhancement */
-    .box-tools .btn-box-tool {
-        transition: all 0.3s ease;
-    }
-    
-    .box-tools .btn-box-tool:hover {
-        transform: rotate(90deg);
-        color: #3c8dbc;
-    }
-    
-    /* Profile username animation */
-    .profile-username {
-        position: relative;
+
+    .mhs-home-page .desktop-value-pill {
         display: inline-block;
+        min-width: 44px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fff3f1;
+        color: #cf4a36;
+        font-weight: 700;
+        text-align: center;
+        border: 1px solid #f5d2cc;
     }
-    
-    .profile-username::after {
+
+    .mhs-home-page .mobile-course-list {
+        display: none;
+    }
+
+    .mhs-home-page .course-card {
+        border: 1px solid #e7eaee;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .mhs-home-page .course-card-toggle {
+        display: block;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        padding: 14px;
+        text-align: left;
+    }
+
+    .mhs-home-page .course-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .mhs-home-page .course-card-title {
+        color: #2c3b41;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .mhs-home-page .course-card-meta {
+        color: #7b8794;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .mhs-home-page .course-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .mhs-home-page .course-card-badge {
+        display: inline-block;
+        min-width: 62px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .mhs-home-page .course-card-badge.status-ok {
+        background: #e8f7ee;
+        color: #1e8c4d;
+    }
+
+    .mhs-home-page .course-card-badge.status-warn {
+        background: #fff3df;
+        color: #b97900;
+    }
+
+    .mhs-home-page .course-card-badge.status-danger {
+        background: #fff1ef;
+        color: #d65445;
+    }
+
+    .mhs-home-page .course-card-chevron {
+        color: #91a0ac;
+        font-size: 14px;
+        transition: transform 0.25s ease;
+        margin-top: 6px;
+    }
+
+    .mhs-home-page .course-card.expanded .course-card-chevron {
+        transform: rotate(180deg);
+    }
+
+    .mhs-home-page .course-card-body {
+        display: none;
+        padding: 0 14px 14px;
+        border-top: 1px solid #eef2f5;
+    }
+
+    .mhs-home-page .course-card.expanded .course-card-body {
+        display: block;
+    }
+
+    .mhs-home-page .course-card-item {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 9px 10px;
+    }
+
+    .mhs-home-page .course-card-label {
+        display: block;
+        color: #8b97a3;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+
+    .mhs-home-page .course-card-value {
+        display: block;
+        color: #2c3b41;
+        font-weight: 600;
+        line-height: 1.45;
+    }
+
+    .mhs-home-page .empty-box {
+        padding: 30px 16px;
+        text-align: center;
+        color: #7b8794;
+    }
+
+    .mhs-home-page .empty-box .fa {
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: #b7c0cb;
+    }
+
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li > a {
+        font-weight: 600;
+        border-radius: 0;
+        color: #5f6c78;
+        transition: all 0.25s ease;
+        padding: 12px 18px;
+        position: relative;
+        border-top: 3px solid transparent;
+    }
+
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li > a:hover {
+        color: #2f89a5;
+        background: #f3f8fb;
+    }
+
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li.active > a,
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li.active > a:hover,
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li.active > a:focus {
+        background: #fff;
+        color: #2c3b41;
+        border-top: 3px solid #2f89a5;
+        border-left-color: #e6edf2;
+        border-right-color: #e6edf2;
+        box-shadow: none;
+    }
+
+    .mhs-home-page .nav-tabs-custom > .nav-tabs > li.active > a::after {
         content: '';
         position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 100%;
+        left: 18px;
+        right: 18px;
+        bottom: 10px;
         height: 2px;
-        background: linear-gradient(90deg, #3c8dbc, #17a2b8);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
+        background: linear-gradient(90deg, #2f89a5, #49aac2);
+        border-radius: 999px;
     }
-    
-    .profile-username:hover::after {
-        transform: scaleX(1);
+
+    .mhs-home-page .nav-tabs-custom > .tab-content {
+        padding: 18px;
+        border-top: 1px solid #eef2f5;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdfe 100%);
     }
-    
-    /* Notification bell animation */
-    .img-circle[src*="bell"] {
-        animation: ring 2s ease-in-out infinite;
-    }
-    
-    @keyframes ring {
-        0%, 100% { transform: rotate(0deg); }
-        10%, 30% { transform: rotate(-10deg); }
-        20%, 40% { transform: rotate(10deg); }
+
+    @media (max-width: 767px) {
+        .mhs-home-page .dashboard-hero-body {
+            grid-template-columns: 1fr;
+        }
+
+        .mhs-home-page .dashboard-hero h2 {
+            font-size: 24px;
+        }
+
+        .mhs-home-page .dashboard-hero-body {
+            padding: 20px 18px;
+        }
+
+        .mhs-home-page .hero-meta {
+            gap: 8px;
+        }
+
+        .mhs-home-page .hero-spotlight {
+            padding: 14px 15px;
+        }
+
+        .mhs-home-page .hero-spotlight-value {
+            font-size: 16px;
+        }
+
+        .mhs-home-page .summary-card {
+            min-height: 0;
+        }
+
+        .mhs-home-page .announcement-footer {
+            text-align: left;
+        }
+
+        .mhs-home-page .profile-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .mhs-home-page .desktop-course-table {
+            display: none;
+        }
+
+        .mhs-home-page .mobile-course-list {
+            display: block;
+        }
+
+        .mhs-home-page .course-card-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .mhs-home-page .nav-tabs-custom > .nav-tabs {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
+
+        .mhs-home-page .nav-tabs-custom > .nav-tabs > li {
+            float: none;
+            display: inline-block;
+        }
+
+        .mhs-home-page .nav-tabs-custom > .nav-tabs > li > a {
+            padding: 10px 14px;
+        }
+
+        .mhs-home-page .tab-panel-head {
+            flex-direction: column;
+        }
     }
 </style>
-<div class="row">
-    <div class="col-md-3">
-        <div class="box box-primary">
-            <div class="box-body box-profile">
-                @if ($foto == null)
-                    <img class="profile-user-img img-responsive img-circle" src="{{ asset('/adminlte/img/default.jpg') }}"
-                        alt="User profile picture">
-                    <center>
-                        <a href="/ganti_foto/{{ $mhs->nim }}"><span class="fa fa-camera"></span>
-                            Ganti foto</a>
-                    </center>
-                @else
-                    <img class="profile-user-img img-responsive img-circle" src="{{ asset('/foto_mhs/' . $foto) }}"
-                        alt="User profile picture">
-                    <center>
-                        <a href="/ganti_foto/{{ $mhs->nim }}"><span class="fa fa-camera"></span>
-                            Ganti foto</a>
-                    </center>
-                @endif
-                <h3 class="profile-username text-center">{{ $mhs->nama }}</h3>
-                <p class="text-muted text-center">
-                    <center>
-                        <h4>{{ $mhs->nim }}</h4>
-                    </center>
-                </p>
-                <ul class="list-group list-group-unbordered">
-                    <li class="list-group-item">
-                        <center>
-                            <b>{{ $mhs->prodi }} - {{ $mhs->konsentrasi }}</b> <a class="pull-right"> <b></b></a>
-                        </center>
+
+@php
+    $editProfileUrl = $mhs->id_mhs == null ? '/update/' . $mhs->idstudent : '/change/' . $mhs->id;
+@endphp
+
+<div class="row mhs-home-page">
+    <div class="col-md-4 col-lg-3">
+        <div class="box box-primary profile-card">
+            <div class="box-body">
+                <div class="profile-header">
+                    <img class="img-circle profile-avatar" src="{{ $mhs->photo_url }}" alt="User profile picture">
+                    <h3 class="profile-name">{{ $mhs->nama }}</h3>
+                    <p class="profile-nim">{{ $mhs->nim }}</p>
+                    <p class="profile-subtitle">
+                        Ringkasan identitas mahasiswa yang aktif dipakai pada layanan akademik.
+                    </p>
+
+                    <div class="profile-tags">
+                        <span class="profile-tag">{{ $mhs->display_prodi ?: '-' }}</span>
+                        <span class="profile-tag">{{ $mhs->kelas ?: '-' }}</span>
+                        <span class="profile-tag">Angkatan {{ $mhs->angkatan ?: '-' }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="profile-stat-label">Virtual Account</span>
+                        <span class="profile-stat-value">{{ $mhs->virtual_account ?: '-' }}</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-label">Kontak Aktif</span>
+                        <span class="profile-stat-value">{{ $mhs->display_phone }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <a href="/ganti_foto/{{ $mhs->nim }}" class="btn btn-default btn-block">
+                        <i class="fa fa-camera"></i> Ganti Foto
+                    </a>
+                    <a href="{{ $editProfileUrl }}" class="btn btn-success btn-block">
+                        <i class="fa fa-edit"></i> Edit No HP dan E-mail
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="box box-primary panel-card">
+            <div class="panel-heading-clean">
+                <h3 class="box-title">Data Mahasiswa</h3>
+                <span class="panel-heading-note">Informasi akun dan data pendukung yang tersimpan di sistem.</span>
+            </div>
+            <div class="box-body">
+                <ul class="details-list">
+                    <li class="details-item">
+                        <span class="details-label">Microsoft Teams Username</span>
+                        <span class="details-value">
+                            <span>{{ $mhs->username ?: '-' }}</span>
+                            @if ($mhs->username)
+                                <span class="details-badge"><i class="fa fa-check-circle"></i> Tersedia</span>
+                            @endif
+                        </span>
                     </li>
-                    <li class="list-group-item">
-                        <center>
-                            <b>{{ $mhs->kelas }} </b> <a class="pull-right"><b></b></a>
-                        </center>
+                    <li class="details-item">
+                        <span class="details-label">Microsoft Teams Password</span>
+                        <span class="details-value">
+                            <span>{{ $mhs->password ?: '-' }}</span>
+                            @if ($mhs->password)
+                                <span class="details-badge"><i class="fa fa-lock"></i> Aktif</span>
+                            @endif
+                        </span>
                     </li>
-                    <li class="list-group-item">
-                        <center>
-                            <b>{{ $mhs->angkatan }}</b> <a class="pull-right"></a>
-                        </center>
+                    <li class="details-item">
+                        <span class="details-label">NISN</span>
+                        <span class="details-value">
+                            <span>{{ $mhs->nisn ?: '-' }}</span>
+                            <a class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modalUpdateNisn{{ $mhs->idstudent }}" title="Edit NISN">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </span>
+                    </li>
+                    <li class="details-item">
+                        <span class="details-label">No. HP</span>
+                        <span class="details-value">{{ $mhs->display_phone }}</span>
+                    </li>
+                    <li class="details-item">
+                        <span class="details-label">E-mail</span>
+                        <span class="details-value">{{ $mhs->display_email }}</span>
+                    </li>
+                    <li class="details-item">
+                        <span class="details-label">Virtual Account</span>
+                        <span class="details-value">
+                            <span>{{ $mhs->virtual_account ?: '-' }}</span>
+                            @if ($mhs->virtual_account)
+                                <span class="details-badge"><i class="fa fa-credit-card"></i> Tersimpan</span>
+                            @endif
+                        </span>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">About Me</h3>
-            </div>
-            <div class="box-body">
-                <strong><i class="fa fa-file-text-o margin-r-5"></i> Microsoft Teams (Username)</strong>
-                <p>{{ $mhs->username }}</p>
-                <hr>
 
-                <strong><i class="fa fa-file-text-o margin-r-5"></i> Microsoft Teams (Password)</strong>
-                <p> {{ $mhs->password }} </p>
-                <hr>
-                <strong><i class="fa fa-barcode margin-r-5"></i> NISN</strong>
-                <p class="text-muted">{{ $mhs->nisn }}
-                    <a class="btn btn-warning btn-xs" data-toggle="modal"
-                        data-target="#modalUpdateNisn{{ $mhs->idstudent }}" title="klik untuk edit"><i
-                            class="fa fa-edit"> </i></a>
-                </p>
-                <div class="modal fade" id="modalUpdateNisn{{ $mhs->idstudent }}" tabindex="-1"
-                    aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Update NISN</h5>
+        <div class="modal fade" id="modalUpdateNisn{{ $mhs->idstudent }}" tabindex="-1"
+            aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Update NISN</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/put_nisn/{{ $mhs->idstudent }}" method="post">
+                            @csrf
+                            @method('put')
+                            <div class="form-group">
+                                <label>NISN Mahasiswa</label>
+                                <input class="form-control" type="number" name="nisn" value="{{ $mhs->nisn }}">
                             </div>
-                            <div class="modal-body">
-                                <form action="/put_nisn/{{ $mhs->idstudent }}" method="post">
-                                    @csrf
-                                    @method('put')
-                                    <div class="form-group">
-                                        <label>NISN Mahasiswa</label>
-                                        <input class="form-control" type="number" name="nisn"
-                                            value="{{ $mhs->nisn }}">
-                                    </div>
-                                    <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
-                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
-                                </form>
-                            </div>
-                        </div>
+                            <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
+                            <button type="submit" class="btn btn-primary">Perbarui Data</button>
+                        </form>
                     </div>
                 </div>
-                <hr>
-                <strong><i class="fa fa-phone margin-r-5"></i> No. HP</strong>
-                <p class="text-muted">
-                    @if ($mhs->hp_baru == null)
-                        {{ $mhs->hp }}
-                    @elseif ($mhs->hp_baru != null)
-                        {{ $mhs->hp_baru }}
-                    @endif
-                </p>
-                <hr>
-                <strong><i class="fa fa-envelope margin-r-5"></i> E-mail</strong>
-                <p class="text-muted">
-                    @if ($mhs->email_baru == null)
-                        {{ $mhs->email }}
-                    @elseif($mhs->email_baru != null)
-                        {{ $mhs->email_baru }}
-                    @endif
-                </p>
-                <hr>
-                <strong><i class="fa fa-cc-mastercard"></i> Virtual Account</strong>
-                <p class="text-muted">{{ $mhs->virtual_account }}</p>
-                <hr>
-
-                @if ($mhs->id_mhs == null)
-                    <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
-                            class="fa fa-edit"></i> Edit No HP dan E-mail</a>
-                @elseif ($mhs->id_mhs != null)
-                    <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i class="fa fa-edit"></i>
-                        Edit data No HP dan E-mail</a>
-                @endif
-
             </div>
         </div>
     </div>
-    <div class="col-md-9">
+
+    <div class="col-md-8 col-lg-9">
+        <div class="dashboard-hero">
+            <div class="dashboard-hero-body">
+                <div class="hero-content">
+                    <span class="hero-eyebrow">Portal Mahasiswa</span>
+                    <h2>Halo, {{ $mhs->nama }}</h2>
+                    <p>
+                        Pantau status akademik, jadwal layanan, paket matakuliah, dan informasi kampus dari satu halaman
+                        yang ringkas, responsif, dan lebih nyaman dipakai setiap hari.
+                    </p>
+                    <div class="hero-meta">
+                        <span class="hero-badge">{{ $tahun ? $tahun->periode_tahun : '-' }} {{ $tipe ? $tipe->periode_tipe : '' }}</span>
+                        <span class="hero-badge">Paket Matakuliah: {{ $dashboard['paket_count'] }}</span>
+                        <span class="hero-badge">Matakuliah Mengulang: {{ $dashboard['mengulang_count'] }}</span>
+                        <span class="hero-badge">Informasi: {{ $dashboard['info_count'] }}</span>
+                    </div>
+                </div>
+                <div class="hero-spotlight">
+                    <span class="hero-spotlight-title">Ringkasan Saat Ini</span>
+                    <ul class="hero-spotlight-list">
+                        <li class="hero-spotlight-item">
+                            <span class="hero-spotlight-label">Status KRS</span>
+                            <span class="hero-spotlight-value">{{ $dashboard['krs_status'] }}</span>
+                            <span class="hero-spotlight-note">{{ $dashboard['krs_schedule'] }}</span>
+                        </li>
+                        <li class="hero-spotlight-item">
+                            <span class="hero-spotlight-label">Status EDOM</span>
+                            <span class="hero-spotlight-value">{{ $dashboard['edom_status'] }}</span>
+                            <span class="hero-spotlight-note">{{ $dashboard['edom_schedule'] }}</span>
+                        </li>
+                        <li class="hero-spotlight-item">
+                            <span class="hero-spotlight-label">Informasi Kampus</span>
+                            <span class="hero-spotlight-value">{{ $dashboard['info_count'] }} Info Aktif</span>
+                            <span class="hero-spotlight-note">Pantau pembaruan terbaru dari kampus.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row summary-row">
+            <div class="col-sm-6 col-lg-3">
+                <div class="summary-card summary-card-aqua">
+                    <div class="summary-card-head">
+                        <div class="summary-card-icon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <div>
+                            <span class="summary-card-label">Tahun Akademik</span>
+                            <span class="summary-card-value">{{ $tahun ? $tahun->periode_tahun : '-' }}</span>
+                        </div>
+                    </div>
+                    <span class="summary-card-note">Periode akademik aktif</span>
+                    <span class="summary-card-meta">
+                        <i class="fa fa-bookmark-o"></i>
+                        {{ $tipe ? $tipe->periode_tipe : '-' }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="summary-card summary-card-green">
+                    <div class="summary-card-head">
+                        <div class="summary-card-icon">
+                            <i class="fa fa-calendar-check-o"></i>
+                        </div>
+                        <div>
+                            <span class="summary-card-label">Status KRS</span>
+                            <span class="summary-card-value">{{ $dashboard['krs_status'] }}</span>
+                        </div>
+                    </div>
+                    <span class="summary-card-note">Akses jadwal pengisian KRS dari panel aktivitas.</span>
+                    <span class="summary-card-meta">
+                        <i class="fa fa-clock-o"></i>
+                        {{ $time && (int) $time->status === 1 ? 'Jadwal tersedia' : 'Menunggu jadwal' }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="summary-card summary-card-yellow">
+                    <div class="summary-card-head">
+                        <div class="summary-card-icon">
+                            <i class="fa fa-clipboard"></i>
+                        </div>
+                        <div>
+                            <span class="summary-card-label">Status EDOM</span>
+                            <span class="summary-card-value">{{ $dashboard['edom_status'] }}</span>
+                        </div>
+                    </div>
+                    <span class="summary-card-note">Pantau periode evaluasi dosen dari dashboard ini.</span>
+                    <span class="summary-card-meta">
+                        <i class="fa fa-clipboard"></i>
+                        {{ $edom && (int) $edom->status === 1 ? 'Periode berjalan' : 'Belum dibuka' }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="summary-card summary-card-red">
+                    <div class="summary-card-head">
+                        <div class="summary-card-icon">
+                            <i class="fa fa-repeat"></i>
+                        </div>
+                        <div>
+                            <span class="summary-card-label">Makul Mengulang</span>
+                            <span class="summary-card-value">{{ $dashboard['mengulang_count'] }}</span>
+                        </div>
+                    </div>
+                    <span class="summary-card-note">Daftar matakuliah yang perlu perhatian akademik.</span>
+                    <span class="summary-card-meta">
+                        <i class="fa fa-repeat"></i>
+                        {{ $dashboard['mengulang_count'] > 0 ? 'Perlu ditinjau' : 'Aman' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#activity" data-toggle="tab">Aktivitas</a></li>
@@ -538,421 +1144,317 @@
             </ul>
             <div class="tab-content">
                 <div class="active tab-pane" id="activity">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Tahun Akademik</span>
-                                    <span class="info-box-number">
-                                        {{ $tahun->periode_tahun }}</span>
-                                    <span class="info-box-number">{{ $tipe->periode_tipe }}</span>
-                                    <a href="{{ asset('/Kalender Akademik/' . $tahun->file) }}" target="_blank"
-                                        class="small-box-footer">Unduh Kalender Akademik <i
-                                            class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-
-                            </div>
+                    <div class="tab-panel-head">
+                        <div>
+                            <h3 class="tab-panel-title">Aktivitas Akademik</h3>
+                            <p class="tab-panel-subtitle">
+                                Pantau jadwal layanan akademik aktif dan pembaruan informasi kampus dari satu tempat.
+                            </p>
                         </div>
+                        <span class="tab-panel-badge">{{ $dashboard['info_count'] }} Info Tersedia</span>
+                    </div>
+
+                    <div class="row activity-grid">
                         <div class="col-md-6">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Jadwal KRS</span>
-                                    <span class="info-box-number">
-                                        @if ($time->status == 0)
-                                            Jadwal Belum ada
-                                        @elseif ($time->status == 1)
-                                            {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
-                                            {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
-                                        @endif
+                            <div class="box box-info schedule-card">
+                                <div class="panel-heading-clean">
+                                    <h3 class="box-title"><i class="glyphicon glyphicon-info-sign"></i> Waktu Pengisian KRS</h3>
+                                </div>
+                                <div class="box-body">
+                                    <span class="schedule-status">
+                                        <i class="fa fa-calendar-check-o"></i>
+                                        {{ $dashboard['krs_status'] }}
                                     </span>
+                                    <p class="schedule-note">
+                                        Pastikan pengisian KRS dilakukan sesuai jadwal agar proses perwalian berjalan lancar.
+                                    </p>
+                                    <div id="krs-countdown" class="countdown-box"
+                                        data-target="{{ $time && (int) $time->status === 1 ? $time->waktu_akhir : '' }}"
+                                        data-message="menuju Penutupan Pengisian KRS">
+                                        @if (!$time || (int) $time->status === 0)
+                                            Belum ada info perwalian
+                                        @endif
+                                    </div>
+                                    <div class="activity-footer">{{ $dashboard['krs_schedule'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-info schedule-card">
+                                <div class="panel-heading-clean">
+                                    <h3 class="box-title"><i class="glyphicon glyphicon-info-sign"></i> Waktu Pengisian EDOM</h3>
+                                </div>
+                                <div class="box-body">
+                                    <span class="schedule-status">
+                                        <i class="fa fa-clipboard"></i>
+                                        {{ $dashboard['edom_status'] }}
+                                    </span>
+                                    <p class="schedule-note">
+                                        Pantau periode EDOM agar evaluasi dosen dapat diselesaikan sebelum jadwal berakhir.
+                                    </p>
+                                    <div id="edom-countdown" class="countdown-box"
+                                        data-target="{{ $edom && (int) $edom->status === 1 ? $edom->waktu_akhir : '' }}"
+                                        data-message="menuju Penutupan Pengisian EDOM">
+                                        @if (!$edom || (int) $edom->status === 0)
+                                            Belum ada info pengisian EDOM
+                                        @endif
+                                    </div>
+                                    <div class="activity-footer">{{ $dashboard['edom_schedule'] }}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="box box-info">
-                                <div class="box-header with-border">
-                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                    <h3 class="box-title">Waktu Pengisian KRS</h3>
+                        <div class="col-md-12">
+                            <div class="box box-primary panel-card announcement-panel">
+                                <div class="panel-heading-clean">
+                                    <h3 class="box-title">Informasi Terbaru</h3>
                                 </div>
                                 <div class="box-body">
-                                    <form role="form">
-                                        <div id="waktumundur">
-                                            @if ($time->status != 0)
-                                                <span id="countdown"></span>
-                                            @else
-                                                Belum ada info perwalian
-                                            @endif
-                                        </div>
-                                    </form>
-                                </div>
-                                <script type='text/javascript'>
-                                    //<![CDATA[
-                                    var target_date = new Date("{{ $time->waktu_akhir }}").getTime();
-                                    var days, hours, minutes, seconds;
-                                    var countdown = document.getElementById("countdown");
-                                    setInterval(function() {
-                                        var current_date = new Date().getTime();
-                                        var seconds_left = (target_date - current_date) / 1000;
-                                        days = parseInt(seconds_left / 86400);
-                                        seconds_left = seconds_left % 86400;
-                                        hours = parseInt(seconds_left / 3600);
-                                        seconds_left = seconds_left % 3600;
-                                        minutes = parseInt(seconds_left / 60);
-                                        seconds = parseInt(seconds_left % 60);
-                                        countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
-                                            " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
-                                            " <span class=\'digit\'>detik </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian KRS</span>";
-                                    }, 1000);
-                                    //]]>
-                                </script>
-
-                                <style scoped="" type="text/css">
-                                    #waktumundur {
-
-                                        background: #31266b;
-                                        color: #fec503;
-                                        font-size: 100%;
-                                        text-transform: uppercase;
-                                        text-align: center;
-                                        padding: 20px 0;
-                                        font-weight: bold;
-                                        border-radius: 5px;
-                                        line-height: 1.8em;
-                                        font-family: Arial, sans-serif;
-                                    }
-
-                                    .digit {
-                                        color: white
-                                    }
-
-                                    .judul {
-                                        color: white
-                                    }
-                                </style>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="box box-info">
-                                <div class="box-header with-border">
-                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                    <h3 class="box-title">Waktu Pengisian EDOM</h3>
-                                </div>
-                                <div class="box-body">
-                                    <form role="form">
-                                        <div id="waktumunduredom">
-                                            @if ($edom->status != 0)
-                                                <span id="countdownedom"></span>
-                                            @else
-                                                Belum ada info pengisian EDOM
-                                            @endif
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <script type='text/javascript'>
-                                //<![CDATA[
-                                var target_date_edom = new Date("{{ $edom->waktu_akhir }}").getTime();
-                                var days_edom, hours_edom, minutes_edom, seconds_edom;
-                                var countdownedom = document.getElementById("countdownedom");
-                                setInterval(function() {
-                                    var current_date_edom = new Date().getTime();
-                                    var seconds_left_edom = (target_date_edom - current_date_edom) / 1000;
-                                    days_edom = parseInt(seconds_left_edom / 86400);
-                                    seconds_left_edom = seconds_left_edom % 86400;
-                                    hours_edom = parseInt(seconds_left_edom / 3600);
-                                    seconds_left_edom = seconds_left_edom % 3600;
-                                    minutes_edom = parseInt(seconds_left_edom / 60);
-                                    seconds_edom = parseInt(seconds_left_edom % 60);
-                                    countdownedom.innerHTML = days_edom + " <span class=\'digit\'>hari</span> " + hours_edom +
-                                        " <span class=\'digit\'>jam</span> " + minutes_edom + " <span class=\'digit\'>menit</span> " +
-                                        seconds_edom +
-                                        " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pengisian EDOM</span>";
-                                }, 1000);
-                                //]]>
-                            </script>
-                            <style scoped="" type="text/css">
-                                #waktumunduredom {
-
-                                    background: #31266b;
-                                    color: #fec503;
-                                    font-size: 100%;
-                                    text-transform: uppercase;
-                                    text-align: center;
-                                    padding: 20px 0;
-                                    font-weight: bold;
-                                    border-radius: 5px;
-                                    line-height: 1.8em;
-                                    font-family: Arial, sans-serif;
-                                }
-
-                                .digit {
-                                    color: white
-                                }
-
-                                .judul {
-                                    color: white
-                                }
-                            </style>
-                        </div>
-                    </div>
-
-                    {{-- <div class="row">
-                <div class="col-md-6">
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                            <h3 class="box-title">Waktu Pendaftaran Yudisum</h3>
-                        </div>
-                        <div class="box-body">
-                            <form role="form">
-                                <div id="waktumunduryudisium">
-                                    @if ($waktu_mundur->status != 0)
-                                        <span id="countdownyudisium"></span>
+                                    @if ($info->count())
+                                        <ul class="announcement-list">
+                                            @foreach ($info as $item)
+                                                <li class="announcement-item">
+                                                    <div class="announcement-icon">
+                                                        <i class="fa fa-bell"></i>
+                                                    </div>
+                                                    <div>
+                                                        <a href="/lihat/{{ $item->id_informasi }}" class="announcement-title">
+                                                            {{ $item->judul }}
+                                                        </a>
+                                                        <span class="announcement-meta">
+                                                            {{ date('d-m-Y', strtotime($item->created_at)) }} · {{ $item->created_at->diffForHumans() }}
+                                                        </span>
+                                                        <div class="announcement-desc">
+                                                            {{ \Illuminate\Support\Str::limit(strip_tags($item->deskripsi), 180) }}
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     @else
-                                        Belum ada info pendaftaran Yudisium
+                                        <div class="empty-box">
+                                            <i class="fa fa-info-circle"></i>
+                                            <div>Belum ada informasi terbaru.</div>
+                                        </div>
                                     @endif
                                 </div>
-                            </form>
+                                <div class="box-footer announcement-footer">
+                                    <span class="text-muted pull-left hidden-xs">
+                                        @if ($info->count())
+                                            Menampilkan {{ $info->count() }} informasi terbaru.
+                                        @else
+                                            Belum ada informasi yang ditampilkan.
+                                        @endif
+                                    </span>
+                                    @if ($dashboard['calendar_url'])
+                                        <a href="{{ $dashboard['calendar_url'] }}" target="_blank" class="btn btn-default btn-sm">
+                                            <i class="fa fa-download"></i> Unduh Kalender Akademik
+                                        </a>
+                                    @endif
+                                    <a href="/lihat_semua" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-arrow-right"></i> Lihat Semua Informasi
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <html>
-
-                    <div id="msg"></div>
-
-                    <script>
-                        var url = "/tutup_yudisium/{{ $waktu_mundur->id_waktu }}"; // membuat url tujuan
-                        var count = 10; // membuat hitungan kedalam detik
-                        function countDown() {
-                            if (count > 0) {
-                                count--;
-                                var waktu = count + 1;
-                                $('#msg').html('Anda akan menuju ke ' + '<i>' + url + ' dalam hitungan: ' + waktu + ' detik.' + '<i>');
-                                setTimeout("countDown()", 1000);
-                            } else {
-                                window.location.href = url;
-                            }
-                        }
-                        countDown();
-                    </script>
-
-                    <script>
-                        function tutupWaktu() {
-
-                        }
-                    </script>
-
-                    <script type='text/javascript'>
-                        var target_date_yudisium = new Date("{{ $waktu_mundur->waktu_akhir }}").getTime();
-                        var days_yudisium, hours_yudisium, minutes_yudisium, seconds_yudisium;
-                        var countdownyudisium = document.getElementById("countdownyudisium");
-                        setInterval(function() {
-                            var current_date_yudisium = new Date().getTime();
-                            var seconds_left_yudisium = (target_date_yudisium - current_date_yudisium) / 1000;
-                            days_yudisium = parseInt(seconds_left_yudisium / 86400);
-                            seconds_left_yudisium = seconds_left_yudisium % 86400;
-                            hours_yudisium = parseInt(seconds_left_yudisium / 3600);
-                            seconds_left_yudisium = seconds_left_yudisium % 3600;
-                            minutes_yudisium = parseInt(seconds_left_yudisium / 60);
-                            seconds_yudisium = parseInt(seconds_left_yudisium % 60);
-                            countdownyudisium.innerHTML = days_yudisium + " <span class=\'digit\'>hari</span> " + hours_yudisium +
-                                " <span class=\'digit\'>jam</span> " + minutes_yudisium + " <span class=\'digit\'>menit</span> " +
-                                seconds_yudisium +
-                                " <span class=\'digit\'>detik  </span> <br> <span class=\'judul\'>menuju Penutupan Pendaftaran Yudisium</span>";
-                        }, 1000);
-                    </script>
-                    <style scoped="" type="text/css">
-                        #waktumunduryudisium {
-
-                            background: #31266b;
-                            color: #fec503;
-                            font-size: 100%;
-                            text-transform: uppercase;
-                            text-align: center;
-                            padding: 20px 0;
-                            font-weight: bold;
-                            border-radius: 5px;
-                            line-height: 1.8em;
-                            font-family: Arial, sans-serif;
-                        }
-
-                        .digit {
-                            color: white
-                        }
-
-                        .judul {
-                            color: white
-                        }
-                    </style>
-
                 </div>
 
-            </div> --}}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-primary">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Informasi Terbaru</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                                class="fa fa-times"></i></button>
+                <div class="tab-pane" id="timeline">
+                    <div class="tab-panel-head hidden-xs">
+                        <div>
+                            <h4 class="tab-panel-title">Paket Matakuliah</h4>
+                            <p class="tab-panel-subtitle">
+                                Daftar matakuliah dalam kurikulum aktif yang menjadi acuan pengambilan studi Anda.
+                            </p>
+                        </div>
+                        <span class="tab-panel-badge">{{ $dashboard['paket_count'] }} Matakuliah</span>
+                    </div>
+
+                    <div class="desktop-course-table table-wrap hidden-xs">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;"><center>No</center></th>
+                                    <th><center>Kurikulum</center></th>
+                                    <th><center>Prodi</center></th>
+                                    <th style="width: 90px;"><center>Semester</center></th>
+                                    <th style="width: 90px;"><center>Angkatan</center></th>
+                                    <th><center>Matakuliah</center></th>
+                                    <th style="width: 110px;"><center>Status</center></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $index => $item)
+                                    <tr>
+                                        <td align="center"><span class="row-index">{{ $index + 1 }}</span></td>
+                                        <td align="center">{{ $item->nama_kurikulum }}</td>
+                                        <td align="center">{{ $item->prodi }}</td>
+                                        <td align="center">{{ $item->semester }}</td>
+                                        <td align="center">{{ $item->angkatan }}</td>
+                                        <td>
+                                            <span class="desktop-course-title">{{ $item->makul }}</span>
+                                            <span class="desktop-course-meta">{{ $item->kode }}</span>
+                                        </td>
+                                        <td align="center">
+                                            @if ($item->id_studentrecord != null)
+                                                <span class="label label-success">Diambil</span>
+                                            @else
+                                                <span class="label label-warning">Belum</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mobile-course-list visible-xs-block">
+                        @forelse ($data as $item)
+                            <div class="course-card">
+                                <button type="button" class="course-card-toggle">
+                                    <div class="course-card-top">
+                                        <div>
+                                            <div class="course-card-title">{{ $item->kode }} / {{ $item->makul }}</div>
+                                            <div class="course-card-meta">{{ $item->nama_kurikulum }}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            @if ($item->id_studentrecord != null)
+                                                <span class="course-card-badge status-ok">Diambil</span>
+                                            @else
+                                                <span class="course-card-badge status-warn">Belum</span>
+                                            @endif
+                                            <div class="course-card-chevron">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                                <div class="course-card-body">
+                                    <div class="course-card-grid">
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Prodi</span>
+                                            <span class="course-card-value">{{ $item->prodi }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Semester</span>
+                                            <span class="course-card-value">{{ $item->semester }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Angkatan</span>
+                                            <span class="course-card-value">{{ $item->angkatan }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Status</span>
+                                            <span class="course-card-value">
+                                                @if ($item->id_studentrecord != null)
+                                                    Sudah diambil
+                                                @else
+                                                    Belum diambil
+                                                @endif
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="box-body">
-                                    <ul class="products-list product-list-in-box">
-                                        @foreach ($info as $item)
-                                            <li class="item">
-                                                <div class="product-img">
-                                                    @if ($item->file != null)
-                                                        <img class="img-circle" src="/images/bell.jpg">
-                                                    @else
-                                                    @endif
-                                                </div>
-                                                <div class="product-info">
-                                                    <a href="/lihat/{{ $item->id_informasi }}"
-                                                        class="product-title">{{ $item->judul }}
-                                                        <span class="label label-info pull-right">
-                                                            {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                                            {{ $item->created_at->diffForHumans() }}
-                                                        </span></a>
-                                                    <span class="product-description">
-                                                        {{ $item->deskripsi }}
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="box-footer text-center">
-                                    <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="tab-pane" id="timeline">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Paket Matakuliah</h3>
-                                </div>
-                                <div class="box-body ">
-                                    <table id="example1" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <center>No</center>
-                                                </th>
-                                                <th>
-                                                    <center>Kurikulum</center>
-                                                </th>
-                                                <th>
-                                                    <center>Prodi</center>
-                                                </th>
-                                                <th>
-                                                    <center>Semester</center>
-                                                </th>
-                                                <th>
-                                                    <center>Angkatan</center>
-                                                </th>
-                                                <th>
-                                                    <center>Matakuliah</center>
-                                                </th>
-                                                <th>
-                                                    <center>Status</center>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no = 1; ?>
-                                            @foreach ($data as $item)
-                                                <tr>
-                                                    <td align="center">{{ $no++ }}</td>
-                                                    <td align="center">{{ $item->nama_kurikulum }}</td>
-                                                    <td align="center">{{ $item->prodi }}</td>
-                                                    <td align="center">{{ $item->semester }}</td>
-                                                    <td align="center">{{ $item->angkatan }}</td>
-                                                    <td>{{ $item->kode }} / {{ $item->makul }}</td>
-                                                    <td align="center">
-                                                        @if ($item->id_studentrecord != null)
-                                                            <span class="label label-success">diambil</span>
-                                                        @else
-                                                            <span class="label label-warning">belum</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                        @empty
+                            <div class="empty-box">
+                                <i class="fa fa-book"></i>
+                                <div>Belum ada paket matakuliah.</div>
                             </div>
-                        </div>
+                        @endforelse
                     </div>
-
                 </div>
+
                 <div class="tab-pane" id="settings">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Matakuliah Wajib Ulang</h3>
-                                </div>
-                                <div class="box-body ">
-                                    <table id="example3" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <center>No</center>
-                                                </th>
-                                                <th>
-                                                    <center>Kurikulum</center>
-                                                </th>
-                                                <th>
-                                                    <center>Prodi</center>
-                                                </th>
-                                                <th>
-                                                    <center>Semester</center>
-                                                </th>
-                                                <th>
-                                                    <center>Angkatan</center>
-                                                </th>
-                                                <th>
-                                                    <center>Matakuliah</center>
-                                                </th>
-                                                <th>
-                                                    <center>Nilai</center>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no = 1; ?>
-                                            @foreach ($data_mengulang as $item)
-                                                <tr>
-                                                    <td align="center">{{ $no++ }}</td>
-                                                    <td align="center">{{ $item->nama_kurikulum }}</td>
-                                                    <td align="center">{{ $item->prodi }}</td>
-                                                    <td align="center">{{ $item->semester }}</td>
-                                                    <td align="center">{{ $item->angkatan }}</td>
-                                                    <td>{{ $item->kode }} / {{ $item->makul }}</td>
-                                                    <td align="center">
-                                                        {{ $item->nilai_AKHIR }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                    <div class="tab-panel-head hidden-xs">
+                        <div>
+                            <h4 class="tab-panel-title">Matakuliah Mengulang</h4>
+                            <p class="tab-panel-subtitle">
+                                Daftar matakuliah dengan nilai yang masih perlu diperbaiki pada pengambilan berikutnya.
+                            </p>
+                        </div>
+                        <span class="tab-panel-badge">{{ $dashboard['mengulang_count'] }} Matakuliah</span>
+                    </div>
+
+                    <div class="desktop-course-table table-wrap hidden-xs">
+                        <table id="example3" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;"><center>No</center></th>
+                                    <th><center>Kurikulum</center></th>
+                                    <th><center>Prodi</center></th>
+                                    <th style="width: 90px;"><center>Semester</center></th>
+                                    <th style="width: 90px;"><center>Angkatan</center></th>
+                                    <th><center>Matakuliah</center></th>
+                                    <th style="width: 90px;"><center>Nilai</center></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data_mengulang as $index => $item)
+                                    <tr>
+                                        <td align="center"><span class="row-index">{{ $index + 1 }}</span></td>
+                                        <td align="center">{{ $item->nama_kurikulum }}</td>
+                                        <td align="center">{{ $item->prodi }}</td>
+                                        <td align="center">{{ $item->semester }}</td>
+                                        <td align="center">{{ $item->angkatan }}</td>
+                                        <td>
+                                            <span class="desktop-course-title">{{ $item->makul }}</span>
+                                            <span class="desktop-course-meta">{{ $item->kode }}</span>
+                                        </td>
+                                        <td align="center"><span class="desktop-value-pill">{{ $item->nilai_AKHIR }}</span></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mobile-course-list visible-xs-block">
+                        @forelse ($data_mengulang as $item)
+                            <div class="course-card">
+                                <button type="button" class="course-card-toggle">
+                                    <div class="course-card-top">
+                                        <div>
+                                            <div class="course-card-title">{{ $item->kode }} / {{ $item->makul }}</div>
+                                            <div class="course-card-meta">{{ $item->nama_kurikulum }}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="course-card-badge status-danger">{{ $item->nilai_AKHIR }}</span>
+                                            <div class="course-card-chevron">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                                <div class="course-card-body">
+                                    <div class="course-card-grid">
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Prodi</span>
+                                            <span class="course-card-value">{{ $item->prodi }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Semester</span>
+                                            <span class="course-card-value">{{ $item->semester }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Angkatan</span>
+                                            <span class="course-card-value">{{ $item->angkatan }}</span>
+                                        </div>
+                                        <div class="course-card-item">
+                                            <span class="course-card-label">Nilai</span>
+                                            <span class="course-card-value">{{ $item->nilai_AKHIR }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @empty
+                            <div class="empty-box">
+                                <i class="fa fa-check-circle"></i>
+                                <div>Tidak ada matakuliah yang wajib diulang.</div>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -960,420 +1462,72 @@
     </div>
 </div>
 
-{{-- <div class="row">
-    <div class="col-md-6">
-        @if (count($errors) > 0)
-            <div class="alert alert-danger">
-                Validasi Upload Error<br><br>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <div class="box box-widget widget-user">
-            <div class="widget-user-header bg-aqua-active">
-                <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
-                <h5 class="widget-user-desc">Mahasiswa</h5>
-            </div>
-            <div class="widget-user-image">
-                @if ($foto == null)
-                    <img class="img-circle" src="/adminlte/img/default.jpg" alt="User Avatar">
-                @else
-                    <img src="{{ asset('/foto_mhs/' . $foto) }}">
-                @endif
-            </div>
-            <div class="box-footer">
-                <div class="row">
-                    <div class="col-sm-4 border-right">
-                        <div class="description-block">
-                            <h5 class="description-header"></h5>
-                            <span class="description-text"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4 border-right">
-                        <center>
-                            <a href="/ganti_foto/{{ $mhs->nim }}"><span class="fa fa-camera"></span>
-                                Ganti foto</a>
-                        </center>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="description-block">
-                            <h5 class="description-header"></h5>
-                            <span class="description-text"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br><br>
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <td style="width:25%">Nama</td>
-                        <td style="width:5%">:</td>
-                        <td>{{ $mhs->nama }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>NIM</td>
-                        <td>:</td>
-                        <td>{{ $mhs->nim }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Program Studi</td>
-                        <td>:</td>
-                        <td>{{ $mhs->prodi }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Kelas</td>
-                        <td>:</td>
-                        <td>{{ $mhs->kelas }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Angkatan</td>
-                        <td>:</td>
-                        <td>{{ $mhs->angkatan }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>No HP</td>
-                        <td>:</td>
-                        <td>
-                            @if ($mhs->hp_baru == null)
-                                {{ $mhs->hp }}
-                            @elseif ($mhs->hp_baru != null)
-                                {{ $mhs->hp_baru }}
-                            @endif
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>E-Mail</td>
-                        <td>:</td>
-                        <td>
-                            @if ($mhs->email_baru == null)
-                                {{ $mhs->email }}
-                            @elseif ($mhs->email_baru != null)
-                                {{ $mhs->email_baru }}
-                            @endif
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>NISN</td>
-                        <td>:</td>
-                        <td>{{ $mhs->nisn }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-xs" data-toggle="modal"
-                                data-target="#modalUpdateNisn{{ $mhs->idstudent }}" title="klik untuk edit"><i
-                                    class="fa fa-edit"> Edit NISN</i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Teams(Username)</td>
-                        <td>:</td>
-                        <td>
-                            {{ $mhs->username }}
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Teams(Password)</td>
-                        <td>:</td>
-                        <td>
-                            {{ $mhs->password }}
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            @if ($mhs->id_mhs == null)
-                                <a class="btn btn-success btn-block" href="/update/{{ $mhs->idstudent }}"><i
-                                        class="fa fa-edit"></i> Edit No HP dan E-mail</a>
-                            @elseif ($mhs->id_mhs != null)
-                                <a class="btn btn-success btn-block" href="/change/{{ $mhs->id }}"><i
-                                        class="fa fa-edit"></i> Edit data No HP dan E-mail</a>
-                            @endif
-                        </td>
-                    </tr>
-                </tbody>
-
-                <div class="modal fade" id="modalUpdateNisn{{ $mhs->idstudent }}" tabindex="-1"
-                    aria-labelledby="modalUpdateKaprodi" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Update NISN</h5>
-                            </div>
-                            <div class="modal-body">
-                                <form action="/put_nisn/{{ $mhs->idstudent }}" method="post">
-                                    @csrf
-                                    @method('put')
-                                    <div class="form-group">
-                                        <label>NISN Mahasiswa</label>
-                                        <input class="form-control" type="number" name="nisn"
-                                            value="{{ $mhs->nisn }}">
-                                    </div>
-                                    <input type="hidden" name="updated_by" value="{{ Auth::user()->name }}">
-                                    <button type="submit" class="btn btn-primary">Perbarui Data</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </table>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-aqua"><i class="fa fa-calendar"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Tahun Akademik</span>
-                <span class="info-box-number">{{ $tahun->periode_tahun }}</span>
-                <span class="info-box-number"> {{ $tipe->periode_tipe }}</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-green"><i class="fa fa-calendar-check-o"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Jadwal KRS</span>
-                <span class="info-box-number">
-                    @if ($time->status == 0)
-                        Jadwal Belum ada
-                    @elseif ($time->status == 1)
-                        {{ date(' d-m-Y', strtotime($time->waktu_awal)) }} s/d
-                        {{ date(' d-m-Y', strtotime($time->waktu_akhir)) }}
-                    @endif
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <span class="glyphicon glyphicon-info-sign"></span>
-                <h3 class="box-title">Waktu Pengisian KRS</h3>
-            </div>
-            <div class="box-body">
-                <form role="form">
-                    <div id="waktumundur">
-                        @if ($time->status != 0)
-                            <span id="countdown"></span>
-                        @else
-                            Belum ada info perwalian
-                        @endif
-                    </div>
-                </form>
-            </div>
-            <script type='text/javascript'>
-                //<![CDATA[
-                var target_date = new Date("{{ $time->waktu_akhir }}").getTime();
-                var days, hours, minutes, seconds;
-                var countdown = document.getElementById("countdown");
-                setInterval(function() {
-                    var current_date = new Date().getTime();
-                    var seconds_left = (target_date - current_date) / 1000;
-                    days = parseInt(seconds_left / 86400);
-                    seconds_left = seconds_left % 86400;
-                    hours = parseInt(seconds_left / 3600);
-                    seconds_left = seconds_left % 3600;
-                    minutes = parseInt(seconds_left / 60);
-                    seconds = parseInt(seconds_left % 60);
-                    countdown.innerHTML = days + " <span class=\'digit\'>hari</span> " + hours +
-                        " <span class=\'digit\'>jam</span> " + minutes + " <span class=\'digit\'>menit</span> " + seconds +
-                        " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Pengisian KRS</span>";
-                }, 1000);
-                //]]>
-            </script>
-            <style scoped="" type="text/css">
-                #waktumundur {
-
-                    background: #31266b;
-                    color: #fec503;
-                    font-size: 100%;
-                    text-transform: uppercase;
-                    text-align: center;
-                    padding: 20px 0;
-                    font-weight: bold;
-                    border-radius: 5px;
-                    line-height: 1.8em;
-                    font-family: Arial, sans-serif;
-                }
-
-                .digit {
-                    color: white
-                }
-
-                .judul {
-                    color: white
-                }
-            </style>
-        </div>
-
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <span class="glyphicon glyphicon-info-sign"></span>
-                <h3 class="box-title">Waktu Pengisian EDOM</h3>
-            </div>
-            <div class="box-body">
-                <form role="form">
-                    <div id="waktumunduredom">
-                        @if ($edom->status != 0)
-                            <span id="countdownedom"></span>
-                        @else
-                            Belum ada info pengisian EDOM
-                        @endif
-                    </div>
-                </form>
-            </div>
-        </div>
-        <script type='text/javascript'>
-            //<![CDATA[
-            var target_date_edom = new Date("{{ $edom->waktu_akhir }}").getTime();
-            var days_edom, hours_edom, minutes_edom, seconds_edom;
-            var countdownedom = document.getElementById("countdownedom");
-            setInterval(function() {
-                var current_date_edom = new Date().getTime();
-                var seconds_left_edom = (target_date_edom - current_date_edom) / 1000;
-                days_edom = parseInt(seconds_left_edom / 86400);
-                seconds_left_edom = seconds_left_edom % 86400;
-                hours_edom = parseInt(seconds_left_edom / 3600);
-                seconds_left_edom = seconds_left_edom % 3600;
-                minutes_edom = parseInt(seconds_left_edom / 60);
-                seconds_edom = parseInt(seconds_left_edom % 60);
-                countdownedom.innerHTML = days_edom + " <span class=\'digit\'>hari</span> " + hours_edom +
-                    " <span class=\'digit\'>jam</span> " + minutes_edom + " <span class=\'digit\'>menit</span> " +
-                    seconds_edom +
-                    " <span class=\'digit\'>detik menuju</span> <span class=\'judul\'>Penutupan Pengisian EDOM</span>";
-            }, 1000);
-            //]]>
-        </script>
-        <style scoped="" type="text/css">
-            #waktumunduredom {
-
-                background: #31266b;
-                color: #fec503;
-                font-size: 100%;
-                text-transform: uppercase;
-                text-align: center;
-                padding: 20px 0;
-                font-weight: bold;
-                border-radius: 5px;
-                line-height: 1.8em;
-                font-family: Arial, sans-serif;
-            }
-
-            .digit {
-                color: white
-            }
-
-            .judul {
-                color: white
-            }
-        </style>
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Informasi Terbaru</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                            class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                            class="fa fa-times"></i></button>
-                </div>
-            </div>
-            <div class="box-body">
-                <ul class="products-list product-list-in-box">
-                    @foreach ($info as $item)
-                        <li class="item">
-                            <div class="product-img">
-                                @if ($item->file != null)
-                                    <img class="img-circle" src="/images/bell.jpg">
-                                @else
-                                @endif
-                            </div>
-                            <div class="product-info">
-                                <a href="/lihat/{{ $item->id_informasi }}" class="product-title">{{ $item->judul }}
-                                    <span class="label label-info pull-right">
-                                        {{ date('l, d F Y', strtotime($item->created_at)) }}<br>
-                                        {{ $item->created_at->diffForHumans() }}
-                                    </span></a>
-                                <span class="product-description">
-                                    {{ $item->deskripsi }}
-                                </span>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-            <div class="box-footer text-center">
-                <a href="/lihat_semua" class="uppercase">Lihat Semua Informasi</a>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add fade-in class to elements as they appear
-    const boxes = document.querySelectorAll('.box');
-    boxes.forEach((box, index) => {
-        setTimeout(() => {
-            box.classList.add('fade-in');
-        }, index * 100);
-    });
-    
-    // Add hover sound effect (optional)
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-        });
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-    
-    // Smooth number counting animation for info boxes
-    const countUp = (element, target) => {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current);
+    (function() {
+        function initCourseCards() {
+            var toggles = document.querySelectorAll('.course-card-toggle');
+            Array.prototype.forEach.call(toggles, function(toggle, index) {
+                var card = toggle.closest('.course-card');
+                if (!card) {
+                    return;
+                }
+
+                if (index === 0) {
+                    card.classList.add('expanded');
+                }
+
+                toggle.addEventListener('click', function() {
+                    card.classList.toggle('expanded');
+                });
+            });
+        }
+
+        function initCountdown(elementId) {
+            var el = document.getElementById(elementId);
+            if (!el) {
+                return;
             }
-        }, 30);
-    };
-    
-    // Initialize tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-    
-    // Add ripple effect to buttons
-    $('.btn').on('click', function(e) {
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        this.appendChild(ripple);
-        
-        const x = e.clientX - e.target.offsetLeft;
-        const y = e.clientY - e.target.offsetTop;
-        
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
-    });
-});
+
+            var target = el.getAttribute('data-target');
+            var message = el.getAttribute('data-message') || '';
+            if (!target) {
+                return;
+            }
+
+            var targetDate = new Date(target).getTime();
+            if (isNaN(targetDate)) {
+                return;
+            }
+
+            var render = function() {
+                var now = new Date().getTime();
+                var diff = Math.floor((targetDate - now) / 1000);
+
+                if (diff <= 0) {
+                    el.innerHTML = "<span class='judul'>Waktu layanan telah berakhir</span>";
+                    return;
+                }
+
+                var days = parseInt(diff / 86400, 10);
+                diff = diff % 86400;
+                var hours = parseInt(diff / 3600, 10);
+                diff = diff % 3600;
+                var minutes = parseInt(diff / 60, 10);
+                var seconds = parseInt(diff % 60, 10);
+
+                el.innerHTML = days + " <span class='digit'>hari</span> " +
+                    hours + " <span class='digit'>jam</span> " +
+                    minutes + " <span class='digit'>menit</span> " +
+                    seconds + " <span class='digit'>detik</span><br>" +
+                    "<span class='judul'>" + message + "</span>";
+            };
+
+            render();
+            setInterval(render, 1000);
+        }
+
+        initCourseCards();
+        initCountdown('krs-countdown');
+        initCountdown('edom-countdown');
+    })();
 </script>
