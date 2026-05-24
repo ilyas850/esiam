@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Custom styling for primary box card */
         .custom-payment-box {
@@ -253,7 +251,7 @@
                     </div>
                     <div class="widget-info">
                         <div class="widget-label">Total Transaksi</div>
-                        <div class="widget-value">{{ $kuitansi->count() }} Kali</div>
+                        <div class="widget-value"><?php echo e($kuitansi->count()); ?> Kali</div>
                     </div>
                 </div>
             </div>
@@ -266,7 +264,7 @@
                     </div>
                     <div class="widget-info">
                         <div class="widget-label">Total Terbayar</div>
-                        <div class="widget-value">@currency((float) $totalbayarmhs)</div>
+                        <div class="widget-value">Rp. <?php echo number_format((float) $totalbayarmhs, 0, ',', '.'); ?></div>
                     </div>
                 </div>
             </div>
@@ -297,34 +295,37 @@
                             </thead>
                             <tbody>
                                 <?php $no = 1; ?>
-                                @foreach ($kuitansi as $key)
+                                <?php $__currentLoopData = $kuitansi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td align="center" style="font-weight: 600; color: #a0aec0;">{{ $no++ }}</td>
+                                        <td align="center" style="font-weight: 600; color: #a0aec0;"><?php echo e($no++); ?></td>
                                         <td>
                                             <span class="badge-item-name">
                                                 <i class="fa fa-check-circle text-success" style="margin-right: 6px;"></i>
-                                                {{ $key->item }}
+                                                <?php echo e($key->item); ?>
+
                                             </span>
                                         </td>
                                         <td align="center">
                                             <i class="fa fa-calendar text-muted" style="margin-right: 6px;"></i>
-                                            {{ Carbon\Carbon::parse($key->tanggal)->formatLocalized('%d %B %Y') }}
+                                            <?php echo e(Carbon\Carbon::parse($key->tanggal)->formatLocalized('%d %B %Y')); ?>
+
                                         </td>
                                         <td align="center">
                                             <span class="badge-kuitansi">
                                                 <i class="fa fa-ticket text-muted" style="margin-right: 4px;"></i>
-                                                {{ $key->nokuit }}
+                                                <?php echo e($key->nokuit); ?>
+
                                             </span>
                                         </td>
                                         <td align="right" style="font-weight: 700; color: #2d3748;">
-                                            @currency((float) $key->bayar)
+                                            Rp. <?php echo number_format((float) $key->bayar, 0, ',', '.'); ?>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <tr style="background: #f7fafc; font-size: 14px;">
                                     <td align="center" colspan="4" style="font-weight: 700; color: #2d3748; padding: 16px !important;">Total Bayar</td>
                                     <td align="right" style="font-weight: 800; color: #2dca73; padding: 16px !important; font-size: 15px;">
-                                        @currency((float) $totalbayarmhs)
+                                        Rp. <?php echo number_format((float) $totalbayarmhs, 0, ',', '.'); ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -333,21 +334,23 @@
 
                     <!-- Mobile Card List View -->
                     <div class="box-body mobile-card-list">
-                        @if($kuitansi->isEmpty())
+                        <?php if($kuitansi->isEmpty()): ?>
                             <div class="text-center text-muted" style="padding: 40px 15px;">
                                 <i class="fa fa-info-circle" style="font-size: 36px; margin-bottom: 10px; color: #cbd5e0;"></i>
                                 <p>Belum ada catatan transaksi pembayaran.</p>
                             </div>
-                        @else
-                            @foreach ($kuitansi as $key)
+                        <?php else: ?>
+                            <?php $__currentLoopData = $kuitansi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="mobile-payment-card">
                                     <div class="mobile-card-header">
                                         <span class="badge-item-name" style="font-size: 13px;">
                                             <i class="fa fa-check-circle text-success" style="margin-right: 5px;"></i>
-                                            {{ $key->item }}
+                                            <?php echo e($key->item); ?>
+
                                         </span>
                                         <span class="badge-kuitansi" style="font-size: 10px; padding: 3px 6px;">
-                                            #{{ $key->nokuit }}
+                                            #<?php echo e($key->nokuit); ?>
+
                                         </span>
                                     </div>
                                     <div class="mobile-card-body">
@@ -356,29 +359,32 @@
                                                 <i class="fa fa-calendar" style="margin-right: 4px;"></i> Tanggal Bayar
                                             </span>
                                             <span class="value">
-                                                {{ Carbon\Carbon::parse($key->tanggal)->formatLocalized('%d %B %Y') }}
+                                                <?php echo e(Carbon\Carbon::parse($key->tanggal)->formatLocalized('%d %B %Y')); ?>
+
                                             </span>
                                         </div>
                                     </div>
                                     <div class="mobile-card-amount">
                                         <span style="font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px;">Nominal</span>
-                                        <span class="mobile-amount-val">@currency((float) $key->bayar)</span>
+                                        <span class="mobile-amount-val">Rp. <?php echo number_format((float) $key->bayar, 0, ',', '.'); ?></span>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             
                             <!-- Total Widget for Mobile -->
                             <div class="mobile-payment-card" style="background: #ebfbf2; border-color: #c3e6cb; margin-top: 15px; box-shadow: none;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <span style="font-size: 13px; font-weight: 700; color: #1e7e34;">Total Pembayaran</span>
-                                    <span style="font-size: 16px; font-weight: 800; color: #2dca73;">@currency((float) $totalbayarmhs)</span>
+                                    <span style="font-size: 16px; font-weight: 800; color: #2dca73;">Rp. <?php echo number_format((float) $totalbayarmhs, 0, ',', '.'); ?></span>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
 
                 </div>
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/keuangan/record_biaya.blade.php ENDPATH**/ ?>

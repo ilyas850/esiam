@@ -1,9 +1,7 @@
-@extends('layouts.master')
-
-@section('side')
-    @include('layouts.side')
-@endsection
-@section('content')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
 <style>
     /* Styling modern untuk desktop */
     .custom-box {
@@ -125,15 +123,15 @@
         </div>
         <div class="box-body">
 
-            @php
+            <?php
                 // Pre-computation logic can go here if needed
-            @endphp
+            ?>
 
             <!-- Mobile View (Card List) -->
             <div class="mobile-list-view">
-                @php $no = 1; @endphp
-                @foreach ($itembayar as $item)
-                    @php
+                <?php $no = 1; ?>
+                <?php $__currentLoopData = $itembayar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $harga = 0;
                         $persen_beasiswa = 0;
                         $telah_dibayar = 0;
@@ -241,34 +239,34 @@
                         
                         $statusColor = ($sisa_pembayaran > 0) ? 'danger' : 'success';
                         $statusText = ($sisa_pembayaran > 0) ? 'Belum Lunas' : 'Lunas';
-                    @endphp
+                    ?>
                     <div class="mobile-item-card">
                         <div class="mobile-item-header">
-                            <span class="mobile-item-title">{{ $no++ }}. {{ $item->item }}</span>
-                            <span class="status-badge {{ $statusColor }}">{{ $statusText }}</span>
+                            <span class="mobile-item-title"><?php echo e($no++); ?>. <?php echo e($item->item); ?></span>
+                            <span class="status-badge <?php echo e($statusColor); ?>"><?php echo e($statusText); ?></span>
                         </div>
                         <div class="mobile-detail-row">
                             <span class="mobile-detail-label">Biaya Asli</span>
-                            <span class="mobile-detail-value">@currency($harga)</span>
+                            <span class="mobile-detail-value">Rp. <?php echo number_format($harga, 0, ',', '.'); ?></span>
                         </div>
                         <div class="mobile-detail-row">
-                            <span class="mobile-detail-label">Beasiswa ({{ $persen_beasiswa }}%)</span>
-                            <span class="mobile-detail-value">@currency($nilai_beasiswa)</span>
+                            <span class="mobile-detail-label">Beasiswa (<?php echo e($persen_beasiswa); ?>%)</span>
+                            <span class="mobile-detail-value">Rp. <?php echo number_format($nilai_beasiswa, 0, ',', '.'); ?></span>
                         </div>
                         <div class="mobile-detail-row">
                             <span class="mobile-detail-label">Total Pembayaran</span>
-                            <span class="mobile-detail-value">@currency($total_bayar)</span>
+                            <span class="mobile-detail-value">Rp. <?php echo number_format($total_bayar, 0, ',', '.'); ?></span>
                         </div>
                         <div class="mobile-detail-row">
                             <span class="mobile-detail-label">Telah Dibayarkan</span>
-                            <span class="mobile-detail-value">@currency($telah_dibayar)</span>
+                            <span class="mobile-detail-value">Rp. <?php echo number_format($telah_dibayar, 0, ',', '.'); ?></span>
                         </div>
                         <div class="mobile-detail-row">
                             <span class="mobile-detail-label">Sisa Pembayaran</span>
-                            <span class="mobile-detail-value sisa">@currency($sisa_pembayaran)</span>
+                            <span class="mobile-detail-value sisa">Rp. <?php echo number_format($sisa_pembayaran, 0, ',', '.'); ?></span>
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
             <!-- Desktop View (Table) -->
@@ -287,9 +285,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $no = 1; @endphp
-                        @foreach ($itembayar as $item)
-                            @php
+                        <?php $no = 1; ?>
+                        <?php $__currentLoopData = $itembayar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $harga = 0;
                                 $persen_beasiswa = 0;
                                 $telah_dibayar = 0;
@@ -397,20 +395,20 @@
                                 
                                 $statusColor = ($sisa_pembayaran > 0) ? 'danger' : 'success';
                                 $statusText = ($sisa_pembayaran > 0) ? 'Belum Lunas' : 'Lunas';
-                            @endphp
+                            ?>
                             <tr>
-                                <td class="text-center">{{ $no++ }}</td>
-                                <td><strong>{{ $item->item }}</strong></td>
-                                <td class="text-right">@currency($harga)</td>
-                                <td class="text-center">{{ $persen_beasiswa }}%</td>
-                                <td class="text-right"><strong>@currency($total_bayar)</strong></td>
-                                <td class="text-right text-success">@currency($telah_dibayar)</td>
-                                <td class="text-right text-danger"><strong>@currency($sisa_pembayaran)</strong></td>
+                                <td class="text-center"><?php echo e($no++); ?></td>
+                                <td><strong><?php echo e($item->item); ?></strong></td>
+                                <td class="text-right">Rp. <?php echo number_format($harga, 0, ',', '.'); ?></td>
+                                <td class="text-center"><?php echo e($persen_beasiswa); ?>%</td>
+                                <td class="text-right"><strong>Rp. <?php echo number_format($total_bayar, 0, ',', '.'); ?></strong></td>
+                                <td class="text-right text-success">Rp. <?php echo number_format($telah_dibayar, 0, ',', '.'); ?></td>
+                                <td class="text-right text-danger"><strong>Rp. <?php echo number_format($sisa_pembayaran, 0, ',', '.'); ?></strong></td>
                                 <td class="text-center">
-                                    <span class="status-badge {{ $statusColor }}">{{ $statusText }}</span>
+                                    <span class="status-badge <?php echo e($statusColor); ?>"><?php echo e($statusText); ?></span>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
@@ -418,4 +416,6 @@
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/keuangan/tabel_biaya.blade.php ENDPATH**/ ?>
