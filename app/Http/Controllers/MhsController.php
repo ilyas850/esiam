@@ -534,31 +534,28 @@ class MhsController extends Controller
 
     public function jadwal()
     {
-        $id = Auth::user()->id_user;
-
-        // $jadwal = DB::select('CALL persentase_absen_per_mhs(?)', [$id]);
-
-        // 1. Ambil ID mahasiswa yang sedang login
         $id_student = Auth::user()->id_user;
 
-        // 2. Buat subquery untuk menghitung total pertemuan (alias 'aa' di SQL asli)
         $subQueryTotalPertemuan = DB::table('bap')
-            ->select('id_kurperiode', DB::raw('COUNT(id_kurperiode) as total'))
+            ->select('id_kurperiode', DB::raw('COUNT(DISTINCT pertemuan) as total'))
             ->where('status', 'ACTIVE')
             ->groupBy('id_kurperiode');
 
-        // 3. Buat subquery untuk menghitung jumlah kehadiran mhs (alias 'bb' di SQL asli)
         $subQueryJumlahHadir = DB::table('student_record as sr_sub')
-            ->join('bap as bp', 'sr_sub.id_kurperiode', '=', 'bp.id_kurperiode')
+            ->join('bap as bap_hadir', 'sr_sub.id_kurperiode', '=', 'bap_hadir.id_kurperiode')
             ->join('absensi_mahasiswa as am', function ($join) {
-                $join->on('bp.id_bap', '=', 'am.id_bap')
+                $join->on('bap_hadir.id_bap', '=', 'am.id_bap')
                     ->on('sr_sub.id_studentrecord', '=', 'am.id_studentrecord');
             })
-            ->select('am.id_studentrecord', DB::raw('COUNT(am.id_studentrecord) as jml'))
+            ->where('bap_hadir.status', 'ACTIVE')
             ->where('sr_sub.id_student', $id_student)
-            ->groupBy('am.id_studentrecord');
+            ->where('am.absensi', 'ABSEN')
+            ->select(
+                'sr_sub.id_kurperiode',
+                DB::raw('COUNT(DISTINCT bap_hadir.pertemuan) as jml')
+            )
+            ->groupBy('sr_sub.id_kurperiode');
 
-        // 4. Bangun query utama menggunakan Query Builder
         $jadwal = DB::table('student_record as sr')
             ->join('kurikulum_periode as kp', 'sr.id_kurperiode', '=', 'kp.id_kurperiode')
             ->join('periode_tahun as thn', 'kp.id_periodetahun', '=', 'thn.id_periodetahun')
@@ -568,58 +565,129 @@ class MhsController extends Controller
             ->leftJoin('kurikulum_jam as jam', 'kp.id_jam', '=', 'jam.id_jam')
             ->leftJoin('ruangan as rgn', 'kp.id_ruangan', '=', 'rgn.id_ruangan')
             ->leftJoin('dosen as dsn', 'kp.id_dosen', '=', 'dsn.iddosen')
-
-            // Gabungkan dengan subquery yang sudah dibuat
             ->leftJoinSub($subQueryTotalPertemuan, 'aa', function ($join) {
                 $join->on('aa.id_kurperiode', '=', 'sr.id_kurperiode');
             })
             ->leftJoinSub($subQueryJumlahHadir, 'bb', function ($join) {
-                $join->on('bb.id_studentrecord', '=', 'sr.id_studentrecord');
+                $join->on('bb.id_kurperiode', '=', 'sr.id_kurperiode');
             })
-
-            // Pilih kolom yang dibutuhkan
             ->select(
                 'sr.id_studentrecord',
                 'sr.id_kurperiode',
+                'thn.periode_tahun',
+                'tp.periode_tipe',
                 'hari.hari',
                 'jam.jam',
-                DB::raw("CONCAT(mk.kode, ' - ', mk.makul) AS makul"),
+                'mk.kode',
+                'mk.makul',
                 'rgn.nama_ruangan',
                 'dsn.nama',
                 DB::raw('IFNULL(aa.total, 0) AS total'),
                 DB::raw('IFNULL(bb.jml, 0) AS jml'),
-                // Kalkulasi persentase dengan pengaman pembagian dengan nol
                 DB::raw('CASE WHEN IFNULL(aa.total, 0) > 0 THEN ROUND((IFNULL(bb.jml, 0) / aa.total) * 100, 2) ELSE 0 END AS persentase')
             )
-
-            // Terapkan filter
             ->where('sr.id_student', $id_student)
             ->where('sr.status', 'TAKEN')
             ->where('kp.status', 'ACTIVE')
             ->where('thn.status', 'ACTIVE')
             ->where('tp.status', 'ACTIVE')
-
-            // Urutkan hasil
             ->orderBy('hari.id_hari', 'asc')
             ->orderBy('jam.jam', 'asc')
-
-            // Eksekusi query
             ->get();
 
-        return view('mhs/jadwal', ['jadwal' => $jadwal]);
+        $jadwal = $jadwal->map(function ($item) {
+            $persentase = (float) $item->persentase;
+
+            if ($persentase <= 60) {
+                $item->persentase_class = 'danger';
+                $item->persentase_text = 'Perlu perhatian';
+            } elseif ($persentase <= 84) {
+                $item->persentase_class = 'warning';
+                $item->persentase_text = 'Cukup aman';
+            } elseif ($persentase < 100) {
+                $item->persentase_class = 'success';
+                $item->persentase_text = 'Baik';
+            } else {
+                $item->persentase_class = 'info';
+                $item->persentase_text = 'Sempurna';
+            }
+
+            $item->search_text = strtolower(implode(' ', [
+                $item->hari,
+                $item->jam,
+                $item->kode,
+                $item->makul,
+                $item->nama_ruangan,
+                $item->nama,
+                $item->persentase_text,
+            ]));
+
+            return $item;
+        });
+
+        $summary = [
+            'total_makul' => $jadwal->count(),
+            'total_pertemuan' => (int) $jadwal->sum('total'),
+            'total_hadir' => (int) $jadwal->sum('jml'),
+            'rata_persentase' => $jadwal->count() ? round($jadwal->avg('persentase'), 2) : 0,
+            'warning_count' => $jadwal->where('persentase', '<=', 75)->count(),
+            'periode_label' => $jadwal->isNotEmpty()
+                ? $jadwal->first()->periode_tahun . ' ' . $jadwal->first()->periode_tipe
+                : '-',
+        ];
+
+        return view('mhs/jadwal', compact('jadwal', 'summary'));
     }
 
     function history_perkuliahan()
     {
         $id = Auth::user()->id_user;
-        $data = DB::select('CALL persentase_absen_per_mhs_all_makul(?)', [$id]);
+        $data = collect(DB::select('CALL persentase_absen_per_mhs_all_makul(?)', [$id]))
+            ->map(function ($item) {
+                $persentase = (float) $item->persentase;
 
-        return view('mhs/perkuliahan/history_perkuliahan', compact('data'));
+                if ($persentase <= 60) {
+                    $item->persentase_class = 'danger';
+                    $item->persentase_text = 'Perlu perhatian';
+                } elseif ($persentase <= 84) {
+                    $item->persentase_class = 'warning';
+                    $item->persentase_text = 'Cukup aman';
+                } elseif ($persentase < 100) {
+                    $item->persentase_class = 'success';
+                    $item->persentase_text = 'Baik';
+                } else {
+                    $item->persentase_class = 'info';
+                    $item->persentase_text = 'Sempurna';
+                }
+
+                $item->periode_label = trim($item->periode_tahun . ' ' . $item->periode_tipe);
+                $item->search_text = strtolower(implode(' ', [
+                    $item->periode_tahun,
+                    $item->periode_tipe,
+                    $item->hari,
+                    $item->jam,
+                    $item->makul,
+                    $item->nama,
+                    $item->persentase_text,
+                ]));
+
+                return $item;
+            });
+
+        $summary = [
+            'total_makul' => $data->count(),
+            'total_hadir' => (int) $data->sum('jml'),
+            'total_pertemuan' => (int) $data->sum('total'),
+            'rata_persentase' => $data->count() ? round($data->avg('persentase'), 2) : 0,
+            'warning_count' => $data->where('persentase', '<=', 75)->count(),
+        ];
+
+        return view('mhs/perkuliahan/history_perkuliahan', compact('data', 'summary'));
     }
 
     public function lihatabsen($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $course = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -637,10 +705,11 @@ class MhsController extends Controller
                 'periode_tipe.periode_tipe',
                 'periode_tahun.periode_tahun',
                 'dosen.akademik',
-                'dosen.nama',
+                'dosen.nama as dosen_nama',
                 'ruangan.nama_ruangan',
                 'kurikulum_jam.jam',
                 'kurikulum_hari.hari',
+                'matakuliah.kode',
                 DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
                 'kurikulum_periode.id_kurperiode',
                 'matakuliah.makul',
@@ -648,12 +717,14 @@ class MhsController extends Controller
                 'kelas.kelas',
                 'semester.semester'
             )
-            ->get();
-        foreach ($bap as $key) {
-            # code...
+            ->first();
+
+        if (!$course) {
+            Alert::warning('Data jadwal tidak ditemukan', 'MAAF !!');
+            return redirect('jadwal');
         }
 
-        $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
+        $bap = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
             ->where('bap.id_kurperiode', $id)
             ->where('bap.status', 'ACTIVE')
@@ -671,30 +742,60 @@ class MhsController extends Controller
                 'bap.tidak_hadir',
                 'bap.praktikum'
             )
+            ->orderByRaw('CAST(bap.pertemuan AS UNSIGNED) ASC')
             ->get();
-        $d = count($data);
-        if ($d > 0) {
-            foreach ($data as $keybap) {
-                # code...
-            }
 
-            $idb = $keybap->id_bap;
-
-            return view('mhs/lihatabsen', ['idb' => $idb, 'data' => $key, 'bap' => $data]);
-        } elseif ($d == 0) {
+        if ($bap->isEmpty()) {
             Alert::warning('maaf mata kuliah belum ada absensi', 'MAAF !!');
             return redirect('jadwal');
         }
+
+        $durasiMenit = 0;
+        if ((int) $course->id_kelas === 1) {
+            $durasiMenit = ($course->akt_sks_teori * 50) + ($course->akt_sks_praktek * 120);
+        } elseif (in_array((int) $course->id_kelas, [2, 3])) {
+            $durasiMenit = ($course->akt_sks_teori * 45) + ($course->akt_sks_praktek * 90);
+        }
+
+        $course->jam_selesai = $course->jam
+            ? date('H:i', strtotime($course->jam) + (60 * $durasiMenit))
+            : null;
+        $course->dosen_label = trim($course->dosen_nama . ', ' . $course->akademik, ', ');
+
+        $bap = $bap->map(function ($item) {
+            $item->tanggal_label = $item->tanggal ? date('d-m-Y', strtotime($item->tanggal)) : '-';
+            $item->jam_label = trim(
+                ($item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : '-') . ' - ' .
+                ($item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : '-')
+            );
+            $item->materi_kuliah = $item->materi_kuliah ?: '-';
+            $item->praktikum = $item->praktikum ?: '-';
+            $item->tipe_kuliah = $item->tipe_kuliah ?: '-';
+
+            return $item;
+        });
+
+        $summary = [
+            'total_pertemuan' => $bap->count(),
+            'total_hadir' => (int) $bap->sum('hadir'),
+            'total_tidak_hadir' => (int) $bap->sum('tidak_hadir'),
+            'pertemuan_terakhir' => $bap->max(function ($item) {
+                return (int) $item->pertemuan;
+            }) ?: '-',
+        ];
+
+        return view('mhs/lihatabsen', compact('course', 'bap', 'summary'));
     }
 
     public function view_bap($id)
     {
-        $bp = Bap::where('id_bap', $id)->get();
-        foreach ($bp as $dtbp) {
-            # code...
+        $dtbp = Bap::where('id_bap', $id)->first();
+        if (!$dtbp) {
+            Alert::warning('Data BAP tidak ditemukan', 'MAAF !!');
+            return redirect()->back();
         }
 
-        $bap = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+        $course = Kurikulum_periode::join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
@@ -702,22 +803,75 @@ class MhsController extends Controller
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
             ->where('kurikulum_periode.id_kurperiode', $dtbp->id_kurperiode)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->select('dosen.iddosen', 'semester.semester', 'kelas.kelas', 'prodi.prodi', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'matakuliah.makul', 'dosen.nama')
-            ->get();
-        foreach ($bap as $data) {
-            # code...
-        }
-        $prd = $data->prodi;
-        $tipe = $data->periode_tipe;
-        $tahun = $data->periode_tahun;
+            ->select(
+                'dosen.iddosen',
+                'dosen.nama as dosen_nama',
+                'dosen.akademik',
+                'semester.semester',
+                'kelas.kelas',
+                'prodi.prodi',
+                'periode_tipe.periode_tipe',
+                'periode_tahun.periode_tahun',
+                'matakuliah.kode',
+                'matakuliah.makul'
+            )
+            ->first();
 
-        return view('mhs/view_bap', ['prd' => $prd, 'tipe' => $tipe, 'tahun' => $tahun, 'data' => $data, 'dtbp' => $dtbp]);
+        if (!$course) {
+            Alert::warning('Data matakuliah tidak ditemukan', 'MAAF !!');
+            return redirect()->back();
+        }
+
+        $dtbp->tanggal_label = $dtbp->tanggal ? date('d-m-Y', strtotime($dtbp->tanggal)) : '-';
+        $dtbp->jam_label = trim(
+            ($dtbp->jam_mulai ? date('H:i', strtotime($dtbp->jam_mulai)) : '-') . ' - ' .
+            ($dtbp->jam_selsai ? date('H:i', strtotime($dtbp->jam_selsai)) : '-')
+        );
+        $dtbp->materi_kuliah = $dtbp->materi_kuliah ?: '-';
+        $dtbp->media_pembelajaran = $dtbp->media_pembelajaran ?: '-';
+        $dtbp->metode_kuliah = $dtbp->metode_kuliah ?: '-';
+
+        $course->dosen_label = trim($course->dosen_nama . ', ' . $course->akademik, ', ');
+
+        $attachments = [
+            [
+                'title' => 'Kuliah Tatap Muka',
+                'icon' => 'users',
+                'class' => 'aqua',
+                'file' => $dtbp->file_kuliah_tatapmuka,
+                'url' => $dtbp->file_kuliah_tatapmuka
+                    ? url('/File_BAP/' . $course->iddosen . '/' . $dtbp->id_kurperiode . '/Kuliah Tatap Muka/' . $dtbp->file_kuliah_tatapmuka)
+                    : null,
+                'label' => $dtbp->file_kuliah_tatapmuka ? 'Lihat lampiran' : 'Tidak ada lampiran',
+            ],
+            [
+                'title' => 'Materi Perkuliahan',
+                'icon' => 'book',
+                'class' => 'green',
+                'file' => $dtbp->file_materi_kuliah ?: $dtbp->link_materi,
+                'url' => $dtbp->file_materi_kuliah
+                    ? url('/File_BAP/' . $course->iddosen . '/' . $dtbp->id_kurperiode . '/Materi Kuliah/' . $dtbp->file_materi_kuliah)
+                    : $dtbp->link_materi,
+                'label' => $dtbp->file_materi_kuliah ? 'Lihat materi' : ($dtbp->link_materi ? 'Buka link materi' : 'Tidak ada lampiran'),
+            ],
+            [
+                'title' => 'Materi Tugas',
+                'icon' => 'pencil',
+                'class' => 'yellow',
+                'file' => $dtbp->file_materi_tugas,
+                'url' => $dtbp->file_materi_tugas
+                    ? url('/File_BAP/' . $course->iddosen . '/' . $dtbp->id_kurperiode . '/Tugas Kuliah/' . $dtbp->file_materi_tugas)
+                    : null,
+                'label' => $dtbp->file_materi_tugas ? 'Lihat tugas' : 'Tidak ada lampiran',
+            ],
+        ];
+
+        return view('mhs/view_bap', compact('course', 'dtbp', 'attachments'));
     }
 
     public function view_abs($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $course = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -735,10 +889,11 @@ class MhsController extends Controller
                 'periode_tipe.periode_tipe',
                 'periode_tahun.periode_tahun',
                 'dosen.akademik',
-                'dosen.nama',
+                'dosen.nama as dosen_nama',
                 'ruangan.nama_ruangan',
                 'kurikulum_jam.jam',
                 'kurikulum_hari.hari',
+                'matakuliah.kode',
                 DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
                 'kurikulum_periode.id_kurperiode',
                 'matakuliah.makul',
@@ -746,9 +901,11 @@ class MhsController extends Controller
                 'kelas.kelas',
                 'semester.semester'
             )
-            ->get();
-        foreach ($bap as $key) {
-            # code...
+            ->first();
+
+        if (!$course) {
+            Alert::warning('Data jadwal tidak ditemukan', 'MAAF !!');
+            return redirect('jadwal');
         }
 
         $ids = Auth::user()->id_user;
@@ -756,6 +913,11 @@ class MhsController extends Controller
             ->where('id_student', $ids)
             ->where('status', 'TAKEN')
             ->first();
+
+        if (!$kur) {
+            Alert::warning('Data kehadiran mahasiswa tidak ditemukan', 'MAAF !!');
+            return redirect('jadwal');
+        }
 
         $abs = Absensi_mahasiswa::join('bap', 'absensi_mahasiswa.id_bap', '=', 'bap.id_bap')
             ->join('student_record', 'absensi_mahasiswa.id_studentrecord', '=', 'student_record.id_studentrecord')
@@ -773,10 +935,62 @@ class MhsController extends Controller
                 'student.nim',
                 'absensi_mahasiswa.absensi'
             )
-            ->orderBy('bap.tanggal', 'ASC')
+            ->orderByRaw('CAST(bap.pertemuan AS UNSIGNED) ASC')
             ->get();
 
-        return view('mhs/rekap_absen', ['data' => $key, 'abs' => $abs]);
+        $durasiMenit = 0;
+        if ((int) $course->id_kelas === 1) {
+            $durasiMenit = ($course->akt_sks_teori * 50) + ($course->akt_sks_praktek * 120);
+        } elseif (in_array((int) $course->id_kelas, [2, 3])) {
+            $durasiMenit = ($course->akt_sks_teori * 45) + ($course->akt_sks_praktek * 90);
+        }
+
+        $course->jam_selesai = $course->jam
+            ? date('H:i', strtotime($course->jam) + (60 * $durasiMenit))
+            : null;
+        $course->dosen_label = trim($course->dosen_nama . ', ' . $course->akademik, ', ');
+
+        $abs = $abs->map(function ($item) {
+            $item->tanggal_label = $item->tanggal ? date('d-m-Y', strtotime($item->tanggal)) : '-';
+            $item->jam_label = trim(
+                ($item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : '-') . ' - ' .
+                ($item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : '-')
+            );
+
+            if ($item->absensi === 'ABSEN') {
+                $item->status_icon = 'check';
+                $item->status_class = 'success';
+                $item->status_label = 'Hadir';
+                $item->status_short = 'H';
+            } elseif ($item->absensi === 'IZIN') {
+                $item->status_icon = 'info-circle';
+                $item->status_class = 'info';
+                $item->status_label = 'Izin';
+                $item->status_short = 'I';
+            } elseif ($item->absensi === 'SAKIT') {
+                $item->status_icon = 'medkit';
+                $item->status_class = 'warning';
+                $item->status_label = 'Sakit';
+                $item->status_short = 'S';
+            } else {
+                $item->status_icon = 'times';
+                $item->status_class = 'danger';
+                $item->status_label = $item->absensi === 'ALFA' ? 'Alfa' : 'Tidak Hadir';
+                $item->status_short = $item->absensi === 'ALFA' ? 'A' : 'X';
+            }
+
+            return $item;
+        });
+
+        $summary = [
+            'total_pertemuan' => $abs->count(),
+            'hadir' => $abs->where('absensi', 'ABSEN')->count(),
+            'izin' => $abs->where('absensi', 'IZIN')->count(),
+            'sakit' => $abs->where('absensi', 'SAKIT')->count(),
+            'alfa' => $abs->where('absensi', 'ALFA')->count(),
+        ];
+
+        return view('mhs/rekap_absen', compact('course', 'abs', 'summary'));
     }
 
     public function khs_mid()
