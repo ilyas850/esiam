@@ -2536,9 +2536,9 @@ class DosenController extends Controller
             'link_materi' => 'required',
             'id_rps' => 'required',
             'alasan_pembaharuan_materi' => 'required',
-            'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png|max:2000',
+            'file_kuliah_tatapmuka' => 'mimes:jpg,jpeg,png,pdf,PDF|max:2000',
             'file_materi_kuliah' => 'mimes:pdf,docx,DOCX,PDF|max:4000',
-            'file_materi_tugas' => 'mimes:jpg,jpeg,png|max:2000',
+            'file_materi_tugas' => 'mimes:jpg,jpeg,png,pdf,PDF|max:2000',
         ]);
 
         $data_bap = Bap::where('id_bap', $id)->first();
