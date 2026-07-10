@@ -3089,8 +3089,34 @@ class KaprodiController extends Controller
 
   public function input_uts_kprd($id)
   {
-    //cek mahasiswa
-    $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+    $kelas_gabungan = DB::select("
+        SELECT c.id_studentrecord, c.id_kurperiode, c.id_student, c.id_kurtrans, d.nim, d.nama, e.prodi, f.kelas, g.angkatan, 
+               c.nilai_KAT, c.nilai_UTS, c.nilai_UAS, c.nilai_AKHIR, c.nilai_AKHIR_angka, h.id_studentrecord AS id_ujian, h.absen_uts, h.absen_uas,
+               h.ket_absensi, h.permohonan, i.id_studentrecord AS id_mohon
+          FROM 
+        (SELECT a.id_kurperiode, a.id_periodetahun, a.id_periodetipe, a.id_semester, a.id_prodi, a.id_kelas, a.id_makul, a.id_hari, a.id_jam, a.id_dosen
+            FROM kurikulum_periode a
+          WHERE a.id_kurperiode = :id_kurperiode
+            AND a.`status` = 'ACTIVE') aa
+        LEFT JOIN kurikulum_periode a
+                 ON aa.id_periodetahun = a.id_periodetahun AND aa.id_periodetipe = a.id_periodetipe AND aa.id_dosen = a.id_dosen
+               AND aa.id_hari = a.id_hari AND aa.id_jam = a.id_jam AND aa.id_makul = a.id_makul AND a.`status` = 'ACTIVE'
+              JOIN student_record c
+                ON c.id_kurperiode = a.id_kurperiode AND c.`status` = 'TAKEN'
+              JOIN student d
+                ON d.idstudent = c.id_student 
+              JOIN prodi e
+                ON e.kodeprodi = d.kodeprodi AND e.kodekonsentrasi = d.kodekonsentrasi
+              JOIN kelas f
+                ON f.idkelas = d.idstatus
+              JOIN angkatan g
+                ON g.idangkatan = d.idangkatan
+        LEFT JOIN absen_ujian h
+                 ON h.id_studentrecord = c.id_studentrecord
+        LEFT JOIN permohonan_ujian i
+                 ON i.id_studentrecord = c.id_studentrecord
+        ORDER BY e.prodi ASC, f.kelas ASC, d.nim ASC
+    ", ['id_kurperiode' => $id]);
 
     $mkl = Kurikulum_periode::where('id_kurperiode', $id)->first();
 
