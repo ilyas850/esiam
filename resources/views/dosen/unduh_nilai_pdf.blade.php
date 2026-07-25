@@ -59,21 +59,21 @@
         </tr>
     </table>
     <br>
-    <table border="1" width="100%">
+    <table border="1" width="100%" cellpadding="4">
         <thead>
-            <tr>
-                <th><span style="font-size:85%">No</span></th>
-                <th><span style="font-size:85%">NIM </span></th>
-                <th><span style="font-size:85%">Nama Mahasiswa</span></th>
-                <th><span style="font-size:85%">Nilai KAT</span></th>
-                <th><span style="font-size:85%">Nilai UTS</span></th>
-                <th><span style="font-size:85%">Nilai UAS</span></th>
-                <th><span style="font-size:85%">Nilai AKHIR</span></th>
-                <th><span style="font-size:85%">Nilai HURUF</span></th>
+            <tr style="background-color: #f2f2f2;">
+                <th width="4%"><span style="font-size:85%">No</span></th>
+                <th width="14%"><span style="font-size:85%">NIM</span></th>
+                <th width="32%"><span style="font-size:85%">Nama Mahasiswa</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai KAT</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai UTS</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai UAS</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai AKHIR</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai HURUF</span></th>
             </tr>
         </thead>
         <tbody>
-            @php $i=1 @endphp
+            @php $i=1; @endphp
             @foreach ($tb as $item)
                 <tr>
                     <td style="font-size:85%">

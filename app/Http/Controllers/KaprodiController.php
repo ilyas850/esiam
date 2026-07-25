@@ -1382,7 +1382,7 @@ class KaprodiController extends Controller
 
   public function unduh_pdf_nilai($id)
   {
-    $mk = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+    $key = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', 'kelas.idkelas')
       ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
@@ -1390,12 +1390,16 @@ class KaprodiController extends Controller
       ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
       ->where('kurikulum_periode.id_kurperiode', $id)
       ->select('periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'dosen.nama', 'dosen.akademik', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'prodi.prodi', 'kelas.kelas')
-      ->get();
+      ->first();
 
     $kelas_gabungan = DB::select('CALL absensi_mahasiswa_prodi_kelas(?)', [$id]);
 
-    foreach ($mk as $key) {
-      # code...
+    $mhs_kelas = collect($kelas_gabungan)->filter(function ($item) use ($key) {
+      return isset($item->kelas) && trim(strtolower($item->kelas)) === trim(strtolower($key->kelas));
+    })->values();
+
+    if ($mhs_kelas->isEmpty()) {
+      $mhs_kelas = collect($kelas_gabungan);
     }
 
     $makul = $key->makul;
@@ -1420,8 +1424,7 @@ class KaprodiController extends Controller
     $m = $bulan[date('m')];
     $y = date('Y');
 
-    // return view('dosen/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data'=>$key,'tb'=>$cks]);
-    $pdf = PDF::loadView('kaprodi/matakuliah/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $kelas_gabungan]);
+    $pdf = PDF::loadView('kaprodi/matakuliah/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $mhs_kelas])->setPaper('a4', 'landscape');
     return $pdf->download('Nilai Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
   }
 
@@ -2599,7 +2602,87 @@ class KaprodiController extends Controller
   {
     $iddsn = Auth::user()->id_user;
 
-    $mkul = DB::select('CALL history_makul_diampu_new(?)', [$iddsn]);
+    $subEdom = DB::table('kurikulum_periode as a')
+        ->join('edom_transaction as c', 'c.id_kurperiode', '=', 'a.id_kurperiode')
+        ->join('prodi as b', 'b.id_prodi', '=', 'a.id_prodi')
+        ->join('matakuliah as d', 'd.idmakul', '=', 'a.id_makul')
+        ->join('kelas as e', 'e.idkelas', '=', 'a.id_kelas')
+        ->join('periode_tahun as g', 'g.id_periodetahun', '=', 'a.id_periodetahun')
+        ->join('periode_tipe as h', 'h.id_periodetipe', '=', 'a.id_periodetipe')
+        ->where('a.status', 'ACTIVE')
+        ->where(function ($q) use ($iddsn) {
+            $q->where('a.id_dosen', $iddsn)
+              ->orWhere('a.id_dosen_2', $iddsn);
+        })
+        ->whereNotIn('c.id_edom', [17])
+        ->groupBy('d.kode', 'd.makul', 'b.prodi', 'e.kelas', 'g.periode_tahun', 'h.periode_tipe')
+        ->select(
+            'd.kode',
+            'd.makul',
+            'b.prodi',
+            'e.kelas',
+            'g.periode_tahun',
+            'h.periode_tipe',
+            DB::raw('COUNT(DISTINCT c.id_student) AS jml_edom'),
+            DB::raw('ROUND((SUM(c.nilai_edom) * 100 / 120) / COUNT(DISTINCT c.id_student), 2) AS nilai_edom'),
+            DB::raw('SUM(c.nilai_edom) AS nilai_edom1')
+        );
+
+    $mkul = Kurikulum_periode::from('kurikulum_periode as a')
+        ->join('prodi as b', 'b.id_prodi', '=', 'a.id_prodi')
+        ->join('matakuliah as d', 'd.idmakul', '=', 'a.id_makul')
+        ->join('kelas as e', 'e.idkelas', '=', 'a.id_kelas')
+        ->join('semester as f', 'f.idsemester', '=', 'a.id_semester')
+        ->join('periode_tahun as g', 'g.id_periodetahun', '=', 'a.id_periodetahun')
+        ->join('periode_tipe as h', 'h.id_periodetipe', '=', 'a.id_periodetipe')
+        ->leftJoinSub($subEdom, 'aa', function ($join) {
+            $join->on('d.kode', '=', 'aa.kode')
+                 ->on('d.makul', '=', 'aa.makul')
+                 ->on('b.prodi', '=', 'aa.prodi')
+                 ->on('e.kelas', '=', 'aa.kelas')
+                 ->on('g.periode_tahun', '=', 'aa.periode_tahun')
+                 ->on('h.periode_tipe', '=', 'aa.periode_tipe');
+        })
+        ->where('a.status', 'ACTIVE')
+        ->where(function ($q) use ($iddsn) {
+            $q->where('a.id_dosen', $iddsn)
+              ->orWhere('a.id_dosen_2', $iddsn);
+        })
+        ->select(
+            DB::raw('MAX(a.id_kurperiode) AS id_kurperiode'),
+            DB::raw("CONCAT(d.kode, '/', d.makul) AS makul"),
+            DB::raw("CONCAT(d.akt_sks_teori, '/', d.akt_sks_praktek) AS sks"),
+            'b.prodi',
+            'e.kelas',
+            DB::raw("GROUP_CONCAT(DISTINCT f.semester ORDER BY f.semester ASC SEPARATOR ', ') AS semester"),
+            'g.periode_tahun',
+            'h.periode_tipe',
+            DB::raw('IFNULL(aa.jml_edom, 0) AS jml_edom'),
+            DB::raw('IFNULL(aa.nilai_edom, 0) AS nilai_edom'),
+            DB::raw('IFNULL(aa.nilai_edom1, 0) AS nilai_edom1'),
+            DB::raw("FORMAT(IFNULL((((IFNULL(aa.nilai_edom1, 0) + 6) * 10) / (7 * NULLIF(aa.jml_edom, 0))), 0), 2) AS jml"),
+            DB::raw('MAX(a.id_periodetahun) AS id_periodetahun'),
+            DB::raw('MAX(a.id_periodetipe) AS id_periodetipe')
+        )
+        ->groupBy(
+            'd.kode',
+            'd.makul',
+            'd.akt_sks_teori',
+            'd.akt_sks_praktek',
+            'b.prodi',
+            'e.kelas',
+            'g.periode_tahun',
+            'h.periode_tipe',
+            'aa.jml_edom',
+            'aa.nilai_edom',
+            'aa.nilai_edom1'
+        )
+        ->orderBy('g.periode_tahun', 'DESC')
+        ->orderBy('h.periode_tipe', 'ASC')
+        ->orderBy('d.makul', 'ASC')
+        ->orderBy('b.prodi', 'ASC')
+        ->orderBy('e.kelas', 'ASC')
+        ->get();
 
     return view('kaprodi/record/history_makul_dsn', ['makul' => $mkul]);
   }
