@@ -47,38 +47,50 @@
 		 </tr>
 	</table>
 	<br>
-	<table border="1" width="100%">
-		 <thead>
-
-			 <tr>
-				<th><span style="font-size:85%">No</span></th>
-				<th><span style="font-size:85%">NIM </span></th>
-				<th><span style="font-size:85%">Nama Mahasiswa</span></th>
-                <th><span style="font-size:85%">Nilai KAT</span></th>
-                <th><span style="font-size:85%">Nilai UTS</span></th>
-                <th><span style="font-size:85%">Nilai UAS</span></th>
-                <th><span style="font-size:85%">Nilai AKHIR</span></th>
-                <th><span style="font-size:85%">Nilai HURUF</span></th>
-			 </tr>
-       
-		 </thead>
-		 <tbody>
-        @php $i=1 @endphp
-        @foreach ($tb as $item)
-            <tr>
-                <td style="font-size:85%"><center>{{$i++}}</center></td>
-                <td style="font-size:85%"><center>{{$item->nim}}</center></td>
-                <td style="font-size:85%">{{$item->nama}}</td>
-                <td style="font-size:85%"><center>{{$item->nilai_KAT}}</center></td>
-                <td style="font-size:85%"><center>{{$item->nilai_UTS}}</center></td>
-                <td style="font-size:85%"><center>{{$item->nilai_UAS}}</center></td>
-                <td style="font-size:85%"><center>{{$item->nilai_AKHIR_angka}}</center></td>
-                <td style="font-size:85%"><center>{{$item->nilai_AKHIR}}</center></td>
+    <table border="1" width="100%" cellpadding="4">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th width="4%"><span style="font-size:85%">No</span></th>
+                <th width="14%"><span style="font-size:85%">NIM</span></th>
+                <th width="32%"><span style="font-size:85%">Nama Mahasiswa</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai KAT</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai UTS</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai UAS</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai AKHIR</span></th>
+                <th width="10%"><span style="font-size:85%">Nilai HURUF</span></th>
             </tr>
-        @endforeach
-    </tbody>
-	</table>
-  <br>
+        </thead>
+        <tbody>
+            @php $i=1; @endphp
+            @foreach ($tb as $item)
+                <tr>
+                    <td style="font-size:85%">
+                        <center>{{ $i++ }}</center>
+                    </td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nim }}</center>
+                    </td>
+                    <td style="font-size:85%">{{ $item->nama }}</td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nilai_KAT }}</center>
+                    </td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nilai_UTS }}</center>
+                    </td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nilai_UAS }}</center>
+                    </td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nilai_AKHIR_angka }}</center>
+                    </td>
+                    <td style="font-size:85%">
+                        <center>{{ $item->nilai_AKHIR }}</center>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <br>
    <table width="100%">
      <tr>
             <td width="34%" align=center><span style="font-size:85%"></span></td>
