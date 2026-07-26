@@ -8,45 +8,49 @@
 
 </style>
 <body>
-	<table width="100%">
-		<tr>
-			<td>
-					<img src="images/logo meta png.png" width="200" height="75" alt="" align="left"/>
-			</td>
-			<td><center>
-					<img src="images/kop.png" width="200" height="70" alt="" align="right"/>
-        </center>
-			</td>
-		</tr>
-	</table><br><br><br>
-  <table  width="100%">
-    <tr>
-      <td>
-        <center><h4><b>DAFTAR NILAI AKHIR</b></h4></center>
-      </td>
-    </tr>
-  </table>
-  <table width="100%">
-  	 <tr>
-  			 <td><b><span style="font-size:85%">Kode Matakuliah </span></b></td><td> : </td>
-  			 <td><b><span style="font-size:85%"><u>{{$data->kode}}</u></span></b></td>
-  			 <td><b><span style="font-size:85%">Tahun Akademik </span></b></td><td> : </td>
-  			 <td><b><span style="font-size:85%"><u>{{$data->periode_tahun}} {{$data->periode_tipe}}</u></span></b></td>
-  	 </tr>
-		 <tr>
-			 <td><b><span style="font-size:85%">Matakuliah</span></b></td><td> : </td>
-  			 <td><b><span style="font-size:85%"><u>{{$data->makul}} - {{$data->akt_sks}} SKS</span></u></b></td>
-			 <td><b><span style="font-size:85%">Program Studi</span></b></td><td> : </td>
-			 <td><b><span style="font-size:85%"><u>{{$data->prodi}}</u></span></b></td>
-		 </tr>
-		 <tr>
-			 <td><b><span style="font-size:85%">Dosen</span></b></td><td> : </td>
-			 <td><b><span style="font-size:85%"><u>{{$data->nama}}, {{$data->akademik}}</u></span></b></td>
-            <td><b><span style="font-size:85%">Kelas</span></b></td><td> : </td>
-			 <td><b><span style="font-size:85%"><u>{{$data->kelas}}</u></span></b></td>
-		 </tr>
-	</table>
-	<br>
+    <table width="100%">
+        <tr>
+            <td width="50%">
+                <img src="images/logo meta png.png" height="50" alt="" align="left" />
+            </td>
+            <td width="50%" align="right">
+                <img src="images/kop.png" height="45" alt="" align="right" />
+            </td>
+        </tr>
+    </table>
+    <table width="100%" style="margin-top: 5px; margin-bottom: 5px;">
+        <tr>
+            <td align="center">
+                <h4 style="margin: 2px 0;"><b>DAFTAR NILAI AKHIR</b></h4>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" style="margin-bottom: 10px;">
+        <tr>
+            <td width="15%"><b><span style="font-size:85%">Kode Matakuliah </span></b></td>
+            <td width="2%"> : </td>
+            <td width="33%"><b><span style="font-size:85%"><u>{{ $data->kode }}</u></span></b></td>
+            <td width="15%"><b><span style="font-size:85%">Tahun Akademik </span></b></td>
+            <td width="2%"> : </td>
+            <td width="33%"><b><span style="font-size:85%"><u>{{ $data->periode_tahun }} {{ $data->periode_tipe }}</u></span></b></td>
+        </tr>
+        <tr>
+            <td><b><span style="font-size:85%">Matakuliah</span></b></td>
+            <td> : </td>
+            <td><b><span style="font-size:85%"><u>{{ $data->makul }} - {{ $data->akt_sks }} SKS</u></span></b></td>
+            <td><b><span style="font-size:85%">Program Studi</span></b></td>
+            <td> : </td>
+            <td><b><span style="font-size:85%"><u>{{ $data->prodi }}</u></span></b></td>
+        </tr>
+        <tr>
+            <td><b><span style="font-size:85%">Dosen</span></b></td>
+            <td> : </td>
+            <td><b><span style="font-size:85%"><u>{{ $data->nama }}, {{ $data->akademik }}</u></span></b></td>
+            <td><b><span style="font-size:85%">Kelas</span></b></td>
+            <td> : </td>
+            <td><b><span style="font-size:85%"><u>{{ $data->kelas }}</u></span></b></td>
+        </tr>
+    </table>
     <table border="1" width="100%" cellpadding="4">
         <thead>
             <tr style="background-color: #f2f2f2;">
