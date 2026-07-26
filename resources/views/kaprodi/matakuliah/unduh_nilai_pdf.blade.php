@@ -91,24 +91,17 @@
         </tbody>
     </table>
     <br>
-   <table width="100%">
-     <tr>
-            <td width="34%" align=center><span style="font-size:85%"></span></td>
-            <td width="33%" align=center><span style="font-size:85%">Cikarang, ..............................</span></td>
-     </tr>
-    </table>
-	<table width="100%">
-		<tr>
-			<td width="50%" align=center><span style="font-size:85%"></span></td>
-      		<td width="50%" align=center><span style="font-size:85%">Dosen Pengampu</span></td>
-		</tr>
-	</table>
-	<br><br><br><br>
-	<table width="100%">
-		<tr>
-            <td width="50%" align=center><span style="font-size:85%"></span></td>
-			<td width="50%" align=center><span style="font-size:85%">({{$data->nama}} {{$data->akademik}})</span></td>
-		</tr>
-	</table>
-	<br>
+    <div style="page-break-inside: avoid; break-inside: avoid; margin-top: 20px;">
+        <table width="100%">
+            <tr>
+                <td width="65%"></td>
+                <td width="35%" align="left">
+                    <span style="font-size:85%">Cikarang, ..............................</span><br>
+                    <span style="font-size:85%">Dosen Pengampu</span>
+                    <br><br><br><br><br>
+                    <span style="font-size:85%"><b>({{ $data->nama }}, {{ $data->akademik }})</b></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
