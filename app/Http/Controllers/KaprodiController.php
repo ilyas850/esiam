@@ -1424,7 +1424,7 @@ class KaprodiController extends Controller
     $m = $bulan[date('m')];
     $y = date('Y');
 
-    $pdf = PDF::loadView('kaprodi/matakuliah/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $mhs_kelas])->setPaper('a4', 'landscape');
+    $pdf = PDF::loadView('kaprodi/matakuliah/unduh_nilai_pdf', ['d' => $d, 'm' => $m, 'y' => $y, 'data' => $key, 'tb' => $mhs_kelas])->setPaper('legal', 'landscape');
     return $pdf->download('Nilai Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
   }
 
