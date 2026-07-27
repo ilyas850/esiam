@@ -86,7 +86,7 @@
                         <center>{{ $item->nilai_UAS }}</center>
                     </td>
                     <td style="font-size:85%">
-                        <center>{{ $item->nilai_AKHIR_angka }}</center>
+                        <center>{{ floor((float)$item->nilai_AKHIR_angka) == (float)$item->nilai_AKHIR_angka ? (int)$item->nilai_AKHIR_angka : round((float)$item->nilai_AKHIR_angka, 2) }}</center>
                     </td>
                     <td style="font-size:85%">
                         <center>{{ $item->nilai_AKHIR }}</center>
