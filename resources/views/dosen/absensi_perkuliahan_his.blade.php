@@ -55,6 +55,9 @@
         </div>
             <div class="box-body">
                 <a href="/print_absensi/{{$bap->id_kurperiode}}" class="btn btn-success" target="_blank">Print</a>
+                <a href="{{ url('download_absensi/' . $bap->id_kurperiode) }}" class="btn btn-warning btn-sm">
+                        <i class="fa fa-file-excel-o"></i> Download
+                    </a>
                 <br><br>
                 <table class="table table-bordered">
                      <thead>

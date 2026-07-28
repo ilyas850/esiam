@@ -35,11 +35,11 @@
                     <td>Waktu / Ruangan</td><td>:</td>
                     <td>{{$bap->hari}}, 
                         @if ($bap->id_kelas == 1)
-                            {{$bap->jam}} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 50) + (60*$bap->akt_sks_praktek * 120))}}
+                            {{ date('H:i', strtotime($bap->jam)) }} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 50) + (60*$bap->akt_sks_praktek * 120))}}
                         @elseif ($bap->id_kelas == 2)
-                            {{$bap->jam}} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 45) + (60*$bap->akt_sks_praktek * 90))}}
+                            {{ date('H:i', strtotime($bap->jam)) }} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 45) + (60*$bap->akt_sks_praktek * 90))}}
                         @elseif ($bap->id_kelas == 3)
-                            {{$bap->jam}} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 45) + (60*$bap->akt_sks_praktek * 90))}}
+                            {{ date('H:i', strtotime($bap->jam)) }} - {{ date('H:i', strtotime($bap->jam) + (60*$bap->akt_sks_teori * 45) + (60*$bap->akt_sks_praktek * 90))}}
                         @endif
                     / {{$bap->nama_ruangan}}</td>
                     <td>Program Studi</td><td>:</td>
@@ -55,6 +55,7 @@
         </div>
         <div class="box-body">
             <a href="/print_jurnal/{{$bap->id_kurperiode}}" class="btn btn-success" target="_blank">Print</a>
+            <a href="/download_jurnal/{{$bap->id_kurperiode}}" class="btn btn-info">Download</a>
             <br><br>
             <table class="table table-bordered">
                 <thead>
@@ -72,8 +73,8 @@
                     @foreach ($data as $item)
                         <tr>
                             <td><center>{{$no++}}</center></td>
-                            <td><center>{{$item->tanggal}}</center></td>
-                            <td><center>{{$item->jam_mulai}} - {{$item->jam_selsai}}</center></td>
+                            <td><center>{{ $item->tanggal ? date('Y-m-d', strtotime($item->tanggal)) : '' }}</center></td>
+                            <td><center>{{ $item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : '' }} - {{ $item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : '' }}</center></td>
                             <td>{{$item->materi_kuliah}}</td>
                             <td><center>By System</center></td>
                             <td><center>{{$item->payroll_check}}</center></td>

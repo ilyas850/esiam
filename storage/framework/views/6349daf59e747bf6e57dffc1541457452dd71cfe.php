@@ -1,8 +1,4 @@
 <style media="screen">
-    body {
-        font-family: "Times New Roman", Times, serif;
-    }
-
     table {
         border-collapse: collapse;
     }
@@ -30,38 +26,42 @@
         <tr>
             <td>Matakuliah</td>
             <td>:</td>
-            <td>{{ $bap->makul }} - {{ $bap->akt_sks }} SKS</td>
+            <td><?php echo e($bap->makul); ?> - <?php echo e($bap->akt_sks); ?> SKS</td>
             <td>Tahun Akademik</td>
             <td>:</td>
-            <td>{{ $bap->periode_tahun }} {{ $bap->periode_tipe }}</td>
+            <td><?php echo e($bap->periode_tahun); ?> <?php echo e($bap->periode_tipe); ?></td>
         </tr>
         <tr>
             <td>Waktu / Ruangan</td>
             <td>:</td>
-            <td>{{ $bap->hari }},
-                @if ($bap->id_kelas == 1)
-                    {{ date('H:i', strtotime($bap->jam)) }} -
-                    {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 50 + 60 * $bap->akt_sks_praktek * 120) }}
-                @elseif ($bap->id_kelas == 2)
-                    {{ date('H:i', strtotime($bap->jam)) }} -
-                    {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90) }}
-                @elseif ($bap->id_kelas == 3)
-                    {{ date('H:i', strtotime($bap->jam)) }} -
-                    {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90) }}
-                @endif
-                / {{ $bap->nama_ruangan }}
+            <td><?php echo e($bap->hari); ?>,
+                <?php if($bap->id_kelas == 1): ?>
+                    <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
+                    <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 50 + 60 * $bap->akt_sks_praktek * 120)); ?>
+
+                <?php elseif($bap->id_kelas == 2): ?>
+                    <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
+                    <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90)); ?>
+
+                <?php elseif($bap->id_kelas == 3): ?>
+                    <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
+                    <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90)); ?>
+
+                <?php endif; ?>
+                / <?php echo e($bap->nama_ruangan); ?>
+
             </td>
             <td>Program Studi</td>
             <td>:</td>
-            <td>{{ $bap->prodi }}</td>
+            <td><?php echo e($bap->prodi); ?></td>
         </tr>
         <tr>
             <td>Dosen</td>
             <td>:</td>
-            <td>{{ $bap->nama }}, {{ $bap->akademik }}</td>
+            <td><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></td>
             <td>Kelas</td>
             <td>:</td>
-            <td>{{ $bap->kelas }}</td>
+            <td><?php echo e($bap->kelas); ?></td>
         </tr>
     </table>
     <br>
@@ -90,32 +90,32 @@
         </thead>
         <tbody>
             <?php $no = 1; ?>
-            @foreach ($data as $item)
+            <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td>
-                        <center>{{ $no++ }}</center>
+                        <center><?php echo e($no++); ?></center>
                     </td>
                     <td>
-                        <center>{{ Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</center>
+                        <center><?php echo e(Carbon\Carbon::parse($item->tanggal)->format('d-m-Y')); ?></center>
                     </td>
                     <td>
-                        <center>{{ $item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : '' }} - {{ $item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : '' }}</center>
+                        <center><?php echo e($item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : ''); ?> - <?php echo e($item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : ''); ?></center>
                     </td>
-                    <td>{{ $item->materi_kuliah }}</td>
+                    <td><?php echo e($item->materi_kuliah); ?></td>
                     <td>
                         <center>By System</center>
                     </td>
                     <td>
                         <center>
-                            @if ($item->tanggal_validasi == '2001-01-01')
+                            <?php if($item->tanggal_validasi == '2001-01-01'): ?>
                                 BELUM
-                            @else
+                            <?php else: ?>
                                 SUDAH
-                            @endif
+                            <?php endif; ?>
                         </center>
                     </td>
                 </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
     <table width="100%">
@@ -135,7 +135,7 @@
     <table width="100%">
         <tr>
             <td width="3%"></td>
-            <td width="50%"><span style="font-size:85%">Kepala Program Studi {{ $bap->prodi }}</span></td>
+            <td width="50%"><span style="font-size:85%">Kepala Program Studi <?php echo e($bap->prodi); ?></span></td>
             <td width="47%"><span style="font-size:85%">Dosen Pengampu</span></td>
         </tr>
     </table>
@@ -143,9 +143,10 @@
     <table width="100%">
         <tr>
             <td width="3%"></td>
-            <td width="50%"><span style="font-size:85%">{{ $cekkprd->nama }}, {{ $cekkprd->akademik }}</td>
-            <td width="47%"><span style="font-size:85%">{{ $bap->nama }}, {{ $bap->akademik }}</span></td>
+            <td width="50%"><span style="font-size:85%"><?php echo e($cekkprd->nama); ?>, <?php echo e($cekkprd->akademik); ?></td>
+            <td width="47%"><span style="font-size:85%"><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></span></td>
         </tr>
     </table>
    
 </body>
+<?php /**PATH /var/www/html/resources/views/dosen/download/jurnal_perkuliahan_pdf.blade.php ENDPATH**/ ?>

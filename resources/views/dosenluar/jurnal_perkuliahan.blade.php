@@ -36,13 +36,13 @@
                         <td>:</td>
                         <td>{{ $bap->hari }},
                             @if ($bap->id_kelas == 1)
-                                {{ $bap->jam }} -
+                                {{ date('H:i', strtotime($bap->jam)) }} -
                                 {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 50 + 60 * $bap->akt_sks_praktek * 120) }}
                             @elseif ($bap->id_kelas == 2)
-                                {{ $bap->jam }} -
+                                {{ date('H:i', strtotime($bap->jam)) }} -
                                 {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90) }}
                             @elseif ($bap->id_kelas == 3)
-                                {{ $bap->jam }} -
+                                {{ date('H:i', strtotime($bap->jam)) }} -
                                 {{ date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90) }}
                             @endif
                             / {{ $bap->nama_ruangan }}
@@ -96,10 +96,10 @@
                                     <center>{{ $no++ }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->tanggal }}</center>
+                                    <center>{{ $item->tanggal ? date('Y-m-d', strtotime($item->tanggal)) : '' }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->jam_mulai }} - {{ $item->jam_selsai }}</center>
+                                    <center>{{ $item->jam_mulai ? date('H:i', strtotime($item->jam_mulai)) : '' }} - {{ $item->jam_selsai ? date('H:i', strtotime($item->jam_selsai)) : '' }}</center>
                                 </td>
                                 <td>{{ $item->materi_kuliah }}</td>
                                 <td>
