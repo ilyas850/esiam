@@ -1337,7 +1337,7 @@ class ProdiController extends Controller
   {
     $this->validate($request, [
       'id_periodetipe' => 'required',
-      'file' => 'mimes:pdf|max:10000',
+      'file' => 'required|mimes:pdf|max:10000',
       'id_periodetahun' => 'required',
       'kodeprodi' => 'required'
     ]);
@@ -1346,15 +1346,31 @@ class ProdiController extends Controller
     $info->id_periodetipe = $request->id_periodetipe;
     $info->id_periodetahun = $request->id_periodetahun;
     $info->kodeprodi = $request->kodeprodi;
-    $file = $request->file('file');
-    $filename = time() . '_' . $file->getClientOriginalName();
-    $tujuan_upload = 'SK Mengajar';
-    $file->move($tujuan_upload, $filename);
-    $info->file = $filename;
-    $info->created_by = Auth::user()->username;
+
+    if ($request->hasFile('file')) {
+      $file = $request->file('file');
+      $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+      $tujuan_upload = 'SK-Mengajar';
+      $file->move($tujuan_upload, $filename);
+      $info->file = $filename;
+    }
+
+    $info->status = 'ACTIVE';
+    $info->created_by = Auth::user()->username ?? Auth::user()->name ?? 'admin';
     $info->save();
 
     Alert::success('', 'SK Mengajar berhasil ditambahkan')->autoclose(3500);
+    return redirect('upload_sk_pengajaran_prodi');
+  }
+
+  public function delete_sk_pengajaran($id)
+  {
+    $sk = Sk_pengajaran::find($id);
+    if ($sk) {
+      $sk->status = 'INACTIVE';
+      $sk->save();
+      Alert::success('', 'SK Mengajar berhasil dihapus')->autoclose(3500);
+    }
     return redirect('upload_sk_pengajaran_prodi');
   }
 }

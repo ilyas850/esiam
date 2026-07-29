@@ -6599,9 +6599,21 @@ class DosenController extends Controller
 
     public function sk_pengajaran_dsn_dlm()
     {
-        $id = Auth::user()->id_user;
-
-        $data = DB::select('CALL lkd_makul(?)', [$id]);
+        $data = Sk_pengajaran::join('periode_tahun', 'sk_pengajaran.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'sk_pengajaran.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('prodi', 'sk_pengajaran.kodeprodi', '=', 'prodi.kodeprodi')
+            ->where('sk_pengajaran.status', 'ACTIVE')
+            ->select(
+                'sk_pengajaran.id_sk_pengajaran',
+                'periode_tahun.periode_tahun',
+                'periode_tipe.periode_tipe',
+                'prodi.prodi',
+                'sk_pengajaran.file'
+            )
+            ->groupBy('sk_pengajaran.id_sk_pengajaran', 'periode_tahun.periode_tahun', 'periode_tipe.periode_tipe', 'prodi.prodi', 'sk_pengajaran.file')
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
+            ->orderBy('periode_tipe.periode_tipe', 'DESC')
+            ->get();
 
         return view('dosen/pengajaran/sk_pengajaran', compact('data'));
     }
