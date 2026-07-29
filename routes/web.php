@@ -1726,6 +1726,7 @@ Route::group(['middleware' => 'adminprodi'], function () {
     #upload SK pengajaran
     Route::get('upload_sk_pengajaran_prodi', 'ProdiController@upload_sk_pengajaran_prodi');
     Route::post('save_sk_pengajaran', 'ProdiController@save_sk_pengajaran');
+    Route::get('delete_sk_pengajaran/{id}', 'ProdiController@delete_sk_pengajaran');
 });
 
 Route::group(['middleware' => 'wadir1'], function () {

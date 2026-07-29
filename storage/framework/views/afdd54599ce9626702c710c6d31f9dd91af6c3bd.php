@@ -1,44 +1,43 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Upload SK Pengajaran</h3>
             </div>
             <div class="box-body">
-                <form action="{{ url('save_sk_pengajaran') }}" method="POST" enctype="multipart/form-data">
-                    {{ csrf_field() }}
+                <form action="<?php echo e(url('save_sk_pengajaran')); ?>" method="POST" enctype="multipart/form-data">
+                    <?php echo e(csrf_field()); ?>
+
                     <div class="row">
                         <div class="col-md-3">
                             <label>Tahun Akademik</label>
                             <select class="form-control" name="id_periodetahun" required>
                                 <option value="">-- Pilih Tahun --</option>
-                                @foreach ($tahun as $thn)
-                                    <option value="{{ $thn->id_periodetahun }}">{{ $thn->periode_tahun }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $tahun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $thn): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($thn->id_periodetahun); ?>"><?php echo e($thn->periode_tahun); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <label>Semester</label>
                             <select class="form-control" name="id_periodetipe" required>
                                 <option value="">-- Pilih Semester --</option>
-                                @foreach ($tipe as $tp)
-                                    <option value="{{ $tp->id_periodetipe }}">{{ $tp->periode_tipe }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($tp->id_periodetipe); ?>"><?php echo e($tp->periode_tipe); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label>Program Studi</label>
                             <select class="form-control" name="kodeprodi" required>
                                 <option value="">-- Pilih Prodi --</option>
-                                @foreach ($prodi as $prd)
-                                    <option value="{{ $prd->kodeprodi }}">{{ $prd->prodi }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $prodi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $prd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($prd->kodeprodi); ?>"><?php echo e($prd->prodi); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -71,32 +70,34 @@
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($data as $item)
+                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td class="text-center">{{ $no++ }}</td>
-                                <td>{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
-                                <td>{{ $item->prodi }}</td>
+                                <td class="text-center"><?php echo e($no++); ?></td>
+                                <td><?php echo e($item->periode_tahun); ?> - <?php echo e($item->periode_tipe); ?></td>
+                                <td><?php echo e($item->prodi); ?></td>
                                 <td class="text-center">
-                                    @if ($item->file)
-                                        <a href="{{ asset('SK-Mengajar/' . $item->file) }}" target="_blank" class="btn btn-xs btn-primary">
+                                    <?php if($item->file): ?>
+                                        <a href="<?php echo e(asset('SK-Mengajar/' . $item->file)); ?>" target="_blank" class="btn btn-xs btn-primary">
                                             <i class="fa fa-file-pdf-o"></i> Lihat File
                                         </a>
-                                    @else
+                                    <?php else: ?>
                                         <span class="label label-danger">Tidak ada file</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ url('delete_sk_pengajaran/' . $item->id_sk_pengajaran) }}"
+                                    <a href="<?php echo e(url('delete_sk_pengajaran/' . $item->id_sk_pengajaran)); ?>"
                                        class="btn btn-xs btn-danger"
                                        onclick="return confirm('Apakah Anda yakin ingin menghapus SK ini?')">
                                         <i class="fa fa-trash"></i> Hapus
                                     </a>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/adminprodi/perkuliahan/sk_pengajaran.blade.php ENDPATH**/ ?>

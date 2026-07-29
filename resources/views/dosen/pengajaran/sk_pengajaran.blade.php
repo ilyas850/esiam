@@ -8,57 +8,32 @@
     <section class="content">
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">SK Mengajar & LKD</h3>
+                <h3 class="box-title">SK Mengajar Dosen</h3>
             </div>
             <div class="box-body">
-                <table id="example8" class="table table-bordered table-striped">
+                <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>Kode/Matakuliah</center>
-                            </th>
-                            <th>
-                                <center>Program Studi</center>
-                            </th>
-                            <th>
-                                <center>Kelas</center>
-                            </th>
-                            <th>
-                                <center>Tahun Akademik</center>
-                            </th>
-                            <th>
-                                <center>SK Mengajar </center>
-                            </th>
-                            <th>
-                                <center>LKD </center>
-                            </th>
+                            <th width="5%" class="text-center">No</th>
+                            <th class="text-center">Tahun Akademik</th>
+                            <th class="text-center">Program Studi</th>
+                            <th width="20%" class="text-center">SK Mengajar</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
                         @foreach ($data as $item)
                             <tr>
-                                <td align="center">{{ $no++ }}</td>
-                                <td>{{ $item->makul }}</td>
+                                <td class="text-center">{{ $no++ }}</td>
+                                <td>{{ $item->periode_tahun }} - {{ $item->periode_tipe }}</td>
                                 <td>{{ $item->prodi }}</td>
-                                <td>{{ $item->kelas }}</td>
-                                <td align="center">{{ $item->periode_tahun }} {{ $item->periode_tipe }}</td>
-                                <td align="center">
-                                    @if ($item->file == null)
+                                <td class="text-center">
+                                    @if ($item->file)
+                                        <a href="{{ asset('SK-Mengajar/' . $item->file) }}" target="_blank" class="btn btn-xs btn-primary">
+                                            <i class="fa fa-file-pdf-o"></i> Lihat File
+                                        </a>
                                     @else
-                                        <a href="{{ asset('/SK Mengajar/' . $item->file) }}" target="_blank">File</a>
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->file == null)
-                                    @else
-                                        <a href="/unduh_lkd_dosen_dlm/{{ $item->id_kurperiode }}"
-                                            class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"
-                                                title="Klik untuk unduh LKD .pdf">
-                                            </i></a>
+                                        <span class="label label-default">Tidak ada file</span>
                                     @endif
                                 </td>
                             </tr>
