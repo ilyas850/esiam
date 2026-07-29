@@ -57,21 +57,274 @@ class AdminPraustaController extends Controller
 
         if ($tp_prausta == 'PKL') {
 
-            $data = DB::select('CALL filter_nilai_pkl(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+            $data = Student_record::from('student_record as a')
+                ->select('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                ->join('student as d', 'd.idstudent', '=', 'a.id_student')
+                ->join('prodi as e', function ($join) {
+                    $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+                        ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+                })
+                ->join('prausta_setting_relasi as f', 'f.id_student', '=', 'd.idstudent')
+                ->join('prausta_master_kode as g', 'g.id_masterkode_prausta', '=', 'f.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as h', 'h.id_settingrelasi_prausta', '=', 'f.id_settingrelasi_prausta')
+                ->join('kelas as i', 'i.idkelas', '=', 'd.idstatus')
+                ->join('angkatan as j', 'j.idangkatan', '=', 'd.idangkatan')
+                ->whereIn('f.id_masterkode_prausta', [1, 2, 3, 12, 15, 18, 21])
+                ->where('e.kodeprodi', $kd_prodi)
+                ->where('d.active', 1)
+                ->where('b.id_periodetahun', $id_tahun)
+                ->where('b.id_periodetipe', $id_tipe)
+                ->where('a.status', 'TAKEN')
+                ->where('b.status', 'ACTIVE')
+                ->whereIn('c.idmakul', [135, 177, 180, 205, 235, 281, 481])
+                ->where('f.status', 'ACTIVE')
+                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->orderBy('d.nim', 'asc')
+                ->get();
 
             return view('prausta/filter/filter_nilai_pkl', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         } elseif ($tp_prausta == 'SEMPRO & TA') {
-            $data = DB::select('CALL filter_nilai_sempro_ta(?,?,?)', [$id_tahun, $id_tipe, $kd_prodi]);
+            $subSempro = DB::table('prausta_setting_relasi as h')
+                ->join('prausta_master_kode as i', 'i.id_masterkode_prausta', '=', 'h.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as j', 'j.id_settingrelasi_prausta', '=', 'h.id_settingrelasi_prausta')
+                ->whereIn('h.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
+                ->where('h.status', 'ACTIVE')
+                ->select(
+                    'h.id_student',
+                    'j.nilai_1 as nilai_1_sempro',
+                    'j.nilai_2 as nilai_2_sempro',
+                    'j.nilai_3 as nilai_3_sempro',
+                    'j.nilai_huruf as nilai_sempro'
+                );
+
+            $subTa = DB::table('prausta_setting_relasi as h')
+                ->join('prausta_master_kode as i', 'i.id_masterkode_prausta', '=', 'h.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as j', 'j.id_settingrelasi_prausta', '=', 'h.id_settingrelasi_prausta')
+                ->whereIn('h.id_masterkode_prausta', [7, 8, 9, 14, 17, 20, 23])
+                ->where('h.status', 'ACTIVE')
+                ->select(
+                    'h.id_student',
+                    'j.nilai_1 as nilai_1_ta',
+                    'j.nilai_2 as nilai_2_ta',
+                    'j.nilai_3 as nilai_3_ta',
+                    'j.nilai_huruf as nilai_ta'
+                );
+
+            $data = Student_record::from('student_record as a')
+                ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                ->join('student as d', 'd.idstudent', '=', 'a.id_student')
+                ->join('prodi as e', function ($join) {
+                    $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+                        ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+                })
+                ->join('kelas as f', 'f.idkelas', '=', 'd.idstatus')
+                ->join('angkatan as g', 'g.idangkatan', '=', 'd.idangkatan')
+                ->leftJoinSub($subSempro, 'aa', function ($join) {
+                    $join->on('aa.id_student', '=', 'd.idstudent');
+                })
+                ->leftJoinSub($subTa, 'bb', function ($join) {
+                    $join->on('bb.id_student', '=', 'd.idstudent');
+                })
+                ->where('a.status', 'TAKEN')
+                ->where('b.id_periodetahun', $id_tahun)
+                ->where('b.id_periodetipe', $id_tipe)
+                ->where('b.status', 'ACTIVE')
+                ->whereIn('c.idmakul', [136, 178, 179, 206, 286, 316, 430])
+                ->where('e.kodeprodi', $kd_prodi)
+                ->where('d.active', 1)
+                ->select(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'f.kelas',
+                    'g.angkatan',
+                    'a.nilai_AKHIR',
+                    'aa.nilai_1_sempro',
+                    'aa.nilai_2_sempro',
+                    'aa.nilai_3_sempro',
+                    'bb.nilai_1_ta',
+                    'bb.nilai_2_ta',
+                    'bb.nilai_3_ta',
+                    DB::raw('ROUND((aa.nilai_1_sempro + aa.nilai_2_sempro + aa.nilai_3_sempro) / 3, 2) AS nilai_angka_sempro'),
+                    'aa.nilai_sempro',
+                    DB::raw('ROUND(((bb.nilai_1_ta * 60) / 100) + ((bb.nilai_2_ta * 20) / 100) + ((bb.nilai_3_ta * 20) / 100), 2) AS nilai_angka_ta'),
+                    'bb.nilai_ta',
+                    DB::raw('ROUND(IFNULL((((aa.nilai_1_sempro + aa.nilai_2_sempro + aa.nilai_3_sempro) / 3)) * 40 / 100, 0) + IFNULL((((((bb.nilai_1_ta * 60) / 100) + ((bb.nilai_2_ta * 20) / 100) + ((bb.nilai_3_ta * 20) / 100))) * 60 / 100), 0), 2) AS NILAI_AKHIR')
+                )
+                ->groupBy(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'f.kelas',
+                    'g.angkatan',
+                    'a.nilai_AKHIR',
+                    'aa.nilai_1_sempro',
+                    'aa.nilai_2_sempro',
+                    'aa.nilai_3_sempro',
+                    'bb.nilai_1_ta',
+                    'bb.nilai_2_ta',
+                    'bb.nilai_3_ta',
+                    'aa.nilai_sempro',
+                    'bb.nilai_ta'
+                )
+                ->orderBy('d.nim', 'asc')
+                ->get();
 
             return view('prausta/filter/filter_nilai_sempro_ta', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         } elseif ($tp_prausta == 'MAGANG 1') {
-            $data = DB::select('CALL filter_nilai_magang1(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+            $data = Student_record::from('student_record as a')
+                ->select('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                ->join('student as d', 'd.idstudent', '=', 'a.id_student')
+                ->join('prodi as e', function ($join) {
+                    $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+                        ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+                })
+                ->join('prausta_setting_relasi as f', 'f.id_student', '=', 'd.idstudent')
+                ->join('prausta_master_kode as g', 'g.id_masterkode_prausta', '=', 'f.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as h', 'h.id_settingrelasi_prausta', '=', 'f.id_settingrelasi_prausta')
+                ->join('kelas as i', 'i.idkelas', '=', 'd.idstatus')
+                ->join('angkatan as j', 'j.idangkatan', '=', 'd.idangkatan')
+                ->whereIn('f.id_masterkode_prausta', [24, 27, 30])
+                ->where('e.kodeprodi', $kd_prodi)
+                ->where('d.active', 1)
+                ->where('b.id_periodetahun', $id_tahun)
+                ->where('b.id_periodetipe', $id_tipe)
+                ->where('a.status', 'TAKEN')
+                ->where('b.status', 'ACTIVE')
+                ->whereIn('c.idmakul', [478])
+                ->where('f.status', 'ACTIVE')
+                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->orderBy('d.nim', 'asc')
+                ->get();
 
             return view('prausta/filter/filter_nilai_magang1', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         } elseif ($tp_prausta == 'MAGANG 2') {
-            $data = DB::select('CALL filter_nilai_magang2(?,?,?)', [$kd_prodi, $id_tahun, $id_tipe]);
+            $data = Student_record::from('student_record as sr')
+                ->select('sr.id_studentrecord', 'stu.nim', 'stu.nama', 'prd.prodi', 'cls.kelas', 'angt.angkatan', 'sr.nilai_AKHIR', 'thr.nilai_huruf')
+                ->join('kurikulum_periode as kp', 'kp.id_kurperiode', '=', 'sr.id_kurperiode')
+                ->join('matakuliah as mk', 'mk.idmakul', '=', 'kp.id_makul')
+                ->join('student as stu', 'stu.idstudent', '=', 'sr.id_student')
+                ->join('prodi as prd', function ($join) {
+                    $join->on('prd.kodeprodi', '=', 'stu.kodeprodi')
+                        ->on('prd.kodekonsentrasi', '=', 'stu.kodekonsentrasi');
+                })
+                ->join('prausta_setting_relasi as psr', 'psr.id_student', '=', 'stu.idstudent')
+                ->join('prausta_master_kode as pmk', 'pmk.id_masterkode_prausta', '=', 'psr.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as thr', 'thr.id_settingrelasi_prausta', '=', 'psr.id_settingrelasi_prausta')
+                ->join('kelas as cls', 'cls.idkelas', '=', 'stu.idstatus')
+                ->join('angkatan as angt', 'angt.idangkatan', '=', 'stu.idangkatan')
+                ->whereIn('psr.id_masterkode_prausta', [33, 34, 35])
+                ->where('prd.kodeprodi', $kd_prodi)
+                ->where('stu.active', 1)
+                ->where('kp.id_periodetahun', $id_tahun)
+                ->where('kp.id_periodetipe', $id_tipe)
+                ->where('sr.status', 'TAKEN')
+                ->where('kp.status', 'ACTIVE')
+                ->whereIn('mk.idmakul', [483])
+                ->where('psr.status', 'ACTIVE')
+                ->groupBy('sr.id_studentrecord', 'stu.nim', 'stu.nama', 'prd.prodi', 'cls.kelas', 'angt.angkatan', 'sr.nilai_AKHIR', 'thr.nilai_huruf')
+                ->orderBy('stu.nim', 'asc')
+                ->get();
 
             return view('prausta/filter/filter_nilai_magang2', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
+        } elseif ($tp_prausta == 'SEMPRO & SKRIPSI') {
+            $subSempro = DB::table('prausta_setting_relasi as h')
+                ->join('prausta_master_kode as i', 'i.id_masterkode_prausta', '=', 'h.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as j', 'j.id_settingrelasi_prausta', '=', 'h.id_settingrelasi_prausta')
+                ->whereIn('h.id_masterkode_prausta', [25, 28, 31])
+                ->where('h.status', 'ACTIVE')
+                ->select(
+                    'h.id_student',
+                    'j.nilai_1 as nilai_1_sempro',
+                    'j.nilai_2 as nilai_2_sempro',
+                    'j.nilai_3 as nilai_3_sempro',
+                    'j.nilai_huruf as nilai_sempro'
+                );
+
+            $subSkripsi = DB::table('prausta_setting_relasi as h')
+                ->join('prausta_master_kode as i', 'i.id_masterkode_prausta', '=', 'h.id_masterkode_prausta')
+                ->leftJoin('prausta_trans_hasil as j', 'j.id_settingrelasi_prausta', '=', 'h.id_settingrelasi_prausta')
+                ->whereIn('h.id_masterkode_prausta', [26, 29, 32])
+                ->where('h.status', 'ACTIVE')
+                ->select(
+                    'h.id_student',
+                    'j.nilai_1 as nilai_1_ta',
+                    'j.nilai_2 as nilai_2_ta',
+                    'j.nilai_3 as nilai_3_ta',
+                    'j.nilai_huruf as nilai_ta'
+                );
+
+            $data = Student_record::from('student_record as a')
+                ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+                ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
+                ->join('student as d', 'd.idstudent', '=', 'a.id_student')
+                ->join('prodi as e', function ($join) {
+                    $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+                        ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+                })
+                ->join('kelas as f', 'f.idkelas', '=', 'd.idstatus')
+                ->join('angkatan as g', 'g.idangkatan', '=', 'd.idangkatan')
+                ->leftJoinSub($subSempro, 'aa', function ($join) {
+                    $join->on('aa.id_student', '=', 'd.idstudent');
+                })
+                ->leftJoinSub($subSkripsi, 'bb', function ($join) {
+                    $join->on('bb.id_student', '=', 'd.idstudent');
+                })
+                ->where('a.status', 'TAKEN')
+                ->where('b.id_periodetahun', $id_tahun)
+                ->where('b.id_periodetipe', $id_tipe)
+                ->where('b.status', 'ACTIVE')
+                ->whereIn('c.idmakul', [490])
+                ->where('e.kodeprodi', $kd_prodi)
+                ->where('d.active', 1)
+                ->select(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'f.kelas',
+                    'g.angkatan',
+                    'a.nilai_AKHIR',
+                    'aa.nilai_1_sempro',
+                    'aa.nilai_2_sempro',
+                    'aa.nilai_3_sempro',
+                    'bb.nilai_1_ta',
+                    'bb.nilai_2_ta',
+                    'bb.nilai_3_ta',
+                    DB::raw('ROUND((aa.nilai_1_sempro + aa.nilai_2_sempro + aa.nilai_3_sempro) / 3, 2) AS nilai_angka_sempro'),
+                    'aa.nilai_sempro',
+                    DB::raw('ROUND(((bb.nilai_1_ta * 60) / 100) + ((bb.nilai_2_ta * 20) / 100) + ((bb.nilai_3_ta * 20) / 100), 2) AS nilai_angka_ta'),
+                    'bb.nilai_ta',
+                    DB::raw('ROUND(IFNULL((((aa.nilai_1_sempro + aa.nilai_2_sempro + aa.nilai_3_sempro) / 3)) * 40 / 100, 0) + IFNULL((((((bb.nilai_1_ta * 60) / 100) + ((bb.nilai_2_ta * 20) / 100) + ((bb.nilai_3_ta * 20) / 100))) * 60 / 100), 0), 2) AS NILAI_AKHIR')
+                )
+                ->groupBy(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'f.kelas',
+                    'g.angkatan',
+                    'a.nilai_AKHIR',
+                    'aa.nilai_1_sempro',
+                    'aa.nilai_2_sempro',
+                    'aa.nilai_3_sempro',
+                    'bb.nilai_1_ta',
+                    'bb.nilai_2_ta',
+                    'bb.nilai_3_ta',
+                    'aa.nilai_sempro',
+                    'bb.nilai_ta'
+                )
+                ->orderBy('d.nim', 'asc')
+                ->get();
+
+            return view('prausta/filter/filter_nilai_sempro_ta', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         }
     }
 

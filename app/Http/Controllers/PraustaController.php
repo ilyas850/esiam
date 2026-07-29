@@ -34,28 +34,13 @@ class PraustaController extends Controller
 {
     public function nilai_prausta()
     {
-        $list = Prausta_master_kode::join('prodi', 'prausta_master_kode.id_prodi', '=', 'prodi.id_prodi')
-            ->whereNotIn('prausta_master_kode.id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-            ->select('prodi.id_prodi', 'prodi.prodi', 'prodi.konsentrasi', 'prausta_master_kode.id_masterkode_prausta', 'prausta_master_kode.kode_prausta', 'prausta_master_kode.nama_prausta')
-            ->orderBy('prodi.id_prodi', 'ASC')
-            ->get();
-
-        $listprausta = Prausta_master_kode::whereNotIn('id_masterkode_prausta', [4, 5, 6, 13, 16, 19, 22])
-            ->orderBy('kode_prausta', 'ASC')
-            ->get();
-
-        $prodi1 = Prodi::all();
-
-        $angkatan = Angkatan::whereIn('idangkatan', [16, 17, 18, 19, 20, 21, 22])->get();
-
-
         $tahun = Periode_tahun::orderBy('periode_tahun', 'desc')->get();
         $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2])->get();
         $prodi = Prodi::groupBy('kodeprodi', 'prodi')
             ->select('kodeprodi', 'prodi')
             ->get();
 
-        return view('prausta.nilai_prausta', compact('listprausta', 'prodi', 'angkatan', 'list', 'tahun', 'tipe'));
+        return view('prausta.nilai_prausta', compact('prodi', 'tahun', 'tipe'));
     }
 
     public function kode_prausta(Request $request)
