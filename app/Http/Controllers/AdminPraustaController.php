@@ -58,7 +58,20 @@ class AdminPraustaController extends Controller
         if ($tp_prausta == 'PKL') {
 
             $data = Student_record::from('student_record as a')
-                ->select('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->select(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'i.kelas',
+                    'j.angkatan',
+                    'a.nilai_AKHIR',
+                    'h.nilai_huruf',
+                    'h.nilai_1',
+                    'h.nilai_2',
+                    'h.nilai_3',
+                    DB::raw('ROUND(IF(h.nilai_1 IS NULL, (IFNULL(h.nilai_2, 0) + IFNULL(h.nilai_3, 0)) / 2, (IFNULL(h.nilai_1, 0) + IFNULL(h.nilai_2, 0) + IFNULL(h.nilai_3, 0)) / 3), 2) AS nilai_angka')
+                )
                 ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
                 ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
                 ->join('student as d', 'd.idstudent', '=', 'a.id_student')
@@ -80,7 +93,7 @@ class AdminPraustaController extends Controller
                 ->where('b.status', 'ACTIVE')
                 ->whereIn('c.idmakul', [135, 177, 180, 205, 235, 281, 481])
                 ->where('f.status', 'ACTIVE')
-                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf', 'h.nilai_1', 'h.nilai_2', 'h.nilai_3')
                 ->orderBy('d.nim', 'asc')
                 ->get();
 
@@ -178,7 +191,20 @@ class AdminPraustaController extends Controller
             return view('prausta/filter/filter_nilai_sempro_ta', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         } elseif ($tp_prausta == 'MAGANG 1') {
             $data = Student_record::from('student_record as a')
-                ->select('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->select(
+                    'a.id_studentrecord',
+                    'd.nim',
+                    'd.nama',
+                    'e.prodi',
+                    'i.kelas',
+                    'j.angkatan',
+                    'a.nilai_AKHIR',
+                    'h.nilai_huruf',
+                    'h.nilai_1',
+                    'h.nilai_2',
+                    'h.nilai_3',
+                    DB::raw('ROUND(IF(h.nilai_1 IS NULL, (IFNULL(h.nilai_2, 0) + IFNULL(h.nilai_3, 0)) / 2, (IFNULL(h.nilai_1, 0) + IFNULL(h.nilai_2, 0) + IFNULL(h.nilai_3, 0)) / 3), 2) AS nilai_angka')
+                )
                 ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
                 ->join('matakuliah as c', 'c.idmakul', '=', 'b.id_makul')
                 ->join('student as d', 'd.idstudent', '=', 'a.id_student')
@@ -200,14 +226,27 @@ class AdminPraustaController extends Controller
                 ->where('b.status', 'ACTIVE')
                 ->whereIn('c.idmakul', [478])
                 ->where('f.status', 'ACTIVE')
-                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf')
+                ->groupBy('a.id_studentrecord', 'd.nim', 'd.nama', 'e.prodi', 'i.kelas', 'j.angkatan', 'a.nilai_AKHIR', 'h.nilai_huruf', 'h.nilai_1', 'h.nilai_2', 'h.nilai_3')
                 ->orderBy('d.nim', 'asc')
                 ->get();
 
             return view('prausta/filter/filter_nilai_magang1', compact('data', 'tp_prausta', 'prodi', 'tahun', 'tipe'));
         } elseif ($tp_prausta == 'MAGANG 2') {
             $data = Student_record::from('student_record as sr')
-                ->select('sr.id_studentrecord', 'stu.nim', 'stu.nama', 'prd.prodi', 'cls.kelas', 'angt.angkatan', 'sr.nilai_AKHIR', 'thr.nilai_huruf')
+                ->select(
+                    'sr.id_studentrecord',
+                    'stu.nim',
+                    'stu.nama',
+                    'prd.prodi',
+                    'cls.kelas',
+                    'angt.angkatan',
+                    'sr.nilai_AKHIR',
+                    'thr.nilai_huruf',
+                    'thr.nilai_1',
+                    'thr.nilai_2',
+                    'thr.nilai_3',
+                    DB::raw('ROUND(IF(thr.nilai_1 IS NULL, (IFNULL(thr.nilai_2, 0) + IFNULL(thr.nilai_3, 0)) / 2, (IFNULL(thr.nilai_1, 0) + IFNULL(thr.nilai_2, 0) + IFNULL(thr.nilai_3, 0)) / 3), 2) AS nilai_angka')
+                )
                 ->join('kurikulum_periode as kp', 'kp.id_kurperiode', '=', 'sr.id_kurperiode')
                 ->join('matakuliah as mk', 'mk.idmakul', '=', 'kp.id_makul')
                 ->join('student as stu', 'stu.idstudent', '=', 'sr.id_student')
@@ -229,7 +268,7 @@ class AdminPraustaController extends Controller
                 ->where('kp.status', 'ACTIVE')
                 ->whereIn('mk.idmakul', [483])
                 ->where('psr.status', 'ACTIVE')
-                ->groupBy('sr.id_studentrecord', 'stu.nim', 'stu.nama', 'prd.prodi', 'cls.kelas', 'angt.angkatan', 'sr.nilai_AKHIR', 'thr.nilai_huruf')
+                ->groupBy('sr.id_studentrecord', 'stu.nim', 'stu.nama', 'prd.prodi', 'cls.kelas', 'angt.angkatan', 'sr.nilai_AKHIR', 'thr.nilai_huruf', 'thr.nilai_1', 'thr.nilai_2', 'thr.nilai_3')
                 ->orderBy('stu.nim', 'asc')
                 ->get();
 
@@ -330,25 +369,34 @@ class AdminPraustaController extends Controller
 
     public function save_nilai_to_trans(Request $request)
     {
+        if (!$request->has('nilai_AKHIR') || empty($request->nilai_AKHIR)) {
+            Alert::warning('', 'Tidak ada data nilai yang disimpan')->autoclose(3500);
+            return redirect('nilai_prausta');
+        }
+
         $jml = count($request->nilai_AKHIR);
 
         for ($i = 0; $i < $jml; $i++) {
             $nilai = $request->nilai_AKHIR[$i];
             $nilaiusta = explode(',', $nilai, 2);
-            $ids = $nilaiusta[0];
-            $nsta = $nilaiusta[1];
+            $ids = $nilaiusta[0] ?? null;
+            $nsta = isset($nilaiusta[1]) ? trim($nilaiusta[1]) : null;
 
-            $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
-                ->where('status', 'ACTIVE')
-                ->select('nilai_indeks')
-                ->first();
+            if ($ids && $nsta) {
+                $angka = Kuliah_nilaihuruf::where('nilai_huruf', $nsta)
+                    ->where('status', 'ACTIVE')
+                    ->select('nilai_indeks')
+                    ->first();
 
-            Student_record::where('id_studentrecord', $ids)->update([
-                'nilai_AKHIR' => $nsta,
-                'nilai_ANGKA' => $angka->nilai_indeks
-            ]);
+                if ($angka) {
+                    Student_record::where('id_studentrecord', $ids)->update([
+                        'nilai_AKHIR' => $nsta,
+                        'nilai_ANGKA' => $angka->nilai_indeks
+                    ]);
+                }
+            }
         }
-        Alert::success('', 'Niali berhasil diinput')->autoclose(3500);
+        Alert::success('', 'Nilai berhasil diinput')->autoclose(3500);
         return redirect('nilai_prausta');
     }
 
