@@ -34,29 +34,37 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th width="5%">
+                                <th rowspan="2" width="5%">
                                     <center>No</center>
                                 </th>
-                                <th width="10%">
+                                <th rowspan="2" width="10%">
                                     <center>NIM </center>
                                 </th>
-                                <th width="25%">
+                                <th rowspan="2" width="25%">
                                     <center>Nama</center>
                                 </th>
-                                <th width="15%">
+                                <th rowspan="2" width="15%">
                                     <center>Program Studi</center>
                                 </th>
-                                <th width="10%">
+                                <th rowspan="2" width="10%">
                                     <center>Kelas</center>
                                 </th>
-                                <th width="10%">
+                                <th rowspan="2" width="10%">
                                     <center>Angkatan</center>
                                 </th>
-                                <th>
+                                <th colspan="2">
                                     <center>Nilai Magang 2</center>
                                 </th>
-                                <th>
+                                <th rowspan="2">
                                     <center>Nilai Transkrip</center>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <center>Angka</center>
+                                </th>
+                                <th>
+                                    <center>Huruf</center>
                                 </th>
                             </tr>
                         </thead>
@@ -78,33 +86,48 @@
                                     <td>
                                         <center>{{ $item->angkatan }}</center>
                                     </td>
+                                    @php
+                                        $hurufFinal = $item->nilai_huruf;
+                                        if (empty($hurufFinal) && isset($item->nilai_angka) && $item->nilai_angka !== null) {
+                                            if ($item->nilai_angka >= 80) $hurufFinal = 'A';
+                                            elseif ($item->nilai_angka >= 75) $hurufFinal = 'B+';
+                                            elseif ($item->nilai_angka >= 70) $hurufFinal = 'B';
+                                            elseif ($item->nilai_angka >= 65) $hurufFinal = 'C+';
+                                            elseif ($item->nilai_angka >= 60) $hurufFinal = 'C';
+                                            elseif ($item->nilai_angka >= 50) $hurufFinal = 'D';
+                                            elseif ($item->nilai_angka >= 0) $hurufFinal = 'E';
+                                        }
+                                    @endphp
+                                    <td align="center">
+                                        {{ $item->nilai_angka ?? '-' }}
+                                    </td>
                                     <td>
                                         <center>
-                                            @if ($item->nilai_huruf == 'A')
+                                            @if ($hurufFinal == 'A')
                                                 A
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},A">
-                                            @elseif($item->nilai_huruf == 'B+')
+                                            @elseif($hurufFinal == 'B+')
                                                 B+
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},B+">
-                                            @elseif($item->nilai_huruf == 'B')
+                                            @elseif($hurufFinal == 'B')
                                                 B
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},B">
-                                            @elseif($item->nilai_huruf == 'C+')
+                                            @elseif($hurufFinal == 'C+')
                                                 C+
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},C+">
-                                            @elseif($item->nilai_huruf == 'C')
+                                            @elseif($hurufFinal == 'C')
                                                 C
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},C">
-                                            @elseif($item->nilai_huruf == 'D')
+                                            @elseif($hurufFinal == 'D')
                                                 D
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},D">
-                                            @elseif($item->nilai_huruf == 'E')
+                                            @elseif($hurufFinal == 'E')
                                                 E
                                                 <input type="hidden" name="nilai_AKHIR[]"
                                                     value="{{ $item->id_studentrecord }},E">
