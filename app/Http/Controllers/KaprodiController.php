@@ -2978,13 +2978,16 @@ class KaprodiController extends Controller
     }
 
     $iduser = Auth::user()->id_user;
-    $iddosen = Kaprodi::where('id_dosen', $iduser)
-      ->select('id_prodi')
+    $kaprodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kaprodi.id_dosen', $iduser)
+      ->select('prodi.kodeprodi', 'prodi.prodi')
       ->first();
-    $prodi = $iddosen ? $iddosen->id_prodi : null;
+
+    $kodeprodi = $kaprodi ? $kaprodi->kodeprodi : null;
 
     $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+      ->join('student as mhs', 'mhs.idstudent', '=', 'student_record.id_student')
       ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
@@ -2992,30 +2995,30 @@ class KaprodiController extends Controller
       ->where('kurikulum_periode.id_periodetipe', $tipe)
       ->where('kurikulum_periode.id_periodetahun', $tahun)
       ->where('kurikulum_periode.status', 'ACTIVE')
-      ->where('kurikulum_periode.id_prodi', $prodi)
+      ->where('prodi.kodeprodi', $kodeprodi)
       ->where('student_record.status', 'TAKEN')
+      ->where('mhs.active', 1)
       ->select(
         'matakuliah.kode',
         'matakuliah.makul',
         'matakuliah.akt_sks_teori',
         'matakuliah.akt_sks_praktek',
-        DB::raw('COUNT(student_record.id_student) as jml_mhs'),
-        DB::raw("COUNT(CASE WHEN student_record.nilai_AKHIR IS NOT NULL AND student_record.nilai_AKHIR != '' THEN 1 END) as jml_terisi"),
-        'dosen.nama',
-        'kelas.kelas',
         'semester.semester',
-        'student_record.id_kurperiode',
-        'prodi.prodi'
+        'kelas.kelas',
+        'dosen.nama',
+        'prodi.prodi',
+        DB::raw('COUNT(DISTINCT student_record.id_student) as jml_mhs'),
+        DB::raw("COUNT(DISTINCT CASE WHEN student_record.nilai_AKHIR IS NOT NULL AND student_record.nilai_AKHIR != '' THEN student_record.id_student END) as jml_terisi"),
+        DB::raw("GROUP_CONCAT(DISTINCT kurikulum_periode.id_kurperiode SEPARATOR ',') as ids_kurperiode")
       )
       ->groupBy(
         'matakuliah.kode',
         'matakuliah.makul',
         'matakuliah.akt_sks_teori',
         'matakuliah.akt_sks_praktek',
-        'dosen.nama',
-        'kelas.kelas',
         'semester.semester',
-        'student_record.id_kurperiode',
+        'kelas.kelas',
+        'dosen.nama',
         'prodi.prodi'
       )
       ->get();
@@ -3025,6 +3028,8 @@ class KaprodiController extends Controller
 
   public function cek_nilai_mhs_kprd($id)
   {
+    $ids = explode(',', $id);
+
     $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
       ->leftJoin('prodi', (function ($join) {
         $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -3032,8 +3037,9 @@ class KaprodiController extends Controller
       }))
       ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
       ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-      ->where('student_record.id_kurperiode', $id)
+      ->whereIn('student_record.id_kurperiode', $ids)
       ->where('student_record.status', 'TAKEN')
+      ->where('student.active', 1)
       ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.nilai_KAT', 'student_record.nilai_UTS', 'student_record.nilai_UAS', 'student_record.nilai_AKHIR', 'student_record.nilai_AKHIR_angka')
       ->get();
 

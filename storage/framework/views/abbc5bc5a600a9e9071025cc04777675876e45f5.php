@@ -177,7 +177,7 @@
                     <?php endif; ?>
                   </td>
                   <td align="center">
-                    <a href="cek_nilai_mhs_kprd/<?php echo e($key->id_kurperiode); ?>" class="btn btn-info btn-xs" title="Cek detail nilai mahasiswa">
+                    <a href="cek_nilai_mhs_kprd/<?php echo e($key->ids_kurperiode); ?>" class="btn btn-info btn-xs" title="Cek detail nilai mahasiswa">
                       <i class="fa fa-eye"></i> Cek Nilai
                     </a>
                   </td>
