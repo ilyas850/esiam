@@ -2958,35 +2958,69 @@ class KaprodiController extends Controller
     return Excel::download(new DataNilaiIpkMhsProdiExport($id_angkatan, $id_prodi), $nama_file);
   }
 
-  public function nilai_mhs_kprd()
+  public function nilai_mhs_kprd(Request $request)
   {
-    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-    $tipe = $tp->id_periodetipe;
+    $periode_tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $periode_tipe = Periode_tipe::all();
 
-    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-    $tahun = $thn->id_periodetahun;
+    if ($request->filled('id_periodetahun') && $request->filled('id_periodetipe')) {
+      $tahun = $request->id_periodetahun;
+      $tipe = $request->id_periodetipe;
+
+      $thn = Periode_tahun::where('id_periodetahun', $tahun)->first();
+      $tp = Periode_tipe::where('id_periodetipe', $tipe)->first();
+    } else {
+      $tp = Periode_tipe::where('status', 'ACTIVE')->first();
+      $tipe = $tp ? $tp->id_periodetipe : null;
+
+      $thn = Periode_tahun::where('status', 'ACTIVE')->first();
+      $tahun = $thn ? $thn->id_periodetahun : null;
+    }
 
     $iduser = Auth::user()->id_user;
     $iddosen = Kaprodi::where('id_dosen', $iduser)
       ->select('id_prodi')
       ->first();
-    $prodi = $iddosen->id_prodi;
+    $prodi = $iddosen ? $iddosen->id_prodi : null;
 
     $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
-      ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
       ->join('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
       ->where('kurikulum_periode.id_periodetipe', $tipe)
       ->where('kurikulum_periode.id_periodetahun', $tahun)
       ->where('kurikulum_periode.status', 'ACTIVE')
       ->where('kurikulum_periode.id_prodi', $prodi)
-      ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
-      ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi')
+      ->where('student_record.status', 'TAKEN')
+      ->select(
+        'matakuliah.kode',
+        'matakuliah.makul',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek',
+        DB::raw('COUNT(student_record.id_student) as jml_mhs'),
+        DB::raw("COUNT(CASE WHEN student_record.nilai_AKHIR IS NOT NULL AND student_record.nilai_AKHIR != '' THEN 1 END) as jml_terisi"),
+        'dosen.nama',
+        'kelas.kelas',
+        'semester.semester',
+        'student_record.id_kurperiode',
+        'prodi.prodi'
+      )
+      ->groupBy(
+        'matakuliah.kode',
+        'matakuliah.makul',
+        'matakuliah.akt_sks_teori',
+        'matakuliah.akt_sks_praktek',
+        'dosen.nama',
+        'kelas.kelas',
+        'semester.semester',
+        'student_record.id_kurperiode',
+        'prodi.prodi'
+      )
       ->get();
 
-    return view('kaprodi/master/rekap_nilai', compact('nilai'));
+    return view('kaprodi/master/rekap_nilai', compact('nilai', 'tp', 'thn', 'periode_tahun', 'periode_tipe', 'tahun', 'tipe'));
   }
 
   public function cek_nilai_mhs_kprd($id)
@@ -10743,7 +10777,30 @@ class KaprodiController extends Controller
 
     $kodeprodi = $prd->kodeprodi;
 
-    $data = DB::select('CALL rekap_nilai_prodi(?)', [$kodeprodi]);
+    $data = Student::from('student as mhs')
+      ->join('student_record as sr', function ($join) {
+        $join->on('sr.id_student', '=', 'mhs.idstudent')
+          ->where('sr.status', '=', 'TAKEN');
+      })
+      ->join('prodi as prd', function ($join) {
+        $join->on('prd.kodeprodi', '=', 'mhs.kodeprodi')
+          ->on('prd.kodekonsentrasi', '=', 'mhs.kodekonsentrasi');
+      })
+      ->join('kelas as kls', 'kls.idkelas', '=', 'mhs.idstatus')
+      ->join('angkatan as ang', 'ang.idangkatan', '=', 'mhs.idangkatan')
+      ->where('mhs.kodeprodi', $kodeprodi)
+      ->where('mhs.active', 1)
+      ->groupBy('mhs.idstudent', 'mhs.nim', 'mhs.nama', 'prd.prodi', 'kls.kelas', 'ang.angkatan')
+      ->orderBy('mhs.nim', 'ASC')
+      ->select(
+        'mhs.idstudent',
+        DB::raw("CONCAT(mhs.nim, '/', mhs.nama) AS mhs"),
+        'prd.prodi',
+        'kls.kelas',
+        'ang.angkatan',
+        DB::raw('COUNT(sr.id_studentrecord) AS jml_mk')
+      )
+      ->get();
 
     return view('kaprodi/nilai/rekap_nilai_mhs_prd', compact('data'));
   }
@@ -10758,7 +10815,22 @@ class KaprodiController extends Controller
       ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
       ->first();
 
-    $data = DB::select('CALL cek_rekap_nilai_mhs(?)', [$id]);
+    $data = Student_record::from('student_record as sr')
+      ->join('kurikulum_periode as kp', 'kp.id_kurperiode', '=', 'sr.id_kurperiode')
+      ->join('matakuliah as mk', 'mk.idmakul', '=', 'kp.id_makul')
+      ->join('semester as sm', 'sm.idsemester', '=', 'kp.id_semester')
+      ->where('sr.status', 'TAKEN')
+      ->where('sr.id_student', $id)
+      ->orderBy('kp.id_semester', 'ASC')
+      ->orderBy('mk.kode', 'ASC')
+      ->select(
+        'sr.id_studentrecord',
+        DB::raw("CONCAT(mk.kode, ' - ', mk.makul) AS makul"),
+        DB::raw('(mk.akt_sks_teori + mk.akt_sks_praktek) AS sks'),
+        'sr.nilai_AKHIR',
+        'sm.semester'
+      )
+      ->get();
 
     return view('kaprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'mhs'));
   }

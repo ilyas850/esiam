@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+  <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-  @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
   <section class="content">
     <!-- Filter Box -->
     <div class="box box-primary">
@@ -12,33 +10,35 @@
         <h3 class="box-title"><i class="fa fa-filter"></i> Filter Tahun Akademik & Semester</h3>
       </div>
       <div class="box-body">
-        <form class="form" role="form" action="{{ url('nilai_mhs_kprd') }}" method="GET">
+        <form class="form" role="form" action="<?php echo e(url('nilai_mhs_kprd')); ?>" method="GET">
           <div class="row">
             <div class="col-md-4 col-sm-6">
               <label>Periode Tahun Akademik</label>
               <select class="form-control" name="id_periodetahun" required>
                 <option value="">-- Pilih Tahun Akademik --</option>
-                @foreach ($periode_tahun as $pt)
-                  <option value="{{ $pt->id_periodetahun }}" {{ (isset($tahun) && $tahun == $pt->id_periodetahun) ? 'selected' : '' }}>
-                    {{ $pt->periode_tahun }}
+                <?php $__currentLoopData = $periode_tahun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <option value="<?php echo e($pt->id_periodetahun); ?>" <?php echo e((isset($tahun) && $tahun == $pt->id_periodetahun) ? 'selected' : ''); ?>>
+                    <?php echo e($pt->periode_tahun); ?>
+
                   </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </select>
             </div>
             <div class="col-md-4 col-sm-6">
               <label>Tipe Semester</label>
               <select class="form-control" name="id_periodetipe" required>
                 <option value="">-- Pilih Tipe Semester --</option>
-                @foreach ($periode_tipe as $ptip)
-                  <option value="{{ $ptip->id_periodetipe }}" {{ (isset($tipe) && $tipe == $ptip->id_periodetipe) ? 'selected' : '' }}>
-                    {{ $ptip->periode_tipe }}
+                <?php $__currentLoopData = $periode_tipe; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ptip): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <option value="<?php echo e($ptip->id_periodetipe); ?>" <?php echo e((isset($tipe) && $tipe == $ptip->id_periodetipe) ? 'selected' : ''); ?>>
+                    <?php echo e($ptip->periode_tipe); ?>
+
                   </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </select>
             </div>
             <div class="col-md-4 col-sm-12" style="margin-top: 25px;">
               <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tampilkan Data</button>
-              <a href="{{ url('nilai_mhs_kprd') }}" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
+              <a href="<?php echo e(url('nilai_mhs_kprd')); ?>" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
             </div>
           </div>
         </form>
@@ -52,9 +52,9 @@
           <span class="info-box-icon"><i class="fa fa-book"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Total Matakuliah</span>
-            <span class="info-box-number">{{ count($nilai) }}</span>
+            <span class="info-box-number"><?php echo e(count($nilai)); ?></span>
             <span class="progress-description">
-              Periode {{ $thn->periode_tahun ?? '' }} ({{ $tp->periode_tipe ?? '' }})
+              Periode <?php echo e($thn->periode_tahun ?? ''); ?> (<?php echo e($tp->periode_tipe ?? ''); ?>)
             </span>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <span class="info-box-icon"><i class="fa fa-users"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Total Mahasiswa</span>
-            <span class="info-box-number">{{ $nilai->sum('jml_mhs') }}</span>
+            <span class="info-box-number"><?php echo e($nilai->sum('jml_mhs')); ?></span>
             <span class="progress-description">
               Mahasiswa Terdaftar
             </span>
@@ -78,7 +78,7 @@
           <span class="info-box-icon"><i class="fa fa-credit-card"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Total SKS</span>
-            <span class="info-box-number">{{ $nilai->sum(function($i){ return $i->akt_sks_teori + $i->akt_sks_praktek; }) }}</span>
+            <span class="info-box-number"><?php echo e($nilai->sum(function($i){ return $i->akt_sks_teori + $i->akt_sks_praktek; })); ?></span>
             <span class="progress-description">
               SKS Diajarkan
             </span>
@@ -90,11 +90,11 @@
         <?php 
           $lengkap = $nilai->filter(function($i){ return $i->jml_mhs > 0 && $i->jml_terisi == $i->jml_mhs; })->count();
         ?>
-        <div class="info-box {{ $lengkap == count($nilai) && count($nilai) > 0 ? 'bg-green' : 'bg-red' }}">
+        <div class="info-box <?php echo e($lengkap == count($nilai) && count($nilai) > 0 ? 'bg-green' : 'bg-red'); ?>">
           <span class="info-box-icon"><i class="fa fa-check-square-o"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Status Input Nilai</span>
-            <span class="info-box-number">{{ $lengkap }} / {{ count($nilai) }}</span>
+            <span class="info-box-number"><?php echo e($lengkap); ?> / <?php echo e(count($nilai)); ?></span>
             <span class="progress-description">
               MK Lengkap Dinilai
             </span>
@@ -107,11 +107,12 @@
     <div class="box box-info">
       <div class="box-header with-border">
         <h3 class="box-title"><i class="fa fa-list"></i> Rekap Nilai Mahasiswa per Matakuliah</h3>
-        @if(isset($nilai[0]))
+        <?php if(isset($nilai[0])): ?>
           <span class="label label-primary pull-right" style="font-size: 13px; padding: 6px 10px;">
-            <i class="fa fa-university"></i> {{ $nilai[0]->prodi }}
+            <i class="fa fa-university"></i> <?php echo e($nilai[0]->prodi); ?>
+
           </span>
-        @endif
+        <?php endif; ?>
       </div>
       <div class="box-body">
         <div class="table-responsive">
@@ -132,7 +133,7 @@
             </thead>
             <tbody>
               <?php $no = 1; ?>
-              @foreach ($nilai as $key)
+              <?php $__currentLoopData = $nilai; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php 
                   $sks = $key->akt_sks_teori + $key->akt_sks_praktek;
                   $isLengkap = ($key->jml_mhs > 0 && $key->jml_terisi == $key->jml_mhs);
@@ -140,52 +141,54 @@
                   $persen = $key->jml_mhs > 0 ? round(($key->jml_terisi / $key->jml_mhs) * 100) : 0;
                 ?>
                 <tr>
-                  <td align="center">{{ $no++ }}</td>
+                  <td align="center"><?php echo e($no++); ?></td>
                   <td align="center">
-                    <span class="label label-default">{{ $key->kode }}</span>
+                    <span class="label label-default"><?php echo e($key->kode); ?></span>
                   </td>
-                  <td><strong>{{ $key->makul }}</strong></td>
+                  <td><strong><?php echo e($key->makul); ?></strong></td>
                   <td align="center">
-                    <span class="badge bg-purple" title="Teori: {{ $key->akt_sks_teori }} | Praktek: {{ $key->akt_sks_praktek }}">
-                      {{ $sks }} SKS
+                    <span class="badge bg-purple" title="Teori: <?php echo e($key->akt_sks_teori); ?> | Praktek: <?php echo e($key->akt_sks_praktek); ?>">
+                      <?php echo e($sks); ?> SKS
                     </span>
                   </td>
                   <td align="center">
-                    <span class="label label-warning">{{ Str::startsWith($key->semester, 'Semester') ? $key->semester : 'Semester ' . $key->semester }}</span>
+                    <span class="label label-warning"><?php echo e(Str::startsWith($key->semester, 'Semester') ? $key->semester : 'Semester ' . $key->semester); ?></span>
                   </td>
                   <td align="center">
-                    <span class="label label-info">{{ $key->kelas }}</span>
+                    <span class="label label-info"><?php echo e($key->kelas); ?></span>
                   </td>
-                  <td>{{ $key->nama }}</td>
+                  <td><?php echo e($key->nama); ?></td>
                   <td align="center">
-                    <span class="badge bg-blue">{{ $key->jml_mhs }}</span>
+                    <span class="badge bg-blue"><?php echo e($key->jml_mhs); ?></span>
                   </td>
                   <td align="center">
-                    @if($isLengkap)
+                    <?php if($isLengkap): ?>
                       <span class="label label-success" style="font-size: 11px;">
-                        <i class="fa fa-check-circle"></i> Lengkap ({{ $key->jml_terisi }}/{{ $key->jml_mhs }})
+                        <i class="fa fa-check-circle"></i> Lengkap (<?php echo e($key->jml_terisi); ?>/<?php echo e($key->jml_mhs); ?>)
                       </span>
-                    @elseif($isKosong)
+                    <?php elseif($isKosong): ?>
                       <span class="label label-danger" style="font-size: 11px;">
-                        <i class="fa fa-times-circle"></i> Belum (0/{{ $key->jml_mhs }})
+                        <i class="fa fa-times-circle"></i> Belum (0/<?php echo e($key->jml_mhs); ?>)
                       </span>
-                    @else
+                    <?php else: ?>
                       <span class="label label-warning" style="font-size: 11px;">
-                        <i class="fa fa-clock-o"></i> {{ $key->jml_terisi }}/{{ $key->jml_mhs }} ({{ $persen }}%)
+                        <i class="fa fa-clock-o"></i> <?php echo e($key->jml_terisi); ?>/<?php echo e($key->jml_mhs); ?> (<?php echo e($persen); ?>%)
                       </span>
-                    @endif
+                    <?php endif; ?>
                   </td>
                   <td align="center">
-                    <a href="cek_nilai_mhs_kprd/{{ $key->id_kurperiode }}" class="btn btn-info btn-xs" title="Cek detail nilai mahasiswa">
+                    <a href="cek_nilai_mhs_kprd/<?php echo e($key->id_kurperiode); ?>" class="btn btn-info btn-xs" title="Cek detail nilai mahasiswa">
                       <i class="fa fa-eye"></i> Cek Nilai
                     </a>
                   </td>
                 </tr>
-              @endforeach
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/kaprodi/master/rekap_nilai.blade.php ENDPATH**/ ?>
