@@ -1,10 +1,8 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
         <div class="box box-danger">
             <div class="box-header">
@@ -68,74 +66,76 @@
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($data as $key)
+                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td>
-                                    <center>{{ $no++ }}</center>
+                                    <center><?php echo e($no++); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->tanggal_selesai }}</center>
+                                    <center><?php echo e($key->tanggal_selesai); ?></center>
                                 </td>
-                                <td>{{ $key->nama }}</td>
+                                <td><?php echo e($key->nama); ?></td>
                                 <td>
-                                    <center>{{ $key->nim }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $key->prodi }}</center>
+                                    <center><?php echo e($key->nim); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->kelas }}</center>
+                                    <center><?php echo e($key->prodi); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_1 }}</center>
+                                    <center><?php echo e($key->kelas); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_2 }}</center>
+                                    <center><?php echo e($key->nilai_1); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_3 }}</center>
+                                    <center><?php echo e($key->nilai_2); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $key->nilai_huruf }}</center>
+                                    <center><?php echo e($key->nilai_3); ?></center>
+                                </td>
+                                <td>
+                                    <center><?php echo e($key->nilai_huruf); ?></center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="/unduh_nilai_ta_a/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="/unduh_nilai_ta_a/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-info btn-xs" title="klik untuk unduh nilai Pembimbing TA">P</a>
-                                        <a href="/unduh_nilai_ta_b/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="/unduh_nilai_ta_b/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-success btn-xs" title="klik untuk unduh nilai Penguji I TA">P
                                             I</a>
-                                        <a href="/unduh_nilai_ta_c/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="/unduh_nilai_ta_c/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-warning btn-xs" title="klik untuk unduh nilai Penguji II TA">P
                                             II</a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="edit_nilai_ta_bim/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="edit_nilai_ta_bim/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-info btn-xs" title="klik untuk edit nilai Pembimbing TA">EP</a>
-                                        <a href="edit_nilai_ta_p1/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="edit_nilai_ta_p1/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-success btn-xs" title="klik untuk edit nilai Penguji I TA">EP
                                             I</a>
-                                        <a href="edit_nilai_ta_p2/{{ $key->id_settingrelasi_prausta }}"
+                                        <a href="edit_nilai_ta_p2/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                             class="btn btn-warning btn-xs" title="klik untuk edit nilai Penguji II TA">EP
                                             II</a>
-                                        @if ($key->validasi == 0)
-                                            <a href="validate_nilai_ta/{{ $key->id_settingrelasi_prausta }}"
+                                        <?php if($key->validasi == 0): ?>
+                                            <a href="validate_nilai_ta/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                                 class="btn btn-primary btn-xs" title="klik untuk validasi"><i
                                                     class="fa fa-check"></i></a>
-                                        @else
-                                            <a href="unvalidate_nilai_ta/{{ $key->id_settingrelasi_prausta }}"
+                                        <?php else: ?>
+                                            <a href="unvalidate_nilai_ta/<?php echo e($key->id_settingrelasi_prausta); ?>"
                                                 class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
                                                     class="fa fa-close"></i></a>
-                                        @endif
+                                        <?php endif; ?>
                                     </center>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/prausta/ta/nilai_ta.blade.php ENDPATH**/ ?>

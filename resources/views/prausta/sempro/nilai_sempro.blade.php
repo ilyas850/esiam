@@ -80,13 +80,13 @@
                                     <center>{{ $key->kelas }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ number_format($key->nilai_1, 0) }}</center>
+                                    <center>{{ $key->nilai_1 }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ number_format($key->nilai_2, 0) }}</center>
+                                    <center>{{ $key->nilai_2 }}</center>
                                 </td>
                                 <td>
-                                    <center>{{ number_format($key->nilai_3, 0) }}</center>
+                                    <center>{{ $key->nilai_3 }}</center>
                                 </td>
                                 <td>
                                     <center>{{ $key->nilai_huruf }}</center>
