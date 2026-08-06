@@ -3,16 +3,17 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <section class="content">
-        <div class="box box-danger">
-            <div class="box-header">
-                <h3 class="box-title">Pilih Tipe</h3>
-            </div>
-            <div class="box-body">
-                <a href="/data_nilai_ta_mahasiswa" class="btn btn-info">Data Nilai TA</a>
-                <a href="/data_nilai_skripsi_mahasiswa" class="btn btn-success">Data Nilai Skripsi</a>
+    <?php echo $__env->make('prausta.partials.nilai_akhir_style', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+    <section class="content nilai-akhir">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="nilai-page-title">Nilai TA dan Skripsi</h3>
+                <div class="nilai-page-subtitle">Pilih tipe penilaian untuk melihat, mengedit, mengunduh form, atau melakukan validasi nilai mahasiswa.</div>
             </div>
         </div>
+
+        <?php echo $__env->make('prausta.partials.nilai_ta_skripsi_nav', ['active' => ''], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     </section>
 <?php $__env->stopSection(); ?>
 

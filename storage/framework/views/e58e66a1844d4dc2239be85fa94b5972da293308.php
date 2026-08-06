@@ -3,127 +3,33 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Data Nilai Sempro Mahasiswa</h3>
-            </div>
-            <div class="box-body">
-                
-                <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th width="3%" rowspan="2">
-                                <center>No</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Tanggal Seminar</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Nama Mahasiswa</center>
-                            </th>
-                            <th width="6%" rowspan="2">
-                                <center>NIM</center>
-                            </th>
-                            <th width="11%" rowspan="2">
-                                <center>Program Studi</center>
-                            </th>
-                            <th width="8%" rowspan="2">
-                                <center>Kelas</center>
-                            </th>
-                            <th colspan="4">
-                                <center>Nilai</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Unduh Form</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Aksi</center>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <center>1</center>
-                            </th>
-                            <th>
-                                <center>2</center>
-                            </th>
-                            <th>
-                                <center>3</center>
-                            </th>
-                            <th>
-                                <center>Huruf</center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr>
-                                <td>
-                                    <center><?php echo e($no++); ?></center>
-                                </td>
+    <?php echo $__env->make('prausta.partials.nilai_akhir_style', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                                <td>
-                                    <center><?php echo e($key->tanggal_selesai); ?></center>
-                                </td>
-                                <td><?php echo e($key->nama); ?></td>
-                                <td>
-                                    <center><?php echo e($key->nim); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->prodi); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->kelas); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->nilai_1); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->nilai_2); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->nilai_3); ?></center>
-                                </td>
-                                <td>
-                                    <center><?php echo e($key->nilai_huruf); ?></center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <a href="/unduh_nilai_sempro_a/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-info btn-xs">P</a>
-                                        <a href="/unduh_nilai_sempro_b/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-success btn-xs">P I</a>
-                                        <a href="/unduh_nilai_sempro_c/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-warning btn-xs">P II</a>
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <a href="edit_nilai_sempro_bim/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-info btn-xs">EP</a>
-                                        <a href="edit_nilai_sempro_p1/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-success btn-xs">EP I</a>
-                                        <a href="edit_nilai_sempro_p2/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                            class="btn btn-warning btn-xs">EP II</a>
-                                        <?php if($key->validasi == 0): ?>
-                                            <a href="validate_nilai_sempro/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                                class="btn btn-primary btn-xs" title="klik untuk validasi"><i
-                                                    class="fa fa-check"></i></a>
-                                        <?php else: ?>
-                                            <a href="unvalidate_nilai_sempro/<?php echo e($key->id_settingrelasi_prausta); ?>"
-                                                class="btn btn-danger btn-xs" title="klik untuk batal validasi"><i
-                                                    class="fa fa-close"></i></a>
-                                        <?php endif; ?>
-                                    </center>
-                                </td>
-                            </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </tbody>
-                </table>
+    <section class="content nilai-akhir">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="nilai-page-title">Nilai Seminar Proposal</h3>
+                <div class="nilai-page-subtitle">Kelola nilai pembimbing, penguji, form unduhan, dan validasi Seminar Proposal mahasiswa.</div>
             </div>
         </div>
+
+        <?php echo $__env->make('prausta.partials.nilai_akhir_table', [
+            'title' => 'Data Nilai Sempro Mahasiswa',
+            'dateLabel' => 'Tanggal Seminar',
+            'boxType' => 'box-info',
+            'downloadRoutes' => [
+                ['route' => 'unduh_nilai_sempro_a', 'class' => 'btn-info', 'label' => 'Pembimbing', 'title' => 'Unduh nilai pembimbing Sempro'],
+                ['route' => 'unduh_nilai_sempro_b', 'class' => 'btn-success', 'label' => 'Penguji I', 'title' => 'Unduh nilai penguji I Sempro'],
+                ['route' => 'unduh_nilai_sempro_c', 'class' => 'btn-warning', 'label' => 'Penguji II', 'title' => 'Unduh nilai penguji II Sempro'],
+            ],
+            'editRoutes' => [
+                ['route' => 'edit_nilai_sempro_bim', 'class' => 'btn-info', 'label' => 'Pembimbing', 'title' => 'Edit nilai pembimbing Sempro'],
+                ['route' => 'edit_nilai_sempro_p1', 'class' => 'btn-success', 'label' => 'Penguji I', 'title' => 'Edit nilai penguji I Sempro'],
+                ['route' => 'edit_nilai_sempro_p2', 'class' => 'btn-warning', 'label' => 'Penguji II', 'title' => 'Edit nilai penguji II Sempro'],
+            ],
+            'validateRoute' => 'validate_nilai_sempro',
+            'unvalidateRoute' => 'unvalidate_nilai_sempro',
+        ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     </section>
 <?php $__env->stopSection(); ?>
 
