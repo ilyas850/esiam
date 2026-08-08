@@ -1401,6 +1401,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     //cek rekapan perkuliahan
     Route::get('rekap_perkuliahan_kprd', 'KaprodiController@rekap_perkuliahan');
+    Route::post('filter_rekap_perkuliahan_kprd', 'KaprodiController@filter_rekap_perkuliahan');
     Route::get('cek_rekapan_kprd/{id}', 'KaprodiController@cek_rekapan');
     Route::get('cek_view_bap_kprd/{id}', 'KaprodiController@cek_view_bap');
     Route::get('cek_print_bap_kprd/{id}', 'KaprodiController@cek_print_bap');
@@ -1727,6 +1728,9 @@ Route::group(['middleware' => 'adminprodi'], function () {
     //jadwal perkuliahan
     Route::get('jadwal_kuliah_prodi', 'ProdiController@jadwal_kuliah_prodi');
     Route::post('filter_jadwal_perkuliahan_prodi', 'ProdiController@filter_jadwal_perkuliahan_prodi');
+    Route::get('rekap_perkuliahan_prodi', 'ProdiController@rekap_perkuliahan');
+    Route::post('filter_rekap_perkuliahan_prodi', 'ProdiController@filter_rekap_perkuliahan');
+    Route::get('cek_rekapan_prodi/{id}', 'ProdiController@cek_rekapan');
 
     #upload SK pengajaran
     Route::get('upload_sk_pengajaran_prodi', 'ProdiController@upload_sk_pengajaran_prodi');

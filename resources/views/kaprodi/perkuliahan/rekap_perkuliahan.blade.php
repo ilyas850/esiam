@@ -6,10 +6,54 @@
 
 @section('content')
     <section class="content">
+        <!-- Filter Section -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-filter"></i> Filter Periode Tahun Akademik - Semester</h3>
+            </div>
+            <form class="form" role="form" action="{{ url('filter_rekap_perkuliahan_kprd') }}" method="POST">
+                {{ csrf_field() }}
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Periode Tahun</label>
+                                <select class="form-control" name="id_periodetahun" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    @foreach ($tahun as $thn)
+                                        <option value="{{ $thn->id_periodetahun }}" {{ (isset($idtahun) && $idtahun == $thn->id_periodetahun) ? 'selected' : '' }}>{{ $thn->periode_tahun }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Semester</label>
+                                <select class="form-control" name="id_periodetipe" required>
+                                    <option value="">-- Pilih Semester --</option>
+                                    @foreach ($tipe as $tipee)
+                                        <option value="{{ $tipee->id_periodetipe }}" {{ (isset($idtipe) && $idtipe == $tipee->id_periodetipe) ? 'selected' : '' }}>{{ $tipee->periode_tipe }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fa fa-search"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <!-- Data Table Section -->
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-table"></i> Rekap Perkuliahan</h3>
+                <h3 class="box-title"><i class="fa fa-table"></i> Rekap Perkuliahan {{ isset($namaperiodetahun) ? $namaperiodetahun : '' }} - {{ isset($namaperiodetipe) ? $namaperiodetipe : '' }}</h3>
             </div>
             <div class="box-body">
                 <table id="example1" class="table table-bordered table-striped table-hover">

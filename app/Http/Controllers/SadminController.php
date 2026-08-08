@@ -2286,13 +2286,14 @@ class SadminController extends Controller
 
     public function rekapPerkuliahan($idPeriodeTahun, $idPeriodeTipe)
     {
-        // Subquery untuk menghitung jml_per, jml_online, jml_offline per id_kurperiode
         $bapCountSql = "
             SELECT 
-                bp.id_kurperiode,
-                COUNT(bp.id_kurperiode) AS jml_per,
-                SUM(CASE WHEN bp.metode_kuliah = 'Online' THEN 1 ELSE 0 END) as jml_online,
-                SUM(CASE WHEN bp.metode_kuliah = 'Offline' THEN 1 ELSE 0 END) as jml_offline
+                kp.id_makul,
+                kp.id_kelas,
+                kp.id_dosen,
+                COUNT(DISTINCT bp.pertemuan) AS jml_per,
+                COUNT(DISTINCT CASE WHEN bp.metode_kuliah = 'Online' THEN bp.pertemuan END) as jml_online,
+                COUNT(DISTINCT CASE WHEN bp.metode_kuliah = 'Offline' THEN bp.pertemuan END) as jml_offline
             FROM bap bp
             JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
             JOIN prodi prd ON prd.id_prodi = kp.id_prodi
@@ -2300,7 +2301,7 @@ class SadminController extends Controller
                 AND kp.status = 'ACTIVE' 
                 AND kp.id_periodetahun = ?
                 AND kp.id_periodetipe = ?
-            GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+            GROUP BY kp.id_makul, kp.id_kelas, kp.id_dosen
         ";
 
         return DB::select("
@@ -2311,20 +2312,22 @@ class SadminController extends Controller
                 MIN(prd.prodi) as prodi, 
                 MIN(kls.kelas) as kelas, 
                 MIN(dsn.nama) as nama, 
-                MIN(aa.jml_per) as jml_per,
-                MIN(aa.jml_online) as jml_online,
-                MIN(aa.jml_offline) as jml_offline
+                COALESCE(MIN(aa.jml_per), 0) as jml_per,
+                COALESCE(MIN(aa.jml_online), 0) as jml_online,
+                COALESCE(MIN(aa.jml_offline), 0) as jml_offline
             FROM kurikulum_periode kp
             JOIN matakuliah mk ON mk.idmakul = kp.id_makul
             JOIN prodi prd ON prd.id_prodi = kp.id_prodi
             JOIN kelas kls ON kls.idkelas = kp.id_kelas
             LEFT JOIN dosen dsn ON dsn.iddosen = kp.id_dosen
-            LEFT JOIN ({$bapCountSql}) aa ON aa.id_kurperiode = kp.id_kurperiode
+            LEFT JOIN ({$bapCountSql}) aa ON aa.id_makul = kp.id_makul 
+                                        AND aa.id_kelas = kp.id_kelas 
+                                        AND (aa.id_dosen = kp.id_dosen OR (aa.id_dosen IS NULL AND kp.id_dosen IS NULL))
             WHERE kp.id_periodetahun = ? 
                 AND kp.id_periodetipe = ? 
                 AND kp.status = 'ACTIVE' 
                 AND mk.active = 1
-            GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+            GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_dosen
             ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
         ", [$idPeriodeTahun, $idPeriodeTipe, $idPeriodeTahun, $idPeriodeTipe]);
     }
@@ -2381,6 +2384,7 @@ class SadminController extends Controller
                 'bap.tidak_hadir',
                 'bap.created_at'
             )
+            ->orderByRaw('CAST(bap.pertemuan AS UNSIGNED) ASC')
             ->get();
 
         return view('sadmin/perkuliahan/cek_bap', ['bap' => $key, 'data' => $data]);
@@ -2953,15 +2957,22 @@ class SadminController extends Controller
 
     public function data_admin_prodi()
     {
-        $data = User::join('wrkpersonalia', 'users.id_user', '=', 'wrkpersonalia.idstaff')
+        $data = User::leftJoin('wrkpersonalia', 'users.id_user', '=', 'wrkpersonalia.idstaff')
+            ->leftJoin(DB::raw('(SELECT kodeprodi, MIN(prodi) as prodi FROM prodi GROUP BY kodeprodi) as prodi'), 'users.kodeprodi', '=', 'prodi.kodeprodi')
             ->where('users.role', 9)
+            ->select('users.*', 'wrkpersonalia.nama', 'prodi.prodi as nama_prodi')
             ->get();
 
         $staff = Wrkpersonalia::where('active', 1)
             ->orderBy('nama', 'ASC')
             ->get();
 
-        return view('sadmin/user/adminprodi', compact('data', 'staff'));
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')
+            ->select('kodeprodi', 'prodi')
+            ->orderBy('prodi', 'ASC')
+            ->get();
+
+        return view('sadmin/user/adminprodi', compact('data', 'staff', 'prodi'));
     }
 
     public function post_adminprodi(Request $request)
@@ -2970,6 +2981,7 @@ class SadminController extends Controller
         $data = $request->id_user;
         $usern = $request->username;
         $pass = $request->password;
+        $kodeprodi = $request->kodeprodi;
 
         $user = explode(',', $data, 2);
         $id1 = $user[0];
@@ -2979,6 +2991,7 @@ class SadminController extends Controller
         $users->id_user = $id1;
         $users->name = $id2;
         $users->username = $usern;
+        $users->kodeprodi = $kodeprodi;
         $users->role = $role;
         $users->password = bcrypt($pass);
         $users->save();
@@ -2991,6 +3004,7 @@ class SadminController extends Controller
     {
         $data = $request->id_user;
         $usern = $request->username;
+        $kodeprodi = $request->kodeprodi;
 
         $user = explode(',', $data, 2);
         $id1 = $user[0];
@@ -3000,6 +3014,7 @@ class SadminController extends Controller
         $prd->id_user = $id1;
         $prd->name = $id2;
         $prd->username = $usern;
+        $prd->kodeprodi = $kodeprodi;
         $prd->save();
 
         return redirect('data_admin_prodi');
