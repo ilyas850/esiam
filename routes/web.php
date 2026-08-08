@@ -1377,6 +1377,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
     //jurnal perkuliahan
     Route::get('jurnal_bap_kprd/{id}', 'KaprodiController@jurnal_bap');
     Route::get('print_jurnal_kprd/{id}', 'KaprodiController@print_jurnal');
+    Route::get('download_jurnal_kprd/{id}', 'KaprodiController@download_jurnal');
     //histori matakuliah
     Route::get('history_makul_kprd', 'KaprodiController@history_makul_dsn');
     Route::get('cekmhs_dsn_his_kprd/{id}', 'KaprodiController@cekmhs_dsn_his');

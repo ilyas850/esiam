@@ -6757,7 +6757,7 @@ class SadminController extends Controller
             ->orderBy('bap.tanggal', 'ASC')
             ->get();
 
-        $pdf = PDF::loadView('sadmin/download/pdf_bap_perkuliahan', compact('cekkprd', 'bap', 'data'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('sadmin/download/pdf_bap_perkuliahan', compact('cekkprd', 'bap', 'data'))->setPaper('legal', 'landscape');
         return $pdf->download('BAP Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
     }
 

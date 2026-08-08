@@ -43,11 +43,7 @@
                     <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
                     <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 50 + 60 * $bap->akt_sks_praktek * 120)); ?>
 
-                <?php elseif($bap->id_kelas == 2): ?>
-                    <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
-                    <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90)); ?>
-
-                <?php elseif($bap->id_kelas == 3): ?>
+                <?php elseif($bap->id_kelas == 2 || $bap->id_kelas == 3): ?>
                     <?php echo e(date('H:i', strtotime($bap->jam))); ?> -
                     <?php echo e(date('H:i', strtotime($bap->jam) + 60 * $bap->akt_sks_teori * 45 + 60 * $bap->akt_sks_praktek * 90)); ?>
 
@@ -170,4 +166,4 @@
         </table>
     </div>
 </body>
-<?php /**PATH /var/www/html/resources/views/dosen/download/jurnal_perkuliahan_pdf.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/resources/views/sadmin/download/pdf_bap_perkuliahan.blade.php ENDPATH**/ ?>
