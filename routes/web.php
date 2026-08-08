@@ -30,6 +30,11 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('delete_angkatan', 'SadminController@delete_angkatan');
 
     //matakuliah BOM
+    Route::get('master_makul', 'SadminController@master_makul');
+    Route::post('simpan_makul', 'SadminController@simpan_makul');
+    Route::put('update_makul/{id}', 'SadminController@update_makul');
+    Route::post('delete_makul', 'SadminController@delete_makul');
+
     Route::get('master_bom', 'SadminController@master_bom');
 
     //penilaian prausta
