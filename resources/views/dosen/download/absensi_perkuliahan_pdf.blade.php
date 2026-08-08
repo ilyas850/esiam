@@ -475,10 +475,34 @@
             </tr>
         </tfoot>
     </table>
+    <?php
+        $bap_data = \Illuminate\Support\Facades\DB::table('bap')
+            ->leftJoin('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
+            ->where('bap.id_kurperiode', $bap->id_kurperiode)
+            ->where('bap.status', 'ACTIVE')
+            ->select('bap.*', 'kuliah_tipe.tipe_kuliah')
+            ->get();
+
+        $uasItem = $bap_data->first(function ($item) {
+            $materi = isset($item->materi_kuliah) ? strtoupper(trim($item->materi_kuliah)) : '';
+            $jenis = isset($item->jenis_kuliah) ? strtoupper(trim($item->jenis_kuliah)) : '';
+            $tipe = isset($item->tipe_kuliah) ? strtoupper(trim($item->tipe_kuliah)) : '';
+            $pertemuan = isset($item->pertemuan) ? (int)$item->pertemuan : 0;
+
+            return $materi === 'UAS' || strpos($materi, 'UAS') !== false || $jenis === 'UAS' || $tipe === 'UAS' || $pertemuan === 16;
+        });
+
+        $tgl_cikarang = '.........................';
+        if ($uasItem && !empty($uasItem->tanggal)) {
+            $bulanArr = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            $carbonTgl = \Carbon\Carbon::parse($uasItem->tanggal)->addDays(7);
+            $tgl_cikarang = $carbonTgl->format('d') . ' ' . $bulanArr[(int)$carbonTgl->format('m')] . ' ' . $carbonTgl->format('Y');
+        }
+    ?>
     <table width="100%">
         <tr>
             <td width="76%" align=center><span style="font-size:85%"></span></td>
-            <td width="24%"><span style="font-size:85%">Cikarang, </span></td>
+            <td width="24%"><span style="font-size:85%">Cikarang, {{ $tgl_cikarang }}</span></td>
         </tr>
     </table>
     <table width="100%">
