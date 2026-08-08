@@ -7,10 +7,14 @@
     <style>
         /* CSS untuk mengatur tampilan PDF */
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
             font-size: 12px;
             margin: 0;
             padding: 0;
+        }
+
+        .check-mark {
+            font-family: DejaVu Sans, sans-serif;
         }
 
         .header {
@@ -174,7 +178,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn1 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn1 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn1 == 'SAKIT')
@@ -189,7 +193,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn2 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn2 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn2 == 'SAKIT')
@@ -204,7 +208,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn3 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn3 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn3 == 'SAKIT')
@@ -219,7 +223,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn4 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn4 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn4 == 'SAKIT')
@@ -229,11 +233,12 @@
                                 @elseif($itembs->absn4 == 'IZIN')
                                     (I)
                                 @endif
+                            </center>
                         </td>
                         <td>
                             <center>
                                 @if ($itembs->absn5 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn5 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn5 == 'SAKIT')
@@ -248,7 +253,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn6 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn6 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn6 == 'SAKIT')
@@ -263,7 +268,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn7 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn7 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn7 == 'SAKIT')
@@ -278,7 +283,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn8 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn8 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn8 == 'SAKIT')
@@ -293,7 +298,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn9 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn9 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn9 == 'SAKIT')
@@ -308,7 +313,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn10 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn10 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn10 == 'SAKIT')
@@ -323,7 +328,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn11 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn11 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn11 == 'SAKIT')
@@ -338,7 +343,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn12 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn12 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn12 == 'SAKIT')
@@ -353,7 +358,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn13 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn13 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn13 == 'SAKIT')
@@ -368,7 +373,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn14 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn14 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn14 == 'SAKIT')
@@ -383,7 +388,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn15 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn15 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn15 == 'SAKIT')
@@ -398,7 +403,7 @@
                         <td>
                             <center>
                                 @if ($itembs->absn16 == 'ABSEN')
-                                    (V)
+                                    (<span class="check-mark">&#10003;</span>)
                                 @elseif ($itembs->absn16 == 'HADIR')
                                     (X)
                                 @elseif($itembs->absn16 == 'SAKIT')
@@ -438,10 +443,34 @@
             </tfoot>
         </table>
         <br>
+        <?php
+            $bap_data = \Illuminate\Support\Facades\DB::table('bap')
+                ->leftJoin('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
+                ->where('bap.id_kurperiode', $bap->id_kurperiode)
+                ->where('bap.status', 'ACTIVE')
+                ->select('bap.*', 'kuliah_tipe.tipe_kuliah')
+                ->get();
+
+            $uasItem = $bap_data->first(function ($item) {
+                $materi = isset($item->materi_kuliah) ? strtoupper(trim($item->materi_kuliah)) : '';
+                $jenis = isset($item->jenis_kuliah) ? strtoupper(trim($item->jenis_kuliah)) : '';
+                $tipe = isset($item->tipe_kuliah) ? strtoupper(trim($item->tipe_kuliah)) : '';
+                $pertemuan = isset($item->pertemuan) ? (int)$item->pertemuan : 0;
+
+                return $materi === 'UAS' || strpos($materi, 'UAS') !== false || $jenis === 'UAS' || $tipe === 'UAS' || $pertemuan === 16;
+            });
+
+            $tgl_cikarang = '.........................';
+            if ($uasItem && !empty($uasItem->tanggal)) {
+                $bulanArr = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                $carbonTgl = \Carbon\Carbon::parse($uasItem->tanggal)->addDays(7);
+                $tgl_cikarang = $carbonTgl->format('d') . ' ' . $bulanArr[(int)$carbonTgl->format('m')] . ' ' . $carbonTgl->format('Y');
+            }
+        ?>
         <table width="100%">
             <tr>
                 <td width="70%" align=center></td>
-                <td width="30%">Cikarang, </td>
+                <td width="30%">Cikarang, {{ $tgl_cikarang }}</td>
             </tr>
         </table>
         <table width="100%">
