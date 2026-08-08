@@ -6,6 +6,7 @@ use PDF;
 use File;
 use Alert;
 use Session;
+use App\Helpers\Helper;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Bap;
 use App\Models\Itembayar;
@@ -1075,14 +1076,14 @@ class DosenController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $id)->first();
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($id);
 
         return view('dosen/list_mhs_dsn', ['ck' => $kelas_gabungan, 'ids' => $id, 'nilai' => $nilai]);
     }
 
     public function input_kat_dsn($id)
     {
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$id]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($id);
 
         $kurrr = $id;
 
@@ -1145,7 +1146,7 @@ class DosenController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($request->id_kurperiode);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $request->id_kurperiode)
@@ -1276,7 +1277,7 @@ class DosenController extends Controller
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
 
         //cek mahasiswa
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($request->id_kurperiode);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $request->id_kurperiode)
@@ -1405,7 +1406,7 @@ class DosenController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $request->id_kurperiode)->first();
         //cek mahasiswa
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$request->id_kurperiode]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($request->id_kurperiode);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('student_record.id_kurperiode', $request->id_kurperiode)
@@ -1626,7 +1627,7 @@ class DosenController extends Controller
         $uas = $set_nilai->uas;
 
         // $data1 = Student_record::where('id_kurperiode', $idkur)->get();
-        $data = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
+        $data = Helper::getMahasiswaDosen($idkur);
 
         $jml_mhs = count($data);
 
@@ -1761,7 +1762,7 @@ class DosenController extends Controller
         //cek setting nilai
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($idkur);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)
@@ -2004,7 +2005,7 @@ class DosenController extends Controller
 
         $idp = $keybap->id_kurperiode;
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idp]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($idp);
 
         return view('dosen/absensi', ['absen' => $kelas_gabungan, 'idk' => $idp, 'id' => $id]);
     }
@@ -3245,7 +3246,7 @@ class DosenController extends Controller
 
     public function jurnal_bap($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $key = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -3257,19 +3258,14 @@ class DosenController extends Controller
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('kurikulum_periode.id_dosen_2', 'matakuliah.akt_sks_praktek', 'matakuliah.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-            ->get();
-        foreach ($bap as $key) {
-            # code...
-        }
+            ->firstOrFail();
 
-        $dosen2 = Dosen::where('iddosen', $key->id_dosen_2)->get();
-        foreach ($dosen2 as $keydsn) {
-            // code...
-        }
-        if (count($dosen2) > 0) {
-            $nama_dsn2 = $keydsn->nama . ', ' . $keydsn->akademik;
-        } else {
-            $nama_dsn2 = '';
+        $nama_dsn2 = '';
+        if (!empty($key->id_dosen_2)) {
+            $keydsn = Dosen::where('iddosen', $key->id_dosen_2)->first();
+            if ($keydsn) {
+                $nama_dsn2 = $keydsn->nama . ', ' . $keydsn->akademik;
+            }
         }
 
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
@@ -3285,7 +3281,7 @@ class DosenController extends Controller
 
     public function print_jurnal($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $key = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -3297,11 +3293,7 @@ class DosenController extends Controller
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'prodi.kodeprodi', 'kelas.kelas', 'semester.semester')
-            ->get();
-
-        foreach ($bap as $key) {
-            # code...
-        }
+            ->firstOrFail();
 
         $cekkprd = Kaprodi::join('dosen', 'kaprodi.id_dosen', '=', 'dosen.iddosen')
             ->join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
@@ -3322,7 +3314,7 @@ class DosenController extends Controller
 
     public function download_jurnal($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $key = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -3334,10 +3326,7 @@ class DosenController extends Controller
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-            ->get();
-        foreach ($bap as $key) {
-            # code...
-        }
+            ->firstOrFail();
 
         $makul = $key->makul;
         $tahun = $key->periode_tahun;
@@ -3671,7 +3660,7 @@ class DosenController extends Controller
 
     public function jurnal_bap_his($id)
     {
-        $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+        $key = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
             ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
             ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
             ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
@@ -3683,10 +3672,7 @@ class DosenController extends Controller
             ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
             ->where('kurikulum_periode.id_kurperiode', $id)
             ->select('kurikulum_periode.akt_sks_praktek', 'kurikulum_periode.akt_sks_teori', 'kurikulum_periode.id_kelas', 'periode_tipe.periode_tipe', 'periode_tahun.periode_tahun', 'dosen.akademik', 'dosen.nama', 'ruangan.nama_ruangan', 'kurikulum_jam.jam', 'kurikulum_hari.hari', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-            ->get();
-        foreach ($bap as $key) {
-            # code...
-        }
+            ->firstOrFail();
 
         $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
             ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
@@ -6343,7 +6329,7 @@ class DosenController extends Controller
         $idkur = $request->id_kurperiode;
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($idkur);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)
@@ -6379,7 +6365,7 @@ class DosenController extends Controller
         $idkur = $request->id_kurperiode;
         $nilai = Setting_nilai::where('id_kurperiode', $idkur)->first();
 
-        $kelas_gabungan = DB::select('CALL absen_mahasiswa(?)', [$idkur]);
+        $kelas_gabungan = Helper::getMahasiswaDosen($idkur);
 
         $ckstr = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->where('id_kurperiode', $idkur)

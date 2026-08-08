@@ -9,8 +9,8 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="<?php echo e(url('makul_diampu_dsn')); ?>"> Data Matakuliah yang diampu</a></li>
-            <li><a href="/entri_bap/<?php echo e($bap->id_kurperiode); ?>"> BAP</a></li>
+            <li><a href="<?php echo e(url('makul_diampu_kprd')); ?>"> Data Matakuliah yang diampu</a></li>
+            <li><a href="/entri_bap_kprd/<?php echo e($bap->id_kurperiode); ?>"> BAP</a></li>
             <li class="active">Jurnal Perkuliahan</li>
         </ol>
     </section>
@@ -23,7 +23,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-info-circle text-primary"></i> Informasi Matakuliah</h3>
                 <div class="box-tools pull-right">
-                    <a href="/entri_bap/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-default btn-sm">
+                    <a href="/entri_bap_kprd/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-default btn-sm">
                         <i class="fa fa-arrow-left"></i> Kembali ke BAP
                     </a>
                 </div>
@@ -50,7 +50,7 @@
                             <tr>
                                 <th><i class="fa fa-user-md text-muted"></i> Dosen Pengampu</th>
                                 <td>:</td>
-                                <td><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?><?php if(!empty($nama_dosen_2)): ?> / <?php echo e($nama_dosen_2); ?><?php endif; ?></td>
+                                <td><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></td>
                             </tr>
                         </table>
                     </div>
@@ -91,10 +91,10 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-list-alt text-info"></i> Daftar Jurnal Perkuliahan</h3>
                 <div class="box-tools pull-right">
-                    <a href="/print_jurnal/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-success btn-sm" target="_blank">
+                    <a href="/print_jurnal_kprd/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-success btn-sm" target="_blank">
                         <i class="fa fa-print"></i> Print
                     </a>
-                    <a href="/download_jurnal/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-info btn-sm">
+                    <a href="/download_jurnal_kprd/<?php echo e($bap->id_kurperiode); ?>" class="btn btn-info btn-sm">
                         <i class="fa fa-download"></i> Download
                     </a>
                 </div>
@@ -108,7 +108,8 @@
                             <th class="text-center" style="width: 140px;">Jam</th>
                             <th>Materi</th>
                             <th class="text-center" style="width: 130px;">Paraf Dosen</th>
-                            <th class="text-center" style="width: 120px;">Validasi</th>
+                            <th class="text-center" style="width: 110px;">Validasi</th>
+                            <th class="text-center" style="width: 100px;">Honor</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,10 +133,11 @@
                                         <span class="label label-primary">SUDAH</span>
                                     <?php endif; ?>
                                 </td>
+                                <td class="text-center"><?php echo e($item->payroll_check); ?></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
-                                <td colspan="6" class="text-center text-muted">
+                                <td colspan="7" class="text-center text-muted">
                                     <em>Belum ada data perkuliahan.</em>
                                 </td>
                             </tr>
@@ -147,4 +149,4 @@
     </section>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/dosen/jurnal_perkuliahan.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/kaprodi/bap/jurnal_perkuliahan.blade.php ENDPATH**/ ?>

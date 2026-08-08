@@ -4,9 +4,72 @@ namespace App\Helpers;
 
 use App\Models\Biaya;
 use App\Models\Kuitansi;
+use Illuminate\Support\Facades\DB;
 
 class Helper
 {
+  public static function getMahasiswaDosen($id)
+  {
+    $kp = DB::table('kurikulum_periode')
+      ->select('id_periodetahun', 'id_periodetipe', 'id_dosen', 'id_hari', 'id_jam', 'id_makul')
+      ->where('id_kurperiode', $id)
+      ->where('status', 'ACTIVE')
+      ->first();
+
+    if (!$kp) {
+      return collect();
+    }
+
+    $kurperiodeIds = DB::table('kurikulum_periode')
+      ->where('id_periodetahun', $kp->id_periodetahun)
+      ->where('id_periodetipe', $kp->id_periodetipe)
+      ->where('id_dosen', $kp->id_dosen)
+      ->where('id_hari', $kp->id_hari)
+      ->where('id_jam', $kp->id_jam)
+      ->where('id_makul', $kp->id_makul)
+      ->where('status', 'ACTIVE')
+      ->pluck('id_kurperiode');
+
+    return DB::table('student_record as c')
+      ->join('student as d', 'd.idstudent', '=', 'c.id_student')
+      ->join('prodi as e', function ($join) {
+        $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+          ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+      })
+      ->join('kelas as f', 'f.idkelas', '=', 'd.idstatus')
+      ->join('angkatan as g', 'g.idangkatan', '=', 'd.idangkatan')
+      ->leftJoin('absen_ujian as h', 'h.id_studentrecord', '=', 'c.id_studentrecord')
+      ->leftJoin('permohonan_ujian as i', 'i.id_studentrecord', '=', 'c.id_studentrecord')
+      ->whereIn('c.id_kurperiode', $kurperiodeIds)
+      ->where('c.status', 'TAKEN')
+      ->select(
+        'c.id_studentrecord',
+        'c.id_kurperiode',
+        'c.id_student',
+        'c.id_kurtrans',
+        'd.nim',
+        'd.nama',
+        'e.prodi',
+        'f.kelas',
+        'g.angkatan',
+        'c.nilai_KAT',
+        'c.nilai_UTS',
+        'c.nilai_UAS',
+        'c.nilai_AKHIR',
+        'c.nilai_AKHIR_angka',
+        'h.id_studentrecord as id_ujian',
+        'h.absen_uts',
+        'h.absen_uas',
+        'h.ket_absensi',
+        'h.permohonan',
+        'i.id_studentrecord as id_mohon'
+      )
+      ->orderBy('e.prodi', 'asc')
+      ->orderBy('f.kelas', 'asc')
+      ->orderBy('d.nim', 'asc')
+      ->get();
+  }
+
   public static function cekSemesterMhs($periodeTahun, $idPeriodetipe, $idAngkatan, $intake)
   {
     $sub_thn = substr($periodeTahun, 6, 2);
