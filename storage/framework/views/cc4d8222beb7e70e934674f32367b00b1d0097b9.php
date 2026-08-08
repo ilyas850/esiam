@@ -17,25 +17,6 @@
             font-family: DejaVu Sans, sans-serif;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .content {
-            margin: 20px;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 10px;
-            padding: 10px;
-        }
-
         table {
             border-collapse: collapse;
         }
@@ -47,23 +28,20 @@
 </head>
 
 <body>
-    <div class="header">
-        <table width="100%">
-            <tr>
-                <td>
-                    <img src="images/logo meta png.png" width="200" height="75" alt="" align="left">
-                </td>
-                <td>
-                    <center>
-                        <img src="images/kop.png" width="200" height="70" alt="" align="right">
-                    </center>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br><br><br>
-    <div class="content">
-        <table width="100%">
+    <table width="100%">
+        <tr>
+            <td>
+                <img src="images/logo meta png.png" width="200" height="75" alt="" align="left">
+            </td>
+            <td>
+                <center>
+                    <img src="images/kop.png" width="200" height="70" alt="" align="right">
+                </center>
+            </td>
+        </tr>
+    </table>
+    <div style="clear: both; margin-bottom: 10px;"></div>
+    <table width="100%">
             <tr>
                 <td>Matakuliah</td>
                 <td>:</td>
@@ -446,7 +424,7 @@
                 </tr>
             </tfoot>
         </table>
-        <br>
+        <br><br>
         <?php
             $bap_data = \Illuminate\Support\Facades\DB::table('bap')
                 ->leftJoin('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
@@ -471,30 +449,27 @@
                 $tgl_cikarang = $carbonTgl->format('d') . ' ' . $bulanArr[(int)$carbonTgl->format('m')] . ' ' . $carbonTgl->format('Y');
             }
         ?>
-        <table width="100%">
-            <tr>
-                <td width="70%" align=center></td>
-                <td width="30%">Cikarang, <?php echo e($tgl_cikarang); ?></td>
-            </tr>
-        </table>
-        <table width="100%">
-            <tr>
-                <td width="70%" align=center></td>
-                <td width="30%" align=center></td>
-            </tr>
-        </table>
-        <br><br><br>
-        <table width="100%">
-            <tr>
-                <td width="70%" align=center></td>
-                <td width="30%"><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="footer">
-
-    </div>
+        <div style="page-break-inside: avoid; break-inside: avoid;">
+            <table width="100%">
+                <tr>
+                    <td width="70%" align=center></td>
+                    <td width="30%">Cikarang, <?php echo e($tgl_cikarang); ?></td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="70%" align=center></td>
+                    <td width="30%" align=center></td>
+                </tr>
+            </table>
+            <br><br><br><br><br>
+            <table width="100%">
+                <tr>
+                    <td width="70%" align=center></td>
+                    <td width="30%"><?php echo e($bap->nama); ?>, <?php echo e($bap->akademik); ?></td>
+                </tr>
+            </table>
+        </div>
 </body>
 
 </html>

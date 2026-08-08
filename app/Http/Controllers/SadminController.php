@@ -6764,7 +6764,7 @@ class SadminController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('sadmin/download/pdf_absensi_perkuliahan', compact('abs', 'bap'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('sadmin/download/pdf_absensi_perkuliahan', compact('abs', 'bap'))->setPaper('legal', 'landscape');
         return $pdf->download('Absensi Matakuliah' . ' ' . $makul . ' ' . $tahun . ' ' . $tipe . ' ' . $kelas . '.pdf');
     }
 
