@@ -1,60 +1,56 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content_header')
+<?php $__env->startSection('content_header'); ?>
     <section class="content-header">
         <h1>
             Berita Acara Perkuliahan
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('rekap_perkuliahan') }}"> Rekap perkuliahan</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('rekap_perkuliahan_prodi')); ?>"> Rekap perkuliahan</a></li>
             <li class="active">Cek BAP</li>
         </ol>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content">
-        @if ($message = Session::get('success'))
+        <?php if($message = Session::get('success')): ?>
             <div class="alert alert-success alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
-                <strong>{{ $message }}</strong>
+                <strong><?php echo e($message); ?></strong>
             </div>
-        @endif
+        <?php endif; ?>
         <div class="box box-info">
             <div class="box-header with-border">
                 <table width="100%">
                     <tr>
                         <td>Matakuliah</td>
                         <td>:</td>
-                        <td>{{ $key->makul }}</td>
+                        <td><?php echo e($key->makul); ?></td>
                         <td>Program Studi</td>
                         <td>:</td>
-                        <td>{{ $key->prodi }}</td>
+                        <td><?php echo e($key->prodi); ?></td>
                     </tr>
                     <tr>
                         <td>Kelas</td>
                         <td>:</td>
-                        <td>{{ $key->kelas }}</td>
+                        <td><?php echo e($key->kelas); ?></td>
                         <td>Semester</td>
                         <td>:</td>
-                        <td>{{ $key->semester }}</td>
+                        <td><?php echo e($key->semester); ?></td>
                     </tr>
                 </table>
             </div>
 
             <div class="box-body">
-                <a href="/cek_sum_absen_kprd/{{ $key->id_kurperiode }}" class="btn btn-info">Absensi Perkuliahan</a>
-                <a href="/cek_jurnal_bap_kprd/{{ $key->id_kurperiode }}" class="btn btn-warning">Jurnal Perkuliahan</a>
+                <a href="/rekap_perkuliahan_prodi" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
                 <br><br>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-
                             <th rowspan="2" style="white-space: nowrap;">
                                 <center>Pertemuan</center>
                             </th>
@@ -75,9 +71,6 @@
                             </th>
                             <th colspan="2">
                                 <center>Absen Mahasiswa</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Aksi</center>
                             </th>
                             <th rowspan="2">
                                 <center>Validasi</center>
@@ -108,60 +101,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $item)
+                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td style="white-space: nowrap;">
-                                    <center>Ke-{{ $item->pertemuan }}</center>
+                                    <center>Ke-<?php echo e($item->pertemuan); ?></center>
                                 </td>
                                 <td style="white-space: nowrap;">
-                                    <center>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') : '-' }}</center>
+                                    <center><?php echo e($item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') : '-'); ?></center>
                                 </td>
                                 <td style="white-space: nowrap;">
-                                    <center>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</center>
+                                    <center><?php echo e($item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-'); ?></center>
                                 </td>
                                 <td style="white-space: nowrap;">
-                                    <center>{{ substr($item->jam_mulai, 0, 5) }} - {{ substr($item->jam_selsai, 0, 5) }}</center>
+                                    <center><?php echo e(substr($item->jam_mulai, 0, 5)); ?> - <?php echo e(substr($item->jam_selsai, 0, 5)); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->kurang_jam }}</center>
+                                    <center><?php echo e($item->kurang_jam); ?></center>
                                 </td>
-                                <td>{{ $item->materi_kuliah }}</td>
+                                <td><?php echo e($item->materi_kuliah); ?></td>
                                 <td>
-                                    <center>{{ $item->tipe_kuliah }}</center>
-                                </td>
-                                <td>
-                                    <center>{{ $item->jenis_kuliah }}</center>
+                                    <center><?php echo e($item->tipe_kuliah); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->metode_kuliah }}</center>
+                                    <center><?php echo e($item->jenis_kuliah); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->hadir }}</center>
+                                    <center><?php echo e($item->metode_kuliah); ?></center>
                                 </td>
                                 <td>
-                                    <center>{{ $item->tidak_hadir }}</center>
+                                    <center><?php echo e($item->hadir); ?></center>
+                                </td>
+                                <td>
+                                    <center><?php echo e($item->tidak_hadir); ?></center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="/cek_view_bap_kprd/{{ $item->id_bap }}" class="btn btn-info btn-xs"
-                                            title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-
-                                    </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        @if ($item->tanggal_validasi != null)
+                                        <?php if($item->tanggal_validasi != null): ?>
                                             <span class="badge bg-yellow">Valid</span>
-                                        @elseif($item->tanggal_validasi == null)
+                                        <?php elseif($item->tanggal_validasi == null): ?>
                                             <span class="badge bg-red">Belum</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </center>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/adminprodi/perkuliahan/cek_bap.blade.php ENDPATH**/ ?>

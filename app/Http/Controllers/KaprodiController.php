@@ -3714,19 +3714,59 @@ class KaprodiController extends Controller
 
     $kodeprodi = $prodi->kodeprodi;
 
+    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tipe = Periode_tipe::all();
+
     $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-    $tipe = $tp->id_periodetipe;
+    $idtipe = $tp->id_periodetipe;
+    $namaperiodetipe = $tp->periode_tipe;
 
     $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-    $tahun = $thn->id_periodetahun;
+    $idtahun = $thn->id_periodetahun;
+    $namaperiodetahun = $thn->periode_tahun;
 
-    // Subquery untuk menghitung jml_per, jml_online, jml_offline per id_kurperiode
+    $data = $this->get_rekap_perkuliahan_data($idtahun, $idtipe, $kodeprodi);
+
+    return view('kaprodi/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe', 'idtahun', 'idtipe'));
+  }
+
+  public function filter_rekap_perkuliahan(Request $request)
+  {
+    $iduser = Auth::user()->id_user;
+
+    $prodi = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('id_dosen', $iduser)
+      ->select('prodi.kodeprodi', 'prodi.id_prodi')
+      ->first();
+
+    $kodeprodi = $prodi->kodeprodi;
+
+    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tipe = Periode_tipe::all();
+
+    $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
+    $idtipe = $tp->id_periodetipe;
+    $namaperiodetipe = $tp->periode_tipe;
+
+    $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
+    $idtahun = $thn->id_periodetahun;
+    $namaperiodetahun = $thn->periode_tahun;
+
+    $data = $this->get_rekap_perkuliahan_data($idtahun, $idtipe, $kodeprodi);
+
+    return view('kaprodi/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe', 'idtahun', 'idtipe'));
+  }
+
+  private function get_rekap_perkuliahan_data($tahun, $tipe, $kodeprodi)
+  {
     $bapCountSql = "
         SELECT 
-            bp.id_kurperiode,
-            COUNT(bp.id_kurperiode) AS jml_per,
-            SUM(CASE WHEN bp.metode_kuliah = 'Online' THEN 1 ELSE 0 END) as jml_online,
-            SUM(CASE WHEN bp.metode_kuliah = 'Offline' THEN 1 ELSE 0 END) as jml_offline
+            kp.id_makul,
+            kp.id_kelas,
+            kp.id_dosen,
+            COUNT(DISTINCT bp.pertemuan) AS jml_per,
+            COUNT(DISTINCT CASE WHEN bp.metode_kuliah = 'Online' THEN bp.pertemuan END) as jml_online,
+            COUNT(DISTINCT CASE WHEN bp.metode_kuliah = 'Offline' THEN bp.pertemuan END) as jml_offline
         FROM bap bp
         JOIN kurikulum_periode kp ON kp.id_kurperiode = bp.id_kurperiode
         JOIN prodi prd ON prd.id_prodi = kp.id_prodi
@@ -3734,10 +3774,10 @@ class KaprodiController extends Controller
             AND kp.status = 'ACTIVE' 
             AND kp.id_periodetahun = ?
             AND kp.id_periodetipe = ?
-        GROUP BY bp.id_kurperiode, prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+        GROUP BY kp.id_makul, kp.id_kelas, kp.id_dosen
     ";
 
-    $data = DB::select("
+    return DB::select("
         SELECT 
             MIN(kp.id_kurperiode) as id_kurperiode, 
             CONCAT(MIN(mk.kode),'-',MIN(mk.makul)) AS makul, 
@@ -3745,63 +3785,71 @@ class KaprodiController extends Controller
             MIN(prd.prodi) as prodi, 
             MIN(kls.kelas) as kelas, 
             MIN(dsn.nama) as nama, 
-            MIN(aa.jml_per) as jml_per,
-            MIN(aa.jml_online) as jml_online,
-            MIN(aa.jml_offline) as jml_offline
+            COALESCE(MIN(aa.jml_per), 0) as jml_per,
+            COALESCE(MIN(aa.jml_online), 0) as jml_online,
+            COALESCE(MIN(aa.jml_offline), 0) as jml_offline
         FROM kurikulum_periode kp
         JOIN matakuliah mk ON mk.idmakul = kp.id_makul
         JOIN prodi prd ON prd.id_prodi = kp.id_prodi
         JOIN kelas kls ON kls.idkelas = kp.id_kelas
         LEFT JOIN dosen dsn ON dsn.iddosen = kp.id_dosen
-        LEFT JOIN ({$bapCountSql}) aa ON aa.id_kurperiode = kp.id_kurperiode
+        LEFT JOIN ({$bapCountSql}) aa ON aa.id_makul = kp.id_makul 
+                                    AND aa.id_kelas = kp.id_kelas 
+                                    AND (aa.id_dosen = kp.id_dosen OR (aa.id_dosen IS NULL AND kp.id_dosen IS NULL))
         WHERE kp.id_periodetahun = ? 
             AND kp.id_periodetipe = ? 
             AND kp.status = 'ACTIVE' 
             AND mk.active = 1
             AND prd.kodeprodi = ?
-        GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_hari, kp.id_dosen
+        GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_dosen
         ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
     ", [$tahun, $tipe, $tahun, $tipe, $kodeprodi]);
-
-    return view('kaprodi/perkuliahan/rekap_perkuliahan', compact('data'));
   }
 
   public function cek_rekapan($id)
   {
+    $kp_target = Kurikulum_periode::find($id);
+
     $bap = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
       ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
       ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
       ->join('semester', 'kurikulum_periode.id_semester', '=', 'semester.idsemester')
       ->where('kurikulum_periode.id_kurperiode', $id)
       ->select('kurikulum_periode.id_kurperiode', 'matakuliah.makul', 'prodi.prodi', 'kelas.kelas', 'semester.semester')
-      ->get();
-    foreach ($bap as $key) {
-      # code...
-    }
+      ->first();
+
+    $key = $bap;
+
+    $kp_ids = Kurikulum_periode::where('id_makul', $kp_target->id_makul)
+      ->where('id_kelas', $kp_target->id_kelas)
+      ->where('id_periodetahun', $kp_target->id_periodetahun)
+      ->where('id_periodetipe', $kp_target->id_periodetipe)
+      ->pluck('id_kurperiode');
 
     $data = Bap::join('kuliah_tipe', 'bap.id_tipekuliah', '=', 'kuliah_tipe.id_tipekuliah')
       ->join('kuliah_transaction', 'bap.id_bap', '=', 'kuliah_transaction.id_bap')
-      ->where('bap.id_kurperiode', $id)
+      ->whereIn('bap.id_kurperiode', $kp_ids)
       ->where('bap.status', 'ACTIVE')
+      ->groupBy('bap.pertemuan')
       ->select(
-        'kuliah_transaction.kurang_jam',
-        'kuliah_transaction.tanggal_validasi',
-        'kuliah_transaction.payroll_check',
-        'bap.id_bap',
         'bap.pertemuan',
-        'bap.tanggal',
-        'bap.jam_mulai',
-        'bap.jam_selsai',
-        'bap.materi_kuliah',
-        'bap.metode_kuliah',
-        'kuliah_tipe.tipe_kuliah',
-        'bap.jenis_kuliah',
-        'bap.hadir',
-        'bap.tidak_hadir',
-        'bap.created_at'
+        DB::raw('MAX(kuliah_transaction.kurang_jam) as kurang_jam'),
+        DB::raw('MAX(kuliah_transaction.tanggal_validasi) as tanggal_validasi'),
+        DB::raw('MAX(kuliah_transaction.payroll_check) as payroll_check'),
+        DB::raw('MAX(bap.id_bap) as id_bap'),
+        DB::raw('MAX(bap.tanggal) as tanggal'),
+        DB::raw('MAX(bap.jam_mulai) as jam_mulai'),
+        DB::raw('MAX(bap.jam_selsai) as jam_selsai'),
+        DB::raw('MAX(bap.materi_kuliah) as materi_kuliah'),
+        DB::raw('MAX(bap.metode_kuliah) as metode_kuliah'),
+        DB::raw('MAX(kuliah_tipe.tipe_kuliah) as tipe_kuliah'),
+        DB::raw('MAX(bap.jenis_kuliah) as jenis_kuliah'),
+        DB::raw('COALESCE(MAX(bap.hadir), 0) as hadir'),
+        DB::raw('COALESCE(MAX(bap.tidak_hadir), 0) as tidak_hadir'),
+        DB::raw('MAX(bap.created_at) as created_at')
       )
+      ->orderByRaw('CAST(bap.pertemuan AS UNSIGNED) ASC')
       ->get();
-
 
     return view('kaprodi/perkuliahan/cek_bap', compact('key', 'data'));
   }

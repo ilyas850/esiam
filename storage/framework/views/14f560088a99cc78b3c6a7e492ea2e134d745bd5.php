@@ -28,30 +28,39 @@
                                     <h5 class="modal-title" id="exampleModalLabel">Tambah Data Admin Prodi</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="form-group">
-                                        <label>Nama Staff</label>
-                                        <select class="form-control" name="id_user" required>
-                                            <option>-pilih-</option>
-                                            <?php $__currentLoopData = $staff; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $keystf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($keystf->idstaff); ?>,<?php echo e($keystf->nama); ?>">
-                                                    <?php echo e($keystf->nama); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Username</label>
-                                        <input type="text" name="username" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Password</label>
-                                        <input type="text" name="password" class="form-control" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </div>
-                            </div>
+                                     <div class="form-group">
+                                         <label>Nama Staff</label>
+                                         <select class="form-control select2" name="id_user" style="width: 100%;" required>
+                                             <option value="">-pilih-</option>
+                                             <?php $__currentLoopData = $staff; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $keystf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                 <option value="<?php echo e($keystf->idstaff); ?>,<?php echo e($keystf->nama); ?>">
+                                                     <?php echo e($keystf->nama); ?></option>
+                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                         </select>
+                                     </div>
+                                     <div class="form-group">
+                                         <label>Program Studi</label>
+                                         <select class="form-control select2" name="kodeprodi" style="width: 100%;" required>
+                                             <option value="">-pilih prodi-</option>
+                                             <?php $__currentLoopData = $prodi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $keyprd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                 <option value="<?php echo e($keyprd->kodeprodi); ?>"><?php echo e($keyprd->prodi); ?></option>
+                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                         </select>
+                                     </div>
+                                     <div class="form-group">
+                                         <label>Username</label>
+                                         <input type="text" name="username" class="form-control" required>
+                                     </div>
+                                     <div class="form-group">
+                                         <label>Password</label>
+                                         <input type="text" name="password" class="form-control" required>
+                                     </div>
+                                 </div>
+                                 <div class="modal-footer">
+                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                     <button type="submit" class="btn btn-primary">Save</button>
+                                 </div>
+                             </div>
                         </form>
                     </div>
                 </div>
@@ -65,6 +74,9 @@
                             <th>
                                 <center>Nama Staff</center>
                             </th>
+                             <th>
+                                 <center>Program Studi</center>
+                             </th>
                             <th>
                                 <center>Username</center>
                             </th>
@@ -83,6 +95,9 @@
                                 <td>
                                     <center><?php echo e($key->nama); ?></center>
                                 </td>
+                                 <td>
+                                     <center><?php echo e($key->nama_prodi ?? '-'); ?></center>
+                                 </td>
                                 <td>
                                     <center><?php echo e($key->username); ?></center>
                                 </td>
@@ -94,7 +109,6 @@
                                         <a href="/hapusadminprodi/<?php echo e($key->id); ?>" class="btn btn-danger btn-xs"
                                             onclick="return confirm('apakah anda yakin akan menghapus user ini?')"><i
                                                 class="fa fa-trash"></i></a>
-                                        
                                     </center>
                                 </td>
                             </tr>
@@ -104,7 +118,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Kaprodi</h5>
+                                            <h5 class="modal-title">Update Admin Prodi</h5>
                                         </div>
                                         <div class="modal-body">
                                             <form action="/put_adminprodi/<?php echo e($key->id); ?>" method="post">
@@ -113,7 +127,7 @@
                                                 <input type="hidden" name="updated_by" value="<?php echo e(Auth::user()->name); ?>">
                                                 <div class="form-group">
                                                     <label>Nama Staff</label>
-                                                    <select class="form-control" name="id_user">
+                                                    <select class="form-control select2" name="id_user" style="width: 100%;">
                                                         <option value="<?php echo e($key->idstaff); ?>,<?php echo e($key->nama); ?>">
                                                             <?php echo e($key->nama); ?></option>
                                                         <?php $__currentLoopData = $staff; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $keystf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -122,6 +136,16 @@
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
                                                 </div>
+                                                 <div class="form-group">
+                                                     <label>Program Studi</label>
+                                                     <select class="form-control select2" name="kodeprodi" style="width: 100%;" required>
+                                                         <option value="">-pilih prodi-</option>
+                                                         <?php $__currentLoopData = $prodi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $keyprd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                             <option value="<?php echo e($keyprd->kodeprodi); ?>" <?php echo e($key->kodeprodi == $keyprd->kodeprodi ? 'selected' : ''); ?>>
+                                                                 <?php echo e($keyprd->prodi); ?></option>
+                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                     </select>
+                                                 </div>
                                                 <div class="form-group">
                                                     <label>Username</label>
                                                     <input type="text" name="username" class="form-control"
@@ -139,6 +163,16 @@
             </div>
         </div>
     </section>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                width: '100%'
+            });
+        });
+    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/sadmin/user/adminprodi.blade.php ENDPATH**/ ?>

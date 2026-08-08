@@ -48,6 +48,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li><a href="<?php echo e(url('rekap_perkuliahan_prodi')); ?>"><i class="fa fa-circle-o"></i> Rekap
+                    Perkuliahan</a></li>
             <li><a href="<?php echo e(url('upload_sk_pengajaran_prodi')); ?>"><i class="fa fa-circle-o"></i> Upload SK
                     Pengajaran</a></li>
             <li><a href="<?php echo e(url('jadwal_kuliah_prodi')); ?>"><i class="fa fa-circle-o"></i> Jadwal Perkuliahan</a></li>

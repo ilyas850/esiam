@@ -11,7 +11,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('rekap_perkuliahan') }}"> Rekap perkuliahan</a></li>
+            <li><a href="{{ url('rekap_perkuliahan_prodi') }}"> Rekap perkuliahan</a></li>
             <li class="active">Cek BAP</li>
         </ol>
     </section>
@@ -48,13 +48,11 @@
             </div>
 
             <div class="box-body">
-                <a href="/cek_sum_absen_kprd/{{ $key->id_kurperiode }}" class="btn btn-info">Absensi Perkuliahan</a>
-                <a href="/cek_jurnal_bap_kprd/{{ $key->id_kurperiode }}" class="btn btn-warning">Jurnal Perkuliahan</a>
+                <a href="/rekap_perkuliahan_prodi" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
                 <br><br>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-
                             <th rowspan="2" style="white-space: nowrap;">
                                 <center>Pertemuan</center>
                             </th>
@@ -75,9 +73,6 @@
                             </th>
                             <th colspan="2">
                                 <center>Absen Mahasiswa</center>
-                            </th>
-                            <th rowspan="2">
-                                <center>Aksi</center>
                             </th>
                             <th rowspan="2">
                                 <center>Validasi</center>
@@ -140,13 +135,6 @@
                                 </td>
                                 <td>
                                     <center>{{ $item->tidak_hadir }}</center>
-                                </td>
-                                <td>
-                                    <center>
-                                        <a href="/cek_view_bap_kprd/{{ $item->id_bap }}" class="btn btn-info btn-xs"
-                                            title="klik untuk lihat"> <i class="fa fa-eye"></i></a>
-
-                                    </center>
                                 </td>
                                 <td>
                                     <center>
