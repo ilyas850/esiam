@@ -3075,6 +3075,67 @@ class SadminController extends Controller
         return redirect('data_gugusmutu_prodi');
     }
 
+    public function master_makul()
+    {
+        $data = Matakuliah::orderBy('kode', 'ASC')->get();
+
+        return view('sadmin/masterakademik/master_makul', compact('data'));
+    }
+
+    public function simpan_makul(Request $request)
+    {
+        $this->validate($request, [
+            'kode' => 'required|max:30',
+            'makul' => 'required|max:255',
+            'akt_sks_teori' => 'required|numeric|min:0',
+            'akt_sks_praktek' => 'required|numeric|min:0',
+            'active' => 'required|in:0,1',
+        ]);
+
+        $makul = new Matakuliah();
+        $makul->kode = $request->kode;
+        $makul->makul = $request->makul;
+        $makul->akt_sks_teori = $request->akt_sks_teori;
+        $makul->akt_sks_praktek = $request->akt_sks_praktek;
+        $makul->active = $request->active;
+        $makul->save();
+
+        Alert::success('', 'Master matakuliah berhasil ditambahkan')->autoclose(3500);
+        return redirect('master_makul');
+    }
+
+    public function update_makul(Request $request, $id)
+    {
+        $this->validate($request, [
+            'kode' => 'required|max:30',
+            'makul' => 'required|max:255',
+            'akt_sks_teori' => 'required|numeric|min:0',
+            'akt_sks_praktek' => 'required|numeric|min:0',
+            'active' => 'required|in:0,1',
+        ]);
+
+        $makul = Matakuliah::findOrFail($id);
+        $makul->kode = $request->kode;
+        $makul->makul = $request->makul;
+        $makul->akt_sks_teori = $request->akt_sks_teori;
+        $makul->akt_sks_praktek = $request->akt_sks_praktek;
+        $makul->active = $request->active;
+        $makul->save();
+
+        Alert::success('', 'Master matakuliah berhasil diedit')->autoclose(3500);
+        return redirect('master_makul');
+    }
+
+    public function delete_makul(Request $request)
+    {
+        $makul = Matakuliah::findOrFail($request->idmakul);
+        $makul->active = 0;
+        $makul->save();
+
+        Alert::success('', 'Master matakuliah berhasil dinonaktifkan')->autoclose(3500);
+        return redirect('master_makul');
+    }
+
     public function master_bom()
     {
         $data = Matakuliah_bom::join('matakuliah', 'matakuliah_bom.master_idmakul', '=', 'matakuliah.idmakul')
