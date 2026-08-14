@@ -2001,6 +2001,7 @@ class AdminPraustaController extends Controller
                 'nilai_1' => $nilai_pem_lap,
                 'nilai_2' => $ceknilai_1->nilai1,
                 'nilai_3' => $ceknilai_2->nilai2,
+                'nilai_huruf' => $nilai_huruf,
                 'updated_by' => Auth::user()->name
             ]);
 
@@ -2274,6 +2275,7 @@ class AdminPraustaController extends Controller
                 'nilai_1' => $nilai_pem_lap,
                 'nilai_2' => $ceknilai_1->nilai1,
                 'nilai_3' => $ceknilai_2->nilai2,
+                'nilai_huruf' => $nilai_huruf,
                 'updated_by' => Auth::user()->name
             ]);
 
@@ -2362,6 +2364,7 @@ class AdminPraustaController extends Controller
                 'nilai_1' => $nilai_pem_lap,
                 'nilai_2' => $ceknilai_1->nilai1,
                 'nilai_3' => $ceknilai_2->nilai2,
+                'nilai_huruf' => $nilai_huruf,
                 'updated_by' => Auth::user()->name
             ]);
 
