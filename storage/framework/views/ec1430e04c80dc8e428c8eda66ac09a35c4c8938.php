@@ -1,20 +1,18 @@
-@extends('layouts.master')
-
-@section('side')
-    @include('layouts.side')
-@endsection
-@section('content_header')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content_header'); ?>
     <section class="content-header">
         <h1>
             Input EDOM
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
             <li class="active">Input EDOM</li>
         </ol>
     </section>
-@endsection
-@section('content')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
     <style>
         .edom-summary .info-box {
             min-height: 88px;
@@ -138,7 +136,7 @@
                     <p>Form EDOM wajib diisi untuk setiap mata kuliah. Komentar bersifat opsional dan dapat diisi sebagai masukan tambahan.</p>
                 </div>
                 <div class="col-sm-4 text-right">
-                    <a href="{{ url('kuisioner') }}" class="btn btn-default edom-back-questionnaire">
+                    <a href="<?php echo e(url('kuisioner')); ?>" class="btn btn-default edom-back-questionnaire">
                         <i class="fa fa-list-alt"></i> Kembali ke Kuisioner
                     </a>
                 </div>
@@ -151,7 +149,7 @@
                     <span class="info-box-icon bg-aqua"><i class="fa fa-book"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Mata Kuliah</span>
-                        <span class="info-box-number">{{ $edomSummary['total'] }}</span>
+                        <span class="info-box-number"><?php echo e($edomSummary['total']); ?></span>
                     </div>
                 </div>
             </div>
@@ -160,7 +158,7 @@
                     <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Form EDOM Sudah Diisi</span>
-                        <span class="info-box-number">{{ $edomSummary['completed'] }}</span>
+                        <span class="info-box-number"><?php echo e($edomSummary['completed']); ?></span>
                     </div>
                 </div>
             </div>
@@ -169,7 +167,7 @@
                     <span class="info-box-icon bg-yellow"><i class="fa fa-pencil"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Form EDOM Belum Diisi</span>
-                        <span class="info-box-number">{{ $edomSummary['remaining'] }}</span>
+                        <span class="info-box-number"><?php echo e($edomSummary['remaining']); ?></span>
                     </div>
                 </div>
             </div>
@@ -190,7 +188,7 @@
                         </div>
                     </div>
                     <div class="box-body table-responsive no-padding">
-                        @if (count($edom))
+                        <?php if(count($edom)): ?>
                             <table class="table table-hover table-striped edom-course-table">
                                 <thead>
                                     <tr>
@@ -203,63 +201,67 @@
                                 </thead>
                                 <tbody id="edom-course-list">
                                     <?php $no = 1; ?>
-                                    @foreach ($edom as $item)
-                                        <tr data-edom-search="{{ strtolower($item->kode . ' ' . $item->makul . ' ' . $item->nama) }}">
-                                            <td class="text-center" data-label="Mata Kuliah">{{ $no++ }}</td>
+                                    <?php $__currentLoopData = $edom; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr data-edom-search="<?php echo e(strtolower($item->kode . ' ' . $item->makul . ' ' . $item->nama)); ?>">
+                                            <td class="text-center" data-label="Mata Kuliah"><?php echo e($no++); ?></td>
                                             <td data-label="Mata Kuliah">
-                                                <span class="edom-course-name">{{ $item->makul }}</span><br>
-                                                <span class="edom-course-code">{{ $item->kode }}</span>
+                                                <span class="edom-course-name"><?php echo e($item->makul); ?></span><br>
+                                                <span class="edom-course-code"><?php echo e($item->kode); ?></span>
                                             </td>
-                                            <td data-label="Dosen">{{ $item->nama ?: '-' }}</td>
+                                            <td data-label="Dosen"><?php echo e($item->nama ?: '-'); ?></td>
                                             <td class="text-center" data-label="Form EDOM">
-                                                <span class="label edom-status {{ $item->form_completed ? 'label-success' : 'label-warning' }}">
-                                                    <i class="fa {{ $item->form_completed ? 'fa-check' : 'fa-pencil' }}"></i>
-                                                    {{ $item->form_completed ? 'Sudah diisi' : 'Belum diisi' }}
+                                                <span class="label edom-status <?php echo e($item->form_completed ? 'label-success' : 'label-warning'); ?>">
+                                                    <i class="fa <?php echo e($item->form_completed ? 'fa-check' : 'fa-pencil'); ?>"></i>
+                                                    <?php echo e($item->form_completed ? 'Sudah diisi' : 'Belum diisi'); ?>
+
                                                 </span><br>
-                                                @if ($item->form_completed)
+                                                <?php if($item->form_completed): ?>
                                                     <span class="btn btn-success btn-xs disabled edom-action"><i class="fa fa-check"></i> Form Selesai</span>
-                                                @else
-                                                    <form action="{{ url('form_edom') }}" method="post">
-                                                        <input type="hidden" name="id_student" value="{{ $item->id_student }}">
-                                                        <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
-                                                        <input type="hidden" name="id_kurtrans" value="{{ $item->id_kurtrans }}">
-                                                        <input type="hidden" name="id_makul" value="{{ $item->id_makul }}">
-                                                        <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
-                                                        {{ csrf_field() }}
+                                                <?php else: ?>
+                                                    <form action="<?php echo e(url('form_edom')); ?>" method="post">
+                                                        <input type="hidden" name="id_student" value="<?php echo e($item->id_student); ?>">
+                                                        <input type="hidden" name="id_kurperiode" value="<?php echo e($item->id_kurperiode); ?>">
+                                                        <input type="hidden" name="id_kurtrans" value="<?php echo e($item->id_kurtrans); ?>">
+                                                        <input type="hidden" name="id_makul" value="<?php echo e($item->id_makul); ?>">
+                                                        <input type="hidden" name="id_dosen" value="<?php echo e($item->id_dosen); ?>">
+                                                        <?php echo e(csrf_field()); ?>
+
                                                         <button type="submit" class="btn btn-info btn-xs edom-action"><i class="fa fa-pencil"></i> Isi Form</button>
                                                     </form>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td class="text-center" data-label="Komentar">
-                                                <span class="label edom-status {{ $item->comment_completed ? 'label-success' : 'label-warning' }}">
-                                                    <i class="fa {{ $item->comment_completed ? 'fa-check' : 'fa-comment-o' }}"></i>
-                                                    {{ $item->comment_completed ? 'Sudah diisi' : 'Belum diisi' }}
+                                                <span class="label edom-status <?php echo e($item->comment_completed ? 'label-success' : 'label-warning'); ?>">
+                                                    <i class="fa <?php echo e($item->comment_completed ? 'fa-check' : 'fa-comment-o'); ?>"></i>
+                                                    <?php echo e($item->comment_completed ? 'Sudah diisi' : 'Belum diisi'); ?>
+
                                                 </span><br>
-                                                @if ($item->comment_completed)
+                                                <?php if($item->comment_completed): ?>
                                                     <span class="btn btn-success btn-xs disabled edom-action"><i class="fa fa-check"></i> Komentar Selesai</span>
-                                                @else
-                                                    <form action="{{ url('edom_kom') }}" method="post">
-                                                        <input type="hidden" name="id_student" value="{{ $item->id_student }}">
-                                                        <input type="hidden" name="id_kurperiode" value="{{ $item->id_kurperiode }}">
-                                                        <input type="hidden" name="id_kurtrans" value="{{ $item->id_kurtrans }}">
-                                                        <input type="hidden" name="id_makul" value="{{ $item->id_makul }}">
-                                                        <input type="hidden" name="id_dosen" value="{{ $item->id_dosen }}">
-                                                        {{ csrf_field() }}
+                                                <?php else: ?>
+                                                    <form action="<?php echo e(url('edom_kom')); ?>" method="post">
+                                                        <input type="hidden" name="id_student" value="<?php echo e($item->id_student); ?>">
+                                                        <input type="hidden" name="id_kurperiode" value="<?php echo e($item->id_kurperiode); ?>">
+                                                        <input type="hidden" name="id_kurtrans" value="<?php echo e($item->id_kurtrans); ?>">
+                                                        <input type="hidden" name="id_makul" value="<?php echo e($item->id_makul); ?>">
+                                                        <input type="hidden" name="id_dosen" value="<?php echo e($item->id_dosen); ?>">
+                                                        <?php echo e(csrf_field()); ?>
+
                                                         <button type="submit" class="btn btn-default btn-xs edom-action"><i class="fa fa-comment-o"></i> Isi Komentar</button>
                                                     </form>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
-                        @else
+                        <?php else: ?>
                             <div class="text-center text-muted" style="padding: 35px 15px;">
                                 <i class="fa fa-book fa-3x"></i>
                                 <h4>Belum ada mata kuliah untuk EDOM</h4>
                                 <p>Mata kuliah yang diambil pada periode aktif akan muncul di halaman ini.</p>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <!-- /.box-body -->
                 </div>
@@ -286,4 +288,6 @@
             });
         })();
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/edom/isi_edom.blade.php ENDPATH**/ ?>
