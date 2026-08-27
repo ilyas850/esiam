@@ -6016,7 +6016,7 @@ class MhsController extends Controller
 
             $sekhit = count($cekedom);
 
-            if (empty(($hit - 3) <= $sekhit)) {
+            if (empty(($hit - 4) <= $sekhit)) {
 
                 Alert::error('Maaf anda belum melakukan pengisian edom')->autoclose(3500);
                 return redirect('home');
@@ -6048,7 +6048,7 @@ class MhsController extends Controller
 
                 $sekhit = count($cekedom);
 
-                if (($hit - 3) <= $sekhit) {
+                if (($hit - 4) <= $sekhit) {
 
                     # cek kuisioner Pembimbing Akademik
                     $cek_kuis_pa = Kuisioner_transaction::join('kuisioner_master', 'kuisioner_transaction.id_kuisioner', '=', 'kuisioner_master.id_kuisioner')
