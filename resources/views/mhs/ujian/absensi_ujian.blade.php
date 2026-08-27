@@ -1,187 +1,29 @@
 @extends('layouts.master')
-
-@section('side')
-    @include('layouts.side')
+@section('side') @include('layouts.side') @endsection
+@section('content_header')
+<section class="content-header"><h1>Absensi Ujian</h1><ol class="breadcrumb"><li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li><li class="active">Absensi Ujian</li></ol></section>
 @endsection
-
 @section('content')
-    <section class="content">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <b> ABSENSI UJIAN MAHASISWA</b>
-                <table width="100%">
-                    <tr>
-                        <td width="15%">Nama</td>
-                        <td>:</td>
-                        <td>{{ $datamhs->nama }}</td>
-                        <td width="15%">Tahun Ajaran</td>
-                        <td>:</td>
-                        <td>{{ $periode_tahun->periode_tahun }}</td>
-                    </tr>
-                    <tr>
-                        <td>NIM</td>
-                        <td>:</td>
-                        <td>{{ $datamhs->nim }}</td>
-                        <td>Semester</td>
-                        <td>:</td>
-                        <td>{{ $periode_tipe->periode_tipe }}</td>
-                    </tr>
-                    <tr>
-                        <td>Program Studi </td>
-                        <td>:</td>
-                        <td>{{ $datamhs->prodi }}</td>
-                        <td>Kelas</td>
-                        <td>:</td>
-                        <td>{{ $datamhs->kelas }}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="box-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                <center>Matakuliah</center>
-                            </th>
-                            <th>
-                                <center>
-                                    Waktu UTS
-                                </center>
-                            </th>
-                            <th>
-                                <center>Absen UTS </center>
-                            </th>
-                            <th>
-                                <center>Waktu UAS </center>
-                            </th>
-                            <th>
-                                <center>Absen UAS </center>
-                            </th>
-                            <th>
-                                <center>Keterangan Absensi </center>
-                            </th>
-                            <th>
-                                <center>Keterangan </center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        @foreach ($data_ujian as $item)
-                            <tr>
-                                <td>{{ $item->makul }}</td>
-                                <td align="center">
-                                    {{ Carbon\Carbon::parse($item->tgl_uts)->formatLocalized('%A, %d %B %Y') }}
-                                </td>
-                                <td align="center">
-                                    @if ($item->absen_uts == null)
-                                        <a href="/absen_ujian_uts/{{ $item->id_studentrecord }}"
-                                            class="btn btn-success btn-xs">Absen</a>
-                                    @else
-                                        {{ $item->absen_uts }}
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->tgl_uas != null)
-                                        {{ Carbon\Carbon::parse($item->tgl_uas)->formatLocalized('%A, %d %B %Y') }}
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->tgl_uas != null)
-                                        @if ($item->absen_uas == null)
-                                            @if ($item->id_kelas == 1)
-                                                @if ($item->jml_tdk_hdr <= 3)
-                                                    <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-success btn-xs">Absen</a>
-                                                @elseif ($item->jml_tdk_hdr > 3)
-                                                    <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-success btn-xs">Absen</a>
-                                                @endif
-                                            @elseif(
-                                                $item->id_kelas == 2 or
-                                                    $item->id_kelas == 3 or
-                                                    $item->id_kelas == 4 or
-                                                    $item->id_kelas == 5 or
-                                                    $item->id_kelas == 6 or
-                                                    $item->id_kelas == 7)
-                                                @if ($item->jml_tdk_hdr <= 4)
-                                                    <a href="/absen_ujian_uas_memenuhi/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-success btn-xs">Absen</a>
-                                                @elseif ($item->jml_tdk_hdr > 4)
-                                                    <a href="/absen_ujian_uas_tdk_memenuhi/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-success btn-xs">Absen</a>
-                                                @endif
-                                            @endif
-                                        @else
-                                            {{ $item->absen_uas }}
-                                        @endif
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->tgl_uas != null)
-                                        @if ($item->id_kelas == 1)
-                                            @if ($item->jml_tdk_hdr <= 3)
-                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
-                                            @elseif ($item->jml_tdk_hdr > 3)
-                                                <span class="badge bg-red"><i class="fa fa-close"></i></span>
-                                            @endif
-                                        @elseif(
-                                            $item->id_kelas == 2 or
-                                                $item->id_kelas == 3 or
-                                                $item->id_kelas == 4 or
-                                                $item->id_kelas == 5 or
-                                                $item->id_kelas == 6 or
-                                                $item->id_kelas == 7)
-                                            @if ($item->jml_tdk_hdr <= 4)
-                                                <span class="badge bg-green"><i class="fa fa-check"></i></span>
-                                            @elseif ($item->jml_tdk_hdr > 4)
-                                                <span class="badge bg-red"><i class="fa fa-close"></i></span>
-                                            @endif
-                                        @endif
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    @if ($item->tgl_uas != null)
-                                        @if ($item->id_kelas == 1)
-                                            @if ($item->jml_tdk_hdr > 3)
-                                                @if ($item->permohonan == null)
-                                                    <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-primary btn-xs">Ajukan</a>
-                                                @elseif ($item->permohonan == 'MENGAJUKAN')
-                                                    <span class="badge bg-yellow"></i>MENGAJUAKN</span>
-                                                @elseif ($item->permohonan == 'DISETUJUI')
-                                                    <span class="badge bg-green"></i>DISETUJUI</span>
-                                                @elseif ($item->permohonan == 'TIDAK DISETUJUI')
-                                                    <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
-                                                @endif
-                                            @endif
-                                        @elseif(
-                                            $item->id_kelas == 2 or
-                                                $item->id_kelas == 3 or
-                                                $item->id_kelas == 4 or
-                                                $item->id_kelas == 5 or
-                                                $item->id_kelas == 6 or
-                                                $item->id_kelas == 7)
-                                            @if ($item->jml_tdk_hdr > 4)
-                                                @if ($item->permohonan == null)
-                                                    <a href="/ajukan_keringanan_absen/{{ $item->id_studentrecord }}"
-                                                        class="btn btn-primary btn-xs">Ajukan</a>
-                                                @elseif ($item->permohonan == 'MENGAJUKAN')
-                                                    <span class="badge bg-yellow"></i>MENGAJUAKN</span>
-                                                @elseif ($item->permohonan == 'DISETUJUI')
-                                                    <span class="badge bg-green"></i>DISETUJUI</span>
-                                                @elseif ($item->permohonan == 'TIDAK DISETUJUI')
-                                                    <span class="badge bg-red"></i>TIDAK DISETUJUI</span>
-                                                @endif
-                                            @endif
-                                        @endif
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+<?php
+    $hariIndonesia = ['Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'];
+    $bulanIndonesia = ['January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April', 'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'];
+    $formatTanggalIndonesia = function ($tanggal) use ($hariIndonesia, $bulanIndonesia) {
+        if (!$tanggal) {
+            return '-';
+        }
+
+        $date = Carbon\Carbon::parse($tanggal);
+        return $hariIndonesia[$date->format('l')] . ', ' . $date->format('d') . ' ' . $bulanIndonesia[$date->format('F')] . ' ' . $date->format('Y');
+    };
+?>
+<style>
+.exam-info{margin-bottom:20px}.exam-info .info-box{min-height:88px}.exam-info .info-box-icon{width:70px;font-size:27px;line-height:88px}.exam-info .info-box-content{margin-left:70px;padding-top:12px}.exam-info .info-box-text,.exam-info .info-box-number{overflow:visible;text-overflow:initial;white-space:normal}.exam-status{display:inline-block;min-width:100px;margin-bottom:5px;padding:5px 7px;font-size:12px;text-align:center}.exam-course{font-weight:600;color:#333}.exam-date{color:#555;font-size:13px}.exam-action{min-width:105px}
+@media(max-width:767px){.exam-action{width:100%;margin:3px 0}.exam-attendance-table,.exam-attendance-table tbody,.exam-attendance-table tr,.exam-attendance-table td{display:block;width:100%!important;box-sizing:border-box}.exam-attendance-table thead{display:none}.exam-attendance-table tr{width:calc(100% - 24px)!important;margin:12px;border:1px solid #e5e5e5;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}.exam-attendance-table td{padding:9px 12px!important;border:0!important;text-align:left!important}.exam-attendance-table td:before{display:block;margin-bottom:4px;color:#777;content:attr(data-label);font-size:11px;font-weight:700;text-transform:uppercase}.exam-attendance-table td:first-child:before{display:none}.exam-attendance-table td:first-child{padding-bottom:0!important;color:#00a65a;font-weight:700}.table-responsive{overflow-x:hidden}}
+</style>
+<section class="content">
+<div class="row exam-info"><div class="col-sm-5"><div class="info-box"><span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span><div class="info-box-content"><span class="info-box-text">Mahasiswa</span><span class="info-box-number">{{ $datamhs->nama }}</span><span class="text-muted">{{ $datamhs->nim }}</span></div></div></div><div class="col-sm-4"><div class="info-box"><span class="info-box-icon bg-blue"><i class="fa fa-graduation-cap"></i></span><div class="info-box-content"><span class="info-box-text">Program Studi / Kelas</span><span class="info-box-number">{{ $datamhs->prodi ?: '-' }}</span><span class="text-muted">{{ $datamhs->kelas }}</span></div></div></div><div class="col-sm-3"><div class="info-box"><span class="info-box-icon bg-green"><i class="fa fa-calendar"></i></span><div class="info-box-content"><span class="info-box-text">Periode Aktif</span><span class="info-box-number">{{ $periode_tipe->periode_tipe }}</span><span class="text-muted">{{ $periode_tahun->periode_tahun }}</span></div></div></div></div>
+<div class="callout callout-info"><h4><i class="fa fa-info-circle"></i> Informasi Absensi Ujian</h4><p>Gunakan tombol <strong>Absen</strong> untuk mencatat kehadiran UTS atau UAS. Status UAS mengikuti ketentuan jumlah ketidakhadiran dan, bila perlu, pengajuan keringanan.</p></div>
+<div class="box box-primary"><div class="box-header with-border"><h3 class="box-title">Daftar Mata Kuliah Ujian</h3><div class="box-tools"><span class="label label-primary">{{ count($data_ujian) }} mata kuliah</span></div></div><div class="box-body table-responsive no-padding">
+@if(count($data_ujian))<table class="table table-hover table-striped exam-attendance-table"><thead><tr><th width="4%">No</th><th>Mata Kuliah</th><th>UTS</th><th>Absensi UTS</th><th>UAS</th><th>Absensi UAS</th><th>Status UAS</th><th>Keringanan</th></tr></thead><tbody><?php $no=1; ?>@foreach($data_ujian as $item)@php($uasAvailable=!empty($item->tgl_uas))@php($absenceLimit=$item->id_kelas == 1 ? 3 : 4)@php($eligibleUas=$uasAvailable && $item->jml_tdk_hdr <= $absenceLimit)<tr><td data-label="Mata Kuliah">{{ $no++ }}</td><td data-label="Mata Kuliah"><span class="exam-course">{{ $item->makul }}</span></td><td data-label="Waktu UTS"><span class="exam-date">{{ $formatTanggalIndonesia($item->tgl_uts) }}</span></td><td data-label="Absensi UTS">@if(is_null($item->absen_uts))<a href="{{ url('absen_ujian_uts/' . $item->id_studentrecord) }}" class="btn btn-success btn-xs exam-action"><i class="fa fa-check"></i> Absen UTS</a>@else<span class="label label-success exam-status"><i class="fa fa-check"></i> {{ $item->absen_uts }}</span>@endif</td><td data-label="Waktu UAS"><span class="exam-date">{{ $formatTanggalIndonesia($item->tgl_uas) }}</span></td><td data-label="Absensi UAS">@if(!$uasAvailable)<span class="text-muted">Belum dijadwalkan</span>@elseif(!is_null($item->absen_uas))<span class="label label-success exam-status"><i class="fa fa-check"></i> {{ $item->absen_uas }}</span>@elseif($eligibleUas)<a href="{{ url('absen_ujian_uas_memenuhi/' . $item->id_studentrecord) }}" class="btn btn-success btn-xs exam-action"><i class="fa fa-check"></i> Absen UAS</a>@else<a href="{{ url('absen_ujian_uas_tdk_memenuhi/' . $item->id_studentrecord) }}" class="btn btn-warning btn-xs exam-action"><i class="fa fa-exclamation-triangle"></i> Proses UAS</a>@endif</td><td data-label="Status UAS">@if(!$uasAvailable)<span class="label label-default exam-status">Belum tersedia</span>@elseif($eligibleUas)<span class="label label-success exam-status"><i class="fa fa-check"></i> Memenuhi syarat</span>@else<span class="label label-danger exam-status"><i class="fa fa-times"></i> Tidak memenuhi</span>@endif</td><td data-label="Keringanan">@if($uasAvailable && !$eligibleUas)@if(is_null($item->permohonan))<a href="{{ url('ajukan_keringanan_absen/' . $item->id_studentrecord) }}" class="btn btn-primary btn-xs exam-action"><i class="fa fa-paper-plane"></i> Ajukan</a>@elseif($item->permohonan === 'MENGAJUKAN')<span class="label label-warning exam-status"><i class="fa fa-clock-o"></i> Diajukan</span>@elseif($item->permohonan === 'DISETUJUI')<span class="label label-success exam-status"><i class="fa fa-check"></i> Disetujui</span>@else<span class="label label-danger exam-status"><i class="fa fa-times"></i> Tidak disetujui</span>@endif@else<span class="text-muted">-</span>@endif</td></tr>@endforeach</tbody></table>@else<div class="text-center text-muted" style="padding:35px 15px;"><i class="fa fa-calendar-times-o fa-3x"></i><h4>Belum ada jadwal ujian</h4><p>Jadwal ujian pada periode aktif akan tampil di halaman ini.</p></div>@endif
+</div></div></section>
 @endsection
