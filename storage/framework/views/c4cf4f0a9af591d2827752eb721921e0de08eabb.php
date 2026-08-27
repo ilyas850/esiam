@@ -1,23 +1,21 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content_header')
+<?php $__env->startSection('content_header'); ?>
     <section class="content-header">
         <h1>
             Form Isi EDOM
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('isi_edom') }}"><i class="fa fa-pencil-square-o"></i> Input EDOM</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('isi_edom')); ?>"><i class="fa fa-pencil-square-o"></i> Input EDOM</a></li>
             <li class="active">Isi Form EDOM</li>
         </ol>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         .edom-course-info {
             margin-bottom: 20px;
@@ -183,8 +181,8 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fa fa-book"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ $makul->kode }}</span>
-                        <span class="info-box-number">{{ $makul->makul }}</span>
+                        <span class="info-box-text"><?php echo e($makul->kode); ?></span>
+                        <span class="info-box-number"><?php echo e($makul->makul); ?></span>
                     </div>
                 </div>
             </div>
@@ -193,10 +191,10 @@
                     <span class="info-box-icon bg-blue"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Dosen Pengampu</span>
-                        <span class="info-box-number">{{ $nama_dsn ?: '-' }}</span>
-                        @if ($akademik)
-                            <span class="text-muted">{{ $akademik }}</span>
-                        @endif
+                        <span class="info-box-number"><?php echo e($nama_dsn ?: '-'); ?></span>
+                        <?php if($akademik): ?>
+                            <span class="text-muted"><?php echo e($akademik); ?></span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -211,30 +209,31 @@
             <span class="label label-success">4 Sangat Baik</span>
         </div>
 
-        @if ($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger">
                 <i class="fa fa-exclamation-circle"></i> Mohon periksa kembali jawaban Anda. Semua pertanyaan harus terisi.
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form action="{{ url('save_edom') }}" method="post" id="edom-form">
-            {{ csrf_field() }}
-            <input type="hidden" name="id_student" value="{{ $ids }}">
-            <input type="hidden" name="id_kurperiode" value="{{ $kurper }}">
-            <input type="hidden" name="id_kurtrans" value="{{ $kurtr }}">
+        <form action="<?php echo e(url('save_edom')); ?>" method="post" id="edom-form">
+            <?php echo e(csrf_field()); ?>
+
+            <input type="hidden" name="id_student" value="<?php echo e($ids); ?>">
+            <input type="hidden" name="id_kurperiode" value="<?php echo e($kurper); ?>">
+            <input type="hidden" name="id_kurtrans" value="<?php echo e($kurtr); ?>">
 
             <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">Pernyataan Penilaian</h3>
                     <div class="box-tools pull-right">
-                        <span class="label label-info">{{ $edomQuestionCount }} pertanyaan</span>
+                        <span class="label label-info"><?php echo e($edomQuestionCount); ?> pertanyaan</span>
                     </div>
                 </div>
                 <div class="box-body">
                     <div class="progress progress-sm active">
                         <div id="edom-progress-bar" class="progress-bar progress-bar-aqua progress-bar-striped" style="width: 0%"></div>
                     </div>
-                    <p id="edom-progress-text" class="edom-progress-text">0 dari {{ $edomQuestionCount }} pertanyaan terisi</p>
+                    <p id="edom-progress-text" class="edom-progress-text">0 dari <?php echo e($edomQuestionCount); ?> pertanyaan terisi</p>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover edom-question-table">
@@ -248,35 +247,35 @@
                         </thead>
                         <tbody>
                             <?php $no = 1; ?>
-                            @foreach ($edom as $key)
+                            <?php $__currentLoopData = $edom; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php $selectedValue = old('nilai_edom.' . $key->id_edom); ?>
-                                <tr class="edom-question-row" data-question="{{ $key->id_edom }}">
-                                    <td class="text-center edom-question-number" data-label="Pertanyaan">{{ $no++ }}</td>
-                                    <td data-label="Aspek">{{ $key->type }}</td>
-                                    <td data-label="Pernyataan">{{ $key->description }}</td>
+                                <tr class="edom-question-row" data-question="<?php echo e($key->id_edom); ?>">
+                                    <td class="text-center edom-question-number" data-label="Pertanyaan"><?php echo e($no++); ?></td>
+                                    <td data-label="Aspek"><?php echo e($key->type); ?></td>
+                                    <td data-label="Pernyataan"><?php echo e($key->description); ?></td>
                                     <td class="text-center" data-label="Penilaian">
-                                        <label class="btn btn-default btn-xs edom-rating-option {{ $selectedValue == $key->id_edom . ',1' ? 'active' : '' }}">
-                                            <input class="edom-answer" type="radio" name="nilai_edom[{{ $key->id_edom }}]" value="{{ $key->id_edom }},1" required {{ $selectedValue == $key->id_edom . ',1' ? 'checked' : '' }}> 1 Tidak Baik
+                                        <label class="btn btn-default btn-xs edom-rating-option <?php echo e($selectedValue == $key->id_edom . ',1' ? 'active' : ''); ?>">
+                                            <input class="edom-answer" type="radio" name="nilai_edom[<?php echo e($key->id_edom); ?>]" value="<?php echo e($key->id_edom); ?>,1" required <?php echo e($selectedValue == $key->id_edom . ',1' ? 'checked' : ''); ?>> 1 Tidak Baik
                                         </label>
-                                        <label class="btn btn-default btn-xs edom-rating-option {{ $selectedValue == $key->id_edom . ',2' ? 'active' : '' }}">
-                                            <input class="edom-answer" type="radio" name="nilai_edom[{{ $key->id_edom }}]" value="{{ $key->id_edom }},2" {{ $selectedValue == $key->id_edom . ',2' ? 'checked' : '' }}> 2 Kurang Baik
+                                        <label class="btn btn-default btn-xs edom-rating-option <?php echo e($selectedValue == $key->id_edom . ',2' ? 'active' : ''); ?>">
+                                            <input class="edom-answer" type="radio" name="nilai_edom[<?php echo e($key->id_edom); ?>]" value="<?php echo e($key->id_edom); ?>,2" <?php echo e($selectedValue == $key->id_edom . ',2' ? 'checked' : ''); ?>> 2 Kurang Baik
                                         </label>
-                                        <label class="btn btn-default btn-xs edom-rating-option {{ $selectedValue == $key->id_edom . ',3' ? 'active' : '' }}">
-                                            <input class="edom-answer" type="radio" name="nilai_edom[{{ $key->id_edom }}]" value="{{ $key->id_edom }},3" {{ $selectedValue == $key->id_edom . ',3' ? 'checked' : '' }}> 3 Baik
+                                        <label class="btn btn-default btn-xs edom-rating-option <?php echo e($selectedValue == $key->id_edom . ',3' ? 'active' : ''); ?>">
+                                            <input class="edom-answer" type="radio" name="nilai_edom[<?php echo e($key->id_edom); ?>]" value="<?php echo e($key->id_edom); ?>,3" <?php echo e($selectedValue == $key->id_edom . ',3' ? 'checked' : ''); ?>> 3 Baik
                                         </label>
-                                        <label class="btn btn-default btn-xs edom-rating-option {{ $selectedValue == $key->id_edom . ',4' ? 'active' : '' }}">
-                                            <input class="edom-answer" type="radio" name="nilai_edom[{{ $key->id_edom }}]" value="{{ $key->id_edom }},4" {{ $selectedValue == $key->id_edom . ',4' ? 'checked' : '' }}> 4 Sangat Baik
+                                        <label class="btn btn-default btn-xs edom-rating-option <?php echo e($selectedValue == $key->id_edom . ',4' ? 'active' : ''); ?>">
+                                            <input class="edom-answer" type="radio" name="nilai_edom[<?php echo e($key->id_edom); ?>]" value="<?php echo e($key->id_edom); ?>,4" <?php echo e($selectedValue == $key->id_edom . ',4' ? 'checked' : ''); ?>> 4 Sangat Baik
                                         </label>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
                 <div class="box-footer">
-                    <a href="{{ url('isi_edom') }}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
+                    <a href="<?php echo e(url('isi_edom')); ?>" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
                     <button id="save-edom-button" type="submit" class="btn btn-info pull-right" disabled>
-                        <i class="fa fa-save"></i> Simpan Jawaban (<span id="edom-answer-count">0</span>/{{ $edomQuestionCount }})
+                        <i class="fa fa-save"></i> Simpan Jawaban (<span id="edom-answer-count">0</span>/<?php echo e($edomQuestionCount); ?>)
                     </button>
                 </div>
             </div>
@@ -285,7 +284,7 @@
 
     <script>
         (function () {
-            var total = {{ $edomQuestionCount }};
+            var total = <?php echo e($edomQuestionCount); ?>;
             var answers = document.querySelectorAll('.edom-answer');
             var progressBar = document.getElementById('edom-progress-bar');
             var progressText = document.getElementById('edom-progress-text');
@@ -319,4 +318,6 @@
             updateProgress();
         })();
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/edom/form_edom.blade.php ENDPATH**/ ?>

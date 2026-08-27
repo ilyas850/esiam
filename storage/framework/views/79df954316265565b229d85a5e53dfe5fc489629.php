@@ -1,23 +1,21 @@
-@extends('layouts.master')
+<?php $__env->startSection('side'); ?>
+    <?php echo $__env->make('layouts.side', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('side')
-    @include('layouts.side')
-@endsection
-
-@section('content_header')
+<?php $__env->startSection('content_header'); ?>
     <section class="content-header">
         <h1>
             Form Isi EDOM
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
-            <li><a href="{{ url('isi_edom') }}"><i class="fa fa-pencil-square-o"></i> Input EDOM</a></li>
+            <li><a href="<?php echo e(url('home')); ?>"><i class="fa fa-dashboard"></i> Halaman Utama</a></li>
+            <li><a href="<?php echo e(url('isi_edom')); ?>"><i class="fa fa-pencil-square-o"></i> Input EDOM</a></li>
             <li class="active">Isi Komentar EDOM</li>
         </ol>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         .edom-comment-info {
             margin-bottom: 20px;
@@ -77,8 +75,8 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fa fa-book"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ $makul->kode }}</span>
-                        <span class="info-box-number">{{ $makul->makul }}</span>
+                        <span class="info-box-text"><?php echo e($makul->kode); ?></span>
+                        <span class="info-box-number"><?php echo e($makul->makul); ?></span>
                     </div>
                 </div>
             </div>
@@ -87,10 +85,10 @@
                     <span class="info-box-icon bg-blue"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Dosen Pengampu</span>
-                        <span class="info-box-number">{{ $dosen ? $dosen->nama : '-' }}</span>
-                        @if ($dosen && $dosen->akademik)
-                            <span class="text-muted">{{ $dosen->akademik }}</span>
-                        @endif
+                        <span class="info-box-number"><?php echo e($dosen ? $dosen->nama : '-'); ?></span>
+                        <?php if($dosen && $dosen->akademik): ?>
+                            <span class="text-muted"><?php echo e($dosen->akademik); ?></span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -101,30 +99,32 @@
             <p>Tuliskan masukan yang sopan dan membangun untuk membantu peningkatan proses perkuliahan. Komentar maksimal 1.000 karakter.</p>
         </div>
 
-        @if ($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger">
-                <i class="fa fa-exclamation-circle"></i> {{ $errors->first('nilai_edom') ?: 'Komentar belum dapat disimpan. Silakan periksa kembali isian Anda.' }}
-            </div>
-        @endif
+                <i class="fa fa-exclamation-circle"></i> <?php echo e($errors->first('nilai_edom') ?: 'Komentar belum dapat disimpan. Silakan periksa kembali isian Anda.'); ?>
 
-        <form action="{{ url('save_edom_kom') }}" method="post" id="edom-comment-form">
-            {{ csrf_field() }}
-            <input type="hidden" name="id_kurperiode" value="{{ $kurper }}">
-            <input type="hidden" name="id_kurtrans" value="{{ $kurtr }}">
+            </div>
+        <?php endif; ?>
+
+        <form action="<?php echo e(url('save_edom_kom')); ?>" method="post" id="edom-comment-form">
+            <?php echo e(csrf_field()); ?>
+
+            <input type="hidden" name="id_kurperiode" value="<?php echo e($kurper); ?>">
+            <input type="hidden" name="id_kurtrans" value="<?php echo e($kurtr); ?>">
             <div class="box box-info edom-comment-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Komentar untuk {{ $makul->makul }}</h3>
+                    <h3 class="box-title">Komentar untuk <?php echo e($makul->makul); ?></h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label for="nilai_edom">Komentar</label>
-                        <textarea id="nilai_edom" class="form-control" name="nilai_edom" rows="7" maxlength="1000" placeholder="Contoh: Materi disampaikan dengan jelas dan diskusi kelas sangat membantu pemahaman saya." required>{{ old('nilai_edom') }}</textarea>
+                        <textarea id="nilai_edom" class="form-control" name="nilai_edom" rows="7" maxlength="1000" placeholder="Contoh: Materi disampaikan dengan jelas dan diskusi kelas sangat membantu pemahaman saya." required><?php echo e(old('nilai_edom')); ?></textarea>
                         <p class="help-block">Hindari menuliskan data pribadi atau kata-kata yang tidak pantas.</p>
                         <p class="edom-comment-counter text-right"><span id="edom-comment-count">0</span>/1000 karakter</p>
                     </div>
                 </div>
                 <div class="box-footer">
-                    <a href="{{ url('isi_edom') }}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
+                    <a href="<?php echo e(url('isi_edom')); ?>" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
                     <button id="save-comment-button" type="submit" class="btn btn-info pull-right">
                         <i class="fa fa-save"></i> Simpan Komentar
                     </button>
@@ -150,4 +150,6 @@
             updateCounter();
         })();
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/mhs/edom/komentar.blade.php ENDPATH**/ ?>

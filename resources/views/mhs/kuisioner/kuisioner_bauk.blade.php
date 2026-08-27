@@ -1,72 +1,19 @@
 @extends('layouts.master')
-
-@section('side')
-    @include('layouts.side')
+@section('side') @include('layouts.side') @endsection
+@section('content_header')
+<section class="content-header"><h1>Kuisioner Layanan BAUK</h1><ol class="breadcrumb"><li><a href="{{ url('home') }}"><i class="fa fa-dashboard"></i> Halaman Utama</a></li><li><a href="{{ url('kuisioner') }}"><i class="fa fa-list-alt"></i> Kuisioner</a></li><li class="active">BAUK</li></ol></section>
 @endsection
-
 @section('content')
-    <section class="content">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">KUISIONER KEPUASAN MAHASISWA TERHADAP LAYANAN ADMINISTRASI DI BIRO ADMINISTRASI
-                    KEUANGAN (BAUK)</h3>
-                <br><br>
-                <table width="100%">
-                    <tr>
-                        <td>Program Studi</td>
-                        <td>:</td>
-                        <td>{{ $prodi }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Kelas</td>
-                        <td>:</td>
-                        <td>{{ $kelas }}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="box-body ">
-                <form action="{{ url('save_kuisioner_bauk') }}" method="post">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="id_student" value="{{ $ids }}">
-                    <input type="hidden" name="id_periodetahun" value="{{ $idthn }}">
-                    <input type="hidden" name="id_periodetipe" value="{{ $idtp }}">
-                    <table class="table table-striped">
-                        <tr>
-                            <th style="width: 10px;" align="center">No</th>
-                            <th>Aspek</th>
-                            <th>Komponen</th>
-                            <th>Nilai</th>
-                        </tr>
-                        <?php $no = 1; ?>
-                        @foreach ($data as $item)
-                            <tr>
-                                <td align="center">{{ $no++ }}</td>
-                                <td>{{ $item->aspek_kuisioner }}</td>
-                                <td>{{ $item->komponen_kuisioner }}</td>
-                                <td>
-                                    <center>
-                                        <select class="form-control" name="nilai[]" required>
-                                            <option></option>
-                                            <option value="{{ $item->id_kuisioner }},1">Tidak Baik</option>
-                                            <option value="{{ $item->id_kuisioner }},2">Kurang Baik</option>
-                                            <option value="{{ $item->id_kuisioner }},3">Baik</option>
-                                            <option value="{{ $item->id_kuisioner }},4">Sangat Baik</option>
-                                        </select>
-                                    </center>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </table>
-                    <div class="form-group">
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-info btn-block">
-                                Simpan
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
+<?php $questionnaireQuestionCount = count($data); ?>
+<style>
+.kuisioner-info{margin-bottom:20px}.kuisioner-info .info-box{min-height:88px}.kuisioner-info .info-box-icon{width:70px;font-size:27px;line-height:88px}.kuisioner-info .info-box-content{margin-left:70px;padding-top:12px}.kuisioner-info .info-box-text,.kuisioner-info .info-box-number{overflow:visible;text-overflow:initial;white-space:normal}.kuisioner-progress-text{margin-top:7px;color:#777;font-size:12px}.kuisioner-question-row.is-answered{background:#effcf2!important;box-shadow:inset 4px 0 0 #00a65a}.kuisioner-question-number{color:#00a65a;font-weight:700}.kuisioner-rating-option{min-width:104px;margin:2px;padding:7px 8px;font-size:12px}.kuisioner-rating-option input{display:none}.kuisioner-rating-option.is-selected{background:#00a65a!important;border-color:#008d4c!important;box-shadow:0 1px 3px rgba(0,141,76,.35);color:#fff!important;font-weight:700}.kuisioner-rating-option.is-selected:before{margin-right:5px;content:'\2713'}
+@media(max-width:767px){.kuisioner-info .info-box{min-height:82px}.kuisioner-info .info-box-icon{line-height:82px}.kuisioner-rating-option{display:block;width:100%;margin:4px 0;padding:10px;text-align:left}.kuisioner-table,.kuisioner-table tbody,.kuisioner-table tr,.kuisioner-table td{display:block;width:100%!important;min-width:0!important;max-width:100%;box-sizing:border-box}.table-responsive{overflow-x:hidden}.kuisioner-table thead{display:none}.kuisioner-table tr.kuisioner-question-row{width:calc(100% - 24px)!important;margin:12px;border:1px solid #e5e5e5;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}.kuisioner-table td{padding:9px 12px!important;border:0!important;text-align:left!important;white-space:normal!important;overflow-wrap:break-word;word-break:break-word}.kuisioner-table td:before{display:block;margin-bottom:4px;color:#777;content:attr(data-label);font-size:11px;font-weight:700;text-transform:uppercase}.kuisioner-table td.kuisioner-question-number:before{display:none}#save-kuisioner-button{width:100%;margin-top:10px}}
+</style>
+<section class="content">
+<div class="row kuisioner-info"><div class="col-sm-6"><div class="info-box"><span class="info-box-icon bg-aqua"><i class="fa fa-building-o"></i></span><div class="info-box-content"><span class="info-box-text">Layanan yang Dinilai</span><span class="info-box-number">Biro Administrasi Keuangan</span></div></div></div><div class="col-sm-3"><div class="info-box"><span class="info-box-icon bg-blue"><i class="fa fa-graduation-cap"></i></span><div class="info-box-content"><span class="info-box-text">Program Studi</span><span class="info-box-number">{{ $prodi }}</span></div></div></div><div class="col-sm-3"><div class="info-box"><span class="info-box-icon bg-green"><i class="fa fa-users"></i></span><div class="info-box-content"><span class="info-box-text">Kelas</span><span class="info-box-number">{{ $kelas }}</span></div></div></div></div>
+<div class="callout callout-info"><h4><i class="fa fa-info-circle"></i> Petunjuk Pengisian</h4><p>Pilih satu nilai untuk setiap pernyataan layanan BAUK. Semua pertanyaan wajib diisi sebelum kuisioner dapat disimpan.</p><span class="label label-danger">1 Tidak Baik</span> <span class="label label-warning">2 Kurang Baik</span> <span class="label label-info">3 Baik</span> <span class="label label-success">4 Sangat Baik</span></div>
+@if($errors->any())<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> Mohon lengkapi seluruh pertanyaan sebelum menyimpan.</div>@endif
+<form action="{{ url('save_kuisioner_bauk') }}" method="post">{{ csrf_field() }}<input type="hidden" name="id_periodetahun" value="{{ $idthn }}"><input type="hidden" name="id_periodetipe" value="{{ $idtp }}">
+<div class="box box-info"><div class="box-header with-border"><h3 class="box-title">Pernyataan Penilaian Layanan BAUK</h3><div class="box-tools pull-right"><span class="label label-info">{{ $questionnaireQuestionCount }} pertanyaan</span></div></div><div class="box-body"><div class="progress progress-sm active"><div id="kuisioner-progress-bar" class="progress-bar progress-bar-aqua progress-bar-striped" style="width:0%"></div></div><p id="kuisioner-progress-text" class="kuisioner-progress-text">0 dari {{ $questionnaireQuestionCount }} pertanyaan terisi</p></div><div class="table-responsive"><table class="table table-hover kuisioner-table"><thead><tr><th width="6%">No</th><th width="23%">Aspek</th><th>Komponen</th><th width="45%">Penilaian</th></tr></thead><tbody><?php $no=1; ?>@foreach($data as $item)<?php $selectedValue=old('nilai.'.$item->id_kuisioner); ?><tr class="kuisioner-question-row"><td class="text-center kuisioner-question-number" data-label="Pertanyaan">{{ $no++ }}</td><td data-label="Aspek">{{ $item->aspek_kuisioner }}</td><td data-label="Komponen">{{ $item->komponen_kuisioner }}</td><td class="text-center" data-label="Penilaian">@foreach([1=>'Tidak Baik',2=>'Kurang Baik',3=>'Baik',4=>'Sangat Baik'] as $score=>$label)<label class="btn btn-default btn-xs kuisioner-rating-option {{ $selectedValue == $item->id_kuisioner . ',' . $score ? 'is-selected' : '' }}"><input class="kuisioner-answer" type="radio" name="nilai[{{ $item->id_kuisioner }}]" value="{{ $item->id_kuisioner }},{{ $score }}" {{ $score === 1 ? 'required' : '' }} {{ $selectedValue == $item->id_kuisioner . ',' . $score ? 'checked' : '' }}> {{ $score }} {{ $label }}</label>@endforeach</td></tr>@endforeach</tbody></table></div><div class="box-footer"><a href="{{ url('kuisioner') }}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali ke Kuisioner</a><button id="save-kuisioner-button" type="submit" class="btn btn-info pull-right" disabled><i class="fa fa-save"></i> Simpan Kuisioner (<span id="kuisioner-answer-count">0</span>/{{ $questionnaireQuestionCount }})</button></div></div></form></section>
+<script>(function(){var total={{ $questionnaireQuestionCount }},answers=document.querySelectorAll('.kuisioner-answer'),bar=document.getElementById('kuisioner-progress-bar'),text=document.getElementById('kuisioner-progress-text'),count=document.getElementById('kuisioner-answer-count'),save=document.getElementById('save-kuisioner-button');function update(){var answered=0;Array.prototype.forEach.call(document.querySelectorAll('.kuisioner-question-row'),function(row){var selected=row.querySelector('.kuisioner-answer:checked');if(selected){answered++;}row.classList.toggle('is-answered',selected!==null);Array.prototype.forEach.call(row.querySelectorAll('.kuisioner-rating-option'),function(option){option.classList.toggle('is-selected',option.querySelector('.kuisioner-answer:checked')!==null);});});var percent=total?Math.round(answered/total*100):0;bar.style.width=percent+'%';text.textContent=answered+' dari '+total+' pertanyaan terisi';count.textContent=answered;save.disabled=answered!==total;}Array.prototype.forEach.call(answers,function(answer){answer.addEventListener('change',update);});update();})();</script>
 @endsection
