@@ -13,26 +13,7 @@
         @elseif (Auth::user()->role == 3)
             @include('layouts.mhs_home')
         @elseif (Auth::user()->role == 4)
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <span class="fa fa-graduation-cap"></span>
-                            <h3 class="box-title">Selamat Datang Mahasiswa Politeknik META Industri Cikarang</h3>
-                        </div>
-                        <form class="form-horizontal" role="form" method="POST"
-                            action="/new_pwd_user/{{ Auth::user()->username }}">
-                            {{ csrf_field() }}
-                            <input id="role" type="hidden" class="form-control" name="role" value="3">
-                            <div class="box-body">
-                                <center>
-                                    <a class="btn btn-warning" href="pwd/{{ Auth::user()->id }}">Klik disini untuk ganti password !!!</a>
-                                </center>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @include('mhs.onboarding_pwd')
         @elseif (Auth::user()->role == 5)
             @include('layouts.dosenluar_home')
         @elseif (Auth::user()->role == 6)
