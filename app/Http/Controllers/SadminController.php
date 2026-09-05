@@ -218,32 +218,6 @@ class SadminController extends Controller
 
     public function show_user()
     {
-        $data1 = Student::leftjoin('users', 'student.idstudent', '=', 'users.id_user')
-            ->leftjoin('prodi', function ($join) {
-                $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
-            })
-            ->leftjoin('kelas', 'student.idstatus', '=', 'kelas.idkelas')
-            ->leftjoin('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->select(
-                'users.id',
-                'users.id_user',
-                'users.username',
-                'users.deleted_at',
-                'student.nim',
-                'student.nama',
-                'kelas.kelas',
-                'prodi.prodi',
-                'student.idstudent',
-                'users.role',
-                'angkatan.angkatan'
-            )
-            ->where('student.active', 1)
-            ->orderBy('student.idangkatan', 'DESC')
-            ->orderBy('prodi.prodi', 'ASC')
-            ->orderBy('kelas.kelas', 'ASC')
-            ->orderBy('student.nim', 'ASC')
-            ->get();
-
         $data = Student::with([
             'user:id,id_user,username,deleted_at,role',
             'kelas:idkelas,kelas',
@@ -425,8 +399,13 @@ class SadminController extends Controller
 
     public function hapususer($id)
     {
-        $user = User::where('id_user', $id)->forceDelete();
-        $admin = Password::where('id_user', $id)->forceDelete();
+        if (empty($id)) {
+            Alert::error('', 'ID user tidak valid')->autoclose(3500);
+            return redirect('show_user');
+        }
+
+        User::where('id_user', $id)->forceDelete();
+        Password::where('id_user', $id)->forceDelete();
 
         Alert::success('', 'User berhasil dihapus')->autoclose(3500);
         return redirect('show_user');
