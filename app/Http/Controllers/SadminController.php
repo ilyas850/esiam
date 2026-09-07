@@ -702,9 +702,22 @@ class SadminController extends Controller
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->where('student.idstudent', $id)
             ->select('student.nama', 'student.nim', 'prodi.prodi', 'kelas.kelas')
-            ->first();
+            ->firstOrFail();
 
-        $data = DB::select('CALL cek_nilai(?)', [$id]);
+        $data = Student_record::with(['kurperiode.makul', 'kurperiode.tahun', 'kurperiode.tipe', 'kurperiode.semester'])
+            ->where('id_student', $id)
+            ->whereHas('kurperiode', function ($query) {
+                $query->where('status', 'ACTIVE');
+            })
+            ->get()
+            ->sortBy(function ($record) {
+                $kurperiode = $record->kurperiode;
+                $kodeMakul = optional(optional($kurperiode)->makul)->kode;
+                $idSemester = optional(optional($kurperiode)->semester)->idsemester;
+
+                return sprintf('%s-%05d', $kodeMakul, $idSemester);
+            })
+            ->values();
 
         return view('sadmin/nilai/ceknilai', compact('mhs', 'data', 'id'));
     }
@@ -731,10 +744,11 @@ class SadminController extends Controller
 
     public function save_nilai_angka(Request $request)
     {
-        $jml = count($request->nilai_ANGKA);
+        $nilaiDipilih = $request->input('nilai_ANGKA', []);
+        $jml = count($nilaiDipilih);
 
         for ($i = 0; $i < $jml; $i++) {
-            $nilai = $request->nilai_ANGKA[$i];
+            $nilai = $nilaiDipilih[$i];
             $nilaiangka = explode(',', $nilai, 2);
             $ids = $nilaiangka[0];
             $niak = $nilaiangka[1];
