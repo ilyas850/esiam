@@ -38,25 +38,43 @@ class DataKRSMhsExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
+        $query = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
+            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
+            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->where('kurikulum_periode.id_periodetahun', $this->ta)
+            ->where('kurikulum_periode.id_periodetipe', $this->tp)
+            ->where('student_record.status', 'TAKEN');
+
+        if (!empty($this->prd) && $this->prd !== 'all') {
+            $query->where('kurikulum_periode.id_prodi', $this->prd);
+            if (!empty($this->kd)) {
+                $query->where('student.kodeprodi', $this->kd);
+            }
+        }
+
+        $nilai = $query->select(
+            'prodi.prodi',
+            'kelas.kelas',
+            'student.nim',
+            'student.nama',
+            'matakuliah.kode',
+            'matakuliah.makul',
+            DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'),
+            'student_record.nilai_AKHIR',
+            'student_record.nilai_ANGKA',
+            DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks_hasil')
+        )
+        ->orderBy('prodi.prodi', 'ASC')
+        ->orderBy('kelas.kelas', 'ASC')
+        ->orderBy('student.nim', 'ASC')
+        ->get();
 
         return view('export_excel/datanilaikhs', [
-
-
-
-            'nilai' => Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-                ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-                ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-                ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-                ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-                ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-                ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-                ->where('kurikulum_periode.id_periodetahun', $this->ta)
-                ->where('kurikulum_periode.id_periodetipe', $this->tp)
-                ->where('kurikulum_periode.id_prodi', $this->prd)
-                ->where('student_record.status', 'TAKEN')
-                ->where('student.kodeprodi', $this->kd)
-                ->select('prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks_hasil'))
-                ->get()
+            'nilai' => $nilai
         ]);
     }
 }

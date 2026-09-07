@@ -9,64 +9,61 @@
 @section('content')
     <section class="content">
         <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Data Nilai Mahasiswa</h3>
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-users"></i> Data Peserta KRS Mahasiswa</h3>
+                <div class="box-tools pull-right">
+                    <a href="{{ url('data_krs') }}" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Kembali ke Rekap KRS</a>
+                </div>
             </div>
-            <div class="box-body">
-                <table id="example1" class="table">
+            <div class="box-body table-responsive">
+                <table id="example1" class="table table-bordered table-striped table-hover">
                     <thead>
-                        <tr>
-                            <th>
-                                <center>No</center>
-                            </th>
-                            <th>
-                                <center>NIM </center>
-                            </th>
-                            <th>
-                                <center>Nama</center>
-                            </th>
-                            <th>
-                                <center>Program Studi</center>
-                            </th>
-                            <th>
-                                <center>Kelas</center>
-                            </th>
-                            <th>
-                                <center>Angkatan</center>
-                            </th>
-                            <th>
-                                <center>Aksi</center>
-                            </th>
+                        <tr class="bg-gray-light">
+                            <th style="width: 40px; text-align: center;">No</th>
+                            <th style="width: 120px; text-align: center;">NIM</th>
+                            <th>Nama Mahasiswa</th>
+                            <th>Program Studi</th>
+                            <th style="width: 80px; text-align: center;">Kelas</th>
+                            <th style="width: 80px; text-align: center;">Angkatan</th>
+                            <th style="width: 80px; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        @foreach ($data as $item)
+                        @forelse ($data as $item)
                             <tr>
-                                <td>
-                                    <center>{{ $no++ }}</center>
+                                <td align="center" style="vertical-align: middle;">{{ $no++ }}</td>
+                                <td align="center" style="vertical-align: middle;"><strong>{{ $item->nim }}</strong></td>
+                                <td style="vertical-align: middle;">{{ $item->nama }}</td>
+                                <td style="vertical-align: middle;">
+                                    <strong>{{ $item->prodi }}</strong>
+                                    @if (!empty($item->konsentrasi) && $item->konsentrasi != '-')
+                                        <br><small class="text-muted"><i class="fa fa-tag"></i> {{ $item->konsentrasi }}</small>
+                                    @endif
                                 </td>
-                                <td>
-                                    <center>{{ $item->nim }}</center>
+                                <td align="center" style="vertical-align: middle;">
+                                    <span class="label label-info">{{ $item->kelas }}</span>
                                 </td>
-                                <td>{{ $item->nama }}</td>
-                                <td>{{ $item->prodi }}</td>
-                                <td>
-                                    <center>{{ $item->kelas }}</center>
+                                <td align="center" style="vertical-align: middle;">
+                                    <span class="label label-default">{{ $item->angkatan }}</span>
                                 </td>
-                                <td>
-                                    <center>{{ $item->angkatan }} </center>
-                                </td>
-                                <td>
-                                    <center>
-                                        @if ($item->status == 'TAKEN')
-                                            <a class="btn btn-danger btn-xs"
-                                                href="/batalkrs/{{ $item->id_studentrecord }}">Batal</a>
-                                        @endif
-                                    </center>
+                                <td align="center" style="vertical-align: middle;">
+                                    @if ($item->status == 'TAKEN')
+                                        <a class="btn btn-danger btn-xs btn-flat"
+                                            href="{{ url('batalkrs/' . $item->id_studentrecord) }}"
+                                            onclick="return confirm('Apakah Anda yakin ingin membatalkan KRS untuk mahasiswa {{ $item->nama }} ({{ $item->nim }})?');">
+                                            <i class="fa fa-times"></i> Batal
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted" style="padding: 20px;">
+                                    <i class="fa fa-info-circle"></i> Tidak ada mahasiswa yang terdaftar di kelas ini.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

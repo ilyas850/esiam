@@ -1312,48 +1312,160 @@ class SadminController extends Controller
         return Excel::download(new DataNilaiKHSExport($prd, $ta, $tp, $kd), $nama_file);
     }
 
-    public function data_krs()
+    public function data_krs(Request $request)
     {
         $tahun = Periode_tahun::orderBy('periode_tahun', 'ASC')->get();
         $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2, 3])->get();
-        $prodi = Prodi::all();
 
-        $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-        $idtipe = $tp->id_periodetipe;
-        $namaperiodetipe = $tp->periode_tipe;
-
-        $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-        $idtahun = $thn->id_periodetahun;
-        $namaperiodetahun = $thn->periode_tahun;
-
-        $nilai = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->join('student_record', 'kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
-            ->join('kurikulum_transaction', 'student_record.id_kurtrans', '=', 'kurikulum_transaction.idkurtrans')
-            ->leftjoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->where('kurikulum_periode.id_periodetipe', $idtipe)
-            ->where('kurikulum_periode.id_periodetahun', $idtahun)
-            ->where('kurikulum_periode.status', 'ACTIVE')
-            ->where('student_record.status', 'TAKEN')
-            ->select('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', DB::raw('COUNT(student_record.id_student) as jml_mhs'), 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi', 'prodi.konsentrasi')
-            ->groupBy('matakuliah.kode', 'matakuliah.makul', 'matakuliah.akt_sks_teori', 'matakuliah.akt_sks_praktek', 'dosen.nama', 'kelas.kelas', 'student_record.id_kurperiode', 'prodi.prodi', 'prodi.konsentrasi')
+        // Ambil daftar program studi utama (dikelompokkan berdasarkan kodeprodi agar rapi)
+        $prodi = Prodi::select('kodeprodi', DB::raw('MAX(prodi) as prodi'), DB::raw('MIN(id_prodi) as id_prodi'))
+            ->groupBy('kodeprodi')
+            ->orderBy('prodi', 'ASC')
             ->get();
 
-        return view('sadmin/master_krs/data_krs', ['thn' => $tahun, 'tp' => $tipe, 'prd' => $prodi, 'krs' => $nilai, 'namaperiodetipe' => $namaperiodetipe, 'namaperiodetahun' => $namaperiodetahun]);
+        // Periode default jika request kosong
+        $tp_active = Periode_tipe::where('status', 'ACTIVE')->first();
+        $thn_active = Periode_tahun::where('status', 'ACTIVE')->first();
+
+        $id_periodetahun = $request->input('id_periodetahun', $thn_active ? $thn_active->id_periodetahun : null);
+        $id_periodetipe = $request->input('id_periodetipe', $tp_active ? $tp_active->id_periodetipe : null);
+        $id_prodi = $request->input('id_prodi', 'all');
+
+        $current_tahun = Periode_tahun::where('id_periodetahun', $id_periodetahun)->first();
+        $current_tipe = Periode_tipe::where('id_periodetipe', $id_periodetipe)->first();
+        $current_prodi = null;
+        if ($id_prodi && $id_prodi !== 'all') {
+            $current_prodi = Prodi::where('kodeprodi', $id_prodi)->orWhere('id_prodi', $id_prodi)->first();
+        }
+
+        $namaperiodetahun = $current_tahun ? $current_tahun->periode_tahun : '';
+        $namaperiodetipe = $current_tipe ? $current_tipe->periode_tipe : '';
+
+        // Query Rekap KRS: Mengagregasi data per kelas kuliah riil (Matakuliah + Kelas + Dosen + Prodi Induk)
+        // Konsentrasi yang mengikuti kelas kuliah bersama disatukan ke dalam 1 baris
+        $query = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+            ->leftJoin('student_record', function ($join) {
+                $join->on('kurikulum_periode.id_kurperiode', '=', 'student_record.id_kurperiode')
+                    ->where('student_record.status', '=', 'TAKEN');
+            })
+            ->leftJoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->where('kurikulum_periode.status', 'ACTIVE');
+
+        if ($id_periodetahun) {
+            $query->where('kurikulum_periode.id_periodetahun', $id_periodetahun);
+        }
+        if ($id_periodetipe) {
+            $query->where('kurikulum_periode.id_periodetipe', $id_periodetipe);
+        }
+        if ($current_prodi) {
+            $query->where('prodi.kodeprodi', $current_prodi->kodeprodi);
+        }
+
+        $krs = $query->select(
+            DB::raw('GROUP_CONCAT(DISTINCT kurikulum_periode.id_kurperiode) as ids_kurperiode'),
+            'matakuliah.kode',
+            'matakuliah.makul',
+            'matakuliah.akt_sks_teori',
+            'matakuliah.akt_sks_praktek',
+            DB::raw('COUNT(student_record.id_student) as jml_mhs'),
+            DB::raw("COALESCE(dosen.nama, 'Belum Ditentukan') as nama"),
+            'kelas.kelas',
+            'prodi.prodi',
+            'prodi.kodeprodi',
+            DB::raw('GROUP_CONCAT(DISTINCT NULLIF(prodi.konsentrasi, "") SEPARATOR ", ") as daftar_konsentrasi')
+        )
+        ->groupBy(
+            'kurikulum_periode.id_makul',
+            'matakuliah.kode',
+            'matakuliah.makul',
+            'matakuliah.akt_sks_teori',
+            'matakuliah.akt_sks_praktek',
+            'kurikulum_periode.id_kelas',
+            'kelas.kelas',
+            'kurikulum_periode.id_dosen',
+            'dosen.nama',
+            'prodi.kodeprodi',
+            'prodi.prodi'
+        )
+        ->orderBy('prodi.prodi', 'ASC')
+        ->orderBy('kelas.kelas', 'ASC')
+        ->orderBy('matakuliah.makul', 'ASC')
+        ->get();
+
+        // Hitung statistik ringkasan riil
+        $total_kelas = $krs->count();
+        $total_makul = $krs->pluck('kode')->unique()->count();
+        
+        // Total SKS kelas berjalan aktif (hanya kelas yang ada mahasiswanya)
+        $total_sks_aktif = $krs->where('jml_mhs', '>', 0)->sum(function ($item) {
+            return ($item->akt_sks_teori + $item->akt_sks_praktek);
+        });
+
+        // Total SKS seluruh kelas yang dibuka (termasuk kelas kosong)
+        $total_sks_dibuka = $krs->sum(function ($item) {
+            return ($item->akt_sks_teori + $item->akt_sks_praktek);
+        });
+
+        // Hitung jumlah mahasiswa riil (headcount unik orang) yang mengambil KRS pada periode dan prodi terpilih
+        $query_mhs = Student_record::join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
+            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+            ->where('kurikulum_periode.status', 'ACTIVE')
+            ->where('student_record.status', 'TAKEN');
+
+        if ($id_periodetahun) {
+            $query_mhs->where('kurikulum_periode.id_periodetahun', $id_periodetahun);
+        }
+        if ($id_periodetipe) {
+            $query_mhs->where('kurikulum_periode.id_periodetipe', $id_periodetipe);
+        }
+        if ($current_prodi) {
+            $query_mhs->where('prodi.kodeprodi', $current_prodi->kodeprodi);
+        }
+
+        $total_mhs_krs = $query_mhs->distinct('student_record.id_student')->count('student_record.id_student');
+
+        $stats = [
+            'total_kelas' => $total_kelas,
+            'total_kelas_aktif' => $krs->where('jml_mhs', '>', 0)->count(),
+            'total_makul' => $total_makul,
+            'total_mhs_krs' => $total_mhs_krs,
+            'total_sks' => $total_sks_aktif,
+            'total_sks_dibuka' => $total_sks_dibuka,
+        ];
+
+        return view('sadmin/master_krs/data_krs', [
+            'tahun_list' => $tahun,
+            'tipe_list' => $tipe,
+            'prodi_list' => $prodi,
+            'thn' => $tahun,
+            'tp' => $tipe,
+            'prd' => $prodi,
+            'id_periodetahun' => $id_periodetahun,
+            'id_periodetipe' => $id_periodetipe,
+            'id_prodi' => $id_prodi,
+            'namaperiodetahun' => $namaperiodetahun,
+            'namaperiodetipe' => $namaperiodetipe,
+            'krs' => $krs,
+            'stats' => $stats,
+        ]);
     }
 
     public function cek_krs_mhs($id)
     {
+        $ids = explode(',', $id);
+
         $data = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')->on('prodi.kodekonsentrasi', '=', 'student.kodekonsentrasi');
             })
             ->join('kelas', 'student.idstatus', '=', 'kelas.idkelas')
             ->join('angkatan', 'student.idangkatan', '=', 'angkatan.idangkatan')
-            ->where('student_record.id_kurperiode', $id)
+            ->whereIn('student_record.id_kurperiode', $ids)
             ->where('student_record.status', 'TAKEN')
-            ->select('student.nim', 'student.nama', 'prodi.prodi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.status', 'student_record.id_studentrecord')
+            ->select('student.nim', 'student.nama', 'prodi.prodi', 'prodi.konsentrasi', 'kelas.kelas', 'angkatan.angkatan', 'student_record.status', 'student_record.id_studentrecord')
+            ->orderBy('student.nim', 'ASC')
             ->get();
 
         return view('sadmin/master_krs/cek_krs_mhs', compact('data'));
@@ -1369,42 +1481,37 @@ class SadminController extends Controller
 
     public function export_krs_mhs(Request $request)
     {
+        $tp_active = Periode_tipe::where('status', 'ACTIVE')->first();
+        $thn_active = Periode_tahun::where('status', 'ACTIVE')->first();
+
         $prd = $request->id_prodi;
-        $ta = $request->id_periodetahun;
-        $tp = $request->id_periodetipe;
+        $ta = $request->id_periodetahun ?: ($thn_active ? $thn_active->id_periodetahun : null);
+        $tp = $request->id_periodetipe ?: ($tp_active ? $tp_active->id_periodetipe : null);
 
-        $prodi = Prodi::where('id_prodi', $prd)
-            ->select('prodi', 'kodeprodi')
-            ->first();
-
-        $pro = $prodi->prodi;
-        $kd = $prodi->kodeprodi;
+        $pro = 'Semua Prodi';
+        $kd = null;
+        if (!empty($prd) && $prd !== 'all') {
+            $prodi = Prodi::where('id_prodi', $prd)
+                ->select('prodi', 'kodeprodi')
+                ->first();
+            if ($prodi) {
+                $pro = $prodi->prodi;
+                $kd = $prodi->kodeprodi;
+            }
+        }
 
         $tahun = Periode_tahun::where('id_periodetahun', $ta)
             ->select('periode_tahun')
             ->first();
-        $thn = $tahun->periode_tahun;
+        $thn = $tahun ? $tahun->periode_tahun : 'TA';
         $ganti = str_replace('/', '_', $thn);
 
         $tipe = Periode_tipe::where('id_periodetipe', $tp)
             ->select('periode_tipe')
             ->first();
-        $tpe = $tipe->periode_tipe;
+        $tpe = $tipe ? $tipe->periode_tipe : 'Semester';
 
-        $nilai = Student_record::join('student', 'student_record.id_student', '=', 'student.idstudent')
-            ->join('kurikulum_periode', 'student_record.id_kurperiode', '=', 'kurikulum_periode.id_kurperiode')
-            ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
-            ->join('periode_tahun', 'kurikulum_periode.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
-            ->join('periode_tipe', 'kurikulum_periode.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
-            ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
-            ->join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
-            ->where('kurikulum_periode.id_periodetahun', $request->id_periodetahun)
-            ->where('kurikulum_periode.id_periodetipe', $request->id_periodetipe)
-            ->where('kurikulum_periode.id_prodi', $request->id_prodi)
-            ->select('prodi.prodi', 'kelas.kelas', 'student.nim', 'student.nama', 'matakuliah.kode', 'matakuliah.makul', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)) as akt_sks'), 'student_record.nilai_AKHIR', 'student_record.nilai_ANGKA', DB::raw('((matakuliah.akt_sks_teori+matakuliah.akt_sks_praktek)*student_record.nilai_ANGKA) as akt_sks_hasil'))
-            ->get();
-
-        $nama_file = 'KRS Mahasiswa' . ' ' . $pro . ' ' . $ganti . ' ' . $tpe . '.xlsx';
+        $nama_file = 'KRS Mahasiswa ' . $pro . ' ' . $ganti . ' ' . $tpe . '.xlsx';
         return Excel::download(new DataKRSMhsExport($prd, $ta, $tp, $kd), $nama_file);
     }
 
