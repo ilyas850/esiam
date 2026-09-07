@@ -48,8 +48,20 @@ class Kurikulum_periode extends Model
   {
     return $this->belongsTo(Prodi::class, 'id_prodi', 'id_prodi');
   }
+  public function hari()
+  {
+    return $this->belongsTo(Kurikulum_hari::class, 'id_hari', 'id_hari');
+  }
+  public function jam()
+  {
+    return $this->belongsTo(Kurikulum_jam::class, 'id_jam', 'id_jam');
+  }
+  public function ruangan()
+  {
+    return $this->belongsTo(Ruangan::class, 'id_ruangan', 'id_ruangan');
+  }
   public function baps()
-    {
-        return $this->hasMany(Bap::class, 'id_kurperiode', 'id_kurperiode');
-    }
+  {
+    return $this->hasMany(Bap::class, 'id_kurperiode', 'id_kurperiode');
+  }
 }
