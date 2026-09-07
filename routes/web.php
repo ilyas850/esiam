@@ -508,6 +508,8 @@ Route::group(['middleware' => 'sadmin'], function () {
     // KRS Manual
     Route::get('krs-manual', 'KrsController@krs_manual');
     Route::get('krs-manual/create/{id}', 'KrsController@createKrsManual');
+    Route::get('krs-manual/detail/{id}', 'KrsController@detailKrsManual');
+    Route::get('lihat-krs/{id}', 'KrsController@detailKrsManual');
     Route::post('save-krs-manual', 'KrsController@saveKrsManual');
     Route::get('krs-manual-cancel/{id}', 'KrsController@cancelKrsManual');
 

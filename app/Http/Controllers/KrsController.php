@@ -30,6 +30,8 @@ use App\Models\Beasiswa;
 use App\Models\Biaya;
 use App\Models\Itembayar;
 use App\Models\Kuitansi;
+use App\Models\Kelas;
+use App\Models\Angkatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -540,9 +542,20 @@ class KrsController extends Controller
   public function batalkrs(Request $request)
   {
     $id = $request->id_studentrecord;
-    $cek = Student_record::find($id);
-    $cek->status = $request->status;
-    $cek->save();
+    $student_id = Auth::user()->id_user;
+
+    // Temukan record KRS dan pastikan record tersebut milik user yang sedang login
+    $record = Student_record::where('id_studentrecord', $id)
+      ->where('id_student', $student_id)
+      ->first();
+
+    // Jika record tidak ditemukan atau bukan milik user, tolak aksi
+    if (!$record) {
+      Alert::error('Gagal', 'Mata kuliah tidak ditemukan atau Anda tidak berhak mengubahnya.');
+      return redirect('krs');
+    }
+    $record->status = 'CANCELLED'; // Sebaiknya gunakan status yang jelas, bukan dari request
+    $record->save();
 
     Alert::success('', 'Matakuliah berhasil dihapus')->autoclose(3500);
     return redirect('krs');
@@ -634,34 +647,36 @@ class KrsController extends Controller
 
   public function krs_manual(Request $request)
   {
+    $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
+
     if ($request->ajax()) {
       $query = Student::with([
-        'student_records' => function ($q) {
+        'student_records' => function ($q) use ($tahunActive, $tipeActive) {
           $q->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
-            ->where('status', 'TAKEN')
-            ->with([
-              'kurperiode' => function ($q) {
-                $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
-                  ->with([
-                    'tahun' => function ($q) {
-                      $q->select('id_periodetahun', 'periode_tahun', 'status')->where('status', 'ACTIVE');
-                    },
-                    'tipe' => function ($q) {
-                      $q->select('id_periodetipe', 'periode_tipe', 'status')->where('status', 'ACTIVE');
-                    },
-                    'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
-                  ])
-                  ->where('status', 'ACTIVE');
-              }
-            ]);
+            ->where('status', 'TAKEN');
+          if ($tahunActive && $tipeActive) {
+            $q->whereHas('kurperiode', function ($kp) use ($tahunActive, $tipeActive) {
+              $kp->where('id_periodetahun', $tahunActive->id_periodetahun)
+                ->where('id_periodetipe', $tipeActive->id_periodetipe);
+            });
+          }
+          $q->with([
+            'kurperiode' => function ($kp2) {
+              $kp2->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul')
+                ->with([
+                  'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+                ]);
+            }
+          ]);
         },
         'kelas:idkelas,kelas',
         'angkatan:idangkatan,angkatan',
         'dosenPembimbing' => function ($q) {
           $q->select('id', 'id_dosen', 'id_student', 'status')
             ->with([
-              'dosen' => function ($q) {
-                $q->select('iddosen', 'nama', 'akademik');
+              'dosen' => function ($q2) {
+                $q2->select('iddosen', 'nama', 'akademik');
               }
             ]);
         }
@@ -684,6 +699,47 @@ class KrsController extends Controller
         )
         ->whereIn('student.active', [1, 5]);
 
+      // Filter by Program Studi
+      if ($request->filled('filter_prodi')) {
+        $query->where('student.kodeprodi', $request->filter_prodi);
+      }
+
+      // Filter by Kelas
+      if ($request->filled('filter_kelas')) {
+        $query->where('student.idstatus', $request->filter_kelas);
+      }
+
+      // Filter by Angkatan
+      if ($request->filled('filter_angkatan')) {
+        $query->where('student.idangkatan', $request->filter_angkatan);
+      }
+
+      // Filter by Status KRS
+      if ($request->filled('filter_status_krs')) {
+        if ($request->filter_status_krs == 'sudah') {
+          $query->whereHas('student_records', function ($q) use ($tahunActive, $tipeActive) {
+            $q->where('status', 'TAKEN');
+            if ($tahunActive && $tipeActive) {
+              $q->whereHas('kurperiode', function ($kp) use ($tahunActive, $tipeActive) {
+                $kp->where('id_periodetahun', $tahunActive->id_periodetahun)
+                  ->where('id_periodetipe', $tipeActive->id_periodetipe);
+              });
+            }
+          });
+        } elseif ($request->filter_status_krs == 'belum') {
+          $query->whereDoesntHave('student_records', function ($q) use ($tahunActive, $tipeActive) {
+            $q->where('status', 'TAKEN');
+            if ($tahunActive && $tipeActive) {
+              $q->whereHas('kurperiode', function ($kp) use ($tahunActive, $tipeActive) {
+                $kp->where('id_periodetahun', $tahunActive->id_periodetahun)
+                  ->where('id_periodetipe', $tipeActive->id_periodetipe);
+              });
+            }
+          });
+        }
+      }
+
+      // Search keyword
       if ($search = $request->input('search.value')) {
         $query->where(function ($q) use ($search) {
           $q->where('student.nim', 'like', "%{$search}%")
@@ -695,15 +751,17 @@ class KrsController extends Controller
         });
       }
 
+      $recordsFiltered = $query->count();
       $itemPerPage = $request->input('length', 10);
       $start = $request->input('start', 0);
       $order = $request->input('order.0.column');
-      $dir = $request->input('order.0.dir');
+      $dir = $request->input('order.0.dir', 'desc');
 
       $columns = [
-        1 => 'student.nim', // Index matches column index in JS
+        1 => 'student.nim',
         2 => 'prodi.prodi',
-        // Add other sortable columns mapping here
+        3 => 'student.idstatus',
+        4 => 'student.idangkatan',
       ];
 
       if (isset($columns[$order])) {
@@ -713,36 +771,40 @@ class KrsController extends Controller
           ->orderBy('student.nim', 'DESC');
       }
 
-      $recordsFiltered = $query->count();
-      // Pagination
       $data = $query->skip($start)->take($itemPerPage)->get();
       $recordsTotal = Student::whereIn('active', [1, 5])->count();
 
       $formattedData = [];
       $no = $start + 1;
       foreach ($data as $item) {
-        // SKS Calculation
         $totalSKS = 0;
+        $totalMakul = 0;
         if (isset($item->student_records)) {
           foreach ($item->student_records as $record) {
-            // Ensure we check if relation is loaded and not null
             if ($record->status == 'TAKEN' && $record->kurperiode && $record->kurperiode->makul) {
               $makul = $record->kurperiode->makul;
               $totalSKS += ($makul->akt_sks_teori ?? 0) + ($makul->akt_sks_praktek ?? 0);
+              $totalMakul++;
             }
           }
         }
 
+        $sksBadge = $totalSKS > 0
+          ? '<span class="badge bg-green" style="font-size: 11px; padding: 4px 8px;"><i class="fa fa-check-circle"></i> ' . $totalSKS . ' SKS (' . $totalMakul . ' MK)</span>'
+          : '<span class="badge bg-red" style="font-size: 11px; padding: 4px 8px;"><i class="fa fa-exclamation-circle"></i> 0 SKS</span>';
+
         $formattedData[] = [
           'no' => $no++,
-          'nim_nama' => $item->nim . ' - ' . $item->nama,
-          'prodi' => $item->prodi,
-          'kelas' => optional($item->kelas)->kelas ?? '-',
-          'angkatan' => (optional($item->angkatan)->angkatan ?? '-') . ' - ' . ($item->intake == '1' ? 'Ganjil' : 'Genap'),
-          'dosen_pembimbing' => optional(optional($item->dosenPembimbing)->dosen)->nama ?? '-',
-          'jml_sks' => $totalSKS . ' SKS',
-          'aksi' => '<a href="' . url('/lihat-krs/' . $item->idstudent) . '" class="btn btn-success btn-xs" title="Lihat KRS"><i class="fa fa-eye"></i></a> ' .
-            '<a href="' . url('/krs-manual/create/' . $item->idstudent) . '" class="btn btn-info btn-xs" title="Tambah KRS"><i class="fa fa-plus"></i></a>'
+          'nim_nama' => '<strong>' . e($item->nim) . '</strong><br><span style="color: #333;">' . e($item->nama) . '</span>',
+          'prodi' => '<strong>' . e($item->prodi) . '</strong>' . ($item->konsentrasi && $item->konsentrasi != '-' ? '<br><small class="text-muted"><i class="fa fa-tag"></i> ' . e($item->konsentrasi) . '</small>' : ''),
+          'kelas' => '<span class="label label-info" style="font-size: 11px;">' . e(optional($item->kelas)->kelas ?? '-') . '</span>',
+          'angkatan' => '<span class="label label-default" style="font-size: 11px;">' . e(optional($item->angkatan)->angkatan ?? '-') . '</span> <br><small class="text-muted">' . ($item->intake == '1' ? 'Ganjil' : 'Genap') . '</small>',
+          'dosen_pembimbing' => optional(optional($item->dosenPembimbing)->dosen)->nama ? ('<i class="fa fa-user-circle text-muted"></i> ' . e($item->dosenPembimbing->dosen->nama)) : '<span class="text-muted">-</span>',
+          'jml_sks' => $sksBadge,
+          'aksi' => '<div class="btn-group" role="group">' .
+            '<a href="' . url('/krs-manual/detail/' . $item->idstudent) . '" class="btn btn-info btn-xs btn-flat" title="Lihat Detail KRS"><i class="fa fa-eye"></i> Detail</a> ' .
+            '<a href="' . url('/krs-manual/create/' . $item->idstudent) . '" class="btn btn-primary btn-xs btn-flat" title="Kelola / Tambah KRS"><i class="fa fa-pencil"></i> Kelola</a>' .
+            '</div>'
         ];
       }
 
@@ -754,90 +816,217 @@ class KrsController extends Controller
       ]);
     }
 
-    return view('sadmin.krs.krs-manual');
+    // Hitung statistik untuk info-boxes
+    $totalMahasiswaAktif = Student::whereIn('active', [1, 5])->count();
+    $sudahKrsCount = Student::whereIn('active', [1, 5])
+      ->whereHas('student_records', function ($q) use ($tahunActive, $tipeActive) {
+        $q->where('status', 'TAKEN');
+        if ($tahunActive && $tipeActive) {
+          $q->whereHas('kurperiode', function ($kp) use ($tahunActive, $tipeActive) {
+            $kp->where('id_periodetahun', $tahunActive->id_periodetahun)
+              ->where('id_periodetipe', $tipeActive->id_periodetipe);
+          });
+        }
+      })->count();
+    $belumKrsCount = max(0, $totalMahasiswaAktif - $sudahKrsCount);
+
+    // List master untuk filter dropdown
+    $listProdi = Prodi::select('kodeprodi', DB::raw('MAX(prodi) as prodi'))->groupBy('kodeprodi')->orderBy('prodi', 'ASC')->get();
+    $listKelas = Kelas::orderBy('kelas', 'ASC')->get();
+    $listAngkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+
+    return view('sadmin.krs.krs-manual', compact(
+      'tahunActive',
+      'tipeActive',
+      'totalMahasiswaAktif',
+      'sudahKrsCount',
+      'belumKrsCount',
+      'listProdi',
+      'listKelas',
+      'listAngkatan'
+    ));
   }
 
-  public function createKrsManual($id)
+  public function detailKrsManual($id)
   {
-    $dataMhs = Student::with(([
-      // 'prodi:id_prodi,prodi,kodeprodi,konsentrasi,kodekonsentrasi',
+    $dataMhs = Student::with([
       'angkatan:idangkatan,angkatan',
-      'kelas:idkelas,kelas'
-    ]))
+      'kelas:idkelas,kelas',
+      'dosenPembimbing' => function ($q) {
+        $q->select('id', 'id_dosen', 'id_student', 'status')
+          ->with([
+            'dosen' => function ($q2) {
+              $q2->select('iddosen', 'nama', 'akademik');
+            }
+          ]);
+      }
+    ])
       ->join('prodi', function ($join) {
         $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
           ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
       })
-      ->select('idstudent', 'idangkatan', 'idstatus', 'nim', 'nama', 'student.kodeprodi', 'student.kodekonsentrasi', 'intake', 'prodi.id_prodi', 'prodi.prodi', 'prodi.konsentrasi')
-      ->where('idstudent', $id)
-      ->first();
-    // dd($dataMhs->toArray());
+      ->select(
+        'student.idstudent',
+        'student.idangkatan',
+        'student.idstatus',
+        'student.nim',
+        'student.nama',
+        'student.kodeprodi',
+        'student.kodekonsentrasi',
+        'student.intake',
+        'student.active',
+        'prodi.id_prodi',
+        'prodi.prodi',
+        'prodi.konsentrasi'
+      )
+      ->where('student.idstudent', $id)
+      ->firstOrFail();
+
+    $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
+    $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
+
+    $dataKrsMhs = Student_record::where('id_student', $id)
+      ->where('status', 'TAKEN')
+      ->whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
+        if ($tahunActive && $tipeActive) {
+          $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+            ->where('id_periodetipe', $tipeActive->id_periodetipe);
+        }
+      })
+      ->with([
+        'kurperiode' => function ($q) {
+          $q->with([
+            'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
+            'dosen:iddosen,nama,akademik',
+            'semester:idsemester,semester',
+            'kelas:idkelas,kelas',
+            'hari:id_hari,hari',
+            'jam:id_jam,jam',
+            'ruangan:id_ruangan,nama_ruangan'
+          ]);
+        }
+      ])
+      ->get();
+
+    $totalSksTeori = 0;
+    $totalSksPraktek = 0;
+    $totalSks = 0;
+
+    foreach ($dataKrsMhs as $krs) {
+      if ($krs->kurperiode && $krs->kurperiode->makul) {
+        $sksT = (int) ($krs->kurperiode->makul->akt_sks_teori ?? 0);
+        $sksP = (int) ($krs->kurperiode->makul->akt_sks_praktek ?? 0);
+        $totalSksTeori += $sksT;
+        $totalSksPraktek += $sksP;
+        $totalSks += ($sksT + $sksP);
+      }
+    }
+
+    return view('sadmin.krs.krs-manual-detail', compact(
+      'dataMhs',
+      'tahunActive',
+      'tipeActive',
+      'dataKrsMhs',
+      'totalSksTeori',
+      'totalSksPraktek',
+      'totalSks'
+    ));
+  }
+
+  public function createKrsManual($id)
+  {
+    $dataMhs = Student::with([
+      'angkatan:idangkatan,angkatan',
+      'kelas:idkelas,kelas'
+    ])
+      ->join('prodi', function ($join) {
+        $join->on('student.kodeprodi', '=', 'prodi.kodeprodi')
+          ->on('student.kodekonsentrasi', '=', 'prodi.kodekonsentrasi');
+      })
+      ->select(
+        'student.idstudent',
+        'student.idangkatan',
+        'student.idstatus',
+        'student.nim',
+        'student.nama',
+        'student.kodeprodi',
+        'student.kodekonsentrasi',
+        'student.intake',
+        'prodi.id_prodi',
+        'prodi.prodi',
+        'prodi.konsentrasi'
+      )
+      ->where('student.idstudent', $id)
+      ->firstOrFail();
+
     $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
     $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
     $kurikulumMhs = Kurikulum_master::where('remark', $dataMhs->intake)->first();
 
-    $dataKrsMhs = Student_record::whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
-      $q->where('id_periodetahun', $tahunActive->id_periodetahun)
-        ->where('id_periodetipe', $tipeActive->id_periodetipe);
-    })
+    $dataKrsMhs = Student_record::where('id_student', $id)
+      ->where('status', 'TAKEN')
+      ->whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
+        if ($tahunActive && $tipeActive) {
+          $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+            ->where('id_periodetipe', $tipeActive->id_periodetipe);
+        }
+      })
       ->with([
         'kurperiode' => function ($q) use ($tahunActive, $tipeActive) {
-          $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul', 'id_dosen')
+          $q->select('id_kurperiode', 'id_periodetahun', 'id_periodetipe', 'id_makul', 'id_dosen', 'id_semester', 'id_kelas')
             ->with([
               'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek',
-              'tahun' => function ($q) {
-                $q->select('id_periodetahun', 'periode_tahun', 'status');
-              },
-              'tipe' => function ($q) {
-                $q->select('id_periodetipe', 'periode_tipe', 'status');
-              },
-              'dosen' => function ($q) {
-                $q->select('iddosen', 'nama', 'akademik');
-              }
-            ])
-            ->where('id_periodetahun', $tahunActive->id_periodetahun)
-            ->where('id_periodetipe', $tipeActive->id_periodetipe);
+              'tahun:id_periodetahun,periode_tahun,status',
+              'tipe:id_periodetipe,periode_tipe,status',
+              'dosen:iddosen,nama,akademik'
+            ]);
         }
       ])
       ->select('id_studentrecord', 'tanggal_krs', 'id_student', 'id_kurperiode', 'id_kurtrans', 'status', 'remark')
-      ->where('id_student', $id)
-      ->where('status', 'TAKEN')
       ->get();
 
-    // $dataKrs = Kurikulum_periode::whereHas('kurtrans', function ($q) use ($kurikulumMhs, $dataMhs) {
-    // $q->where('id_kurikulum', $kurikulumMhs->id_kurikulum);
-    // ->where('id_prodi', $dataMhs->id_prodi);
-    // ->where('id_angkatan', $dataMhs->angkatan->idangkatan);
-    // ->where('status', 'ACTIVE');
-    // })
-    // Variabel-variabel yang sudah Anda miliki
-// $kurikulumMhs, $dataMhs, $tahunActive, $tipeActive
+    // Hitung total SKS yang saat ini sudah diambil
+    $totalSksDiambil = 0;
+    foreach ($dataKrsMhs as $krs) {
+      if ($krs->kurperiode && $krs->kurperiode->makul) {
+        $totalSksDiambil += ($krs->kurperiode->makul->akt_sks_teori ?? 0) + ($krs->kurperiode->makul->akt_sks_praktek ?? 0);
+      }
+    }
 
-    // === LANGKAH 1: Ambil data dasar Kurikulum Periode ===
-    // Variabel-variabel yang sudah Anda miliki
-// $kurikulumMhs, $dataMhs, $tahunActive, $tipeActive
+    // Filter katalog kelas & semester
+    $kelasList = Kelas::orderBy('kelas', 'ASC')->get();
+    $semesterList = Semester::orderBy('idsemester', 'ASC')->get();
+    $selectedKelas = request()->get('filter_kelas', optional($dataMhs->kelas)->idkelas);
+    $selectedSemester = request()->get('filter_semester', '');
 
-    // === LANGKAH 1: Ambil data dasar Kurikulum Periode (Tidak ada perubahan) ===
-    $dataKrsCollection = Kurikulum_periode::with([
+    $dataKrsQuery = Kurikulum_periode::with([
       'tahun:id_periodetahun,periode_tahun',
       'tipe:id_periodetipe,periode_tipe',
       'makul:idmakul,kode,makul,akt_sks_teori,akt_sks_praktek,active',
-      'dosen:iddosen,nama',
+      'dosen:iddosen,nama,akademik',
       'semester:idsemester,semester',
-      'kelas:idkelas,kelas'
+      'kelas:idkelas,kelas',
+      'hari:id_hari,hari',
+      'jam:id_jam,jam',
+      'ruangan:id_ruangan,nama_ruangan'
     ])
       ->where('id_periodetahun', $tahunActive->id_periodetahun)
       ->where('id_periodetipe', $tipeActive->id_periodetipe)
       ->where('id_prodi', $dataMhs->id_prodi)
-      ->where('id_kelas', $dataMhs->kelas->idkelas)
-      ->where('status', 'ACTIVE')
-      ->orderBy('id_semester', 'ASC')
+      ->where('status', 'ACTIVE');
+
+    if ($selectedKelas && $selectedKelas != 'all') {
+      $dataKrsQuery->where('id_kelas', $selectedKelas);
+    }
+    if ($selectedSemester && $selectedSemester != 'all') {
+      $dataKrsQuery->where('id_semester', $selectedSemester);
+    }
+
+    $dataKrsCollection = $dataKrsQuery->orderBy('id_semester', 'ASC')
       ->orderBy('id_makul', 'ASC')
       ->get();
 
-    if ($dataKrsCollection->isNotEmpty()) {
-
-      // --- LANGKAH 2: Kumpulkan ID dan ambil semua data relasi ---
+    if ($dataKrsCollection->isNotEmpty() && $kurikulumMhs) {
       $periodeMakulIds = $dataKrsCollection->pluck('id_makul');
 
       $bomMap = Matakuliah_bom::whereIn('slave_idmakul', $periodeMakulIds)
@@ -850,19 +1039,14 @@ class KrsController extends Controller
       $kurtransactions = Kurikulum_transaction::whereIn('id_makul', $allPossibleMakulIds)
         ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
         ->where('id_prodi', $dataMhs->id_prodi)
-        ->where('id_angkatan', $dataMhs->angkatan->idangkatan)
         ->where('status', 'ACTIVE')
-        ->where('pelaksanaan_paket', 'OPEN')
         ->get()
         ->keyBy('id_makul');
 
-      // --- LANGKAH 3: Pasangkan data kurtrans ke setiap item KRS secara manual ---
       $dataKrsCollection->each(function ($item) use ($kurtransactions, $bomMap) {
-        $item->kurtrans = null; // Set default
-        // Cari direct match
+        $item->kurtrans = null;
         if (isset($kurtransactions[$item->id_makul])) {
           $item->kurtrans = $kurtransactions[$item->id_makul];
-          // Jika tidak ada, cari via BOM
         } else if (isset($bomMap[$item->id_makul])) {
           $masterId = $bomMap[$item->id_makul]->master_idmakul;
           if (isset($kurtransactions[$masterId])) {
@@ -872,18 +1056,7 @@ class KrsController extends Controller
       });
     }
 
-    // --- LANGKAH 4: BUAT PAGINATOR SECARA MANUAL DARI KOLEKSI YANG SUDAH JADI ---
-    $perPage = 25; // Tentukan jumlah item per halaman
-    $currentPage = request()->get('page', 1);
-    $currentPageItems = $dataKrsCollection->slice(($currentPage - 1) * $perPage, $perPage);
-
-    $dataKrs = new LengthAwarePaginator(
-      $currentPageItems,
-      $dataKrsCollection->count(),
-      $perPage,
-      $currentPage,
-      ['path' => request()->url(), 'query' => request()->query()]
-    );
+    $dataKrs = $dataKrsCollection;
 
     return view('sadmin.krs.krs-manual-create', compact(
       'id',
@@ -891,63 +1064,172 @@ class KrsController extends Controller
       'dataKrsMhs',
       'dataKrs',
       'tahunActive',
-      'tipeActive'
+      'tipeActive',
+      'totalSksDiambil',
+      'kelasList',
+      'semesterList',
+      'selectedKelas',
+      'selectedSemester'
     ));
   }
 
   public function saveKrsManual(Request $request)
   {
+    $request->validate([
+      'id_student' => 'required',
+      'id_kurperiode' => 'required',
+    ]);
+
     try {
-      $cekKrs = Student_record::where('id_student', $request->id_student)
-        ->where('id_kurperiode', $request->id_kurperiode)
-        ->where('id_kurtrans', $request->id_kurtrans)
+      $idStudent = $request->id_student;
+      $idKurperiode = $request->id_kurperiode;
+      $idKurtrans = $request->id_kurtrans;
+
+      $kurperiode = Kurikulum_periode::with(['makul', 'dosen'])->find($idKurperiode);
+      if (!$kurperiode) {
+        return response()->json(['success' => false, 'message' => 'Mata kuliah periode tidak ditemukan.'], 404);
+      }
+
+      $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
+      $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
+
+      // Cek apakah mahasiswa sudah mengambil mata kuliah ini pada semester aktif
+      $cekDuplicate = Student_record::where('id_student', $idStudent)
         ->where('status', 'TAKEN')
+        ->whereHas('kurperiode', function ($q) use ($kurperiode, $tahunActive, $tipeActive) {
+          $q->where('id_makul', $kurperiode->id_makul);
+          if ($tahunActive && $tipeActive) {
+            $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+              ->where('id_periodetipe', $tipeActive->id_periodetipe);
+          }
+        })
         ->first();
 
-      if (empty($cekKrs)) {
-        // Simpan KRS baru
-        $krs = new Student_record;
-        $krs->id_student = $request->id_student;
-        $krs->id_kurperiode = $request->id_kurperiode;
-        $krs->id_kurtrans = $request->id_kurtrans;
-        $krs->status = 'TAKEN';
-        $krs->save();
-
-        // Mengambil data untuk respons JSON
-        $kurperiode = $krs->kurperiode;
-        $makul = $kurperiode->makul;
-        $dosen = $kurperiode->dosen;
-
-        // Kembalikan respons sukses dalam format JSON dengan data tambahan
+      if ($cekDuplicate) {
         return response()->json([
-          'success' => true,
-          'message' => 'Matakuliah berhasil ditambahkan.',
-          'id_studentrecord' => $krs->id_studentrecord,
-          'kode_makul' => $makul->kode,
-          'nama_makul' => $makul->makul,
-          'sks' => $makul->akt_sks_teori + $makul->akt_sks_praktek,
-          'nama_dosen' => $dosen ? $dosen->nama : '',
+          'success' => false,
+          'message' => 'Mata kuliah "' . ($kurperiode->makul->makul ?? '') . '" sudah diambil pada semester ini.'
         ]);
-      } else {
-        return response()->json(['success' => false, 'message' => 'Maaf, mata kuliah sudah dipilih.']);
       }
+
+      // Jika id_kurtrans kosong, cari kurtrans yang cocok
+      if (empty($idKurtrans)) {
+        $student = Student::find($idStudent);
+        if ($student) {
+          $kurikulumMhs = Kurikulum_master::where('remark', $student->intake)->first();
+          if ($kurikulumMhs) {
+            $kt = Kurikulum_transaction::where('id_makul', $kurperiode->id_makul)
+              ->where('id_kurikulum', $kurikulumMhs->id_kurikulum)
+              ->where('status', 'ACTIVE')
+              ->first();
+            if ($kt) {
+              $idKurtrans = $kt->idkurtrans;
+            }
+          }
+        }
+      }
+
+      // Simpan Student Record baru
+      $krs = new Student_record;
+      $krs->id_student = $idStudent;
+      $krs->id_kurperiode = $idKurperiode;
+      $krs->id_kurtrans = $idKurtrans ?? 0;
+      $krs->tanggal_krs = date('Y-m-d');
+      $krs->status = 'TAKEN';
+      $krs->remark = 0;
+      $krs->data_origin = 'eSIAM-Manual';
+      $krs->save();
+
+      // Hitung total SKS terkini mahasiswa di periode aktif
+      $currentRecords = Student_record::where('id_student', $idStudent)
+        ->where('status', 'TAKEN')
+        ->whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
+          if ($tahunActive && $tipeActive) {
+            $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+              ->where('id_periodetipe', $tipeActive->id_periodetipe);
+          }
+        })
+        ->with('kurperiode.makul')
+        ->get();
+
+      $totalSksNow = 0;
+      foreach ($currentRecords as $rec) {
+        if ($rec->kurperiode && $rec->kurperiode->makul) {
+          $totalSksNow += ($rec->kurperiode->makul->akt_sks_teori ?? 0) + ($rec->kurperiode->makul->akt_sks_praktek ?? 0);
+        }
+      }
+
+      $makul = $kurperiode->makul;
+      $dosen = $kurperiode->dosen;
+      $sksItem = ($makul->akt_sks_teori ?? 0) + ($makul->akt_sks_praktek ?? 0);
+
+      return response()->json([
+        'success' => true,
+        'message' => 'Mata kuliah ' . ($makul->makul ?? '') . ' berhasil ditambahkan.',
+        'id_studentrecord' => $krs->id_studentrecord,
+        'id_kurperiode' => $idKurperiode,
+        'kode_makul' => $makul->kode ?? '',
+        'nama_makul' => $makul->makul ?? '',
+        'sks' => $sksItem,
+        'nama_dosen' => $dosen ? $dosen->nama : '-',
+        'remark' => 'belum',
+        'total_sks_now' => $totalSksNow,
+        'total_makul_now' => $currentRecords->count()
+      ]);
     } catch (\Throwable $e) {
-      return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menyimpan data.'], 500);
+      return response()->json([
+        'success' => false,
+        'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+      ], 500);
     }
   }
 
   public function cancelKrsManual($id)
   {
     try {
-      // Logika pembatalan KRS di sini
-      Student_record::where('id_studentrecord', $id)
-        ->update([
-          'status' => 'DROPPED'
-        ]);
+      $record = Student_record::with('kurperiode.makul')->find($id);
+      if (!$record) {
+        return response()->json(['success' => false, 'message' => 'Data KRS tidak ditemukan.'], 404);
+      }
 
-      return response()->json(['success' => true]);
+      $idStudent = $record->id_student;
+      $idKurperiode = $record->id_kurperiode;
+      $makulName = optional(optional($record->kurperiode)->makul)->makul ?? 'Mata kuliah';
+
+      $record->status = 'DROPPED';
+      $record->save();
+
+      $tahunActive = Periode_tahun::where('status', 'ACTIVE')->first();
+      $tipeActive = Periode_tipe::where('status', 'ACTIVE')->first();
+
+      $currentRecords = Student_record::where('id_student', $idStudent)
+        ->where('status', 'TAKEN')
+        ->whereHas('kurperiode', function ($q) use ($tahunActive, $tipeActive) {
+          if ($tahunActive && $tipeActive) {
+            $q->where('id_periodetahun', $tahunActive->id_periodetahun)
+              ->where('id_periodetipe', $tipeActive->id_periodetipe);
+          }
+        })
+        ->with('kurperiode.makul')
+        ->get();
+
+      $totalSksNow = 0;
+      foreach ($currentRecords as $rec) {
+        if ($rec->kurperiode && $rec->kurperiode->makul) {
+          $totalSksNow += ($rec->kurperiode->makul->akt_sks_teori ?? 0) + ($rec->kurperiode->makul->akt_sks_praktek ?? 0);
+        }
+      }
+
+      return response()->json([
+        'success' => true,
+        'message' => $makulName . ' berhasil dibatalkan dari KRS.',
+        'id_studentrecord' => $id,
+        'id_kurperiode' => $idKurperiode,
+        'total_sks_now' => $totalSksNow,
+        'total_makul_now' => $currentRecords->count()
+      ]);
     } catch (\Exception $e) {
-      return response()->json(['error' => 'Gagal membatalkan KRS.'], 500);
+      return response()->json(['success' => false, 'message' => 'Gagal membatalkan KRS: ' . $e->getMessage()], 500);
     }
   }
 }
