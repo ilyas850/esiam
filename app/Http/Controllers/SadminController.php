@@ -5493,9 +5493,129 @@ class SadminController extends Controller
 
     public function summary_krs()
     {
-        $data = DB::select('CALL summary_krs()');
+        $rawQuery = DB::table('periode_tahun as pt')
+            ->leftJoin('kurikulum_periode as kp', function ($join) {
+                $join->on('kp.id_periodetahun', '=', 'pt.id_periodetahun')
+                    ->where('kp.status', '=', 'ACTIVE');
+            })
+            ->leftJoin('student_record as sr', function ($join) {
+                $join->on('sr.id_kurperiode', '=', 'kp.id_kurperiode')
+                    ->where('sr.status', '=', 'TAKEN');
+            })
+            ->leftJoin('student as s', 's.idstudent', '=', 'sr.id_student')
+            ->where('pt.periode_tahun', '>', 'T.A.2017/2018')
+            ->select(
+                'pt.id_periodetahun',
+                'pt.periode_tahun',
+                // Ganjil (id_periodetipe = 1)
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 1 AND s.kodeprodi IN ('22', '25') THEN sr.id_student END) as tk_gnj"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 1 AND s.kodeprodi = '23' THEN sr.id_student END) as ti_gnj"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 1 AND (s.kodeprodi = '24' OR kp.id_prodi = 3) THEN sr.id_student END) as fa_gnj"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 1 AND s.kodeprodi = '26' THEN sr.id_student END) as trl_gnj"),
+                // Genap (id_periodetipe = 2)
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 2 AND s.kodeprodi IN ('22', '25') THEN sr.id_student END) as tk_gnp"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 2 AND s.kodeprodi = '23' THEN sr.id_student END) as ti_gnp"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 2 AND (s.kodeprodi = '24' OR kp.id_prodi = 3) THEN sr.id_student END) as fa_gnp"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 2 AND s.kodeprodi = '26' THEN sr.id_student END) as trl_gnp"),
+                // Pendek (id_periodetipe = 3)
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 3 AND s.kodeprodi IN ('22', '25') THEN sr.id_student END) as tk_pndk"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 3 AND s.kodeprodi = '23' THEN sr.id_student END) as ti_pndk"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 3 AND (s.kodeprodi = '24' OR kp.id_prodi = 3) THEN sr.id_student END) as fa_pndk"),
+                DB::raw("COUNT(DISTINCT CASE WHEN kp.id_periodetipe = 3 AND s.kodeprodi = '26' THEN sr.id_student END) as trl_pndk"),
+                // Total Unik per Prodi per Tahun
+                DB::raw("COUNT(DISTINCT CASE WHEN s.kodeprodi IN ('22', '25') THEN sr.id_student END) as total_tk_tahun"),
+                DB::raw("COUNT(DISTINCT CASE WHEN s.kodeprodi = '23' THEN sr.id_student END) as total_ti_tahun"),
+                DB::raw("COUNT(DISTINCT CASE WHEN s.kodeprodi = '24' OR kp.id_prodi = 3 THEN sr.id_student END) as total_fa_tahun"),
+                DB::raw("COUNT(DISTINCT CASE WHEN s.kodeprodi = '26' THEN sr.id_student END) as total_trl_tahun"),
+                // Total Unik Mahasiswa per Tahun
+                DB::raw("COUNT(DISTINCT sr.id_student) as total_mhs_unik")
+            )
+            ->groupBy('pt.id_periodetahun', 'pt.periode_tahun')
+            ->orderBy('pt.periode_tahun', 'asc')
+            ->get();
 
-        return view('sadmin/master_krs/data_rekap_krs', compact('data'));
+        $grandTotal = [
+            'tk_gnj' => 0, 'ti_gnj' => 0, 'fa_gnj' => 0, 'trl_gnj' => 0, 'jml_ganjil' => 0,
+            'tk_gnp' => 0, 'ti_gnp' => 0, 'fa_gnp' => 0, 'trl_gnp' => 0, 'jml_genap' => 0,
+            'tk_pndk' => 0, 'ti_pndk' => 0, 'fa_pndk' => 0, 'trl_pndk' => 0, 'jml_pendek' => 0,
+            'total_krs' => 0, 'total_mhs_unik' => 0,
+        ];
+
+        $chartData = [
+            'labels' => [],
+            'ganjil' => [],
+            'genap' => [],
+            'pendek' => [],
+            'trpl' => [],
+            'ti' => [],
+            'fa' => [],
+            'trl' => [],
+        ];
+
+        $data = $rawQuery->map(function ($item) use (&$grandTotal, &$chartData) {
+            $item->jml_ganjil = (int) $item->tk_gnj + (int) $item->ti_gnj + (int) $item->fa_gnj + (int) $item->trl_gnj;
+            $item->jml_genap = (int) $item->tk_gnp + (int) $item->ti_gnp + (int) $item->fa_gnp + (int) $item->trl_gnp;
+            $item->jml_pendek = (int) $item->tk_pndk + (int) $item->ti_pndk + (int) $item->fa_pndk + (int) $item->trl_pndk;
+            $item->total_krs = $item->jml_ganjil + $item->jml_genap + $item->jml_pendek;
+            $item->display_tahun = str_replace('T.A.', '', $item->periode_tahun);
+
+            // Accumulate Grand Total
+            $grandTotal['tk_gnj'] += (int) $item->tk_gnj;
+            $grandTotal['ti_gnj'] += (int) $item->ti_gnj;
+            $grandTotal['fa_gnj'] += (int) $item->fa_gnj;
+            $grandTotal['trl_gnj'] += (int) $item->trl_gnj;
+            $grandTotal['jml_ganjil'] += $item->jml_ganjil;
+
+            $grandTotal['tk_gnp'] += (int) $item->tk_gnp;
+            $grandTotal['ti_gnp'] += (int) $item->ti_gnp;
+            $grandTotal['fa_gnp'] += (int) $item->fa_gnp;
+            $grandTotal['trl_gnp'] += (int) $item->trl_gnp;
+            $grandTotal['jml_genap'] += $item->jml_genap;
+
+            $grandTotal['tk_pndk'] += (int) $item->tk_pndk;
+            $grandTotal['ti_pndk'] += (int) $item->ti_pndk;
+            $grandTotal['fa_pndk'] += (int) $item->fa_pndk;
+            $grandTotal['trl_pndk'] += (int) $item->trl_pndk;
+            $grandTotal['jml_pendek'] += $item->jml_pendek;
+
+            $grandTotal['total_krs'] += $item->total_krs;
+            $grandTotal['total_mhs_unik'] += (int) $item->total_mhs_unik;
+
+            // Chart Data collections
+            $chartData['labels'][] = $item->display_tahun;
+            $chartData['ganjil'][] = $item->jml_ganjil;
+            $chartData['genap'][] = $item->jml_genap;
+            $chartData['pendek'][] = $item->jml_pendek;
+
+            $chartData['trpl'][] = (int) $item->total_tk_tahun;
+            $chartData['ti'][] = (int) $item->total_ti_tahun;
+            $chartData['fa'][] = (int) $item->total_fa_tahun;
+            $chartData['trl'][] = (int) $item->total_trl_tahun;
+
+            return $item;
+        });
+
+        // Compute Latest Year Stats for Top KPI
+        $latest = $data->last();
+        $prev = $data->count() > 1 ? $data[$data->count() - 2] : null;
+        $growthPct = 0;
+        if ($prev && $prev->total_mhs_unik > 0 && $latest) {
+            $growthPct = round((($latest->total_mhs_unik - $prev->total_mhs_unik) / $prev->total_mhs_unik) * 100, 1);
+        }
+
+        $latestStats = [
+            'periode_tahun' => $latest ? $latest->periode_tahun : '-',
+            'display_tahun' => $latest ? $latest->display_tahun : '-',
+            'total_mhs_unik' => $latest ? (int) $latest->total_mhs_unik : 0,
+            'jml_ganjil' => $latest ? (int) $latest->jml_ganjil : 0,
+            'jml_genap' => $latest ? (int) $latest->jml_genap : 0,
+            'jml_pendek' => $latest ? (int) $latest->jml_pendek : 0,
+            'total_krs' => $latest ? (int) $latest->total_krs : 0,
+            'growth_pct' => $growthPct,
+            'prev_tahun' => $prev ? $prev->display_tahun : null,
+        ];
+
+        return view('sadmin/master_krs/data_rekap_krs', compact('data', 'grandTotal', 'latestStats', 'chartData'));
     }
 
     public function record_pembayaran_mahasiswa()
