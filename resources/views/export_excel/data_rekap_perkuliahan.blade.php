@@ -1,3 +1,7 @@
+{{-- 
+    [NEW] Template Export Excel Rekapitulasi Perkuliahan & BAP
+    Format laporan data tatap muka BAP dosen, realisasi sesi, dan persentase target perkuliahan.
+--}}
 <table>
     <thead>
         <tr>

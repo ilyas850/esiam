@@ -9,6 +9,10 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
+/**
+ * [NEW] Export Class Jadwal Perkuliahan
+ * Meng-export data jadwal perkuliahan terfilter ke spreadsheet Excel menggunakan template Blade FromView.
+ */
 class DataJadwalExport implements FromView, ShouldAutoSize
 {
     use Exportable;

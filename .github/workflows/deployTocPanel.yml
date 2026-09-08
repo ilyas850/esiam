@@ -1,22 +1,33 @@
+# Workflow Deployment Website ke cPanel via FTP
 name: Publish Website to CPanel
+
 on:
   push:
     branches:
       - main
+
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
-    - name: FTP-Deploy-Action
-      uses: samkirkland/ftp-deploy-action@4.0.0
-      with:
-        server: 103.233.102.29
-        username: politek1_esiam@politeknikmeta.ac.id
-        password: Esiam_mip123++
-        exclude: |
-         - public/adminlte/**
-         - public/.htaccess
+      # [UPDATE] Checkout repository dengan depth 2 agar aksi FTP dapat membandingkan commit diff saat merge PR
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # [UPDATE] FTP Deploy Action ke versi v4.3.5 (versi stabil terbaru dengan sinkronisasi handal)
+      - name: FTP Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 103.233.102.29
+          username: politek1_esiam@politeknikmeta.ac.id
+          password: ${{ secrets.FTP_PASSWORD || 'Esiam_mip123++' }}
+          exclude: |
+            - **/.git*
+            - **/.git*/**
+            - tests/**
+            - node_modules/**
+            - public/adminlte/**
+            - public/.htaccess

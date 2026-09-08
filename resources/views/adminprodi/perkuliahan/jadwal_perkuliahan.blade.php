@@ -1,3 +1,7 @@
+{{-- 
+    Halaman Jadwal Perkuliahan (Admin Program Studi)
+    Update UI/UX: AdminLTE Info-Box Summary, Grouping Multi-Konsentrasi, Scoping Prodi, Export Excel, & Print Layout.
+--}}
 @extends('layouts.master')
 
 @section('side')

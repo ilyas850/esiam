@@ -8,6 +8,10 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
+/**
+ * [NEW] Export Class Rekapitulasi Perkuliahan & BAP
+ * Meng-export rekapitulasi tatap muka BAP dosen dan kelas kuliah ke template Excel via Maatwebsite Excel FromView.
+ */
 class DataRekapPerkuliahanExport implements FromView, ShouldAutoSize
 {
     use Exportable;

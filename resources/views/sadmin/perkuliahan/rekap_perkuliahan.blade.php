@@ -1,3 +1,7 @@
+{{-- 
+    Halaman Rekapitulasi Perkuliahan & BAP (Super Admin)
+    Update UI/UX: AdminLTE Info-Box Summary, Color-Coded Progress Bar, Filter Prodi & Periode, Export Excel, & Print Layout.
+--}}
 @extends('layouts.master')
 
 @section('side')
