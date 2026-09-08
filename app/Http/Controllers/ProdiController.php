@@ -21,6 +21,9 @@ use App\Models\Bap;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DataJadwalExport;
+use App\Exports\DataRekapPerkuliahanExport;
 use Redirect, Response;
 
 class ProdiController extends Controller
@@ -1275,40 +1278,133 @@ class ProdiController extends Controller
     return view('adminprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'nama'));
   }
 
-  public function jadwal_kuliah_prodi()
+  public function jadwal_kuliah_prodi(?Request $request = null)
   {
     $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
     $tipe = Periode_tipe::all();
 
-    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-    $idtipe = $tp->id_periodetipe;
-    $namaperiodetipe = $tp->periode_tipe;
+    $user_kodeprodi = Auth::user()->kodeprodi ?? null;
+    $current_prodi = null;
+    if ($user_kodeprodi) {
+      $current_prodi = Prodi::where('kodeprodi', $user_kodeprodi)->first();
+    }
 
-    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-    $idtahun = $thn->id_periodetahun;
-    $namaperiodetahun = $thn->periode_tahun;
+    $tp_active = Periode_tipe::where('status', 'ACTIVE')->first();
+    $thn_active = Periode_tahun::where('status', 'ACTIVE')->first();
 
-    $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
+    $id_periodetahun = $request ? $request->input('id_periodetahun', $thn_active ? $thn_active->id_periodetahun : ($tahun->first()->id_periodetahun ?? null)) : ($thn_active ? $thn_active->id_periodetahun : ($tahun->first()->id_periodetahun ?? null));
+    $id_periodetipe = $request ? $request->input('id_periodetipe', $tp_active ? $tp_active->id_periodetipe : ($tipe->first()->id_periodetipe ?? null)) : ($tp_active ? $tp_active->id_periodetipe : ($tipe->first()->id_periodetipe ?? null));
 
-    return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    $current_tahun = Periode_tahun::where('id_periodetahun', $id_periodetahun)->first();
+    $current_tipe = Periode_tipe::where('id_periodetipe', $id_periodetipe)->first();
+
+    $namaperiodetahun = $current_tahun ? $current_tahun->periode_tahun : '';
+    $namaperiodetipe = $current_tipe ? $current_tipe->periode_tipe : '';
+    $namaprodi = $current_prodi ? $current_prodi->prodi : 'Program Studi';
+
+    $query = Kurikulum_periode::join('matakuliah', 'kurikulum_periode.id_makul', '=', 'matakuliah.idmakul')
+      ->join('prodi', 'kurikulum_periode.id_prodi', '=', 'prodi.id_prodi')
+      ->join('kelas', 'kurikulum_periode.id_kelas', '=', 'kelas.idkelas')
+      ->leftJoin('dosen', 'kurikulum_periode.id_dosen', '=', 'dosen.iddosen')
+      ->leftJoin('kurikulum_hari', 'kurikulum_hari.id_hari', '=', 'kurikulum_periode.id_hari')
+      ->leftJoin('kurikulum_jam', 'kurikulum_jam.id_jam', '=', 'kurikulum_periode.id_jam')
+      ->leftJoin('ruangan', 'ruangan.id_ruangan', '=', 'kurikulum_periode.id_ruangan')
+      ->where('kurikulum_periode.status', 'ACTIVE')
+      ->where('kurikulum_periode.id_periodetahun', $id_periodetahun)
+      ->where('kurikulum_periode.id_periodetipe', $id_periodetipe);
+
+    if ($user_kodeprodi) {
+      $query->where('prodi.kodeprodi', $user_kodeprodi);
+    }
+
+    $data = $query->select(
+      DB::raw('MIN(kurikulum_periode.id_kurperiode) as id_kurperiode'),
+      DB::raw('GROUP_CONCAT(DISTINCT kurikulum_periode.id_kurperiode) as ids_kurperiode'),
+      'matakuliah.kode',
+      'matakuliah.makul',
+      DB::raw('COALESCE(NULLIF(matakuliah.set_sks_teori, 0), matakuliah.akt_sks_teori, 0) as sks_teori'),
+      DB::raw('COALESCE(NULLIF(matakuliah.set_sks_praktek, 0), matakuliah.akt_sks_praktek, 0) as sks_praktek'),
+      DB::raw('(COALESCE(NULLIF(matakuliah.set_sks_teori, 0), matakuliah.akt_sks_teori, 0) + COALESCE(NULLIF(matakuliah.set_sks_praktek, 0), matakuliah.akt_sks_praktek, 0)) as total_sks'),
+      'prodi.prodi',
+      'prodi.kodeprodi',
+      DB::raw('GROUP_CONCAT(DISTINCT NULLIF(prodi.konsentrasi, "") SEPARATOR ", ") as daftar_konsentrasi'),
+      'kelas.kelas',
+      DB::raw("COALESCE(dosen.nama, 'Belum Ditentukan') as nama_dosen"),
+      'kurikulum_hari.id_hari',
+      DB::raw("COALESCE(kurikulum_hari.hari, '-') as hari"),
+      DB::raw("COALESCE(kurikulum_jam.jam, '-') as jam"),
+      DB::raw("COALESCE(ruangan.nama_ruangan, '-') as nama_ruangan")
+    )
+    ->groupBy(
+      'kurikulum_periode.id_makul',
+      'matakuliah.kode',
+      'matakuliah.makul',
+      'matakuliah.set_sks_teori',
+      'matakuliah.akt_sks_teori',
+      'matakuliah.set_sks_praktek',
+      'matakuliah.akt_sks_praktek',
+      'prodi.kodeprodi',
+      'prodi.prodi',
+      'kurikulum_periode.id_kelas',
+      'kelas.kelas',
+      'kurikulum_periode.id_dosen',
+      'dosen.nama',
+      'kurikulum_periode.id_hari',
+      'kurikulum_hari.id_hari',
+      'kurikulum_hari.hari',
+      'kurikulum_periode.id_jam',
+      'kurikulum_jam.jam',
+      'kurikulum_periode.id_ruangan',
+      'ruangan.nama_ruangan'
+    )
+    ->orderBy('kelas.kelas', 'ASC')
+    ->orderBy('kurikulum_hari.id_hari', 'ASC')
+    ->orderBy('kurikulum_jam.jam', 'ASC')
+    ->get();
+
+    $stats = [
+      'total_jadwal' => $data->count(),
+      'total_sks' => (int) $data->sum('total_sks'),
+      'total_dosen' => $data->pluck('nama_dosen')->reject(function ($name) { return $name === 'Belum Ditentukan'; })->unique()->count(),
+      'total_ruangan' => $data->pluck('nama_ruangan')->reject(function ($r) { return $r === '-'; })->unique()->count(),
+    ];
+
+    return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact(
+      'data',
+      'tahun',
+      'tipe',
+      'id_periodetahun',
+      'id_periodetipe',
+      'namaperiodetahun',
+      'namaperiodetipe',
+      'namaprodi',
+      'current_prodi',
+      'stats'
+    ));
   }
 
   public function filter_jadwal_perkuliahan_prodi(Request $request)
   {
-    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-    $tipe = Periode_tipe::all();
+    return $this->jadwal_kuliah_prodi($request);
+  }
 
-    $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
-    $idtipe = $tp->id_periodetipe;
-    $namaperiodetipe = $tp->periode_tipe;
+  public function export_jadwal_perkuliahan_prodi(Request $request)
+  {
+    $id_periodetahun = $request->input('id_periodetahun');
+    $id_periodetipe = $request->input('id_periodetipe');
+    $user_kodeprodi = Auth::user()->kodeprodi ?? null;
 
-    $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
-    $idtahun = $thn->id_periodetahun;
-    $namaperiodetahun = $thn->periode_tahun;
+    $thn = Periode_tahun::where('id_periodetahun', $id_periodetahun)->first();
+    $tp = Periode_tipe::where('id_periodetipe', $id_periodetipe)->first();
+    $prd = $user_kodeprodi ? Prodi::where('kodeprodi', $user_kodeprodi)->first() : null;
 
-    $data = DB::select('CALL jadwal_perkuliahan(?,?)', [$idtahun, $idtipe]);
+    $namaperiodetahun = $thn ? $thn->periode_tahun : 'TA';
+    $namaperiodetipe = $tp ? $tp->periode_tipe : 'Semester';
+    $namaprodi = $prd ? $prd->prodi : 'Program Studi';
 
-    return view('adminprodi/perkuliahan/jadwal_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe'));
+    $filename = 'Jadwal_Perkuliahan_' . str_replace(['/', ' '], '_', $namaprodi . '_' . $namaperiodetahun . '_' . $namaperiodetipe) . '.xlsx';
+
+    return Excel::download(new DataJadwalExport($id_periodetahun, $id_periodetipe, $user_kodeprodi, $namaperiodetahun, $namaperiodetipe, $namaprodi), $filename);
   }
 
   public function upload_sk_pengajaran_prodi()
@@ -1374,48 +1470,78 @@ class ProdiController extends Controller
     return redirect('upload_sk_pengajaran_prodi');
   }
 
-  public function rekap_perkuliahan()
+  public function rekap_perkuliahan(?Request $request = null)
   {
-    $kodeprodi = Auth::user()->kodeprodi;
+    $user_kodeprodi = Auth::user()->kodeprodi ?? null;
+    $current_prodi = null;
+    if ($user_kodeprodi) {
+      $current_prodi = Prodi::where('kodeprodi', $user_kodeprodi)->first();
+    }
 
     $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
     $tipe = Periode_tipe::all();
 
-    $tp = Periode_tipe::where('status', 'ACTIVE')->first();
-    $idtipe = $tp->id_periodetipe;
-    $namaperiodetipe = $tp->periode_tipe;
+    $tp_active = Periode_tipe::where('status', 'ACTIVE')->first();
+    $thn_active = Periode_tahun::where('status', 'ACTIVE')->first();
 
-    $thn = Periode_tahun::where('status', 'ACTIVE')->first();
-    $idtahun = $thn->id_periodetahun;
-    $namaperiodetahun = $thn->periode_tahun;
+    $id_periodetahun = $request ? $request->input('id_periodetahun', $thn_active ? $thn_active->id_periodetahun : ($tahun->first()->id_periodetahun ?? null)) : ($thn_active ? $thn_active->id_periodetahun : ($tahun->first()->id_periodetahun ?? null));
+    $id_periodetipe = $request ? $request->input('id_periodetipe', $tp_active ? $tp_active->id_periodetipe : ($tipe->first()->id_periodetipe ?? null)) : ($tp_active ? $tp_active->id_periodetipe : ($tipe->first()->id_periodetipe ?? null));
 
-    $data = $this->get_rekap_perkuliahan_data($idtahun, $idtipe, $kodeprodi);
+    $current_tahun = Periode_tahun::where('id_periodetahun', $id_periodetahun)->first();
+    $current_tipe = Periode_tipe::where('id_periodetipe', $id_periodetipe)->first();
 
-    return view('adminprodi/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe', 'idtahun', 'idtipe'));
+    $namaperiodetahun = $current_tahun ? $current_tahun->periode_tahun : '';
+    $namaperiodetipe = $current_tipe ? $current_tipe->periode_tipe : '';
+    $namaprodi = $current_prodi ? $current_prodi->prodi : 'Program Studi';
+
+    $data = $this->get_rekap_perkuliahan_data($id_periodetahun, $id_periodetipe, $user_kodeprodi);
+    $dataCol = collect($data);
+
+    $stats = [
+      'total_kelas' => $dataCol->count(),
+      'tercapai' => $dataCol->filter(function ($item) { return ($item->jml_per ?? 0) >= 16; })->count(),
+      'belum_tercapai' => $dataCol->filter(function ($item) { return ($item->jml_per ?? 0) < 16; })->count(),
+      'total_sesi' => (int) $dataCol->sum('jml_per'),
+      'total_online' => (int) $dataCol->sum('jml_online'),
+      'total_offline' => (int) $dataCol->sum('jml_offline'),
+    ];
+
+    $idtahun = $id_periodetahun;
+    $idtipe = $id_periodetipe;
+
+    return view('adminprodi/perkuliahan/rekap_perkuliahan', compact(
+      'data',
+      'tahun',
+      'tipe',
+      'namaperiodetahun',
+      'namaperiodetipe',
+      'namaprodi',
+      'current_prodi',
+      'id_periodetahun',
+      'id_periodetipe',
+      'idtahun',
+      'idtipe',
+      'stats'
+    ));
   }
 
   public function filter_rekap_perkuliahan(Request $request)
   {
-    $kodeprodi = Auth::user()->kodeprodi;
-
-    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-    $tipe = Periode_tipe::all();
-
-    $tp = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
-    $idtipe = $tp->id_periodetipe;
-    $namaperiodetipe = $tp->periode_tipe;
-
-    $thn = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
-    $idtahun = $thn->id_periodetahun;
-    $namaperiodetahun = $thn->periode_tahun;
-
-    $data = $this->get_rekap_perkuliahan_data($idtahun, $idtipe, $kodeprodi);
-
-    return view('adminprodi/perkuliahan/rekap_perkuliahan', compact('data', 'tahun', 'tipe', 'namaperiodetahun', 'namaperiodetipe', 'idtahun', 'idtipe'));
+    return $this->rekap_perkuliahan($request);
   }
 
   private function get_rekap_perkuliahan_data($tahun, $tipe, $kodeprodi)
   {
+    $bapFilterSql = "";
+    $mainFilterSql = "";
+    $bindings = [$tahun, $tipe];
+
+    if (!empty($kodeprodi)) {
+      $bapFilterSql = " AND prd.kodeprodi = ? ";
+      $mainFilterSql = " AND prd.kodeprodi = ? ";
+      $bindings[] = $kodeprodi;
+    }
+
     $bapCountSql = "
         SELECT 
             kp.id_makul,
@@ -1431,17 +1557,26 @@ class ProdiController extends Controller
             AND kp.status = 'ACTIVE' 
             AND kp.id_periodetahun = ?
             AND kp.id_periodetipe = ?
+            {$bapFilterSql}
         GROUP BY kp.id_makul, kp.id_kelas, kp.id_dosen
     ";
+
+    $outerBindings = array_merge($bindings, [$tahun, $tipe]);
+    if (!empty($kodeprodi)) {
+      $outerBindings[] = $kodeprodi;
+    }
 
     return DB::select("
         SELECT 
             MIN(kp.id_kurperiode) as id_kurperiode, 
-            CONCAT(MIN(mk.kode),'-',MIN(mk.makul)) AS makul, 
-            CONCAT(MIN(mk.set_sks_teori), '/', MIN(mk.set_sks_praktek)) AS sks, 
+            MIN(mk.kode) as kode,
+            MIN(mk.makul) as nama_makul,
+            CONCAT(MIN(mk.kode), ' - ', MIN(mk.makul)) AS makul, 
+            CONCAT(COALESCE(MIN(mk.set_sks_teori), MIN(mk.akt_sks_teori), 0), '/', COALESCE(MIN(mk.set_sks_praktek), MIN(mk.akt_sks_praktek), 0)) AS sks, 
             MIN(prd.prodi) as prodi, 
+            GROUP_CONCAT(DISTINCT NULLIF(prd.konsentrasi, '') SEPARATOR ', ') as daftar_konsentrasi,
             MIN(kls.kelas) as kelas, 
-            MIN(dsn.nama) as nama, 
+            COALESCE(MIN(dsn.nama), 'Belum Ditentukan') as nama, 
             COALESCE(MIN(aa.jml_per), 0) as jml_per,
             COALESCE(MIN(aa.jml_online), 0) as jml_online,
             COALESCE(MIN(aa.jml_offline), 0) as jml_offline
@@ -1457,10 +1592,29 @@ class ProdiController extends Controller
             AND kp.id_periodetipe = ? 
             AND kp.status = 'ACTIVE' 
             AND mk.active = 1
-            AND prd.kodeprodi = ?
+            {$mainFilterSql}
         GROUP BY prd.kodeprodi, kp.id_kelas, kp.id_makul, kp.id_dosen
         ORDER BY MIN(mk.kode), MIN(kls.kelas) ASC
-    ", [$tahun, $tipe, $tahun, $tipe, $kodeprodi]);
+    ", $outerBindings);
+  }
+
+  public function export_rekap_perkuliahan_prodi(Request $request)
+  {
+    $id_periodetahun = $request->input('id_periodetahun');
+    $id_periodetipe = $request->input('id_periodetipe');
+    $user_kodeprodi = Auth::user()->kodeprodi ?? null;
+
+    $thn = Periode_tahun::where('id_periodetahun', $id_periodetahun)->first();
+    $tp = Periode_tipe::where('id_periodetipe', $id_periodetipe)->first();
+    $prd = $user_kodeprodi ? Prodi::where('kodeprodi', $user_kodeprodi)->first() : null;
+
+    $namaperiodetahun = $thn ? $thn->periode_tahun : 'TA';
+    $namaperiodetipe = $tp ? $tp->periode_tipe : 'Semester';
+    $namaprodi = $prd ? $prd->prodi : 'Program Studi';
+
+    $filename = 'Rekap_Perkuliahan_BAP_' . str_replace(['/', ' '], '_', $namaprodi . '_' . $namaperiodetahun . '_' . $namaperiodetipe) . '.xlsx';
+
+    return Excel::download(new DataRekapPerkuliahanExport($id_periodetahun, $id_periodetipe, $user_kodeprodi, $namaperiodetahun, $namaperiodetipe, $namaprodi), $filename);
   }
 
   public function cek_rekapan($id)
