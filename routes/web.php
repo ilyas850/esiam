@@ -245,10 +245,12 @@ Route::group(['middleware' => 'sadmin'], function () {
 
     #filter rekap perkuliahan
     Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');
+    Route::get('export_rekap_perkuliahan', 'SadminController@export_rekap_perkuliahan');
     Route::post('filter_jadwal_perkuliahan', 'SadminController@filter_jadwal_perkuliahan');
 
     //jadwa; perkuliahan
     Route::get('jadwal_perkuliahan', 'SadminController@jadwal_perkuliahan');
+    Route::get('export_jadwal_perkuliahan', 'SadminController@export_jadwal_perkuliahan');
 
     #visi misi
     Route::get('visimisi', 'SadminController@visimisi');
@@ -1731,8 +1733,10 @@ Route::group(['middleware' => 'adminprodi'], function () {
     //jadwal perkuliahan
     Route::get('jadwal_kuliah_prodi', 'ProdiController@jadwal_kuliah_prodi');
     Route::post('filter_jadwal_perkuliahan_prodi', 'ProdiController@filter_jadwal_perkuliahan_prodi');
+    Route::get('export_jadwal_perkuliahan_prodi', 'ProdiController@export_jadwal_perkuliahan_prodi');
     Route::get('rekap_perkuliahan_prodi', 'ProdiController@rekap_perkuliahan');
     Route::post('filter_rekap_perkuliahan_prodi', 'ProdiController@filter_rekap_perkuliahan');
+    Route::get('export_rekap_perkuliahan_prodi', 'ProdiController@export_rekap_perkuliahan_prodi');
     Route::get('cek_rekapan_prodi/{id}', 'ProdiController@cek_rekapan');
 
     #upload SK pengajaran
