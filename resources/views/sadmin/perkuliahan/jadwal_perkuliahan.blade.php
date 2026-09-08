@@ -1,3 +1,7 @@
+{{-- 
+    Halaman Jadwal Perkuliahan (Super Admin)
+    Update UI/UX: AdminLTE Info-Box Summary, Grouping Multi-Konsentrasi, Filter Prodi/Tahun/Semester, Export Excel, & Print Layout.
+--}}
 @extends('layouts.master')
 
 @section('side')

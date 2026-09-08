@@ -2366,6 +2366,11 @@ class SadminController extends Controller
         return Response::download($file_uas);
     }
 
+    /**
+     * [UPDATE] Halaman Rekapitulasi Perkuliahan & BAP (Super Admin)
+     * Menampilkan rekapitulasi tatap muka BAP dosen per kelas, statistik target (>=16 sesi),
+     * serta filter dinamis Program Studi, Tahun Akademik, dan Semester.
+     */
     public function rekap_perkuliahan(?Request $request = null)
     {
         $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -2422,6 +2427,10 @@ class SadminController extends Controller
         ));
     }
 
+    /**
+     * [UPDATE] Query data rekapitulasi perkuliahan & agregasi status kehadiran BAP
+     * Menggunakan parameter binding yang aman dan grouping per prodi/kelas/makul/dosen.
+     */
     public function rekapPerkuliahan($idPeriodeTahun, $idPeriodeTipe, $idProdi = null)
     {
         $bapFilterSql = "";
@@ -2497,6 +2506,10 @@ class SadminController extends Controller
         return $this->rekap_perkuliahan($request);
     }
 
+    /**
+     * [UPDATE] Export Excel Rekapitulasi Perkuliahan & BAP (Super Admin)
+     * Mengunduh berkas laporan rekapitulasi perkuliahan dalam format .xlsx.
+     */
     public function export_rekap_perkuliahan(Request $request)
     {
         $id_periodetahun = $request->input('id_periodetahun');
@@ -6593,6 +6606,10 @@ class SadminController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * [UPDATE] Halaman Jadwal Perkuliahan (Super Admin)
+     * Menggunakan Query Builder / Eloquent untuk optimasi performa dan pengelompokan jadwal multi-konsentrasi.
+     */
     public function jadwal_perkuliahan(?Request $request = null)
     {
         $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -6713,6 +6730,10 @@ class SadminController extends Controller
         return $this->jadwal_perkuliahan($request);
     }
 
+    /**
+     * [UPDATE] Export Excel Jadwal Perkuliahan (Super Admin)
+     * Mengunduh jadwal perkuliahan terfilter ke dalam format Excel (.xlsx).
+     */
     public function export_jadwal_perkuliahan(Request $request)
     {
         $id_periodetahun = $request->input('id_periodetahun');

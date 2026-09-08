@@ -1,3 +1,7 @@
+{{-- 
+    [NEW] Template Export Excel Jadwal Perkuliahan
+    Laporan jadwal mata kuliah per periode, kelas, dosen, ruangan, dan jam perkuliahan.
+--}}
 <table>
     <thead>
         <tr>

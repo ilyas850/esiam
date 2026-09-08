@@ -243,14 +243,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::get('cek_absen_bap/{id}', 'SadminController@cek_absen_bap');
     Route::post('save_edit_absensi_admin', 'SadminController@save_edit_absensi_admin');
 
-    #filter rekap perkuliahan
+    # Rekapitulasi & Jadwal Perkuliahan (Super Admin)
     Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');
-    Route::get('export_rekap_perkuliahan', 'SadminController@export_rekap_perkuliahan');
+    Route::get('export_rekap_perkuliahan', 'SadminController@export_rekap_perkuliahan'); // [NEW] Export Excel Rekap BAP
     Route::post('filter_jadwal_perkuliahan', 'SadminController@filter_jadwal_perkuliahan');
-
-    //jadwa; perkuliahan
     Route::get('jadwal_perkuliahan', 'SadminController@jadwal_perkuliahan');
-    Route::get('export_jadwal_perkuliahan', 'SadminController@export_jadwal_perkuliahan');
+    Route::get('export_jadwal_perkuliahan', 'SadminController@export_jadwal_perkuliahan'); // [NEW] Export Excel Jadwal
 
     #visi misi
     Route::get('visimisi', 'SadminController@visimisi');
@@ -1730,13 +1728,15 @@ Route::group(['middleware' => 'adminprodi'], function () {
     Route::post('filter_rekap_nilai_mhs', 'ProdiController@filter_rekap_nilai_mhs');
     Route::get('cek_rekap_nilai_mhs/{id}', 'ProdiController@cek_rekap_nilai_mhs');
 
-    //jadwal perkuliahan
+    // Jadwal Perkuliahan Program Studi
     Route::get('jadwal_kuliah_prodi', 'ProdiController@jadwal_kuliah_prodi');
     Route::post('filter_jadwal_perkuliahan_prodi', 'ProdiController@filter_jadwal_perkuliahan_prodi');
-    Route::get('export_jadwal_perkuliahan_prodi', 'ProdiController@export_jadwal_perkuliahan_prodi');
+    Route::get('export_jadwal_perkuliahan_prodi', 'ProdiController@export_jadwal_perkuliahan_prodi'); // [NEW] Export Excel Jadwal Prodi
+
+    // Rekapitulasi Perkuliahan & BAP Program Studi
     Route::get('rekap_perkuliahan_prodi', 'ProdiController@rekap_perkuliahan');
     Route::post('filter_rekap_perkuliahan_prodi', 'ProdiController@filter_rekap_perkuliahan');
-    Route::get('export_rekap_perkuliahan_prodi', 'ProdiController@export_rekap_perkuliahan_prodi');
+    Route::get('export_rekap_perkuliahan_prodi', 'ProdiController@export_rekap_perkuliahan_prodi'); // [NEW] Export Excel Rekap BAP Prodi
     Route::get('cek_rekapan_prodi/{id}', 'ProdiController@cek_rekapan');
 
     #upload SK pengajaran

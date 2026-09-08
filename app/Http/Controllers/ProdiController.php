@@ -1278,6 +1278,10 @@ class ProdiController extends Controller
     return view('adminprodi/nilai/cek_rekap_nilai_mhs', compact('data', 'nama'));
   }
 
+  /**
+   * [UPDATE] Halaman Jadwal Perkuliahan Program Studi
+   * Menggunakan Query Builder / Eloquent untuk optimasi performa dan scoping prodi.
+   */
   public function jadwal_kuliah_prodi(?Request $request = null)
   {
     $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
@@ -1388,6 +1392,10 @@ class ProdiController extends Controller
     return $this->jadwal_kuliah_prodi($request);
   }
 
+  /**
+   * [UPDATE] Export Excel Jadwal Perkuliahan Program Studi
+   * Mengunduh jadwal kuliah prodi dalam format Excel (.xlsx).
+   */
   public function export_jadwal_perkuliahan_prodi(Request $request)
   {
     $id_periodetahun = $request->input('id_periodetahun');
@@ -1470,6 +1478,10 @@ class ProdiController extends Controller
     return redirect('upload_sk_pengajaran_prodi');
   }
 
+  /**
+   * [UPDATE] Halaman Rekapitulasi Perkuliahan & BAP Program Studi
+   * Menampilkan progres realisasi perkuliahan BAP dosen, statistik target, dan badge metode online/offline.
+   */
   public function rekap_perkuliahan(?Request $request = null)
   {
     $user_kodeprodi = Auth::user()->kodeprodi ?? null;
@@ -1530,6 +1542,10 @@ class ProdiController extends Controller
     return $this->rekap_perkuliahan($request);
   }
 
+  /**
+   * [UPDATE] Query data rekapitulasi perkuliahan & agregasi status kehadiran BAP
+   * Menggunakan parameter binding aman dan scoping ketat ke kodeprodi user login.
+   */
   private function get_rekap_perkuliahan_data($tahun, $tipe, $kodeprodi)
   {
     $bapFilterSql = "";
@@ -1598,6 +1614,10 @@ class ProdiController extends Controller
     ", $outerBindings);
   }
 
+  /**
+   * [UPDATE] Export Excel Rekapitulasi Perkuliahan & BAP Program Studi
+   * Mengunduh laporan rekapitulasi BAP prodi ke file format .xlsx.
+   */
   public function export_rekap_perkuliahan_prodi(Request $request)
   {
     $id_periodetahun = $request->input('id_periodetahun');
