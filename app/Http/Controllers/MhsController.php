@@ -960,7 +960,8 @@ class MhsController extends Controller
                 'bap.jam_selsai',
                 'student.nama',
                 'student.nim',
-                'absensi_mahasiswa.absensi'
+                'absensi_mahasiswa.absensi',
+                'absensi_mahasiswa.keterangan'
             )
             ->orderByRaw('CAST(bap.pertemuan AS UNSIGNED) ASC')
             ->get();

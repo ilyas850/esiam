@@ -1642,6 +1642,81 @@ class KaprodiController extends Controller
     return $file_name;
   }
 
+  public function cari_mhs_lintas_kelas($id_bap)
+  {
+    $bap = Bap::where('id_bap', $id_bap)->first();
+    if (!$bap) {
+      return response()->json(['error' => 'BAP tidak ditemukan'], 404);
+    }
+
+    $kur = Kurikulum_periode::where('id_kurperiode', $bap->id_kurperiode)->first();
+    if (!$kur) {
+      return response()->json(['error' => 'Kurikulum periode tidak ditemukan'], 404);
+    }
+
+    // Cari semua kurikulum_periode kelas paralel untuk makul dan periode yang sama
+    $parallel_kur = DB::table('kurikulum_periode as kp')
+      ->where('kp.id_makul', $kur->id_makul)
+      ->where('kp.id_periodetahun', $kur->id_periodetahun)
+      ->where('kp.id_periodetipe', $kur->id_periodetipe)
+      ->where('kp.id_kurperiode', '!=', $bap->id_kurperiode)
+      ->where('kp.status', 'ACTIVE')
+      ->pluck('kp.id_kurperiode')
+      ->toArray();
+
+    if (empty($parallel_kur)) {
+      return response()->json([]);
+    }
+
+    $q = request('q');
+    $query = DB::table('student_record as c')
+      ->join('student as d', 'c.id_student', '=', 'd.idstudent')
+      ->join('kurikulum_periode as kp', 'c.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as f', 'kp.id_kelas', '=', 'f.idkelas')
+      ->join('prodi as e', function ($join) {
+        $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+          ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+      })
+      ->whereIn('c.id_kurperiode', $parallel_kur)
+      ->where('c.status', 'TAKEN');
+
+    if (!empty($q)) {
+      $query->where(function ($w) use ($q) {
+        $w->where('d.nim', 'like', "%{$q}%")
+          ->orWhere('d.nama', 'like', "%{$q}%");
+      });
+    }
+
+    $students = $query->select(
+      'c.id_studentrecord',
+      'c.id_kurperiode',
+      'd.nim',
+      'd.nama',
+      'f.kelas',
+      'e.prodi'
+    )->orderBy('f.kelas', 'asc')->orderBy('d.nim', 'asc')->limit(30)->get();
+
+    foreach ($students as $mhs) {
+      // Cek status absensi di kelas asalnya untuk pertemuan ini
+      $originBap = Bap::where('id_kurperiode', $mhs->id_kurperiode)
+        ->where('pertemuan', $bap->pertemuan)
+        ->where('status', 'ACTIVE')
+        ->first();
+
+      $mhs->status_di_kelas_asal = null;
+      if ($originBap) {
+        $absenAsal = Absensi_mahasiswa::where('id_bap', $originBap->id_bap)
+          ->where('id_studentrecord', $mhs->id_studentrecord)
+          ->first();
+        if ($absenAsal) {
+          $mhs->status_di_kelas_asal = $absenAsal->absensi;
+        }
+      }
+    }
+
+    return response()->json($students);
+  }
+
   public function entri_absen($id)
   {
     $bap = Bap::where('id_bap', $id)->first();
@@ -1705,29 +1780,103 @@ class KaprodiController extends Controller
       ->orderBy('d.nim', 'asc')
       ->get();
 
-    return view('kaprodi/bap/absensi', ['absen' => $kelas_gabungan, 'idk' => $id_kurperiode, 'id' => $id]);
+    // Cek apakah mahasiswa reguler ini sudah pernah diabsenkan di kelas paralel lain untuk pertemuan ini
+    $kur_master = DB::table('kurikulum_periode')->where('id_kurperiode', $id_kurperiode)->first();
+    $kur_gabungan_ids = [];
+    if ($kur_master) {
+      $kur_gabungan_ids = DB::table('kurikulum_periode')
+        ->where('id_periodetahun', $kur_master->id_periodetahun)
+        ->where('id_periodetipe', $kur_master->id_periodetipe)
+        ->where('id_dosen', $kur_master->id_dosen)
+        ->where('id_hari', $kur_master->id_hari)
+        ->where('id_jam', $kur_master->id_jam)
+        ->where('id_makul', $kur_master->id_makul)
+        ->pluck('id_kurperiode')
+        ->toArray();
+    }
+    if (empty($kur_gabungan_ids)) {
+      $kur_gabungan_ids = [$id_kurperiode];
+    }
+
+    $regSrIds = $kelas_gabungan->pluck('id_studentrecord')->toArray();
+    $attendedMap = DB::table('absensi_mahasiswa as am')
+      ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
+      ->join('kurikulum_periode as kp', 'b.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as k', 'kp.id_kelas', '=', 'k.idkelas')
+      ->leftJoin('dosen as d', 'kp.id_dosen', '=', 'd.iddosen')
+      ->where('kp.id_makul', $kur_master->id_makul)
+      ->where('kp.id_periodetahun', $kur_master->id_periodetahun)
+      ->where('kp.id_periodetipe', $kur_master->id_periodetipe)
+      ->whereNotIn('kp.id_kurperiode', $kur_gabungan_ids)
+      ->whereIn('am.id_studentrecord', $regSrIds)
+      ->where('am.absensi', 'ABSEN')
+      ->where(function ($w) use ($bap) {
+        $w->where('b.pertemuan', $bap->pertemuan)
+          ->orWhere('am.keterangan', 'like', "%Target P-{$bap->pertemuan}%");
+      })
+      ->select('am.id_studentrecord', 'k.kelas as kelas_hadir', 'd.nama as dosen_hadir', 'b.pertemuan as sesi_pertemuan', 'am.keterangan')
+      ->get()
+      ->keyBy('id_studentrecord');
+
+    foreach ($kelas_gabungan as $item) {
+      $item->hadir_di_kelas_lain = false;
+      $item->keterangan_kelas_lain = null;
+      if ($attendedMap->has($item->id_studentrecord)) {
+        $cr = $attendedMap->get($item->id_studentrecord);
+        $item->hadir_di_kelas_lain = true;
+        $item->keterangan_kelas_lain = "Sudah Hadir di Kelas {$cr->kelas_hadir} (" . ($cr->dosen_hadir ?: 'Dosen') . ") - Sesi P-{$cr->sesi_pertemuan}";
+      }
+    }
+
+    // Ambil mahasiswa lintas kelas yang sudah tersimpan pada BAP ini (jika ada)
+    $cross_students = DB::table('absensi_mahasiswa as am')
+      ->join('student_record as c', 'am.id_studentrecord', '=', 'c.id_studentrecord')
+      ->join('student as d', 'c.id_student', '=', 'd.idstudent')
+      ->join('prodi as e', function ($join) {
+        $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+          ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+      })
+      ->join('kurikulum_periode as kp', 'c.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as f', 'kp.id_kelas', '=', 'f.idkelas')
+      ->where('am.id_bap', $id)
+      ->whereNotIn('am.id_studentrecord', $regSrIds)
+      ->select(
+        'c.id_studentrecord',
+        'c.id_kurperiode',
+        'c.id_student',
+        'd.nim',
+        'd.nama',
+        'e.prodi',
+        'f.kelas',
+        'am.absensi',
+        'am.keterangan'
+      )
+      ->get();
+
+    foreach ($cross_students as $cs) {
+      $cs->is_lintas_kelas = true;
+      $cs->hadir_di_kelas_lain = false;
+      $cs->keterangan_kelas_lain = null;
+    }
+
+    return view('kaprodi/bap/absensi', [
+      'absen' => $kelas_gabungan,
+      'cross_absen' => $cross_students,
+      'idk' => $id_kurperiode,
+      'id' => $id,
+      'bap' => $bap
+    ]);
   }
 
-  public function save_absensi(Request $request)
+  /**
+   * Logika inti simpan dan sinkronisasi kehadiran mahasiswa (termasuk lintas kelas) untuk Kaprodi
+   */
+  private function prosesSimpanDanSinkronAbsensi($initial_bap_id, $id_kurperiode, array $absensi_radio, array $target_pertemuan_input = [])
   {
-    $request->validate([
-      'id_bap' => 'required|integer|exists:bap,id_bap',
-      'id_kurperiode' => 'required|integer',
-      'absensi_radio' => 'required|array'
-    ]);
-
-    $initial_bap_id = $request->id_bap;
-
+    // 1. Subquery untuk menemukan BAP kelas gabungan
     $subQuery = DB::table('bap as a')
       ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
-      ->select(
-        'a.pertemuan',
-        'b.id_periodetahun',
-        'b.id_periodetipe',
-        'b.id_makul',
-        'b.id_hari',
-        'b.id_jam'
-      )
+      ->select('a.pertemuan', 'b.id_periodetahun', 'b.id_periodetipe', 'b.id_makul', 'b.id_hari', 'b.id_jam')
       ->where('a.id_bap', $initial_bap_id)
       ->where('a.status', 'ACTIVE')
       ->where('b.status', 'ACTIVE');
@@ -1744,62 +1893,279 @@ class KaprodiController extends Controller
       })
       ->where('c.status', 'ACTIVE')
       ->where('b.status', 'ACTIVE')
-      ->pluck('c.id_bap');
+      ->pluck('c.id_bap')
+      ->toArray();
 
-    if ($bap_gabungan_ids->isEmpty()) {
-      Alert::error('Gagal', 'Data BAP untuk kelas gabungan tidak ditemukan.')->autoclose(3500);
-      return redirect('entri_bap_kprd/' . $request->id_kurperiode);
+    if (empty($bap_gabungan_ids)) {
+      $bap_gabungan_ids = [$initial_bap_id];
     }
 
-    $data_absensi = [];
-    $sekarang = now();
+    // Info BAP saat ini
+    $currentBap = DB::table('bap as a')
+      ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
+      ->join('kelas as k', 'k.idkelas', '=', 'b.id_kelas')
+      ->join('dosen as d', 'd.iddosen', '=', 'b.id_dosen')
+      ->select(
+        'a.id_bap',
+        'a.pertemuan',
+        'b.id_kurperiode',
+        'b.id_makul',
+        'b.id_periodetahun',
+        'b.id_periodetipe',
+        'k.kelas as nama_kelas',
+        'd.nama as nama_dosen'
+      )
+      ->where('a.id_bap', $initial_bap_id)
+      ->first();
 
-    foreach ($request->absensi_radio as $value) {
+    // 2. Persiapkan data absensi
+    $sekarang = now();
+    $data_absensi_awal = [];
+    $mahasiswa_lintas_kelas_list = [];
+
+    $sr_ids_submitted = [];
+    foreach ($absensi_radio as $value) {
       $parts = explode(',', $value, 2);
       if (count($parts) === 2) {
-        $data_absensi[] = [
-          'id_studentrecord' => $parts[0],
-          'absensi' => $parts[1],
+        $sr_ids_submitted[] = (int) $parts[0];
+      }
+    }
+
+    $student_records_map = DB::table('student_record as sr')
+      ->join('kurikulum_periode as kp', 'sr.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as k', 'kp.id_kelas', '=', 'k.idkelas')
+      ->select('sr.id_studentrecord', 'sr.id_kurperiode', 'k.kelas as nama_kelas_asal')
+      ->whereIn('sr.id_studentrecord', $sr_ids_submitted)
+      ->get()
+      ->keyBy('id_studentrecord');
+
+    $kur_gabungan_ids = DB::table('bap')
+      ->whereIn('id_bap', $bap_gabungan_ids)
+      ->pluck('id_kurperiode')
+      ->toArray();
+
+    // Cek catatan kehadiran lintas kelas untuk mahasiswa reguler pada pertemuan ini
+    $reg_cross_records = DB::table('absensi_mahasiswa as am')
+      ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
+      ->join('kurikulum_periode as kp', 'b.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as k', 'kp.id_kelas', '=', 'k.idkelas')
+      ->leftJoin('dosen as d', 'kp.id_dosen', '=', 'd.iddosen')
+      ->where('kp.id_makul', $currentBap->id_makul)
+      ->where('kp.id_periodetahun', $currentBap->id_periodetahun)
+      ->where('kp.id_periodetipe', $currentBap->id_periodetipe)
+      ->whereNotIn('kp.id_kurperiode', $kur_gabungan_ids)
+      ->whereIn('am.id_studentrecord', $sr_ids_submitted)
+      ->where('am.absensi', 'ABSEN')
+      ->where(function ($w) use ($currentBap) {
+        $w->where('b.pertemuan', $currentBap->pertemuan)
+          ->orWhere('am.keterangan', 'like', "%Target P-{$currentBap->pertemuan}%");
+      })
+      ->select('am.id_studentrecord', 'k.kelas as kelas_hadir', 'd.nama as dosen_hadir', 'b.pertemuan as sesi_pertemuan')
+      ->get()
+      ->keyBy('id_studentrecord');
+
+    $existing_keterangan_map = DB::table('absensi_mahasiswa')
+      ->where('id_bap', $initial_bap_id)
+      ->whereIn('id_studentrecord', $sr_ids_submitted)
+      ->whereNotNull('keterangan')
+      ->pluck('keterangan', 'id_studentrecord');
+
+    foreach ($absensi_radio as $value) {
+      $parts = explode(',', $value, 2);
+      if (count($parts) === 2) {
+        $id_sr = (int) $parts[0];
+        $status_absen = $parts[1];
+        $sr_info = $student_records_map->get($id_sr);
+
+        $keterangan = null;
+        $is_lintas = false;
+
+        if ($sr_info && !in_array($sr_info->id_kurperiode, $kur_gabungan_ids)) {
+          $is_lintas = true;
+          $mahasiswa_lintas_kelas_list[] = [
+            'id_studentrecord' => $id_sr,
+            'status_absen' => $status_absen,
+            'origin_kur_id' => $sr_info->id_kurperiode,
+            'origin_kelas_nama' => $sr_info->nama_kelas_asal,
+          ];
+        } else {
+          // Mahasiswa reguler: cek apakah punya catatan hadir lintas kelas
+          if (isset($reg_cross_records[$id_sr])) {
+            $rc = $reg_cross_records[$id_sr];
+            $keterangan = "Hadir di Kelas {$rc->kelas_hadir} (" . ($rc->dosen_hadir ?: 'Dosen') . ") - Sesi P-{$rc->sesi_pertemuan}";
+          } elseif (isset($existing_keterangan_map[$id_sr]) && str_contains($existing_keterangan_map[$id_sr], 'Hadir di Kelas')) {
+            $keterangan = $existing_keterangan_map[$id_sr];
+          }
+        }
+
+        $data_absensi_awal[] = [
+          'id_bap' => $initial_bap_id,
+          'id_studentrecord' => $id_sr,
+          'absensi' => $status_absen,
+          'keterangan' => $keterangan,
           'status' => 'ACTIVE',
           'created_at' => $sekarang,
           'updated_at' => $sekarang,
+          'is_lintas' => $is_lintas,
         ];
       }
     }
 
-    DB::transaction(function () use ($bap_gabungan_ids, $data_absensi) {
-      Absensi_mahasiswa::whereIn('id_bap', $bap_gabungan_ids)->delete();
-      Bap::whereIn('id_bap', $bap_gabungan_ids)->update(['hadir' => 0, 'tidak_hadir' => 0]);
+    // 3. Alokasi cerdas & sinkronisasi untuk mahasiswa lintas kelas
+    foreach ($mahasiswa_lintas_kelas_list as $mlk) {
+      $id_sr = $mlk['id_studentrecord'];
+      $status_absen = $mlk['status_absen'];
+      $origin_kur_id = $mlk['origin_kur_id'];
+      $origin_kelas_nama = $mlk['origin_kelas_nama'];
 
-      if (empty($data_absensi)) {
-        return;
+      if ($status_absen === 'ABSEN' && $currentBap) {
+        $customTarget = null;
+        if (isset($target_pertemuan_input[$id_sr]) && !empty($target_pertemuan_input[$id_sr])) {
+          $val = (int) $target_pertemuan_input[$id_sr];
+          if ($val >= 1 && $val <= 16) {
+            $customTarget = $val;
+          }
+        }
+
+        if ($customTarget) {
+          $targetPertemuan = (string) $customTarget;
+        } else {
+          // Tentukan target pertemuan cerdas berdasarkan kelas asal mahasiswa:
+          $attendedInOrigin = DB::table('absensi_mahasiswa as am')
+            ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
+            ->where('b.id_kurperiode', $origin_kur_id)
+            ->where('b.status', 'ACTIVE')
+            ->where('am.id_studentrecord', $id_sr)
+            ->where('am.absensi', 'ABSEN')
+            ->pluck('b.pertemuan')
+            ->map(function ($val) { return (int) $val; })
+            ->toArray();
+
+          $latestOriginBap = (int) DB::table('bap')
+            ->where('id_kurperiode', $origin_kur_id)
+            ->where('status', 'ACTIVE')
+            ->max('pertemuan');
+
+          if ($latestOriginBap > 0 && !in_array($latestOriginBap, $attendedInOrigin)) {
+            $targetPertemuan = (string) $latestOriginBap;
+          } else {
+            $candidate = max(1, $latestOriginBap + 1);
+            while (in_array($candidate, $attendedInOrigin) && $candidate <= 16) {
+              $candidate++;
+            }
+            $targetPertemuan = (string) min(16, $candidate);
+          }
+        }
+
+        $syncNote = "Hadir di Kelas {$currentBap->nama_kelas} ({$currentBap->nama_dosen}) - Sesi P-{$currentBap->pertemuan}";
+
+        // Update keterangan di record BAP saat ini
+        foreach ($data_absensi_awal as &$itemAwal) {
+          if ($itemAwal['id_studentrecord'] == $id_sr) {
+            $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama}) -> Target P-{$targetPertemuan}";
+          }
+        }
+        unset($itemAwal);
+
+        // Sinkronisasikan ke BAP kelas asal jika BAP untuk target pertemuan sudah ada
+        $targetOriginBap = DB::table('bap')
+          ->where('id_kurperiode', $origin_kur_id)
+          ->where('pertemuan', $targetPertemuan)
+          ->where('status', 'ACTIVE')
+          ->first();
+
+        if ($targetOriginBap) {
+          $existing = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)
+            ->where('id_studentrecord', $id_sr)
+            ->first();
+          if ($existing) {
+            $existing->update([
+              'absensi' => 'ABSEN',
+              'keterangan' => $syncNote,
+              'updated_at' => $sekarang,
+            ]);
+          } else {
+            Absensi_mahasiswa::create([
+              'id_bap' => $targetOriginBap->id_bap,
+              'id_studentrecord' => $id_sr,
+              'absensi' => 'ABSEN',
+              'keterangan' => $syncNote,
+              'status' => 'ACTIVE',
+              'created_at' => $sekarang,
+              'updated_at' => $sekarang,
+            ]);
+          }
+
+          $hadirCount = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)->where('absensi', 'ABSEN')->count();
+          $tdkHadirCount = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)->whereIn('absensi', ['SAKIT', 'IZIN', 'ALFA'])->count();
+          DB::table('bap')->where('id_bap', $targetOriginBap->id_bap)->update([
+            'hadir' => $hadirCount,
+            'tidak_hadir' => $tdkHadirCount,
+          ]);
+        }
+      } else {
+        foreach ($data_absensi_awal as &$itemAwal) {
+          if ($itemAwal['id_studentrecord'] == $id_sr) {
+            $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama})";
+          }
+        }
+        unset($itemAwal);
       }
+    }
+
+    // 4. Bersihkan helper flag 'is_lintas' sebelum insert
+    $insert_data_awal = collect($data_absensi_awal)->map(function ($item) {
+      unset($item['is_lintas']);
+      return $item;
+    })->toArray();
+
+    // 5. Simpan & Duplikat ke semua BAP gabungan
+    Absensi_mahasiswa::whereIn('id_bap', $bap_gabungan_ids)->delete();
+
+    if (!empty($insert_data_awal)) {
+      Absensi_mahasiswa::insert($insert_data_awal);
 
       foreach ($bap_gabungan_ids as $bap_id) {
-        $data_untuk_insert = collect($data_absensi)->map(function ($item) use ($bap_id) {
+        if ($bap_id == $initial_bap_id) {
+          continue;
+        }
+
+        $data_duplikat = collect($insert_data_awal)->map(function ($item) use ($bap_id, $sekarang) {
           $item['id_bap'] = $bap_id;
+          $item['created_at'] = $sekarang;
+          $item['updated_at'] = $sekarang;
           return $item;
         })->toArray();
 
-        Absensi_mahasiswa::insert($data_untuk_insert);
+        Absensi_mahasiswa::insert($data_duplikat);
       }
+    }
 
-      $rekapAbsensi = Absensi_mahasiswa::select(
-        'id_bap',
+    // 6. Update hadir & tidak_hadir di setiap BAP gabungan
+    foreach ($bap_gabungan_ids as $bap_id) {
+      $rekap = Absensi_mahasiswa::select(
         DB::raw("SUM(CASE WHEN absensi = 'ABSEN' THEN 1 ELSE 0 END) as hadir"),
         DB::raw("SUM(CASE WHEN absensi IN ('SAKIT', 'IZIN', 'ALFA') THEN 1 ELSE 0 END) as tidak_hadir")
       )
-        ->whereIn('id_bap', $bap_gabungan_ids)
-        ->groupBy('id_bap')
-        ->get();
+        ->where('id_bap', $bap_id)
+        ->first();
 
-      foreach ($rekapAbsensi as $rekap) {
-        Bap::where('id_bap', $rekap->id_bap)->update([
-          'hadir' => $rekap->hadir,
-          'tidak_hadir' => $rekap->tidak_hadir,
-        ]);
-      }
-    });
+      DB::table('bap')->where('id_bap', $bap_id)->update([
+        'hadir' => $rekap ? ($rekap->hadir ?? 0) : 0,
+        'tidak_hadir' => $rekap ? ($rekap->tidak_hadir ?? 0) : 0,
+      ]);
+    }
+  }
+
+  public function save_absensi(Request $request)
+  {
+    $request->validate([
+      'id_bap' => 'required|integer|exists:bap,id_bap',
+      'id_kurperiode' => 'required|integer',
+      'absensi_radio' => 'required|array'
+    ]);
+
+    $this->prosesSimpanDanSinkronAbsensi($request->id_bap, $request->id_kurperiode, $request->absensi_radio, $request->target_pertemuan ?? []);
 
     Alert::success('', 'Absen berhasil disimpan')->autoclose(3500);
     return redirect('entri_bap_kprd/' . $request->id_kurperiode);
@@ -1821,6 +2187,7 @@ class KaprodiController extends Controller
         'am.id_absensi',
         'am.id_bap',
         'am.absensi',
+        'am.keterangan',
         'sr.id_student',
         'mhs.nama',
         'mhs.nim',
@@ -1860,7 +2227,96 @@ class KaprodiController extends Controller
       ->orderBy('mhs.nim', 'asc')
       ->get();
 
-    return view('kaprodi/bap/edit_absen', ['idk' => $idk, 'abs' => $data, 'id' => $id]);
+    $regSrIds = $data->pluck('id_studentrecord')->toArray();
+
+    // Cek apakah mahasiswa reguler ini memiliki catatan kehadiran di kelas lain
+    $kur_master = DB::table('kurikulum_periode')->where('id_kurperiode', $idk)->first();
+    $kur_gabungan_ids = [];
+    if ($kur_master) {
+      $kur_gabungan_ids = DB::table('kurikulum_periode')
+        ->where('id_periodetahun', $kur_master->id_periodetahun)
+        ->where('id_periodetipe', $kur_master->id_periodetipe)
+        ->where('id_dosen', $kur_master->id_dosen)
+        ->where('id_hari', $kur_master->id_hari)
+        ->where('id_jam', $kur_master->id_jam)
+        ->where('id_makul', $kur_master->id_makul)
+        ->pluck('id_kurperiode')
+        ->toArray();
+    }
+    if (empty($kur_gabungan_ids)) {
+      $kur_gabungan_ids = [$idk];
+    }
+
+    $attendedMap = DB::table('absensi_mahasiswa as am')
+      ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
+      ->join('kurikulum_periode as kp', 'b.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as k', 'kp.id_kelas', '=', 'k.idkelas')
+      ->leftJoin('dosen as d', 'kp.id_dosen', '=', 'd.iddosen')
+      ->where('kp.id_makul', $kur_master->id_makul)
+      ->where('kp.id_periodetahun', $kur_master->id_periodetahun)
+      ->where('kp.id_periodetipe', $kur_master->id_periodetipe)
+      ->whereNotIn('kp.id_kurperiode', $kur_gabungan_ids)
+      ->whereIn('am.id_studentrecord', $regSrIds)
+      ->where('am.absensi', 'ABSEN')
+      ->where(function ($w) use ($kur) {
+        $w->where('b.pertemuan', $kur->pertemuan)
+          ->orWhere('am.keterangan', 'like', "%Target P-{$kur->pertemuan}%");
+      })
+      ->select('am.id_studentrecord', 'k.kelas as kelas_hadir', 'd.nama as dosen_hadir', 'b.pertemuan as sesi_pertemuan', 'am.keterangan')
+      ->get()
+      ->keyBy('id_studentrecord');
+
+    foreach ($data as $item) {
+      $item->hadir_di_kelas_lain = false;
+      $item->keterangan_kelas_lain = null;
+      if ($attendedMap->has($item->id_studentrecord)) {
+        $cr = $attendedMap->get($item->id_studentrecord);
+        $item->hadir_di_kelas_lain = true;
+        $item->keterangan_kelas_lain = "Sudah Hadir di Kelas {$cr->kelas_hadir} (" . ($cr->dosen_hadir ?: 'Dosen') . ") - Sesi P-{$cr->sesi_pertemuan}";
+      } elseif (!empty($item->keterangan) && str_contains($item->keterangan, 'Hadir di Kelas')) {
+        $item->hadir_di_kelas_lain = true;
+        $item->keterangan_kelas_lain = $item->keterangan;
+      }
+    }
+
+    // Ambil mahasiswa lintas kelas yang tersimpan pada BAP ini
+    $cross_students = DB::table('absensi_mahasiswa as am')
+      ->join('student_record as c', 'am.id_studentrecord', '=', 'c.id_studentrecord')
+      ->join('student as d', 'c.id_student', '=', 'd.idstudent')
+      ->join('prodi as e', function ($join) {
+        $join->on('e.kodeprodi', '=', 'd.kodeprodi')
+          ->on('e.kodekonsentrasi', '=', 'd.kodekonsentrasi');
+      })
+      ->join('kurikulum_periode as kp', 'c.id_kurperiode', '=', 'kp.id_kurperiode')
+      ->join('kelas as f', 'kp.id_kelas', '=', 'f.idkelas')
+      ->where('am.id_bap', $id)
+      ->whereNotIn('am.id_studentrecord', $regSrIds)
+      ->select(
+        'c.id_studentrecord',
+        'c.id_kurperiode',
+        'c.id_student',
+        'd.nim',
+        'd.nama',
+        'e.prodi',
+        'f.kelas',
+        'am.absensi',
+        'am.keterangan'
+      )
+      ->get();
+
+    foreach ($cross_students as $cs) {
+      $cs->is_lintas_kelas = true;
+      $cs->hadir_di_kelas_lain = false;
+      $cs->keterangan_kelas_lain = null;
+    }
+
+    return view('kaprodi/bap/edit_absen', [
+      'idk' => $idk,
+      'abs' => $data,
+      'cross_absen' => $cross_students,
+      'id' => $id,
+      'bap' => $kur
+    ]);
   }
 
   public function save_edit_absensi(Request $request)
@@ -1871,83 +2327,7 @@ class KaprodiController extends Controller
       'absensi_radio' => 'required|array'
     ]);
 
-    $initial_bap_id = $request->id_bap;
-
-    $subQuery = DB::table('bap as a')
-      ->join('kurikulum_periode as b', 'b.id_kurperiode', '=', 'a.id_kurperiode')
-      ->select('a.pertemuan', 'b.id_periodetahun', 'b.id_periodetipe', 'b.id_makul', 'b.id_hari', 'b.id_jam')
-      ->where('a.id_bap', $initial_bap_id)
-      ->where('a.status', 'ACTIVE')
-      ->where('b.status', 'ACTIVE');
-
-    $bap_gabungan_ids = DB::table('bap as c')
-      ->join('kurikulum_periode as b', 'c.id_kurperiode', '=', 'b.id_kurperiode')
-      ->joinSub($subQuery, 'aa', function ($join) {
-        $join->on('aa.id_periodetahun', '=', 'b.id_periodetahun')
-          ->on('aa.id_periodetipe', '=', 'b.id_periodetipe')
-          ->on('aa.id_makul', '=', 'b.id_makul')
-          ->on('aa.id_hari', '=', 'b.id_hari')
-          ->on('aa.id_jam', '=', 'b.id_jam')
-          ->on('aa.pertemuan', '=', 'c.pertemuan');
-      })
-      ->where('c.status', 'ACTIVE')
-      ->where('b.status', 'ACTIVE')
-      ->pluck('c.id_bap');
-
-    if ($bap_gabungan_ids->isEmpty()) {
-      Alert::error('Gagal', 'Data BAP untuk kelas gabungan tidak ditemukan.')->autoclose(3500);
-      return redirect('entri_bap_kprd/' . $request->id_kurperiode);
-    }
-
-    $data_absensi = [];
-    $sekarang = now();
-
-    foreach ($request->absensi_radio as $value) {
-      $parts = explode(',', $value, 2);
-      if (count($parts) === 2) {
-        $data_absensi[] = [
-          'id_studentrecord' => $parts[0],
-          'absensi' => $parts[1],
-          'status' => 'ACTIVE',
-          'created_at' => $sekarang,
-          'updated_at' => $sekarang,
-        ];
-      }
-    }
-
-    DB::transaction(function () use ($bap_gabungan_ids, $data_absensi) {
-      Absensi_mahasiswa::whereIn('id_bap', $bap_gabungan_ids)->delete();
-      Bap::whereIn('id_bap', $bap_gabungan_ids)->update(['hadir' => 0, 'tidak_hadir' => 0]);
-
-      if (empty($data_absensi)) {
-        return;
-      }
-
-      foreach ($bap_gabungan_ids as $bap_id) {
-        $data_untuk_insert = collect($data_absensi)->map(function ($item) use ($bap_id) {
-          $item['id_bap'] = $bap_id;
-          return $item;
-        })->toArray();
-
-        Absensi_mahasiswa::insert($data_untuk_insert);
-      }
-
-      $rekapAbsensi = Absensi_mahasiswa::select(
-        'id_bap',
-        DB::raw("SUM(CASE WHEN absensi = 'ABSEN' THEN 1 ELSE 0 END) as hadir"),
-        DB::raw("SUM(CASE WHEN absensi IN ('SAKIT', 'IZIN', 'ALFA') THEN 1 ELSE 0 END) as tidak_hadir")
-      )
-        ->whereIn('id_bap', $bap_gabungan_ids)
-        ->groupBy('id_bap')
-        ->get();
-
-      foreach ($rekapAbsensi as $rekap) {
-        Bap::where('id_bap', $rekap->id_bap)->update([
-          'hadir' => $rekap->hadir,
-          'tidak_hadir' => $rekap->tidak_hadir,
-        ]);
-      }
-    });
+    $this->prosesSimpanDanSinkronAbsensi($request->id_bap, $request->id_kurperiode, $request->absensi_radio, $request->target_pertemuan ?? []);
 
     Alert::success('', 'Absen berhasil diedit')->autoclose(3500);
     return redirect('entri_bap_kprd/' . $request->id_kurperiode);

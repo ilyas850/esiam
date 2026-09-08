@@ -587,6 +587,7 @@ Route::group(['middleware' => 'dosen'], function () {
     Route::post('save_absensi', 'DosenController@save_absensi');
     Route::get('/edit_absen/{id}', 'DosenController@edit_absen');
     Route::post('save_edit_absensi', 'DosenController@save_edit_absensi');
+    Route::get('/cari_mhs_lintas_kelas/{id_bap}', 'DosenController@cari_mhs_lintas_kelas');
     Route::get('view_bap/{id}', 'DosenController@view_bap');
     Route::get('print_bap/{id}', 'DosenController@cetak');
     Route::get('edit_bap/{id}', 'DosenController@edit_bap');
@@ -1152,6 +1153,7 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::post('save_absensi_dsn', 'DosenluarController@save_absensi');
     Route::get('/edit_absen_dsn/{id}', 'DosenluarController@edit_absen');
     Route::post('save_edit_absensi_dsn', 'DosenluarController@save_edit_absensi');
+    Route::get('/cari_mhs_lintas_kelas_dsn/{id_bap}', 'DosenluarController@cari_mhs_lintas_kelas');
     Route::get('view_bap_dsn/{id}', 'DosenluarController@view_bap');
     Route::get('print_bap_dsn/{id}', 'DosenluarController@cetak');
     Route::get('edit_bap_dsn/{id}', 'DosenluarController@edit_bap');
@@ -1361,6 +1363,7 @@ Route::group(['middleware' => 'kaprodi'], function () {
 
     Route::post('save_bap_kprd', 'KaprodiController@save_bap');
     //entri absen
+    Route::get('/cari_mhs_lintas_kelas_kprd/{id_bap}', 'KaprodiController@cari_mhs_lintas_kelas');
     Route::get('/entri_absen_kprd/{id}', 'KaprodiController@entri_absen');
     Route::post('save_absensi_kprd', 'KaprodiController@save_absensi');
     Route::get('/edit_absen_kprd/{id}', 'KaprodiController@edit_absen');

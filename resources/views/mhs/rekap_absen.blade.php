@@ -288,6 +288,9 @@
                                         <th style="width: 90px;">
                                             <center>Kode</center>
                                         </th>
+                                        <th>
+                                            <center>Keterangan</center>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -302,10 +305,17 @@
                                                 </span>
                                             </td>
                                             <td class="text-center"><strong>{{ $item->status_short }}</strong></td>
+                                            <td class="text-center">
+                                                @if(!empty($item->keterangan))
+                                                    <span class="badge bg-purple" style="font-size: 11px; white-space: normal; text-align: left; display: inline-block;"><i class="fa fa-info-circle"></i> {{ $item->keterangan }}</span>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5">
+                                            <td colspan="6">
                                                 <div class="empty-state">
                                                     <i class="fa fa-calendar-times-o"></i>
                                                     <div>Belum ada data absensi mahasiswa yang dapat ditampilkan.</div>
@@ -339,6 +349,12 @@
                                             <span class="attendance-card-label">Kode Singkat</span>
                                             <span class="attendance-card-value">{{ $item->status_short }}</span>
                                         </div>
+                                        @if(!empty($item->keterangan))
+                                            <div class="attendance-card-item" style="grid-column: span 2;">
+                                                <span class="attendance-card-label">Keterangan</span>
+                                                <span class="attendance-card-value text-purple" style="color: #605ca8; font-size: 12px;"><i class="fa fa-info-circle"></i> {{ $item->keterangan }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @empty
