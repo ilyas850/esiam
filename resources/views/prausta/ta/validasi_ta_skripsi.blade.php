@@ -5,16 +5,23 @@
 @endsection
 
 @section('content')
-    <section class="content">
-        <div class="box box-danger">
-            <div class="box-header">
-                <h3 class="box-title">Pilih Tipe</h3>
-            </div>
-            <div class="box-body">
-                <a href="/data_val_ta_mahasiswa" class="btn btn-info">Data Validasi Tugas Akhir</a>
-                <a href="/data_val_skripsi_mahasiswa" class="btn btn-success">Data Validasi Skripsi</a>
-            </div>
-        </div>
+    <section class="content-header">
+        <h1>
+            Validasi TA & Skripsi
+            <small>Memuat Data Validasi...</small>
+        </h1>
     </section>
 
+    <section class="content">
+        <div class="callout callout-info">
+            <h4><i class="fa fa-info-circle"></i> Mengalihkan...</h4>
+            <p>Halaman sedang dialihkan ke tab Validasi Tugas Akhir. Jika tidak beralih otomatis, silakan <a href="{{ url('data_val_ta_mahasiswa') }}" class="btn btn-xs btn-default">klik di sini</a>.</p>
+        </div>
+    </section>
+@endsection
+
+@section('script')
+    <script>
+        window.location.href = "{{ url('data_val_ta_mahasiswa') }}";
+    </script>
 @endsection

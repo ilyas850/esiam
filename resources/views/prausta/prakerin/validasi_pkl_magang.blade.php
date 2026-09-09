@@ -5,16 +5,23 @@
 @endsection
 
 @section('content')
+    <section class="content-header">
+        <h1>
+            Validasi PKL & Magang
+            <small>Memuat Data Validasi...</small>
+        </h1>
+    </section>
+
     <section class="content">
-        <div class="box box-danger">
-            <div class="box-header">
-                <h3 class="box-title">Pilih Tipe</h3>
-            </div>
-            <div class="box-body">
-                <a href="/data_val_pkl_mahasiswa" class="btn btn-info">Data Validasi PKL</a>
-                <a href="/data_val_magang_mahasiswa" class="btn btn-success">Data Validasi Magang 1</a>
-                <a href="/data_val_magang2_mahasiswa" class="btn btn-warning">Data Validasi Magang 2</a>
-            </div>
+        <div class="callout callout-info">
+            <h4><i class="fa fa-info-circle"></i> Mengalihkan...</h4>
+            <p>Halaman sedang dialihkan ke tab Validasi PKL. Jika tidak beralih otomatis, silakan <a href="{{ url('data_val_pkl_mahasiswa') }}" class="btn btn-xs btn-default">klik di sini</a>.</p>
         </div>
     </section>
+@endsection
+
+@section('script')
+    <script>
+        window.location.href = "{{ url('data_val_pkl_mahasiswa') }}";
+    </script>
 @endsection
