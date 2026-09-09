@@ -5549,11 +5549,14 @@ class AdminPraustaController extends Controller
 
     public function validasi_pkl_magang()
     {
-        return view('prausta/prakerin/validasi_pkl_magang');
+        return redirect('data_val_pkl_mahasiswa');
     }
 
     public function data_val_pkl_mahasiswa()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5579,7 +5582,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->groupBy(
@@ -5600,11 +5603,14 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/prakerin/validasi_pkl', compact('data'));
+        return view('prausta/prakerin/validasi_pkl', compact('data', 'angkatan', 'prodi'));
     }
 
     public function data_val_magang_mahasiswa()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5630,7 +5636,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->groupBy(
@@ -5650,11 +5656,14 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/prakerin/validasi_magang', compact('data'));
+        return view('prausta/prakerin/validasi_magang', compact('data', 'angkatan', 'prodi'));
     }
 
     public function data_val_magang2_mahasiswa()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5680,7 +5689,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->groupBy(
@@ -5700,11 +5709,14 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/prakerin/validasi_magang2', compact('data'));
+        return view('prausta/prakerin/validasi_magang2', compact('data', 'angkatan', 'prodi'));
     }
 
     public function validasi_sempro()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5730,7 +5742,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf'
             )
             ->groupBy(
@@ -5750,16 +5762,19 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/sempro/validasi_sempro', compact('data'));
+        return view('prausta/sempro/validasi_sempro', compact('data', 'angkatan', 'prodi'));
     }
 
     public function validasi_ta_skripsi()
     {
-        return view('prausta/ta/validasi_ta_skripsi');
+        return redirect('data_val_ta_mahasiswa');
     }
 
     public function data_val_ta_mahasiswa()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5785,7 +5800,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
             )
@@ -5807,11 +5822,14 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/ta/validasi_ta', compact('data'));
+        return view('prausta/ta/validasi_ta', compact('data', 'angkatan', 'prodi'));
     }
 
     public function data_val_skripsi_mahasiswa()
     {
+        $angkatan = Angkatan::orderBy('angkatan', 'DESC')->get();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->orderBy('prodi', 'ASC')->get();
+
         $data = Prausta_setting_relasi::join('student', 'prausta_setting_relasi.id_student', '=', 'student.idstudent')
             ->leftJoin('prodi', (function ($join) {
                 $join->on('prodi.kodeprodi', '=', 'student.kodeprodi')
@@ -5837,7 +5855,7 @@ class AdminPraustaController extends Controller
                 'angkatan.angkatan',
                 'prausta_setting_relasi.file_laporan_revisi',
                 'prausta_setting_relasi.validasi_baak',
-                DB::raw('COUNT(prausta_trans_bimbingan.id_settingrelasi_prausta) as jml_bim'),
+                DB::raw('COUNT(DISTINCT prausta_trans_bimbingan.id_transbimb_prausta) as jml_bim'),
                 'prausta_trans_hasil.nilai_huruf',
                 'prausta_setting_relasi.file_plagiarisme'
             )
@@ -5859,7 +5877,7 @@ class AdminPraustaController extends Controller
             ->orderBy('prausta_setting_relasi.id_settingrelasi_prausta', 'DESC')
             ->get();
 
-        return view('prausta/ta/validasi_skripsi', compact('data'));
+        return view('prausta/ta/validasi_skripsi', compact('data', 'angkatan', 'prodi'));
     }
 
     public function validasi_akhir_prausta($id)
@@ -5882,12 +5900,27 @@ class AdminPraustaController extends Controller
         return redirect()->back();
     }
 
+    public function validasi_akhir_prausta_bulk(Request $request)
+    {
+        $ids = $request->input('id_settingrelasi_prausta');
+
+        if (!empty($ids) && is_array($ids)) {
+            Prausta_setting_relasi::whereIn('id_settingrelasi_prausta', $ids)->update(['validasi_baak' => 'SUDAH']);
+            Alert::success('', 'Berhasil Validasi Akhir ' . count($ids) . ' Mahasiswa')->autoclose(3500);
+        } else {
+            Alert::warning('', 'Tidak ada data mahasiswa yang dipilih')->autoclose(3500);
+        }
+
+        return redirect()->back();
+    }
+
     public function waktu_pkl()
     {
         $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
         $periodetipe = Periode_tipe::all();
 
         $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
+        $prodi_all = Prodi::all();
 
         $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
@@ -5909,20 +5942,30 @@ class AdminPraustaController extends Controller
                 'prausta_master_waktu.tipe_prausta',
                 'prausta_master_waktu.status'
             )
-            ->orderBy('periode_tahun.periode_tahun')
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
             ->orderBy('prodi.prodi', 'ASC')
             ->orderBy('prodi.kodeprodi', 'ASC')
             ->get();
 
-        return view('prausta/prakerin/waktu_pkl', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
+        return view('prausta/prakerin/waktu_pkl', compact('periodetahun', 'periodetipe', 'prodi', 'prodi_all', 'data'));
     }
 
     public function post_waktu_prausta(Request $request)
     {
-        $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
-        // dd($request->toArray(), $prd);
-        // dd($request->toArray());
-        $cekProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->get();
+        if ($request->filled('kodeprodi')) {
+            $cekProdi = Prodi::where('kodeprodi', $request->kodeprodi)->get();
+        } elseif ($request->filled('id_prodi')) {
+            $prd = Prodi::where('id_prodi', $request->id_prodi)->first();
+            $cekProdi = $prd ? Prodi::where('kodeprodi', $prd->kodeprodi)->get() : collect();
+        } else {
+            Alert::error('Gagal', 'Prodi harus dipilih!')->autoclose(3500);
+            return redirect()->back();
+        }
+
+        if ($cekProdi->isEmpty()) {
+            Alert::error('Gagal', 'Data prodi tidak ditemukan!')->autoclose(3500);
+            return redirect()->back();
+        }
 
         for ($i = 0; $i < count($cekProdi); $i++) {
             $prodi = $cekProdi[$i];
@@ -5974,7 +6017,8 @@ class AdminPraustaController extends Controller
 
         $periodetipe = Periode_tipe::all();
 
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
+        $prodi_all = Prodi::all();
 
         $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
@@ -5996,18 +6040,19 @@ class AdminPraustaController extends Controller
                 'prausta_master_waktu.status'
             )
             ->orderBy('periode_tahun.periode_tahun', 'DESC')
+            ->orderBy('prodi.prodi', 'ASC')
             ->get();
 
-        return view('prausta/sempro/waktu_sempro', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
+        return view('prausta/sempro/waktu_sempro', compact('periodetahun', 'periodetipe', 'prodi', 'prodi_all', 'data'));
     }
 
     public function waktu_ta()
     {
         $periodetahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-
         $periodetipe = Periode_tipe::all();
 
-        $prodi = Prodi::all();
+        $prodi = Prodi::groupBy('kodeprodi', 'prodi')->select('kodeprodi', 'prodi')->get();
+        $prodi_all = Prodi::all();
 
         $data = Prausta_master_waktu::join('periode_tahun', 'prausta_master_waktu.id_periodetahun', '=', 'periode_tahun.id_periodetahun')
             ->join('periode_tipe', 'prausta_master_waktu.id_periodetipe', '=', 'periode_tipe.id_periodetipe')
@@ -6028,9 +6073,11 @@ class AdminPraustaController extends Controller
                 'prausta_master_waktu.tipe_prausta',
                 'prausta_master_waktu.status'
             )
+            ->orderBy('periode_tahun.periode_tahun', 'DESC')
+            ->orderBy('prodi.prodi', 'ASC')
             ->get();
 
-        return view('prausta/ta/waktu_ta', compact('periodetahun', 'periodetipe', 'prodi', 'data'));
+        return view('prausta/ta/waktu_ta', compact('periodetahun', 'periodetipe', 'prodi', 'prodi_all', 'data'));
     }
 
     public function honor_pkl_magang()
