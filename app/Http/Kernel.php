@@ -74,6 +74,10 @@ class Kernel extends HttpKernel
         'bauk' => \App\Http\Middleware\BaukMiddleware::class,
         'wadir3' => \App\Http\Middleware\Wadir3Middleware::class,
         'gugusmutu' => \App\Http\Middleware\GugusMutuMiddleware::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'yayasan' => \App\Http\Middleware\YayasanMiddleware::class,
     ];
 
     /**
