@@ -8,9 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +20,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'password', 'id_user', 'role'
+        'name',
+        'username',
+        'password',
+        'id_user',
+        'role',
+        'kodeprodi'
     ];
 
     /**
@@ -27,7 +34,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -41,110 +49,67 @@ class User extends Authenticatable
 
     public function isSadmin()
     {
-        if ($this->role == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 1 || $this->hasRole('sadmin');
     }
 
     public function isDosen()
     {
-        if ($this->role == 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 2 || $this->hasRole('dosen');
     }
 
     public function isMhs()
     {
-        if ($this->role == 3) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 3 || $this->hasRole('mhs');
     }
 
     public function isNoMhs()
     {
-        if ($this->role == 4) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 4 || $this->hasRole('no_mhs');
     }
 
     public function isDosenluar()
     {
-        if ($this->role == 5) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 5 || $this->hasRole('dosen_luar');
     }
 
     public function isKaprodi()
     {
-        if ($this->role == 6) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 6 || $this->hasRole('kaprodi');
     }
 
     public function isWadir1()
     {
-        if ($this->role == 7) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 7 || $this->hasRole('wadir1');
     }
 
     public function isBauk()
     {
-        if ($this->role == 8) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 8 || $this->hasRole('bauk');
     }
 
     public function isAdminprodi()
     {
-        if ($this->role == 9) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 9 || $this->hasRole('admin_prodi');
     }
 
     public function isWadir3()
     {
-        if ($this->role == 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 10 || $this->hasRole('wadir3');
     }
 
     public function isPrausta()
     {
-        if ($this->role == 11) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 11 || $this->hasRole('prausta');
     }
 
     public function isGugusMutu()
     {
-        if ($this->role == 12) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->role == 12 || $this->hasRole('gugus_mutu');
+    }
+
+    public function isYayasan()
+    {
+        return $this->hasRole('yayasan');
     }
 
     // Relasi ke Student
