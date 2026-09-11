@@ -185,7 +185,8 @@
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ url('rekap_perkuliahan_prodi') }}" method="GET">
+            <form action="{{ url('filter_rekap_perkuliahan_prodi') }}" method="POST">
+                @csrf
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-4 col-sm-6 col-xs-12">
