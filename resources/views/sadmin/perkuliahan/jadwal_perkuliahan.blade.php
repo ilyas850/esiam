@@ -199,7 +199,8 @@
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ url('jadwal_perkuliahan') }}" method="GET">
+            <form action="{{ url('filter_jadwal_perkuliahan') }}" method="POST">
+                @csrf
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-6 col-xs-12">

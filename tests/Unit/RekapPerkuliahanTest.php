@@ -69,6 +69,24 @@ class RekapPerkuliahanTest extends TestCase
         $this->assertStringContainsString('example8', $view);
     }
 
+    public function test_rekap_filter_forms_post_to_their_registered_endpoints(): void
+    {
+        $sadminView = file_get_contents(__DIR__ . '/../../resources/views/sadmin/perkuliahan/rekap_perkuliahan.blade.php');
+        $prodiView = file_get_contents(__DIR__ . '/../../resources/views/adminprodi/perkuliahan/rekap_perkuliahan.blade.php');
+        $kaprodiView = file_get_contents(__DIR__ . '/../../resources/views/kaprodi/perkuliahan/rekap_perkuliahan.blade.php');
+        $routes = file_get_contents(__DIR__ . '/../../routes/web.php');
+
+        $this->assertStringContainsString('<form action="{{ url(\'filter_rekap_perkuliahan\') }}" method="POST">', $sadminView);
+        $this->assertStringContainsString('@csrf', $sadminView);
+        $this->assertStringContainsString('<form action="{{ url(\'filter_rekap_perkuliahan_prodi\') }}" method="POST">', $prodiView);
+        $this->assertStringContainsString('@csrf', $prodiView);
+        $this->assertStringContainsString("url('filter_rekap_perkuliahan_kprd')", $kaprodiView);
+        $this->assertStringContainsString('method="POST"', $kaprodiView);
+        $this->assertStringContainsString("Route::post('filter_rekap_perkuliahan', 'SadminController@filter_rekap_perkuliahan');", $routes);
+        $this->assertStringContainsString("Route::post('filter_rekap_perkuliahan_prodi', 'ProdiController@filter_rekap_perkuliahan');", $routes);
+        $this->assertStringContainsString("Route::post('filter_rekap_perkuliahan_kprd', 'KaprodiController@filter_rekap_perkuliahan');", $routes);
+    }
+
     public function test_prodi_view_contains_modern_ui_elements_and_scoped_filters(): void
     {
         $view = file_get_contents(__DIR__ . '/../../resources/views/adminprodi/perkuliahan/rekap_perkuliahan.blade.php');

@@ -43,6 +43,16 @@ class JadwalPerkuliahanEloquentTest extends TestCase
         $this->assertStringContainsString('example8', $view);
     }
 
+    public function test_sadmin_jadwal_filter_posts_to_its_filter_endpoint(): void
+    {
+        $view = file_get_contents(__DIR__ . '/../../resources/views/sadmin/perkuliahan/jadwal_perkuliahan.blade.php');
+        $routes = file_get_contents(__DIR__ . '/../../routes/web.php');
+
+        $this->assertStringContainsString('<form action="{{ url(\'filter_jadwal_perkuliahan\') }}" method="POST">', $view);
+        $this->assertStringContainsString('@csrf', $view);
+        $this->assertStringContainsString("Route::post('filter_jadwal_perkuliahan', 'SadminController@filter_jadwal_perkuliahan');", $routes);
+    }
+
     public function test_prodi_view_contains_modern_ui_elements_and_day_mapping(): void
     {
         $view = file_get_contents(__DIR__ . '/../../resources/views/adminprodi/perkuliahan/jadwal_perkuliahan.blade.php');
