@@ -249,7 +249,7 @@
             <li><a href="/master_report_kritiksaran"><i class="fa fa-circle-o"></i>Report</a></li>
         </ul>
     </li>
-    <li class="treeview">
+    <li class="treeview {{ Request::is('export_data_akm*') || Request::is('rincian_data_akm*') || Request::is('filter_rincian_akm*') ? 'active' : '' }}">
         <a href="#">
             <i class="fa fa-th"></i> <span>Export Data</span>
             <span class="pull-right-container">
@@ -257,7 +257,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="/export_data_akm"><i class="fa fa-circle-o"></i>Data AKM</a></li>
+            <li class="{{ Request::is('export_data_akm*') ? 'active' : '' }}"><a href="/export_data_akm"><i class="fa fa-circle-o"></i>Data AKM</a></li>
+            <li class="{{ Request::is('rincian_data_akm*') || Request::is('filter_rincian_akm*') ? 'active' : '' }}"><a href="/rincian_data_akm"><i class="fa fa-circle-o"></i>Rincian AKM</a></li>
         </ul>
     </li>
     <li class="treeview">

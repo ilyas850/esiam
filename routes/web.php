@@ -377,6 +377,12 @@ Route::group(['middleware' => 'sadmin'], function () {
     Route::post('filter_export_akm', 'SadminController@filter_export_akm');
     Route::post('export_data_akm_xls', 'SadminController@export_data_akm_xls');
 
+    #rincian data akm per mahasiswa (multi-sheet)
+    Route::get('rincian_data_akm', 'SadminController@rincian_data_akm');
+    Route::post('filter_rincian_akm', 'SadminController@filter_rincian_akm');
+    Route::post('export_rincian_akm_xls', 'SadminController@export_rincian_akm_xls');
+    Route::post('export_rincian_akm_single_xls', 'SadminController@export_rincian_akm_single_xls');
+
     //master pembayaran mahasiswa
     Route::get('record_pembayaran_mahasiswa', 'SadminController@record_pembayaran_mahasiswa');
     Route::get('detail_pembayaran_mhs_admin/{id}', 'SadminController@detail_pembayaran_mhs_admin');
