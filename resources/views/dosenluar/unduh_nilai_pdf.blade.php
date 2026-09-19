@@ -51,17 +51,41 @@
             <td><b><span style="font-size:85%"><u>{{ $data->kelas }}</u></span></b></td>
         </tr>
     </table>
+    @php
+        $is_obe = (isset($nilai) && $nilai && ((float)$nilai->partisipatif > 0 || (float)$nilai->proyek > 0 || (float)$nilai->tugas > 0 || (float)$nilai->kuis > 0));
+    @endphp
     <table border="1" width="100%" cellpadding="4">
         <thead>
             <tr style="background-color: #f2f2f2;">
                 <th width="4%"><span style="font-size:85%">No</span></th>
                 <th width="14%"><span style="font-size:85%">NIM</span></th>
-                <th width="32%"><span style="font-size:85%">Nama Mahasiswa</span></th>
-                <th width="10%"><span style="font-size:85%">Nilai KAT</span></th>
-                <th width="10%"><span style="font-size:85%">Nilai UTS</span></th>
-                <th width="10%"><span style="font-size:85%">Nilai UAS</span></th>
-                <th width="10%"><span style="font-size:85%">Nilai AKHIR</span></th>
-                <th width="10%"><span style="font-size:85%">Nilai HURUF</span></th>
+                <th width="28%"><span style="font-size:85%">Nama Mahasiswa</span></th>
+                @if ($is_obe)
+                    @if ((float)$nilai->partisipatif > 0)
+                        <th><span style="font-size:85%">Partisipatif ({{ $nilai->partisipatif }}%)</span></th>
+                    @endif
+                    @if ((float)$nilai->proyek > 0)
+                        <th><span style="font-size:85%">Proyek ({{ $nilai->proyek }}%)</span></th>
+                    @endif
+                    @if ((float)$nilai->tugas > 0)
+                        <th><span style="font-size:85%">Tugas ({{ $nilai->tugas }}%)</span></th>
+                    @endif
+                    @if ((float)$nilai->kuis > 0)
+                        <th><span style="font-size:85%">Quiz ({{ $nilai->kuis }}%)</span></th>
+                    @endif
+                    @if ((float)$nilai->uts > 0)
+                        <th><span style="font-size:85%">UTS ({{ $nilai->uts }}%)</span></th>
+                    @endif
+                    @if ((float)$nilai->uas > 0)
+                        <th><span style="font-size:85%">UAS ({{ $nilai->uas }}%)</span></th>
+                    @endif
+                @else
+                    <th width="10%"><span style="font-size:85%">Nilai KAT</span></th>
+                    <th width="10%"><span style="font-size:85%">Nilai UTS</span></th>
+                    <th width="10%"><span style="font-size:85%">Nilai UAS</span></th>
+                @endif
+                <th width="8%"><span style="font-size:85%">Nilai AKHIR</span></th>
+                <th width="8%"><span style="font-size:85%">Nilai HURUF</span></th>
             </tr>
         </thead>
         <tbody>
@@ -75,15 +99,36 @@
                         <center>{{ $item->nim }}</center>
                     </td>
                     <td style="font-size:85%">{{ $item->nama }}</td>
-                    <td style="font-size:85%">
-                        <center>{{ $item->nilai_KAT }}</center>
-                    </td>
-                    <td style="font-size:85%">
-                        <center>{{ $item->nilai_UTS }}</center>
-                    </td>
-                    <td style="font-size:85%">
-                        <center>{{ $item->nilai_UAS }}</center>
-                    </td>
+                    @if ($is_obe)
+                        @if ((float)$nilai->partisipatif > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_partisipatif ?? 0 }}</center></td>
+                        @endif
+                        @if ((float)$nilai->proyek > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_proyek ?? 0 }}</center></td>
+                        @endif
+                        @if ((float)$nilai->tugas > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_tugas ?? 0 }}</center></td>
+                        @endif
+                        @if ((float)$nilai->kuis > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_kuis ?? 0 }}</center></td>
+                        @endif
+                        @if ((float)$nilai->uts > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_UTS ?? 0 }}</center></td>
+                        @endif
+                        @if ((float)$nilai->uas > 0)
+                            <td style="font-size:85%"><center>{{ $item->nilai_UAS ?? 0 }}</center></td>
+                        @endif
+                    @else
+                        <td style="font-size:85%">
+                            <center>{{ $item->nilai_KAT }}</center>
+                        </td>
+                        <td style="font-size:85%">
+                            <center>{{ $item->nilai_UTS }}</center>
+                        </td>
+                        <td style="font-size:85%">
+                            <center>{{ $item->nilai_UAS }}</center>
+                        </td>
+                    @endif
                     <td style="font-size:85%">
                         <center>{{ floor((float)$item->nilai_AKHIR_angka) == (float)$item->nilai_AKHIR_angka ? (int)$item->nilai_AKHIR_angka : round((float)$item->nilai_AKHIR_angka, 2) }}</center>
                     </td>
