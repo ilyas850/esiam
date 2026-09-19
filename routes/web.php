@@ -546,6 +546,14 @@ Route::group(['middleware' => 'dosen'], function () {
 
     #matakuliah diampu dosen
     Route::get('makul_diampu_dsn', 'DosenController@makul_diampu_dsn');
+    Route::get('input_partisipatif_dsn/{id}', 'DosenController@input_partisipatif_dsn');
+    Route::post('save_nilai_partisipatif_dsn', 'DosenController@save_nilai_partisipatif_dsn');
+    Route::get('input_proyek_dsn/{id}', 'DosenController@input_proyek_dsn');
+    Route::post('save_nilai_proyek_dsn', 'DosenController@save_nilai_proyek_dsn');
+    Route::get('input_tugas_dsn/{id}', 'DosenController@input_tugas_dsn');
+    Route::post('save_nilai_tugas_dsn', 'DosenController@save_nilai_tugas_dsn');
+    Route::get('input_kuis_dsn/{id}', 'DosenController@input_kuis_dsn');
+    Route::post('save_nilai_kuis_dsn', 'DosenController@save_nilai_kuis_dsn');
     Route::get('input_kat_dsn/{id}', 'DosenController@input_kat_dsn');
     Route::post('save_nilai_KAT_dsn', 'DosenController@save_nilai_KAT_dsn');
     Route::get('input_uts_dsn/{id}', 'DosenController@input_uts_dsn');
@@ -1125,6 +1133,14 @@ Route::group(['middleware' => 'dosenluar'], function () {
     Route::get('history_makul_dsnlr', 'DosenluarController@history_makul_dsn');
     Route::get('cekmhs_dsn_hislr/{id}', 'DosenluarController@cekmhs_dsn_his');
     Route::get('val_ujian', 'DosenluarController@val_ujian');
+    Route::get('input_partisipatif/{id}', 'DosenluarController@input_partisipatif');
+    Route::post('save_nilai_partisipatif', 'DosenluarController@save_nilai_partisipatif');
+    Route::get('input_proyek/{id}', 'DosenluarController@input_proyek');
+    Route::post('save_nilai_proyek', 'DosenluarController@save_nilai_proyek');
+    Route::get('input_tugas/{id}', 'DosenluarController@input_tugas');
+    Route::post('save_nilai_tugas', 'DosenluarController@save_nilai_tugas');
+    Route::get('input_kuis/{id}', 'DosenluarController@input_kuis');
+    Route::post('save_nilai_kuis', 'DosenluarController@save_nilai_kuis');
     Route::get('input_kat/{id}', 'DosenluarController@input_kat');
     Route::post('save_nilai_KAT', 'DosenluarController@save_nilai_KAT');
     Route::get('input_uts/{id}', 'DosenluarController@input_uts');
@@ -1335,6 +1351,14 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::post('filter_makul_diampu_kprd', 'KaprodiController@filter_makul_diampu_kprd');
 
     #input nilai
+    Route::get('input_partisipatif_kprd/{id}', 'KaprodiController@input_partisipatif_kprd');
+    Route::post('save_nilai_partisipatif_kprd', 'KaprodiController@save_nilai_partisipatif_kprd');
+    Route::get('input_proyek_kprd/{id}', 'KaprodiController@input_proyek_kprd');
+    Route::post('save_nilai_proyek_kprd', 'KaprodiController@save_nilai_proyek_kprd');
+    Route::get('input_tugas_kprd/{id}', 'KaprodiController@input_tugas_kprd');
+    Route::post('save_nilai_tugas_kprd', 'KaprodiController@save_nilai_tugas_kprd');
+    Route::get('input_kuis_kprd/{id}', 'KaprodiController@input_kuis_kprd');
+    Route::post('save_nilai_kuis_kprd', 'KaprodiController@save_nilai_kuis_kprd');
     Route::get('input_kat_kprd/{id}', 'KaprodiController@input_kat_kprd');
     Route::post('save_nilai_KAT_kprd', 'KaprodiController@save_nilai_KAT_kprd');
     Route::get('input_uts_kprd/{id}', 'KaprodiController@input_uts_kprd');
