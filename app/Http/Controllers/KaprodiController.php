@@ -64,6 +64,8 @@ use App\Exports\DataMhsAllExport;
 use App\Exports\DataBimbinganPrakerinExport;
 use App\Exports\DataBimbinganSemproExport;
 use App\Exports\DataBimbinganTaExport;
+use App\Exports\RincianAkmMultiExport;
+use App\Exports\RincianAkmPerMhsSheetExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -1878,7 +1880,7 @@ class KaprodiController extends Controller
   }
 
   /**
-   * Logika inti simpan dan sinkronisasi kehadiran mahasiswa (termasuk lintas kelas) untuk Kaprodi
+   * Logika inti simpan dan sinkronisasi kehadiran mahasiswa (termasuk lintas kelas) untuk Kaprodi - Optimized
    */
   private function prosesSimpanDanSinkronAbsensi($initial_bap_id, $id_kurperiode, array $absensi_radio, array $target_pertemuan_input = [])
   {
@@ -2020,150 +2022,166 @@ class KaprodiController extends Controller
       }
     }
 
-    // 3. Alokasi cerdas & sinkronisasi untuk mahasiswa lintas kelas
-    foreach ($mahasiswa_lintas_kelas_list as $mlk) {
-      $id_sr = $mlk['id_studentrecord'];
-      $status_absen = $mlk['status_absen'];
-      $origin_kur_id = $mlk['origin_kur_id'];
-      $origin_kelas_nama = $mlk['origin_kelas_nama'];
+    // 3. Eksekusi penulisan database dalam DB Transaction agar atomic dan hemat I/O disk
+    DB::transaction(function () use (
+      $bap_gabungan_ids,
+      $initial_bap_id,
+      $currentBap,
+      $mahasiswa_lintas_kelas_list,
+      $target_pertemuan_input,
+      &$data_absensi_awal,
+      $sekarang
+    ) {
+      // Alokasi cerdas & sinkronisasi untuk mahasiswa lintas kelas
+      if (!empty($mahasiswa_lintas_kelas_list)) {
+        foreach ($mahasiswa_lintas_kelas_list as $mlk) {
+          $id_sr = $mlk['id_studentrecord'];
+          $status_absen = $mlk['status_absen'];
+          $origin_kur_id = $mlk['origin_kur_id'];
+          $origin_kelas_nama = $mlk['origin_kelas_nama'];
 
-      if ($status_absen === 'ABSEN' && $currentBap) {
-        $customTarget = null;
-        if (isset($target_pertemuan_input[$id_sr]) && !empty($target_pertemuan_input[$id_sr])) {
-          $val = (int) $target_pertemuan_input[$id_sr];
-          if ($val >= 1 && $val <= 16) {
-            $customTarget = $val;
-          }
-        }
-
-        if ($customTarget) {
-          $targetPertemuan = (string) $customTarget;
-        } else {
-          // Tentukan target pertemuan cerdas berdasarkan kelas asal mahasiswa:
-          $attendedInOrigin = DB::table('absensi_mahasiswa as am')
-            ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
-            ->where('b.id_kurperiode', $origin_kur_id)
-            ->where('b.status', 'ACTIVE')
-            ->where('am.id_studentrecord', $id_sr)
-            ->where('am.absensi', 'ABSEN')
-            ->pluck('b.pertemuan')
-            ->map(function ($val) { return (int) $val; })
-            ->toArray();
-
-          $latestOriginBap = (int) DB::table('bap')
-            ->where('id_kurperiode', $origin_kur_id)
-            ->where('status', 'ACTIVE')
-            ->max('pertemuan');
-
-          if ($latestOriginBap > 0 && !in_array($latestOriginBap, $attendedInOrigin)) {
-            $targetPertemuan = (string) $latestOriginBap;
-          } else {
-            $candidate = max(1, $latestOriginBap + 1);
-            while (in_array($candidate, $attendedInOrigin) && $candidate <= 16) {
-              $candidate++;
+          if ($status_absen === 'ABSEN' && $currentBap) {
+            $customTarget = null;
+            if (isset($target_pertemuan_input[$id_sr]) && !empty($target_pertemuan_input[$id_sr])) {
+              $val = (int) $target_pertemuan_input[$id_sr];
+              if ($val >= 1 && $val <= 16) {
+                $customTarget = $val;
+              }
             }
-            $targetPertemuan = (string) min(16, $candidate);
-          }
-        }
 
-        $syncNote = "Hadir di Kelas {$currentBap->nama_kelas} ({$currentBap->nama_dosen}) - Sesi P-{$currentBap->pertemuan}";
+            if ($customTarget) {
+              $targetPertemuan = (string) $customTarget;
+            } else {
+              $attendedInOrigin = DB::table('absensi_mahasiswa as am')
+                ->join('bap as b', 'am.id_bap', '=', 'b.id_bap')
+                ->where('b.id_kurperiode', $origin_kur_id)
+                ->where('b.status', 'ACTIVE')
+                ->where('am.id_studentrecord', $id_sr)
+                ->where('am.absensi', 'ABSEN')
+                ->pluck('b.pertemuan')
+                ->map(function ($val) { return (int) $val; })
+                ->toArray();
 
-        // Update keterangan di record BAP saat ini
-        foreach ($data_absensi_awal as &$itemAwal) {
-          if ($itemAwal['id_studentrecord'] == $id_sr) {
-            $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama}) -> Target P-{$targetPertemuan}";
-          }
-        }
-        unset($itemAwal);
+              $latestOriginBap = (int) DB::table('bap')
+                ->where('id_kurperiode', $origin_kur_id)
+                ->where('status', 'ACTIVE')
+                ->max('pertemuan');
 
-        // Sinkronisasikan ke BAP kelas asal jika BAP untuk target pertemuan sudah ada
-        $targetOriginBap = DB::table('bap')
-          ->where('id_kurperiode', $origin_kur_id)
-          ->where('pertemuan', $targetPertemuan)
-          ->where('status', 'ACTIVE')
-          ->first();
+              if ($latestOriginBap > 0 && !in_array($latestOriginBap, $attendedInOrigin)) {
+                $targetPertemuan = (string) $latestOriginBap;
+              } else {
+                $candidate = max(1, $latestOriginBap + 1);
+                while (in_array($candidate, $attendedInOrigin) && $candidate <= 16) {
+                  $candidate++;
+                }
+                $targetPertemuan = (string) min(16, $candidate);
+              }
+            }
 
-        if ($targetOriginBap) {
-          $existing = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)
-            ->where('id_studentrecord', $id_sr)
-            ->first();
-          if ($existing) {
-            $existing->update([
-              'absensi' => 'ABSEN',
-              'keterangan' => $syncNote,
-              'updated_at' => $sekarang,
-            ]);
+            $syncNote = "Hadir di Kelas {$currentBap->nama_kelas} ({$currentBap->nama_dosen}) - Sesi P-{$currentBap->pertemuan}";
+
+            // Update keterangan di record BAP saat ini
+            foreach ($data_absensi_awal as &$itemAwal) {
+              if ($itemAwal['id_studentrecord'] == $id_sr) {
+                $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama}) -> Target P-{$targetPertemuan}";
+              }
+            }
+            unset($itemAwal);
+
+            // Sinkronisasikan ke BAP kelas asal jika BAP untuk target pertemuan sudah ada
+            $targetOriginBap = DB::table('bap')
+              ->where('id_kurperiode', $origin_kur_id)
+              ->where('pertemuan', $targetPertemuan)
+              ->where('status', 'ACTIVE')
+              ->first();
+
+            if ($targetOriginBap) {
+              DB::table('absensi_mahasiswa')->updateOrInsert(
+                [
+                  'id_bap' => $targetOriginBap->id_bap,
+                  'id_studentrecord' => $id_sr,
+                ],
+                [
+                  'absensi' => 'ABSEN',
+                  'keterangan' => $syncNote,
+                  'status' => 'ACTIVE',
+                  'updated_at' => $sekarang,
+                ]
+              );
+
+              $hadirCount = DB::table('absensi_mahasiswa')
+                ->where('id_bap', $targetOriginBap->id_bap)
+                ->where('absensi', 'ABSEN')
+                ->count();
+
+              $tdkHadirCount = DB::table('absensi_mahasiswa')
+                ->where('id_bap', $targetOriginBap->id_bap)
+                ->whereIn('absensi', ['SAKIT', 'IZIN', 'ALFA'])
+                ->count();
+
+              DB::table('bap')->where('id_bap', $targetOriginBap->id_bap)->update([
+                'hadir' => $hadirCount,
+                'tidak_hadir' => $tdkHadirCount,
+                'updated_at' => $sekarang,
+              ]);
+            }
           } else {
-            Absensi_mahasiswa::create([
-              'id_bap' => $targetOriginBap->id_bap,
-              'id_studentrecord' => $id_sr,
-              'absensi' => 'ABSEN',
-              'keterangan' => $syncNote,
-              'status' => 'ACTIVE',
-              'created_at' => $sekarang,
-              'updated_at' => $sekarang,
-            ]);
-          }
-
-          $hadirCount = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)->where('absensi', 'ABSEN')->count();
-          $tdkHadirCount = Absensi_mahasiswa::where('id_bap', $targetOriginBap->id_bap)->whereIn('absensi', ['SAKIT', 'IZIN', 'ALFA'])->count();
-          DB::table('bap')->where('id_bap', $targetOriginBap->id_bap)->update([
-            'hadir' => $hadirCount,
-            'tidak_hadir' => $tdkHadirCount,
-          ]);
-        }
-      } else {
-        foreach ($data_absensi_awal as &$itemAwal) {
-          if ($itemAwal['id_studentrecord'] == $id_sr) {
-            $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama})";
+            foreach ($data_absensi_awal as &$itemAwal) {
+              if ($itemAwal['id_studentrecord'] == $id_sr) {
+                $itemAwal['keterangan'] = "Lintas Kelas (Asal: {$origin_kelas_nama})";
+              }
+            }
+            unset($itemAwal);
           }
         }
-        unset($itemAwal);
       }
-    }
 
-    // 4. Bersihkan helper flag 'is_lintas' sebelum insert
-    $insert_data_awal = collect($data_absensi_awal)->map(function ($item) {
-      unset($item['is_lintas']);
-      return $item;
-    })->toArray();
+      // 4. Bersihkan helper flag 'is_lintas' sebelum insert & hitung rekap kehadiran langsung dari memori PHP
+      $insert_data_awal = [];
+      $jml_hadir = 0;
+      $jml_tdk_hadir = 0;
 
-    // 5. Simpan & Duplikat ke semua BAP gabungan
-    Absensi_mahasiswa::whereIn('id_bap', $bap_gabungan_ids)->delete();
+      foreach ($data_absensi_awal as $item) {
+        if ($item['absensi'] === 'ABSEN') {
+          $jml_hadir++;
+        } elseif (in_array($item['absensi'], ['SAKIT', 'IZIN', 'ALFA'])) {
+          $jml_tdk_hadir++;
+        }
+        unset($item['is_lintas']);
+        $insert_data_awal[] = $item;
+      }
 
-    if (!empty($insert_data_awal)) {
-      Absensi_mahasiswa::insert($insert_data_awal);
+      // 5. Simpan & Duplikat ke semua BAP gabungan
+      DB::table('absensi_mahasiswa')->whereIn('id_bap', $bap_gabungan_ids)->delete();
 
-      foreach ($bap_gabungan_ids as $bap_id) {
-        if ($bap_id == $initial_bap_id) {
-          continue;
+      if (!empty($insert_data_awal)) {
+        $batch_insert = $insert_data_awal;
+
+        foreach ($bap_gabungan_ids as $bap_id) {
+          if ($bap_id == $initial_bap_id) {
+            continue;
+          }
+
+          foreach ($insert_data_awal as $item) {
+            $item['id_bap'] = $bap_id;
+            $item['created_at'] = $sekarang;
+            $item['updated_at'] = $sekarang;
+            $batch_insert[] = $item;
+          }
         }
 
-        $data_duplikat = collect($insert_data_awal)->map(function ($item) use ($bap_id, $sekarang) {
-          $item['id_bap'] = $bap_id;
-          $item['created_at'] = $sekarang;
-          $item['updated_at'] = $sekarang;
-          return $item;
-        })->toArray();
-
-        Absensi_mahasiswa::insert($data_duplikat);
+        foreach (array_chunk($batch_insert, 500) as $chunk) {
+          DB::table('absensi_mahasiswa')->insert($chunk);
+        }
       }
-    }
 
-    // 6. Update hadir & tidak_hadir di setiap BAP gabungan
-    foreach ($bap_gabungan_ids as $bap_id) {
-      $rekap = Absensi_mahasiswa::select(
-        DB::raw("SUM(CASE WHEN absensi = 'ABSEN' THEN 1 ELSE 0 END) as hadir"),
-        DB::raw("SUM(CASE WHEN absensi IN ('SAKIT', 'IZIN', 'ALFA') THEN 1 ELSE 0 END) as tidak_hadir")
-      )
-        ->where('id_bap', $bap_id)
-        ->first();
-
-      DB::table('bap')->where('id_bap', $bap_id)->update([
-        'hadir' => $rekap ? ($rekap->hadir ?? 0) : 0,
-        'tidak_hadir' => $rekap ? ($rekap->tidak_hadir ?? 0) : 0,
+      // 6. Update hadir & tidak_hadir sekaligus di semua BAP gabungan (tanpa perlu 2x query count per BAP ke DB)
+      DB::table('bap')->whereIn('id_bap', $bap_gabungan_ids)->update([
+        'hadir' => $jml_hadir,
+        'tidak_hadir' => $jml_tdk_hadir,
+        'updated_at' => $sekarang,
       ]);
-    }
+    });
   }
 
   public function save_absensi(Request $request)
@@ -11513,5 +11531,355 @@ class KaprodiController extends Controller
   public function penguji_skripsi()
   {
 
+  }
+
+  public function rincian_data_akm_kprd()
+  {
+    $id = Auth::user()->id_user;
+
+    $prd = Kaprodi::join('prodi', 'kaprodi.id_prodi', '=', 'prodi.id_prodi')
+      ->where('kaprodi.id_dosen', $id)
+      ->select('prodi.id_prodi', 'prodi.prodi', 'prodi.kodeprodi')
+      ->first();
+
+    $tahun = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+    $tipe = Periode_tipe::whereIn('id_periodetipe', [1, 2, 3])->get();
+    $angkatan = Angkatan::orderBy('idangkatan', 'DESC')->get();
+
+    if ($prd) {
+      $allProdi = Prodi::where('kodeprodi', $prd->kodeprodi)->orderBy('id_prodi', 'ASC')->get();
+    } else {
+      $allProdi = Prodi::orderBy('kodeprodi', 'ASC')->orderBy('id_prodi', 'ASC')->get();
+    }
+
+    $prodi_utama = [];
+    $prodi_konsentrasi = [];
+
+    foreach ($allProdi as $p) {
+      $kd = $p->kodeprodi;
+      if (!isset($prodi_utama[$kd])) {
+        $namaProdi = trim($p->prodi);
+        $hasKons = $allProdi->where('kodeprodi', $kd)->where('konsentrasi', '!=', '')->isNotEmpty();
+        $prodi_utama[$kd] = [
+          'value' => 'kodeprodi:' . $kd,
+          'label' => $namaProdi . ($hasKons ? ' (Semua Konsentrasi)' : ''),
+        ];
+      }
+
+      if (!empty(trim($p->konsentrasi))) {
+        $prodi_konsentrasi[] = [
+          'id_prodi' => $p->id_prodi,
+          'label' => trim($p->prodi) . ' - ' . trim($p->konsentrasi),
+        ];
+      } else {
+        $hasOther = $allProdi->where('kodeprodi', $kd)->where('konsentrasi', '!=', '')->isNotEmpty();
+        if ($hasOther) {
+          $prodi_konsentrasi[] = [
+            'id_prodi' => $p->id_prodi,
+            'label' => trim($p->prodi) . ' - Reguler (Tanpa Konsentrasi)',
+          ];
+        }
+      }
+    }
+
+    return view('kaprodi/nilai/rincian_akm', compact('tahun', 'tipe', 'prodi_utama', 'prodi_konsentrasi', 'angkatan', 'prd'));
+  }
+
+  public function getBobotNilai($nilaiHuruf)
+  {
+    $nilaiHuruf = trim(strtoupper($nilaiHuruf ?? ''));
+    switch ($nilaiHuruf) {
+      case 'A':
+        return 4.0;
+      case 'B+':
+      case 'AB':
+        return 3.5;
+      case 'B':
+        return 3.0;
+      case 'C+':
+      case 'BC':
+        return 2.5;
+      case 'C':
+        return 2.0;
+      case 'D':
+        return 1.0;
+      case 'E':
+      default:
+        return 0.0;
+    }
+  }
+
+  private function getRincianAkmData($idprodi, $idperiodetahun, $idperiodetipe, $idangkatanArr = [], $singleStudentId = null)
+  {
+    $periodetahun = Periode_tahun::where('id_periodetahun', $idperiodetahun)->first();
+    $periodetipe = Periode_tipe::where('id_periodetipe', $idperiodetipe)->first();
+
+    $selectedYear = 2099;
+    if ($periodetahun && preg_match('/(\d{4})/', $periodetahun->periode_tahun, $m)) {
+      $selectedYear = (int)$m[1];
+    }
+
+    $query = DB::table('student as s')
+      ->leftJoin('prodi as p', function ($join) {
+        $join->on('p.kodeprodi', '=', 's.kodeprodi')
+          ->on('p.kodekonsentrasi', '=', 's.kodekonsentrasi');
+      })
+      ->join('angkatan as a', 's.idangkatan', '=', 'a.idangkatan');
+
+    $namaprodi = 'Program Studi';
+
+    if (is_string($idprodi) && strpos($idprodi, 'kodeprodi:') === 0) {
+      $kdprodi = str_replace('kodeprodi:', '', $idprodi);
+      $query->where('s.kodeprodi', $kdprodi);
+      $firstProdi = Prodi::where('kodeprodi', $kdprodi)->first();
+      $hasKons = Prodi::where('kodeprodi', $kdprodi)->whereNotNull('konsentrasi')->where('konsentrasi', '!=', '')->exists();
+      $namaprodi = $firstProdi ? (trim($firstProdi->prodi) . ($hasKons ? ' (Semua Konsentrasi)' : '')) : 'Program Studi';
+    } elseif (is_numeric($idprodi)) {
+      $p = Prodi::where('id_prodi', $idprodi)->first();
+      if ($p) {
+        if (!empty(trim($p->kodekonsentrasi))) {
+          $query->where('s.kodeprodi', $p->kodeprodi)
+            ->where('s.kodekonsentrasi', $p->kodekonsentrasi);
+          $namaprodi = trim($p->prodi) . ' - ' . trim($p->konsentrasi);
+        } else {
+          $hasOther = Prodi::where('kodeprodi', $p->kodeprodi)->whereNotNull('konsentrasi')->where('konsentrasi', '!=', '')->exists();
+          if ($hasOther) {
+            $query->where('s.kodeprodi', $p->kodeprodi)
+              ->where(function ($w) {
+                $w->whereNull('s.kodekonsentrasi')->orWhere('s.kodekonsentrasi', '');
+              });
+            $namaprodi = trim($p->prodi) . ' (Tanpa Konsentrasi)';
+          } else {
+            $query->where('s.kodeprodi', $p->kodeprodi);
+            $namaprodi = trim($p->prodi);
+          }
+        }
+      }
+    }
+
+    if (!empty($idangkatanArr)) {
+      $query->whereIn('s.idangkatan', (array)$idangkatanArr);
+    }
+
+    if ($singleStudentId) {
+      $query->where('s.idstudent', $singleStudentId);
+    }
+
+    $students = $query->select(
+      's.idstudent',
+      's.nim',
+      's.nama',
+      'a.angkatan',
+      's.idangkatan',
+      DB::raw("COALESCE(NULLIF(p.prodi, ''), '$namaprodi') as prodi"),
+      'p.konsentrasi'
+    )->orderBy('s.nim', 'asc')->get();
+
+    $studentsData = [];
+
+    foreach ($students as $student) {
+      $rawCourses = DB::table('student_record as sr')
+        ->join('kurikulum_periode as kp', 'sr.id_kurperiode', '=', 'kp.id_kurperiode')
+        ->join('kurikulum_transaction as kt', 'sr.id_kurtrans', '=', 'kt.idkurtrans')
+        ->join('matakuliah as mk', 'kt.id_makul', '=', 'mk.idmakul')
+        ->join('periode_tahun as pt', 'kp.id_periodetahun', '=', 'pt.id_periodetahun')
+        ->join('periode_tipe as ptipe', 'kp.id_periodetipe', '=', 'ptipe.id_periodetipe')
+        ->where('sr.id_student', $student->idstudent)
+        ->where('sr.status', 'TAKEN')
+        ->where(function ($w) use ($selectedYear, $idperiodetipe) {
+          $w->whereRaw("CAST(SUBSTRING(pt.periode_tahun, 5, 4) AS UNSIGNED) < ?", [$selectedYear])
+            ->orWhere(function ($w2) use ($selectedYear, $idperiodetipe) {
+              $w2->whereRaw("CAST(SUBSTRING(pt.periode_tahun, 5, 4) AS UNSIGNED) = ?", [$selectedYear])
+                ->where('kp.id_periodetipe', '<=', $idperiodetipe);
+            });
+        })
+        ->select(
+          'sr.id_student',
+          'sr.nilai_AKHIR',
+          'sr.nilai_AKHIR_angka',
+          'mk.kode',
+          'mk.makul',
+          DB::raw('(mk.akt_sks_teori + mk.akt_sks_praktek) as sks'),
+          DB::raw("CONCAT(SUBSTRING(pt.periode_tahun, 5, 4), '/', ptipe.periode_tipe) as semester_label"),
+          DB::raw("CAST(SUBSTRING(pt.periode_tahun, 5, 4) AS UNSIGNED) as thn_int"),
+          'kp.id_periodetipe'
+        )
+        ->orderBy('thn_int', 'asc')
+        ->orderBy('kp.id_periodetipe', 'asc')
+        ->orderBy('mk.kode', 'asc')
+        ->get();
+
+      // Deduplikasi: jika ada mata kuliah yang diambil berulang, ambil 1 nilai terbaik
+      $uniqueMap = [];
+      foreach ($rawCourses as $c) {
+        $c->bobot = $this->getBobotNilai($c->nilai_AKHIR);
+        $c->mutu = (float)$c->sks * $c->bobot;
+        $kode = trim($c->kode);
+
+        if (!isset($uniqueMap[$kode])) {
+          $uniqueMap[$kode] = $c;
+        } else {
+          $existing = $uniqueMap[$kode];
+          if ($c->bobot > $existing->bobot) {
+            $uniqueMap[$kode] = $c;
+          } elseif ($c->bobot == $existing->bobot) {
+            if ((float)$c->nilai_AKHIR_angka > (float)$existing->nilai_AKHIR_angka) {
+              $uniqueMap[$kode] = $c;
+            } elseif ($c->thn_int > $existing->thn_int || ($c->thn_int == $existing->thn_int && $c->id_periodetipe >= $existing->id_periodetipe)) {
+              $uniqueMap[$kode] = $c;
+            }
+          }
+        }
+      }
+
+      $courses = array_values($uniqueMap);
+      usort($courses, function ($a, $b) {
+        if ($a->thn_int != $b->thn_int) {
+          return $a->thn_int <=> $b->thn_int;
+        }
+        if ($a->id_periodetipe != $b->id_periodetipe) {
+          return $a->id_periodetipe <=> $b->id_periodetipe;
+        }
+        return strcmp($a->kode, $b->kode);
+      });
+
+      $totalSksIpk = 0;
+      $totalMutuIpk = 0;
+
+      $sksSemester = 0;
+      $mutuSemester = 0;
+
+      $startCurrentSemesterRow = null;
+      $endCurrentSemesterRow = null;
+
+      foreach ($courses as $idx => $c) {
+        $nilaiClean = trim(strtoupper($c->nilai_AKHIR ?? ''));
+        $isLulus = in_array($nilaiClean, ['A', 'B+', 'AB', 'B', 'C+', 'BC', 'C']);
+        $c->is_lulus = $isLulus;
+
+        // Untuk IPK: Nilai D dan E (serta - dan 0) TIDAK DIMASUKKAN ke SKS maupun Mutu
+        if ($isLulus) {
+          $c->sks_diakui = (float)$c->sks;
+          $c->mutu_diakui = (float)$c->mutu;
+        } else {
+          $c->sks_diakui = 0;
+          $c->mutu_diakui = 0;
+        }
+
+        $totalSksIpk += $c->sks_diakui;
+        $totalMutuIpk += $c->mutu_diakui;
+
+        // Cek apakah mata kuliah ini masuk ke semester berjalan yang dipilih
+        $isCurrentSemester = ($c->thn_int == $selectedYear && $c->id_periodetipe == $idperiodetipe);
+        $c->is_current_semester = $isCurrentSemester;
+
+        if ($isCurrentSemester) {
+          // Untuk IPS semester berjalan: Nilai D dan E TETAP DIMASUKKAN
+          $sksSemester += (float)$c->sks;
+          $mutuSemester += (float)$c->mutu;
+
+          $excelRowNumber = $idx + 3; // baris data di Excel mulai dari row 3
+          if ($startCurrentSemesterRow === null) {
+            $startCurrentSemesterRow = $excelRowNumber;
+          }
+          $endCurrentSemesterRow = $excelRowNumber;
+        }
+      }
+
+      $ipk = $totalSksIpk > 0 ? round($totalMutuIpk / $totalSksIpk, 2) : 0;
+      $ips = $sksSemester > 0 ? round($mutuSemester / $sksSemester, 2) : 0;
+
+      $studentsData[] = [
+        'student' => $student,
+        'courses' => $courses,
+        'summary' => [
+          'total_sks_ipk' => $totalSksIpk,
+          'total_mutu_ipk' => $totalMutuIpk,
+          'ipk' => $ipk,
+          'sks_semester' => $sksSemester,
+          'mutu_semester' => $mutuSemester,
+          'ips' => $ips,
+          'start_current_row' => $startCurrentSemesterRow,
+          'end_current_row' => $endCurrentSemesterRow,
+        ],
+      ];
+    }
+
+    return [
+      'periodetahun' => $periodetahun,
+      'periodetipe' => $periodetipe,
+      'namaprodi' => $namaprodi,
+      'studentsData' => $studentsData,
+    ];
+  }
+
+  public function filter_rincian_akm_kprd(Request $request)
+  {
+    $idprodi = $request->id_prodi;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idangkatan = (array)$request->id_angkatan;
+
+    $result = $this->getRincianAkmData($idprodi, $idperiodetahun, $idperiodetipe, $idangkatan);
+
+    $namaperiodetahun = $result['periodetahun']->periode_tahun ?? '';
+    $namaperiodetipe = $result['periodetipe']->periode_tipe ?? '';
+    $namaprodi = $result['namaprodi'] ?? 'Program Studi';
+    $studentsData = $result['studentsData'];
+
+    return view('kaprodi/nilai/hasil_rincian_akm', compact(
+      'studentsData',
+      'idprodi',
+      'idperiodetahun',
+      'idperiodetipe',
+      'idangkatan',
+      'namaperiodetahun',
+      'namaperiodetipe',
+      'namaprodi'
+    ));
+  }
+
+  public function export_rincian_akm_xls_kprd(Request $request)
+  {
+    $idprodi = $request->id_prodi;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idangkatan = (array)$request->id_angkatan;
+
+    $result = $this->getRincianAkmData($idprodi, $idperiodetahun, $idperiodetipe, $idangkatan);
+
+    $namaperiodetahun = $result['periodetahun']->periode_tahun ?? '';
+    $namaperiodetipe = $result['periodetipe']->periode_tipe ?? '';
+    $namaprodi = $result['namaprodi'] ?? 'Program Studi';
+
+    $ganti_tahun = str_replace('/', '_', $namaperiodetahun);
+    $angkatanStr = !empty($idangkatan) ? 'Angkt ' . implode('-', $idangkatan) : 'Semua';
+
+    $nama_file = 'Rincian AKM ' . $namaprodi . ' ' . $ganti_tahun . ' ' . $namaperiodetipe . ' ' . $angkatanStr . '.xlsx';
+
+    return Excel::download(new RincianAkmMultiExport($result['studentsData']), $nama_file);
+  }
+
+  public function export_rincian_akm_single_xls_kprd(Request $request)
+  {
+    $idprodi = $request->id_prodi;
+    $idperiodetahun = $request->id_periodetahun;
+    $idperiodetipe = $request->id_periodetipe;
+    $idstudent = $request->id_student;
+
+    $result = $this->getRincianAkmData($idprodi, $idperiodetahun, $idperiodetipe, [], $idstudent);
+
+    if (empty($result['studentsData'])) {
+      Alert::error('Data mahasiswa tidak ditemukan', 'Gagal');
+      return redirect()->back();
+    }
+
+    $studentItem = $result['studentsData'][0];
+    $namaMhs = preg_replace('/[\\\\\\/?*:\\[\\]]/', '', $studentItem['student']->nama);
+    $nimMhs = $studentItem['student']->nim;
+
+    $nama_file = 'Rincian AKM ' . $nimMhs . ' ' . $namaMhs . '.xlsx';
+
+    return Excel::download(new RincianAkmPerMhsSheetExport($studentItem), $nama_file);
   }
 }
