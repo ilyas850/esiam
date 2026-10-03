@@ -1322,6 +1322,12 @@ Route::group(['middleware' => 'kaprodi'], function () {
     Route::get('export_nilai_ipk_kprd', 'KaprodiController@export_nilai_ipk_kprd');
     Route::post('export_nilai_ipk_prodi', 'KaprodiController@export_nilai_ipk_prodi');
 
+    #rincian akm kaprodi
+    Route::get('rincian_data_akm_kprd', 'KaprodiController@rincian_data_akm_kprd');
+    Route::post('filter_rincian_akm_kprd', 'KaprodiController@filter_rincian_akm_kprd');
+    Route::post('export_rincian_akm_xls_kprd', 'KaprodiController@export_rincian_akm_xls_kprd');
+    Route::post('export_rincian_akm_single_xls_kprd', 'KaprodiController@export_rincian_akm_single_xls_kprd');
+
     #mahasiswa bimbingan
     Route::get('mhs_bim_kprd', 'KaprodiController@mhs_bim');
     Route::get('record_nilai_kprd/{id}', 'KaprodiController@record_nilai');

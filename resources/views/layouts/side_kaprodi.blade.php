@@ -318,6 +318,8 @@
                     </span></a></li>
             <li><a href="{{ url('nilai_mhs_kprd') }}"><i class="fa fa-circle-o"></i> Rekap Nilai Matakuliah</a>
             </li>
+            <li><a href="{{ url('rincian_data_akm_kprd') }}"><i class="fa fa-circle-o"></i> Rincian AKM Mahasiswa</a>
+            </li>
         </ul>
     </li>
     <li class="treeview">
