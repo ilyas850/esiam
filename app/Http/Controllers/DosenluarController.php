@@ -147,22 +147,15 @@ class DosenluarController extends Controller
         return view('dosenluar/mhs/persentase_absen', compact('data', 'mk'));
     }
 
-    public function makul_diampu()
+    private function getMakulDiampuDsnLuarData($iddsn, $idperiodetahun, $idperiodetipe)
     {
-        $iddsn = Auth::user()->id_user;
-
-        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
-        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
-        $nama_periodetahun = $periodetahun->periode_tahun;
-        $nama_periodetipe = $periodetipe->periode_tipe;
-        $idperiodetahun = $periodetahun->id_periodetahun;
-        $idperiodetipe = $periodetipe->id_periodetipe;
-
-        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
-        $tp = Periode_tipe::all();
-
         $rpsSubquery = DB::table('rps')
             ->select('id_rps', 'id_kurperiode')
+            ->groupBy('id_kurperiode');
+
+        $bapSubquery = DB::table('bap')
+            ->select('id_kurperiode', DB::raw('COUNT(DISTINCT pertemuan) as total_bap'))
+            ->where('status', 'ACTIVE')
             ->groupBy('id_kurperiode');
 
         $makul_raw = DB::table('kurikulum_periode as a')
@@ -182,6 +175,9 @@ class DosenluarController extends Controller
             ->leftJoinSub($rpsSubquery, 'aa', function ($join) {
                 $join->on('a.id_kurperiode', '=', 'aa.id_kurperiode');
             })
+            ->leftJoinSub($bapSubquery, 'bb', function ($join) {
+                $join->on('a.id_kurperiode', '=', 'bb.id_kurperiode');
+            })
             ->where(function ($query) use ($iddsn) {
                 $query->where('a.id_dosen', $iddsn)
                     ->orWhere('a.id_dosen_2', $iddsn);
@@ -190,6 +186,8 @@ class DosenluarController extends Controller
                 'a.id_kurperiode',
                 'b.kode',
                 'b.makul',
+                'b.akt_sks_teori',
+                'b.akt_sks_praktek',
                 'c.prodi',
                 'c.konsentrasi',
                 'd.kelas',
@@ -208,13 +206,16 @@ class DosenluarController extends Controller
                 'h.validasi_uas',
                 'h.cetak_soal_uts',
                 'h.cetak_soal_uas',
-                'aa.id_rps'
+                'aa.id_rps',
+                DB::raw('COALESCE(bb.total_bap, 0) as total_bap')
             )
             ->groupBy('c.prodi', 'd.kelas', 'f.hari', 'b.idmakul', 'g.jam')
             ->groupBy(
                 'a.id_kurperiode',
                 'b.kode',
                 'b.makul',
+                'b.akt_sks_teori',
+                'b.akt_sks_praktek',
                 'c.konsentrasi',
                 'e.semester',
                 'f.id_hari',
@@ -230,7 +231,8 @@ class DosenluarController extends Controller
                 'h.validasi_uas',
                 'h.cetak_soal_uts',
                 'h.cetak_soal_uas',
-                'aa.id_rps'
+                'aa.id_rps',
+                'bb.total_bap'
             )
             ->orderBy('b.makul')
             ->orderBy('d.kelas')
@@ -246,8 +248,13 @@ class DosenluarController extends Controller
 
             if (!isset($groupedMakul[$key])) {
                 $groupedMakul[$key] = $item;
+                $groupedMakul[$key]->total_bap = (int)($item->total_bap ?? 0);
                 $groupedMakul[$key]->details = [];
                 $groupedMakul[$key]->added_konsentrasi = [];
+            } else {
+                if (isset($item->total_bap) && (int)$item->total_bap > $groupedMakul[$key]->total_bap) {
+                    $groupedMakul[$key]->total_bap = (int)$item->total_bap;
+                }
             }
 
             if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
@@ -259,10 +266,31 @@ class DosenluarController extends Controller
             }
         }
 
+        return $groupedMakul;
+    }
+
+    public function makul_diampu()
+    {
+        $iddsn = Auth::user()->id_user;
+
+        $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
+        $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
+        $nama_periodetahun = $periodetahun ? $periodetahun->periode_tahun : '';
+        $nama_periodetipe = $periodetipe ? $periodetipe->periode_tipe : '';
+        $idperiodetahun = $periodetahun ? $periodetahun->id_periodetahun : null;
+        $idperiodetipe = $periodetipe ? $periodetipe->id_periodetipe : null;
+
+        $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
+        $tp = Periode_tipe::all();
+
+        $groupedMakul = $this->getMakulDiampuDsnLuarData($iddsn, $idperiodetahun, $idperiodetipe);
+
         return view('dosenluar/makul_diampu', [
             'makul' => $groupedMakul,
             'nama_periodetahun' => $nama_periodetahun,
             'nama_periodetipe' => $nama_periodetipe,
+            'idperiodetahun' => $idperiodetahun,
+            'idperiodetipe' => $idperiodetipe,
             'thn' => $thn,
             'tp' => $tp,
         ]);
@@ -392,118 +420,24 @@ class DosenluarController extends Controller
     {
         $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
         $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
-        $nama_periodetahun = $periodetahun->periode_tahun;
-        $nama_periodetipe = $periodetipe->periode_tipe;
-        $idperiodetahun = $periodetahun->id_periodetahun;
-        $idperiodetipe = $periodetipe->id_periodetipe;
+        $nama_periodetahun = $periodetahun ? $periodetahun->periode_tahun : '';
+        $nama_periodetipe = $periodetipe ? $periodetipe->periode_tipe : '';
+        $idperiodetahun = $periodetahun ? $periodetahun->id_periodetahun : null;
+        $idperiodetipe = $periodetipe ? $periodetipe->id_periodetipe : null;
 
         $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
         $tp = Periode_tipe::all();
 
         $id = Auth::user()->id_user;
 
-        $rpsSubquery = DB::table('rps')
-            ->select('id_rps', 'id_kurperiode')
-            ->groupBy('id_kurperiode');
-
-        $makul_raw = DB::table('kurikulum_periode as a')
-            ->join('matakuliah as b', function ($join) use ($idperiodetahun, $idperiodetipe) {
-                $join->on('b.idmakul', '=', 'a.id_makul')
-                    ->where('a.status', '=', 'ACTIVE')
-                    ->where('a.id_periodetahun', '=', $idperiodetahun)
-                    ->where('a.id_periodetipe', '=', $idperiodetipe);
-            })
-            ->join('prodi as c', 'c.id_prodi', '=', 'a.id_prodi')
-            ->join('kelas as d', 'd.idkelas', '=', 'a.id_kelas')
-            ->join('semester as e', 'e.idsemester', '=', 'a.id_semester')
-            ->join('kurikulum_hari as f', 'f.id_hari', '=', 'a.id_hari')
-            ->join('kurikulum_jam as g', 'g.id_jam', '=', 'a.id_jam')
-            ->join('ruangan as i', 'i.id_ruangan', '=', 'a.id_ruangan')
-            ->leftJoin('soal_ujian as h', 'h.id_kurperiode', '=', 'a.id_kurperiode')
-            ->leftJoinSub($rpsSubquery, 'aa', function ($join) {
-                $join->on('a.id_kurperiode', '=', 'aa.id_kurperiode');
-            })
-            ->where(function ($query) use ($id) {
-                $query->where('a.id_dosen', $id)
-                    ->orWhere('a.id_dosen_2', $id);
-            })
-            ->select(
-                'a.id_kurperiode',
-                'b.kode',
-                'b.makul',
-                'c.prodi',
-                'c.konsentrasi',
-                'd.kelas',
-                'e.semester',
-                'f.hari',
-                'g.jam',
-                'i.nama_ruangan',
-                'h.id_soal',
-                'h.soal_uts',
-                'h.soal_uas',
-                'h.tipe_ujian_uts',
-                'h.tipe_ujian_uas',
-                'h.komentar_uts',
-                'h.komentar_uas',
-                'h.validasi_uts',
-                'h.validasi_uas',
-                'h.cetak_soal_uts',
-                'h.cetak_soal_uas',
-                'aa.id_rps'
-            )
-            ->groupBy('c.prodi', 'd.kelas', 'f.hari', 'b.idmakul', 'g.jam')
-            ->groupBy(
-                'a.id_kurperiode',
-                'b.kode',
-                'b.makul',
-                'c.konsentrasi',
-                'e.semester',
-                'f.id_hari',
-                'i.nama_ruangan',
-                'h.id_soal',
-                'h.soal_uts',
-                'h.soal_uas',
-                'h.tipe_ujian_uts',
-                'h.tipe_ujian_uas',
-                'h.komentar_uts',
-                'h.komentar_uas',
-                'h.validasi_uts',
-                'h.validasi_uas',
-                'h.cetak_soal_uts',
-                'h.cetak_soal_uas',
-                'aa.id_rps'
-            )
-            ->orderBy('b.makul')
-            ->orderBy('d.kelas')
-            ->orderBy('c.prodi')
-            ->orderBy('f.id_hari')
-            ->orderBy('g.id_jam', 'ASC')
-            ->get();
-
-        $groupedMakul = [];
-
-        foreach ($makul_raw as $item) {
-            $key = $item->kode . '_' . $item->prodi . '_' . $item->kelas . '_' . $item->nama_ruangan . '_' . $item->hari . '_' . $item->jam;
-
-            if (!isset($groupedMakul[$key])) {
-                $groupedMakul[$key] = $item;
-                $groupedMakul[$key]->details = [];
-                $groupedMakul[$key]->added_konsentrasi = [];
-            }
-
-            if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
-                $groupedMakul[$key]->details[] = [
-                    'konsentrasi' => $item->konsentrasi,
-                    'id_kurperiode' => $item->id_kurperiode,
-                ];
-                $groupedMakul[$key]->added_konsentrasi[] = $item->konsentrasi;
-            }
-        }
+        $groupedMakul = $this->getMakulDiampuDsnLuarData($id, $idperiodetahun, $idperiodetipe);
 
         return view('dosenluar/makul_diampu', [
             'makul' => $groupedMakul,
             'nama_periodetahun' => $nama_periodetahun,
             'nama_periodetipe' => $nama_periodetipe,
+            'idperiodetahun' => $idperiodetahun,
+            'idperiodetipe' => $idperiodetipe,
             'thn' => $thn,
             'tp' => $tp,
         ]);

@@ -1088,23 +1088,36 @@ class KaprodiController extends Controller
 
     $periodetahun = Periode_tahun::where('status', 'ACTIVE')->first();
     $periodetipe = Periode_tipe::where('status', 'ACTIVE')->first();
-    $nama_periodetahun = $periodetahun->periode_tahun;
-    $nama_periodetipe = $periodetipe->periode_tipe;
-    $idperiodetahun = $periodetahun->id_periodetahun;
-    $idperiodetipe = $periodetipe->id_periodetipe;
+    $nama_periodetahun = $periodetahun ? $periodetahun->periode_tahun : '';
+    $nama_periodetipe = $periodetipe ? $periodetipe->periode_tipe : '';
+    $idperiodetahun = $periodetahun ? $periodetahun->id_periodetahun : null;
+    $idperiodetipe = $periodetipe ? $periodetipe->id_periodetipe : null;
 
     $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
     $tp = Periode_tipe::all();
 
     $makul = $this->getMakulDiampuDsnKaprodi($iddsn, $idperiodetahun, $idperiodetipe);
 
-    return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+    return view('kaprodi/matakuliah/makul_diampu_dsn', [
+      'makul' => $makul,
+      'nama_periodetahun' => $nama_periodetahun,
+      'nama_periodetipe' => $nama_periodetipe,
+      'idperiodetahun' => $idperiodetahun,
+      'idperiodetipe' => $idperiodetipe,
+      'thn' => $thn,
+      'tp' => $tp,
+    ]);
   }
 
   private function getMakulDiampuDsnKaprodi($idDosen, $idPeriodetahun, $idPeriodetipe)
   {
     $rpsSubquery = DB::table('rps')
       ->select('id_rps', 'id_kurperiode')
+      ->groupBy('id_kurperiode');
+
+    $bapSubquery = DB::table('bap')
+      ->select('id_kurperiode', DB::raw('COUNT(DISTINCT pertemuan) as total_bap'))
+      ->where('status', 'ACTIVE')
       ->groupBy('id_kurperiode');
 
     $makul = DB::table('kurikulum_periode as a')
@@ -1124,6 +1137,9 @@ class KaprodiController extends Controller
       ->leftJoinSub($rpsSubquery, 'aa', function ($join) {
         $join->on('a.id_kurperiode', '=', 'aa.id_kurperiode');
       })
+      ->leftJoinSub($bapSubquery, 'bb', function ($join) {
+        $join->on('a.id_kurperiode', '=', 'bb.id_kurperiode');
+      })
       ->where(function ($query) use ($idDosen) {
         $query->where('a.id_dosen', $idDosen)
           ->orWhere('a.id_dosen_2', $idDosen);
@@ -1132,6 +1148,8 @@ class KaprodiController extends Controller
         'a.id_kurperiode',
         'b.kode',
         'b.makul',
+        'b.akt_sks_teori',
+        'b.akt_sks_praktek',
         'c.prodi',
         'c.konsentrasi',
         'd.kelas',
@@ -1150,13 +1168,16 @@ class KaprodiController extends Controller
         'h.validasi_uas',
         'h.cetak_soal_uts',
         'h.cetak_soal_uas',
-        'aa.id_rps'
+        'aa.id_rps',
+        DB::raw('COALESCE(bb.total_bap, 0) as total_bap')
       )
       ->groupBy('c.prodi', 'd.kelas', 'f.hari', 'b.idmakul', 'g.jam')
       ->groupBy(
         'a.id_kurperiode',
         'b.kode',
         'b.makul',
+        'b.akt_sks_teori',
+        'b.akt_sks_praktek',
         'c.konsentrasi',
         'e.semester',
         'f.id_hari',
@@ -1172,7 +1193,8 @@ class KaprodiController extends Controller
         'h.validasi_uas',
         'h.cetak_soal_uts',
         'h.cetak_soal_uas',
-        'aa.id_rps'
+        'aa.id_rps',
+        'bb.total_bap'
       )
       ->orderBy('b.makul')
       ->orderBy('d.kelas')
@@ -1188,8 +1210,13 @@ class KaprodiController extends Controller
 
       if (!isset($groupedMakul[$key])) {
         $groupedMakul[$key] = $item;
+        $groupedMakul[$key]->total_bap = (int)($item->total_bap ?? 0);
         $groupedMakul[$key]->details = [];
         $groupedMakul[$key]->added_konsentrasi = [];
+      } else {
+        if (isset($item->total_bap) && (int)$item->total_bap > $groupedMakul[$key]->total_bap) {
+          $groupedMakul[$key]->total_bap = (int)$item->total_bap;
+        }
       }
 
       if (!in_array($item->konsentrasi, $groupedMakul[$key]->added_konsentrasi)) {
@@ -1328,10 +1355,10 @@ class KaprodiController extends Controller
   {
     $periodetahun = Periode_tahun::where('id_periodetahun', $request->id_periodetahun)->first();
     $periodetipe = Periode_tipe::where('id_periodetipe', $request->id_periodetipe)->first();
-    $nama_periodetahun = $periodetahun->periode_tahun;
-    $nama_periodetipe = $periodetipe->periode_tipe;
-    $idperiodetahun = $periodetahun->id_periodetahun;
-    $idperiodetipe = $periodetipe->id_periodetipe;
+    $nama_periodetahun = $periodetahun ? $periodetahun->periode_tahun : '';
+    $nama_periodetipe = $periodetipe ? $periodetipe->periode_tipe : '';
+    $idperiodetahun = $periodetahun ? $periodetahun->id_periodetahun : null;
+    $idperiodetipe = $periodetipe ? $periodetipe->id_periodetipe : null;
 
     $thn = Periode_tahun::orderBy('periode_tahun', 'DESC')->get();
     $tp = Periode_tipe::all();
@@ -1339,7 +1366,15 @@ class KaprodiController extends Controller
     $id = Auth::user()->id_user;
     $makul = $this->getMakulDiampuDsnKaprodi($id, $idperiodetahun, $idperiodetipe);
 
-    return view('kaprodi/matakuliah/makul_diampu_dsn', compact('makul', 'nama_periodetahun', 'nama_periodetipe', 'thn', 'tp'));
+    return view('kaprodi/matakuliah/makul_diampu_dsn', [
+      'makul' => $makul,
+      'nama_periodetahun' => $nama_periodetahun,
+      'nama_periodetipe' => $nama_periodetipe,
+      'idperiodetahun' => $idperiodetahun,
+      'idperiodetipe' => $idperiodetipe,
+      'thn' => $thn,
+      'tp' => $tp,
+    ]);
   }
 
   public function cekmhs_dsn($id)
